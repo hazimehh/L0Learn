@@ -2,7 +2,7 @@
 #include <set>
 
 
-CDL012Cons::CDL012Cons(const arma::mat& Xi, const arma::vec& yi, const Params& P) : CD(Xi, yi, P) {thr = sqrt((2*ModelParams[0])/(1+2*ModelParams[2])); 
+CDL012Cons::CDL012Cons(const arma::mat& Xi, const arma::vec& yi, const Params& P) : CD(Xi, yi, P) {thr = sqrt((2*ModelParams[0])/(1+2*ModelParams[2]));
 	 //k = ModelParams[3]; //CAREFUL!!!!!!!!!!!!!!!!
 	 Onep2lamda2 = 1+2*ModelParams[2];  Iter = P.Iter; result.ModelParams = P.ModelParams;}
 
@@ -10,11 +10,11 @@ FitResult CDL012Cons::Fit() {
 
 		objective = Objective(r, B);
 
-		std::set<unsigned int> S; 
+		std::set<unsigned int> S;
 		arma::sp_mat::const_iterator start = B.begin();
 		arma::sp_mat::const_iterator end   = B.end();
 		for(arma::sp_mat::const_iterator it = start; it != end; ++it){S.insert(it.row());}
-			
+
 		std::vector<unsigned int> rangetemp(p);
 		std::iota(std::begin(rangetemp), std::end(rangetemp), 0);
 		std::set<unsigned int> Sc;
@@ -27,7 +27,7 @@ FitResult CDL012Cons::Fit() {
 
 
 		if (B.n_nonzero < k){
-			unsigned int best_index=-1;
+			int best_index=-1;
 			double best_value;
 			// Find ||r'X||_inf
 			arma::rowvec rtX = r.t() * *X;
@@ -35,9 +35,9 @@ FitResult CDL012Cons::Fit() {
 			unsigned int rtXmaxind = 0;
 			for (auto& i: Sc){if (std::abs(rtX[i]) > rtXmax) {rtXmax = std::abs(rtX[i]); rtXmaxind = i;}}
 			double Beta_jabs =  (std::abs(rtX[rtXmaxind]) - ModelParams[1])/Onep2lamda2; ///////// still wrong because rtXmax has an abs...
-			arma::sp_mat Btemp = B; 
+			arma::sp_mat Btemp = B;
 
-			double best_obj = objective; // stays the same if < thr 
+			double best_obj = objective; // stays the same if < thr
 
 			if (Beta_jabs >= thr){
 				Btemp[rtXmaxind] = std::copysign(Beta_jabs,rtX[rtXmaxind]);
@@ -73,10 +73,10 @@ FitResult CDL012Cons::Fit() {
 
 		else{
 
-			unsigned int best_index=-1;
+			int best_index=-1;
 			unsigned int best_z = -1;
 			double best_value;
-			double best_obj = objective; // stays the same if < thr 
+			double best_obj = objective; // stays the same if < thr
 
 			for (auto& z: S){
 
@@ -87,7 +87,7 @@ FitResult CDL012Cons::Fit() {
 				unsigned int rtXmaxind = 0;
 				for (auto& i: Sc){if (std::abs(rtX[i]) > rtXmax) {rtXmax = std::abs(rtX[i]); rtXmaxind = i;}}
 				double Beta_jabs =  (std::abs(rtX[rtXmaxind]) - ModelParams[1])/Onep2lamda2;
-				arma::sp_mat Btemp = B; 
+				arma::sp_mat Btemp = B;
 
 
 				Btemp[rtXmaxind] = std::copysign(Beta_jabs,rtX[rtXmaxind]);
@@ -149,7 +149,7 @@ FitResult CDL012Cons::Fit() {
 
 
 		if (Converged()){
-			result.IterNum = t+1; 
+			result.IterNum = t+1;
 			//std::cout<<"Converged in "<<t+1<<" iterations."<<std::endl;
 			break;
 		}
@@ -165,5 +165,5 @@ FitResult CDL012Cons::Fit() {
 
 inline double CDL012Cons::Objective(arma::vec & r, arma::sp_mat & B) { // hint inline
 	auto l2norm = arma::norm(B,2);
-	return 0.5*arma::dot(r,r) + ModelParams[0]*B.n_nonzero + ModelParams[1]*arma::norm(B,1) + ModelParams[2]*l2norm*l2norm; 
+	return 0.5*arma::dot(r,r) + ModelParams[0]*B.n_nonzero + ModelParams[1]*arma::norm(B,1) + ModelParams[2]*l2norm*l2norm;
 }
