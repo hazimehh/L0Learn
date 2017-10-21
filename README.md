@@ -33,7 +33,7 @@ To demonstrate how L0Learn works we will generate the following dummy dataset
 * A 1000x1 vector B with the first 10 entries set to 1 and the rest are zeros.
 * A 500x1 vector e with iid standard normal entries
 * Set y  = XB + e
-```
+```R
 X = matrix(rnorm(10e6),nrow=500,ncol=1000)
 B = c(rep(1,10),rep(0,990))
 e = rnorm(500)
@@ -44,15 +44,15 @@ Our objective is to use L0Learn to recover the true vector B from examining X an
 fit = L0Learn.fit(X,y,Model="L0")
 ```
 This will generate solutions for a sequence of lambda values. To view the path of lambda values along with the associated support sizes, you can execute:
-```
+```R
 print(fit)
 ```
 Now to print the learned vector B for a specific point in the path we use the function L0Learn.coef(fit,index) which takes the object fit as the first parameter and the index of the point in the path as the second paramter. For example, to print the solution with index 7 we can issue
-```
+```R
 print(L0Learn.coef(fit,7))
 ```
 We can also make predictions using a specific solution in the grid using the L0Learn.predict(fit,x,index) where x is a testing sample (vector or matrix). For example, to predict the response for the samples in X using the solution at index 7 we can issue
-```
+```R
 L0Learn.predict(fit,X,7)
 ```
 We have demonstrated the simple case of using an L0 penalty alone. For more elaborate penalties/algorithms you can try any of the following methods when calling the L0Learn.fit(X,y,method) function: 
