@@ -4,7 +4,7 @@
 ## Hussein Hazimeh and Rahul Mazumder
 
 ### Introduction
-L0Learn is a highly optimized framework for solving L0-regularized regression (and soon classification) problems. We consider sparse linear regression problems where the loss function is penalized by combinations of the L0, L1, and L2 norms. Specifically, the framework solves the follwing three problems
+L0Learn is a highly optimized framework for solving L0-regularized regression (and soon classification) problems. We consider sparse linear regression problems where the loss function is penalized by combinations of the L0, L1, and L2 norms. Specifically, the framework solves the following three problems
 
 <img src="https://user-images.githubusercontent.com/11324150/31846484-7595270e-b5da-11e7-8d6b-1f9965137477.png" width="280">
 
@@ -17,7 +17,7 @@ over a grid of the tuning parameters values.
 The algorithms are implemented in C++ with an R interface. Below are the installation instructions.
 
 ### Installation
-In R, you will need to first install and load the "devtools" package:
+In R, you will need first to install and load the "devtools" package:
 ```
 install.packages("devtools")
 library(devtools)
