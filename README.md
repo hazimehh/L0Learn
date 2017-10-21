@@ -4,20 +4,18 @@
 ## Hussein Hazimeh and Rahul Mazumder
 
 ### Introduction
-L0Learn is a highly optimized framework for solving L0-regularized regression (and soon classification) problems. We consider sparse linear regression problems where the loss function is penalized by combinations of the L0, L1, and L2 norms. Specifically, the framework solves the follwing three problems
+L0Learn is a highly optimized framework for solving L0-regularized regression (and soon classification) problems. We consider sparse linear regression problems where the loss function is penalized by combinations of the L0, L1, and L2 norms. Specifically, the framework solves the following three problems
 
-<img src="https://user-images.githubusercontent.com/11324150/31846484-7595270e-b5da-11e7-8d6b-1f9965137477.png" width="280">
-
-<img src="https://user-images.githubusercontent.com/11324150/31846537-2a1cdfaa-b5db-11e7-87aa-2dda3694f1df.png" width="330">
-
-<img src="https://user-images.githubusercontent.com/11324150/31846536-2661bd36-b5db-11e7-9778-e8e84d50bbe5.png" width="330">
+<img src="https://user-images.githubusercontent.com/11324150/31854350-b33425ca-b665-11e7-8d6e-eb9da62e7560.png" width = 225>
+<img src="https://user-images.githubusercontent.com/11324150/31854351-b6847b12-b665-11e7-879d-a7668f395267.png" width = 300>
+<img src="https://user-images.githubusercontent.com/11324150/31854353-b816a1f8-b665-11e7-86a2-9b3c3c7bde34.png" width = 300>
 
 over a grid of the tuning parameters values. 
 
 The algorithms are implemented in C++ with an R interface. Below are the installation instructions.
 
 ### Installation
-In R, you will need to first install and load the "devtools" package:
+In R, you will need first to install and load the "devtools" package:
 ```
 install.packages("devtools")
 library(devtools)
@@ -61,5 +59,3 @@ We have demonstrated the simple case of using an L0 penalty alone. For more elab
 * L0L1Swaps
 * L0L2
 * L0L2Swaps
-* L1Relaxed
-* IHT
