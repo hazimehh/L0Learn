@@ -11,6 +11,8 @@ L0Learn.fit <- function(X,y, Model="L0", MaxSuppSize=100, NLambda=100, NGamma=10
 }
 
 
+library(Matrix) # remove later
+
 L0Learn.coef <- function(fit,index){
 	p = fit$.p
 	B = sparseVector(unlist(fit["BetaValues"][[1]][index]), unlist(fit["BetaIndices"][[1]][index]),p)
