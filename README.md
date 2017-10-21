@@ -1,6 +1,4 @@
 # L0Learn: Fast Algorithms for L0-regularized Learning
-***
-
 ## Hussein Hazimeh and Rahul Mazumder
 
 ### Introduction
@@ -12,19 +10,26 @@ L0Learn is a highly optimized framework for solving L0-regularized regression (a
 
 over a grid of the tuning parameters values. 
 
-The algorithms are implemented in C++ with an R interface. Below are the installation instructions.
+The framework is implemented in C++ along with an easy-to-use R interface. Below are the installation instructions.
 
-### Installation
-In R, you will need first to install and load the "devtools" package:
+### R Package Installation
+Most of the toolkit is built using C++11, which might not be compatible with older versions of R. Before proceeding with the installation we recommend installing the latest version of R (currently 3.4). In R, you will need first to install and load the "devtools" package:
 ```
 install.packages("devtools")
 library(devtools)
 ```
+If you are using Ubuntu and face issues when installing devtools, try 
 Now you can install and load the "L0Learn" package as follows:
 ```
 install_github("hazimehh/L0Learn")
 library(L0Learn)
 ```
+#### Troubleshooting
+If you are running Ubuntu >=14 and the installation of devtools fails, this is probably due missing packages which can be installed using
+```
+sudo apt-get install libcurl4-gnutls-dev libxml2-dev libssl-dev
+```
+
 ### Usage
 To demonstrate how L0Learn works we will generate the following dummy dataset
 * A 500x1000 design matrix X with iid standard normal entries
