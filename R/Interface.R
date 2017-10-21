@@ -18,11 +18,11 @@ L0Learn.coef <- function(fit,index){
 	intercept = fit["Intercept"][[1]][index]
 	#print(list(summary(B),intercept))
 	out = list(Beta=B,Intercept=intercept);
-	class(out) <- "L0Learn.coef"
+	class(out) <- "L0Learncoef"
 	out
 }
 
-print.L0Learn.coef <- function(coef){
+print.L0Learncoef <- function(coef){
 	print(list(Beta=summary(coef$Beta),Intercept=coef$Intercept))
 }
 
