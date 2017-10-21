@@ -18,7 +18,6 @@ Most of the toolkit is built using C++11, which might not be compatible with old
 install.packages("devtools")
 library(devtools)
 ```
-If you are using Ubuntu and face issues when installing devtools, try 
 Now you can install and load the "L0Learn" package as follows:
 ```
 install_github("hazimehh/L0Learn")
