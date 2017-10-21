@@ -6,11 +6,6 @@
 ### Introduction
 L0Learn is a highly optimized framework for solving L0-regularized regression (and soon classification) problems. We consider sparse linear regression problems where the loss function is penalized by combinations of the L0, L1, and L2 norms. Specifically, the framework solves the following three problems
 
-<img src="https://user-images.githubusercontent.com/11324150/31846484-7595270e-b5da-11e7-8d6b-1f9965137477.png" width="280">
-
-<img src="https://user-images.githubusercontent.com/11324150/31846537-2a1cdfaa-b5db-11e7-87aa-2dda3694f1df.png" width="330">
-
-<img src="https://user-images.githubusercontent.com/11324150/31846536-2661bd36-b5db-11e7-9778-e8e84d50bbe5.png" width="330">
 
 over a grid of the tuning parameters values. 
 
@@ -61,5 +56,3 @@ We have demonstrated the simple case of using an L0 penalty alone. For more elab
 * L0L1Swaps
 * L0L2
 * L0L2Swaps
-* L1Relaxed
-* IHT
