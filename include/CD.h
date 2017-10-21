@@ -8,14 +8,14 @@
 
 class CD {
 protected:
-	uint n, p;
+	unsigned int n, p;
 	arma::sp_mat B;
 	arma::sp_mat Bprev;
-	uint SameSuppCounter = 0; 
+	unsigned int SameSuppCounter = 0; 
 	double objective;
 	arma::vec r; //vector of residuals
-	std::vector<uint> Order; // Cycling order
-	std::vector<uint> OldOrder; // Cycling order to be used after support stabilization + convergence.
+	std::vector<unsigned int> Order; // Cycling order
+	std::vector<unsigned int> OldOrder; // Cycling order to be used after support stabilization + convergence.
 
 public:
 	const arma::mat * X;
@@ -24,10 +24,10 @@ public:
 	std::vector<double> ModelParams;
 
 	char CyclingOrder;
-	uint MaxIters;
+	unsigned int MaxIters;
 	double Tol;
 	bool ActiveSet;
-	uint ActiveSetNum;
+	unsigned int ActiveSetNum;
 	bool Stabilized = false;
 
 

@@ -42,16 +42,16 @@ std::vector<FitResult*> Grid1D::Fit(){
 		*Xtr = arma::conv_to< std::vector<double> >::from(arma::abs(y->t() * *X).t()); // ToDO: double computation, handle later
 
 
-		//uint StopNum = (X->n_rows < NnzStopNum) ? X->n_rows : NnzStopNum;
+		//unsigned int StopNum = (X->n_rows < NnzStopNum) ? X->n_rows : NnzStopNum;
 		P.Init = 'z'; //////////
-		uint StopNum = NnzStopNum;
+		unsigned int StopNum = NnzStopNum;
 		P.ModelParams[0] = Lambdas[0];
 		//std::vector<double>* Xtr = P.Xtr;
-		std::vector<uint> idx(p);
+		std::vector<unsigned int> idx(p);
 		double Xrmax;
 		bool prevskip = false; //previous grid point was skipped
 		bool currentskip = false; // current grid point should be skipped
-		for (uint i=0; i<G_ncols; ++i){
+		for (unsigned int i=0; i<G_ncols; ++i){
 			//std::cout<<"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! STARTED GRID ITER: "<<i<<std::endl;
 
 			auto prevresult = G.back(); // prevresult is ptr to the prev result object
@@ -63,9 +63,9 @@ std::vector<FitResult*> Grid1D::Fit(){
 			{
 			  	std::iota(idx.begin(), idx.end(), 0); // make global class var later
 			  	if (PartialSort && p>5000)
-			  		std::partial_sort(idx.begin(),idx.begin()+5000, idx.end(),[this](uint i1, uint i2) {return (*Xtr)[i1] > (*Xtr)[i2] ;});
+			  		std::partial_sort(idx.begin(),idx.begin()+5000, idx.end(),[this](unsigned int i1, unsigned int i2) {return (*Xtr)[i1] > (*Xtr)[i2] ;});
 			  	else
-			  		std::sort(idx.begin(), idx.end(),[this](uint i1, uint i2) {return (*Xtr)[i1] > (*Xtr)[i2] ;});
+			  		std::sort(idx.begin(), idx.end(),[this](unsigned int i1, unsigned int i2) {return (*Xtr)[i1] > (*Xtr)[i2] ;});
 			  	P.CyclingOrder = 'u';
 			  	P.Uorder = idx; // can be made faster
 			  	Xrmax = (*Xtr)[idx[0]];
@@ -109,8 +109,8 @@ std::vector<FitResult*> Grid1D::Fit(){
 					//sort again
 				  	std::iota(idx.begin(), idx.end(), 0); // make global class var later
 
-				  	//std::partial_sort(idx.begin(),idx.begin()+100, idx.end(),[this](uint i1, uint i2) {return (*Xtr)[i1] > (*Xtr)[i2] ;});
-				  	std::sort(idx.begin(), idx.end(),[this](uint i1, uint i2) {return (*Xtr)[i1] > (*Xtr)[i2] ;}); /////////////////////////////////////////////////////
+				  	//std::partial_sort(idx.begin(),idx.begin()+100, idx.end(),[this](unsigned int i1, unsigned int i2) {return (*Xtr)[i1] > (*Xtr)[i2] ;});
+				  	std::sort(idx.begin(), idx.end(),[this](unsigned int i1, unsigned int i2) {return (*Xtr)[i1] > (*Xtr)[i2] ;}); /////////////////////////////////////////////////////
 
 				  	P.CyclingOrder = 'u';
 				  	P.Uorder = idx; // can be made faster
@@ -162,7 +162,7 @@ std::vector<FitResult*> Grid1D::Fit(){
 
 
 		*Xtr = arma::conv_to< std::vector<double> >::from(arma::abs(y->t() * *X).t()); // ToDO: double computation, handle later
-		std::vector<uint> idx(p);
+		std::vector<unsigned int> idx(p);
 		// Derive lambda_max
 		double lambdamax  = arma::norm(y->t() * *X, "inf");
 
@@ -172,16 +172,16 @@ std::vector<FitResult*> Grid1D::Fit(){
 		Lambdas = arma::flipud(Lambdas);
 
 
-		//uint StopNum = (X->n_rows < NnzStopNum) ? X->n_rows : NnzStopNum;
+		//unsigned int StopNum = (X->n_rows < NnzStopNum) ? X->n_rows : NnzStopNum;
 		P.Init = 'z'; //////////
-		uint StopNum = NnzStopNum;
+		unsigned int StopNum = NnzStopNum;
 
-		for (uint i=0; i<G_ncols; ++i){
+		for (unsigned int i=0; i<G_ncols; ++i){
 
 
 		  	std::iota(idx.begin(), idx.end(), 0); // make global class var later
-		  	//std::partial_sort(idx.begin(),idx.begin()+100, idx.end(),[this](uint i1, uint i2) {return (*Xtr)[i1] > (*Xtr)[i2] ;});
-		  	std::sort(idx.begin(), idx.end(),[this](uint i1, uint i2) {return (*Xtr)[i1] > (*Xtr)[i2] ;}); /////////////////////////////////////////////////////
+		  	//std::partial_sort(idx.begin(),idx.begin()+100, idx.end(),[this](unsigned int i1, unsigned int i2) {return (*Xtr)[i1] > (*Xtr)[i2] ;});
+		  	std::sort(idx.begin(), idx.end(),[this](unsigned int i1, unsigned int i2) {return (*Xtr)[i1] > (*Xtr)[i2] ;}); /////////////////////////////////////////////////////
 		  	P.CyclingOrder = 'u';
 		  	P.Uorder = idx; // can be made faster
 
@@ -219,14 +219,14 @@ std::vector<FitResult*> Grid1D::Fit(){
 	else{
 
 		arma::mat Corr(NnzStopNum, X->n_cols);
-		std::map<uint,uint> I;
+		std::map<unsigned int,unsigned int> I;
 		arma::rowvec ytX = y->t() * *X;
 
-		//uint StopNum = (X->n_rows < NnzStopNum) ? X->n_rows : NnzStopNum;
-		uint StopNum = NnzStopNum;
+		//unsigned int StopNum = (X->n_rows < NnzStopNum) ? X->n_rows : NnzStopNum;
+		unsigned int StopNum = NnzStopNum;
 		P.ModelParams[0] = Lambdas[0];
 
-		for (uint i=0; i<G_ncols; ++i){
+		for (unsigned int i=0; i<G_ncols; ++i){
 
 			auto Model = CDL0SwapsGrid(*X, *y, P); // CdL0SwapsGrid maintains Corr and I.
 
@@ -247,7 +247,7 @@ std::vector<FitResult*> Grid1D::Fit(){
 */
 
 	if (Refine == true){
-		for (uint i = 0;i<20;++i)
+		for (unsigned int i = 0;i<20;++i)
 		{
 			bool better = false;
 			//std::cout<<"!!!!!!!!!!!!! Backward-Forward Iteration: "<<i<<std::endl;

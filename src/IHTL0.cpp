@@ -10,7 +10,7 @@ FitResult IHTL0::Fit() {
 
 	objective = Objective(r, B);
 
-	for (uint t=0; t<MaxIters; ++t){
+	for (unsigned int t=0; t<MaxIters; ++t){
 		//std::cout<< t << " " << objective << std::endl;
 		bool SameSupp = true;
 		for (auto& i: Order){

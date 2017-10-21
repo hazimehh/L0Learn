@@ -3,9 +3,9 @@
 // [[Rcpp::depends(RcppArmadillo)]]
 
 // [[Rcpp::export]]
-Rcpp::List L0LearnFit(const arma::mat& X, const arma::vec& y, const std::string Type, const uint NnzStopNum, const uint G_ncols, const uint G_nrows,
+Rcpp::List L0LearnFit(const arma::mat& X, const arma::vec& y, const std::string Type, const unsigned int NnzStopNum, const unsigned int G_ncols, const unsigned int G_nrows,
 				const double Lambda2Max, const double Lambda2Min, const bool PartialSort, 
-				const uint MaxIters, const double Tol, const bool ActiveSet, const uint ActiveSetNum, const uint MaxNumSwaps){
+				const unsigned int MaxIters, const double Tol, const bool ActiveSet, const unsigned int ActiveSetNum, const unsigned int MaxNumSwaps){
     
     GridParams PG;
     PG.Type = Type;
@@ -42,10 +42,10 @@ Rcpp::List L0LearnFit(const arma::mat& X, const arma::vec& y, const std::string 
     else if (PG.Type=="L1")
     	FirstParameter = "Lambda";
 
-    std::vector<std::vector<uint>> indices(G.Solutions.size());
+    std::vector<std::vector<unsigned int>> indices(G.Solutions.size());
     std::vector<std::vector<double>> values(G.Solutions.size());
 
-    for(uint i=0; i<G.Solutions.size(); ++i){
+    for(unsigned int i=0; i<G.Solutions.size(); ++i){
     	arma::sp_mat::const_iterator j;
 		for(j = G.Solutions[i].begin(); j != G.Solutions[i].end(); ++j){
 			indices[i].push_back(j.row() + 1); // +1 to account for R's 1-based indexing

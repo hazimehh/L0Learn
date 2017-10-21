@@ -10,12 +10,12 @@ FitResult CDL012Swaps::Fit() {
 	P.Init = 'u';
 
 	bool foundbetter;
-	for (uint t=0; t<MaxNumSwaps; ++t){
+	for (unsigned int t=0; t<MaxNumSwaps; ++t){
 		//std::cout<<"1Swaps Iteration: "<<t<<". "<<"Obj: "<<objective<<std::endl;
 		//B.print();
 		arma::sp_mat::const_iterator start = B.begin();
 		arma::sp_mat::const_iterator end   = B.end();
-		std::vector<uint> NnzIndices;
+		std::vector<unsigned int> NnzIndices;
 		for(arma::sp_mat::const_iterator it = start; it != end; ++it)
 		{
 			NnzIndices.push_back(it.row()); // i is 
@@ -42,8 +42,8 @@ FitResult CDL012Swaps::Fit() {
 
 			//std::vector<arma::uword> Sctemp; // ToDO: Very slow change later..
 			double maxcorr = -1;
-			uint maxindex;
-			for(uint j=0; j<p; ++j){ // Can be made much faster..
+			unsigned int maxindex;
+			for(unsigned int j=0; j<p; ++j){ // Can be made much faster..
 				if (std::fabs(riX[j])>maxcorr && B[j]==0){
 					maxcorr = std::fabs(riX[j]);
 					maxindex = j;

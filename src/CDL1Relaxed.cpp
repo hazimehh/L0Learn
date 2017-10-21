@@ -8,7 +8,7 @@ FitResult CDL1Relaxed::Fit() {
 	bool SecondPass = false;
 	objective = Objective(r, B);
 
-	for (uint t=0; t<MaxIters; ++t){
+	for (unsigned int t=0; t<MaxIters; ++t){
 		Bprev = B;
 		//std::cout<< t << " " << objective << std::endl;
 		bool SameSupp = true;
@@ -53,7 +53,7 @@ FitResult CDL1Relaxed::Fit() {
 	}
 
 
-	std::vector<uint> Support;
+	std::vector<unsigned int> Support;
 
 	arma::sp_mat::const_iterator i;
 	for(i = B.begin(); i != B.end(); ++i)
@@ -67,7 +67,7 @@ FitResult CDL1Relaxed::Fit() {
 	arma::vec BLS = arma::solve(XLS,*y); // arma::pinv(XLS)* *y;
 
 	arma::sp_mat BLSE (p,1);
-	for(uint i=0; i<Support.size(); ++i){
+	for(unsigned int i=0; i<Support.size(); ++i){
 		BLSE[Support[i]] = BLS[i];
 	}
 

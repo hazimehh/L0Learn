@@ -24,7 +24,7 @@ public:
 
     std::vector<double> Lambda0;
     std::vector<double> Lambda12;
-    std::vector<uint> NnzCount;
+    std::vector<unsigned int> NnzCount;
     std::vector<arma::sp_mat> Solutions;
     std::vector<double> Intercepts;
 

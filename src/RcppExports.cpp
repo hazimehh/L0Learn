@@ -7,7 +7,7 @@
 using namespace Rcpp;
 
 // L0LearnFit
-Rcpp::List L0LearnFit(const arma::mat& X, const arma::vec& y, const std::string Type, const uint NnzStopNum, const uint G_ncols, const uint G_nrows, const double Lambda2Max, const double Lambda2Min, const bool PartialSort, const uint MaxIters, const double Tol, const bool ActiveSet, const uint ActiveSetNum, const uint MaxNumSwaps);
+Rcpp::List L0LearnFit(const arma::mat& X, const arma::vec& y, const std::string Type, const unsigned int NnzStopNum, const unsigned int G_ncols, const unsigned int G_nrows, const double Lambda2Max, const double Lambda2Min, const bool PartialSort, const unsigned int MaxIters, const double Tol, const bool ActiveSet, const unsigned int ActiveSetNum, const unsigned int MaxNumSwaps);
 RcppExport SEXP _L0Learn_L0LearnFit(SEXP XSEXP, SEXP ySEXP, SEXP TypeSEXP, SEXP NnzStopNumSEXP, SEXP G_ncolsSEXP, SEXP G_nrowsSEXP, SEXP Lambda2MaxSEXP, SEXP Lambda2MinSEXP, SEXP PartialSortSEXP, SEXP MaxItersSEXP, SEXP TolSEXP, SEXP ActiveSetSEXP, SEXP ActiveSetNumSEXP, SEXP MaxNumSwapsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
@@ -15,17 +15,17 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type y(ySEXP);
     Rcpp::traits::input_parameter< const std::string >::type Type(TypeSEXP);
-    Rcpp::traits::input_parameter< const uint >::type NnzStopNum(NnzStopNumSEXP);
-    Rcpp::traits::input_parameter< const uint >::type G_ncols(G_ncolsSEXP);
-    Rcpp::traits::input_parameter< const uint >::type G_nrows(G_nrowsSEXP);
+    Rcpp::traits::input_parameter< const unsigned int >::type NnzStopNum(NnzStopNumSEXP);
+    Rcpp::traits::input_parameter< const unsigned int >::type G_ncols(G_ncolsSEXP);
+    Rcpp::traits::input_parameter< const unsigned int >::type G_nrows(G_nrowsSEXP);
     Rcpp::traits::input_parameter< const double >::type Lambda2Max(Lambda2MaxSEXP);
     Rcpp::traits::input_parameter< const double >::type Lambda2Min(Lambda2MinSEXP);
     Rcpp::traits::input_parameter< const bool >::type PartialSort(PartialSortSEXP);
-    Rcpp::traits::input_parameter< const uint >::type MaxIters(MaxItersSEXP);
+    Rcpp::traits::input_parameter< const unsigned int >::type MaxIters(MaxItersSEXP);
     Rcpp::traits::input_parameter< const double >::type Tol(TolSEXP);
     Rcpp::traits::input_parameter< const bool >::type ActiveSet(ActiveSetSEXP);
-    Rcpp::traits::input_parameter< const uint >::type ActiveSetNum(ActiveSetNumSEXP);
-    Rcpp::traits::input_parameter< const uint >::type MaxNumSwaps(MaxNumSwapsSEXP);
+    Rcpp::traits::input_parameter< const unsigned int >::type ActiveSetNum(ActiveSetNumSEXP);
+    Rcpp::traits::input_parameter< const unsigned int >::type MaxNumSwaps(MaxNumSwapsSEXP);
     rcpp_result_gen = Rcpp::wrap(L0LearnFit(X, y, Type, NnzStopNum, G_ncols, G_nrows, Lambda2Max, Lambda2Min, PartialSort, MaxIters, Tol, ActiveSet, ActiveSetNum, MaxNumSwaps));
     return rcpp_result_gen;
 END_RCPP

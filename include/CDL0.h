@@ -7,7 +7,7 @@ class CDL0 : public CD {
 private:
 	double thr;
 	std::vector<double> * Xtr;
-	uint Iter;
+	unsigned int Iter;
 	FitResult result;
 public:
 	CDL0(const arma::mat& Xi, const arma::vec& yi, const Params& P);

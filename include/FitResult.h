@@ -8,7 +8,7 @@ struct FitResult
 	double Objective;
 	arma::sp_mat B;
 	CD * Model;
-	uint IterNum;
+	unsigned int IterNum;
 	arma::vec r;
 	std::vector<double> ModelParams;
 };

@@ -57,9 +57,9 @@ FitResult CDL012KSwapsExh::Fit() {
 
 	FitResult BestAbsResult = oneSwapsresult;
 	double BestAbsObj = oneSwapsObj;
-	std::vector<std::vector<uint>> BestSubsetsRemoved;
+	std::vector<std::vector<unsigned int>> BestSubsetsRemoved;
 
-	for(uint k=0; k<MaxNumSwaps; ++k)
+	for(unsigned int k=0; k<MaxNumSwaps; ++k)
 	{
 	
 		result = CDL012Swaps(*X, *y, P).Fit(); // result will be the same unless a better sol is found
@@ -80,27 +80,27 @@ FitResult CDL012KSwapsExh::Fit() {
 
 		P.Init = 'u';
 
-		std::vector<uint> S; 
+		std::vector<unsigned int> S; 
 		arma::sp_mat::const_iterator start = B.begin();
 		arma::sp_mat::const_iterator end   = B.end();
 		for(arma::sp_mat::const_iterator it = start; it != end; ++it){S.push_back(it.row());}
 			
-		std::vector<uint> rangetemp(p);
+		std::vector<unsigned int> rangetemp(p);
 		std::iota(std::begin(rangetemp), std::end(rangetemp), 0);
-		std::vector<uint> Sc;
+		std::vector<unsigned int> Sc;
 		std::set_difference(rangetemp.begin(), rangetemp.end(), S.begin(), S.end(), std::inserter(Sc, Sc.end()));
 		arma::uvec Scind = arma::conv_to< arma::uvec >::from(Sc);
 		arma::mat XSc = X->submat(arma::regspace<arma::uvec>(0,n-1), Scind);
 
 
 		
-		std::vector<std::vector<uint>> combinations;
-		for(uint i=1; i<=K; ++i){ //////////////////
+		std::vector<std::vector<unsigned int>> combinations;
+		for(unsigned int i=1; i<=K; ++i){ //////////////////
 			if (S.size() >= i)
 			{
 			    do
 			    {
-			    	combinations.push_back(std::vector<uint>(S.begin(),S.begin()+i));
+			    	combinations.push_back(std::vector<unsigned int>(S.begin(),S.begin()+i));
 			    } while (S.begin() + i <= S.end() && next_combination(S.begin(), S.begin() + i, S.end()));
 			}
 
@@ -113,7 +113,7 @@ FitResult CDL012KSwapsExh::Fit() {
 		arma::uvec Sind = arma::conv_to< arma::uvec >::from(S);
 		arma::mat XS = X->submat(arma::regspace<arma::uvec>(0,n-1), Sind);
 
-		uint clusters = 10;
+		unsigned int clusters = 10;
 		arma::Row<size_t> assignments;
 		// Initialize with the default arguments.
 		mlpack::kmeans::KMeans<> Cluster;
@@ -122,19 +122,19 @@ FitResult CDL012KSwapsExh::Fit() {
 		//for(auto& a: assignments){std::cout<<a<<std::endl;}
 
 		// Given assignments vector generate Sis
-		std::vector<std::vector<uint>> Sis(clusters);
-		for (uint i=0; i<S.size(); ++i){
+		std::vector<std::vector<unsigned int>> Sis(clusters);
+		for (unsigned int i=0; i<S.size(); ++i){
 			Sis[assignments[i]].push_back(S[i]);
 		}
 
 		// Given a vector of Sis, add the comb
-		std::vector<std::vector<uint>> combinations;
+		std::vector<std::vector<unsigned int>> combinations;
 		for(auto& Si: Sis){
-			for(uint i=1; i<=K; ++i){ //////////////////
+			for(unsigned int i=1; i<=K; ++i){ //////////////////
 				if(Si.size()>=i){
 				    do
 				    {
-				    	combinations.push_back(std::vector<uint>(Si.begin(),Si.begin()+i));
+				    	combinations.push_back(std::vector<unsigned int>(Si.begin(),Si.begin()+i));
 				    } while (next_combination(Si.begin(), Si.begin() + i, Si.end()));
 				}
 
@@ -148,11 +148,11 @@ FitResult CDL012KSwapsExh::Fit() {
 		Params Pnew = P;
 		bool foundbetter = false;
 		double best_objective = objective; ///////////////////////////////////////*1.05
-		std::vector<uint> best_added;
-		std::vector<uint> best_removed;
+		std::vector<unsigned int> best_added;
+		std::vector<unsigned int> best_removed;
 
 
-		for (uint t=0; t<combinations.size(); ++t){
+		for (unsigned int t=0; t<combinations.size(); ++t){
 			if(std::find(BestSubsetsRemoved.begin(), BestSubsetsRemoved.end(), combinations[t]) != BestSubsetsRemoved.end()){
 				//std::cout<<"SKIPPED!"<<std::endl;
 				continue;
@@ -179,7 +179,7 @@ FitResult CDL012KSwapsExh::Fit() {
 			auto ResultTemp = CDL012Cons(XSc, rtemp, Pnew).Fit(); /////////////
 
 
-			std::vector<uint> added;
+			std::vector<unsigned int> added;
 			arma::sp_mat::const_iterator start = ResultTemp.B.begin();
 			arma::sp_mat::const_iterator end   = ResultTemp.B.end();
 			for(arma::sp_mat::const_iterator it = start; it != end; ++it){

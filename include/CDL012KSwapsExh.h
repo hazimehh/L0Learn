@@ -5,9 +5,9 @@
 
 class CDL012KSwapsExh : public CD { // Calls CDL012 irrespective of P.ModelType
 private:
-	uint MaxNumSwaps;
+	unsigned int MaxNumSwaps;
 	Params P;
-	uint K;
+	unsigned int K;
 public:
 	CDL012KSwapsExh(const arma::mat& Xi, const arma::vec& yi, const Params& Pi);
 

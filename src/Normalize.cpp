@@ -2,8 +2,8 @@
 
 // scale, meanX, meany
 std::tuple<arma::vec, arma::vec, double>  Normalize(const arma::mat& X, const arma::vec& y, arma::mat & X_normalized, arma::vec & y_normalized){
-	uint n = X.n_rows;
-	uint p = X.n_cols;
+	unsigned int n = X.n_rows;
+	unsigned int p = X.n_cols;
 
 	arma::rowvec meanX = arma::mean(X, 0);
 

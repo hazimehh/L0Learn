@@ -7,7 +7,7 @@ FitResult CDL1::Fit() {
 	bool SecondPass = false;
 	objective = Objective(r, B);
 
-	for (uint t=0; t<MaxIters; ++t){
+	for (unsigned int t=0; t<MaxIters; ++t){
 		Bprev = B;
 		//std::cout<< t << " " << objective << std::endl;
 		bool SameSupp = true;

@@ -32,7 +32,7 @@ CD::CD(const arma::mat& Xi, const arma::vec& yi, const Params& P) :
 		}
 
 		if (CyclingOrder == 'c'){
-			std::vector<uint> cyclic(p);
+			std::vector<unsigned int> cyclic(p);
 			std::iota(std::begin(cyclic), std::end(cyclic), 0);
 			Order = cyclic;
 		}
@@ -74,7 +74,7 @@ void CD::SupportStabilized(){
 	if (SameSupp){
 		SameSuppCounter+=1;
 		if (SameSuppCounter == ActiveSetNum-1){
-			std::vector<uint> NewOrder(B.n_nonzero);
+			std::vector<unsigned int> NewOrder(B.n_nonzero);
 
 			arma::sp_mat::const_iterator i;
 			for(i = B.begin(); i != B.end(); ++i)
@@ -82,7 +82,7 @@ void CD::SupportStabilized(){
 				NewOrder.push_back(i.row());
 			}
 
-			std::sort(NewOrder.begin(), NewOrder.end(), [this](uint i, uint j) {return Order[i] <  Order[j] ;});
+			std::sort(NewOrder.begin(), NewOrder.end(), [this](unsigned int i, unsigned int j) {return Order[i] <  Order[j] ;});
 
 			OldOrder = Order;
 			Order = NewOrder;

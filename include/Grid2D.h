@@ -5,12 +5,12 @@
 
 class Grid2D{
 private:
-	uint G_nrows;
-	uint G_ncols;
+	unsigned int G_nrows;
+	unsigned int G_ncols;
 	GridParams PG;
 	const arma::mat * X;
 	const arma::vec * y;
-	uint p;
+	unsigned int p;
 	std::vector<FitResult*> G;
 	double Lambda2Max;
 	double Lambda2Min;

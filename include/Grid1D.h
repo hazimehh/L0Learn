@@ -6,15 +6,15 @@
 
 class Grid1D{
 private:
-	uint G_ncols;
+	unsigned int G_ncols;
 	Params P;
 	const arma::mat * X;
 	const arma::vec * y;
-	uint p;
+	unsigned int p;
 	std::vector<FitResult*> G;
 	arma::vec Lambdas;
 	bool LambdaU;
-	uint NnzStopNum;
+	unsigned int NnzStopNum;
 	std::vector<double> * Xtr;
 	double LambdaMinFactor;
 	bool Refine;

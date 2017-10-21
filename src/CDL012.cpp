@@ -10,7 +10,7 @@ FitResult CDL012::Fit() {
 
 	objective = Objective(r, B);
 
-	for (uint t=0; t<MaxIters; ++t){
+	for (unsigned int t=0; t<MaxIters; ++t){
 		//std::cout<<"CDL012 "<< t << " " << objective << std::endl;
 		Bprev = B;
 

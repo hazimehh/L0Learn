@@ -10,29 +10,29 @@ FitResult CDL012Cons::Fit() {
 
 		objective = Objective(r, B);
 
-		std::set<uint> S; 
+		std::set<unsigned int> S; 
 		arma::sp_mat::const_iterator start = B.begin();
 		arma::sp_mat::const_iterator end   = B.end();
 		for(arma::sp_mat::const_iterator it = start; it != end; ++it){S.insert(it.row());}
 			
-		std::vector<uint> rangetemp(p);
+		std::vector<unsigned int> rangetemp(p);
 		std::iota(std::begin(rangetemp), std::end(rangetemp), 0);
-		std::set<uint> Sc;
+		std::set<unsigned int> Sc;
 		std::set_difference(rangetemp.begin(), rangetemp.end(), S.begin(), S.end(), std::inserter(Sc, Sc.end()));
 
 
-	for (uint t=0; t<MaxIters; ++t){
+	for (unsigned int t=0; t<MaxIters; ++t){
 		//std::cout<<"CD Cons Iter: "<< t << " " << objective<< " " <<B.n_nonzero<< std::endl;
 		//std::cout<<"S len: "<< S.size() <<" Sc len: "<< Sc.size() <<std::endl;
 
 
 		if (B.n_nonzero < k){
-			uint best_index=-1;
+			unsigned int best_index=-1;
 			double best_value;
 			// Find ||r'X||_inf
 			arma::rowvec rtX = r.t() * *X;
 			double rtXmax = -1;
-			uint rtXmaxind = 0;
+			unsigned int rtXmaxind = 0;
 			for (auto& i: Sc){if (std::abs(rtX[i]) > rtXmax) {rtXmax = std::abs(rtX[i]); rtXmaxind = i;}}
 			double Beta_jabs =  (std::abs(rtX[rtXmaxind]) - ModelParams[1])/Onep2lamda2; ///////// still wrong because rtXmax has an abs...
 			arma::sp_mat Btemp = B; 
@@ -73,8 +73,8 @@ FitResult CDL012Cons::Fit() {
 
 		else{
 
-			uint best_index=-1;
-			uint best_z = -1;
+			unsigned int best_index=-1;
+			unsigned int best_z = -1;
 			double best_value;
 			double best_obj = objective; // stays the same if < thr 
 
@@ -84,7 +84,7 @@ FitResult CDL012Cons::Fit() {
 				arma::vec rz = r+X->unsafe_col(z)*B[z];
 				arma::rowvec rtX = rz.t() * *X;
 				double rtXmax = -1;
-				uint rtXmaxind = 0;
+				unsigned int rtXmaxind = 0;
 				for (auto& i: Sc){if (std::abs(rtX[i]) > rtXmax) {rtXmax = std::abs(rtX[i]); rtXmaxind = i;}}
 				double Beta_jabs =  (std::abs(rtX[rtXmaxind]) - ModelParams[1])/Onep2lamda2;
 				arma::sp_mat Btemp = B; 

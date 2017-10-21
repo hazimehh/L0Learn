@@ -9,7 +9,7 @@ private:
 	double Onep2lamda2;
 	double lambda1;
 	std::vector<double> * Xtr;
-	uint Iter;
+	unsigned int Iter;
 	FitResult result;
 public:
 	CDL012(const arma::mat& Xi, const arma::vec& yi, const Params& P);

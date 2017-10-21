@@ -7,9 +7,9 @@ class CDL012Cons : public CD {
 private:
 	
 	//arma::vec * Xtr;
-	uint k = 100;
+	unsigned int k = 100;
 	double thr;
-	uint Iter;
+	unsigned int Iter;
 	FitResult result;
 	double Onep2lamda2;
 
