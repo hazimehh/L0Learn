@@ -38,7 +38,7 @@ B = c(rep(1,10),rep(0,990))
 e = rnorm(500)
 y = X%*%B + e
 ```
-Our objective is to use L0Learn to recover the true vector B from examining X and y only. To do this we first introduce the main data fitting function, `L0Learn.fit`, which has the following interface
+Our objective is to use L0Learn to recover the true vector B by examining X and y only. To do this we first introduce the main data fitting function, `L0Learn.fit`, which has the following interface
 ```R
 L0Learn.fit(X,y, Model="L0", MaxSuppSize=100, NLambda=100, NGamma=10,	GammaMax=10, GammaMin=0.0001)
 ```
