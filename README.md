@@ -23,11 +23,7 @@ Now you can install and load the "L0Learn" package as follows:
 install_github("hazimehh/L0Learn")
 library(L0Learn)
 ```
-#### Troubleshooting
-If you are running Ubuntu >=14 and the installation of devtools fails, this is probably due missing packages which can be installed using
-```
-sudo apt-get install libcurl4-gnutls-dev libxml2-dev libssl-dev
-```
+If you experience problems during the installation of devtools or L0Learn, please refer to the troubleshooting wiki.
 
 ### Usage
 To demonstrate how L0Learn works we will generate the following dummy dataset
@@ -36,7 +32,7 @@ To demonstrate how L0Learn works we will generate the following dummy dataset
 * A 500x1 vector e with iid standard normal entries
 * Set y  = XB + e
 ```R
-X = matrix(rnorm(10e6),nrow=500,ncol=1000)
+X = matrix(rnorm(500*1000),nrow=500,ncol=1000)
 B = c(rep(1,10),rep(0,990))
 e = rnorm(500)
 y = X%*%B + e
