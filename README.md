@@ -2,7 +2,7 @@
 ## Hussein Hazimeh and Rahul Mazumder
 
 ### Introduction
-L0Learn is a highly optimized framework for solving L0-regularized regression (and soon classification) problems. We consider sparse linear regression problems where the loss function is penalized by combinations of the L0, L1, and L2 norms. Specifically, the framework solves the following three problems
+L0Learn is a highly optimized framework for solving L0-regularized regression (and soon classification) problems. We consider sparse linear regression problems where the loss function is penalized by combinations of the L0, L1, and L2 norms. Specifically, the framework can approximate the solutions of the following three problems
 
 <img src="https://user-images.githubusercontent.com/11324150/31854350-b33425ca-b665-11e7-8d6e-eb9da62e7560.png" width = 225>
 <img src="https://user-images.githubusercontent.com/11324150/31854351-b6847b12-b665-11e7-879d-a7668f395267.png" width = 300>
@@ -23,7 +23,7 @@ Now you can install and load the "L0Learn" package as follows:
 install_github("hazimehh/L0Learn")
 library(L0Learn)
 ```
-If you experience problems during the installation of devtools or L0Learn, please refer to the troubleshooting wiki.
+If you experience problems during the installation of devtools or L0Learn, please refer to the [troubleshooting wiki](https://github.com/hazimehh/L0Learn/wiki/Installation-Troubleshooting).
 
 ### Usage
 To demonstrate how L0Learn works we will generate the following dummy dataset
