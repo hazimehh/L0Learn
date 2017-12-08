@@ -1,5 +1,5 @@
 #include <tuple>
-//#include <armadillo>
+#//include <armadillo>
 #include "RcppArmadillo.h"
 
 std::tuple<arma::vec, arma::vec, double>  Normalize(const arma::mat& X, const arma::vec& y, arma::mat & X_normalized, arma::vec & y_normalized, bool Normalizey);

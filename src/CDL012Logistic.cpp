@@ -1,6 +1,7 @@
 #include "CDL012Logistic.h"
 
 #include "Normalize.h" // Remove later
+#include "Grid.h" // Remove later
 
 
 CDL012Logistic::CDL012Logistic(const arma::mat& Xi, const arma::vec& yi, const Params& P) : CD(Xi, yi, P) {
@@ -22,7 +23,7 @@ FitResult CDL012Logistic::Fit() {
 	objective = Objective(r, B); ////////
 
 	for (unsigned int t=0; t<MaxIters; ++t){
-		std::cout<<"CDL012 Logistic"<< t << " " << objective << std::endl;
+		//std::cout<<"CDL012 Logistic"<< t << " " << objective << std::endl;
 
 		Bprev = B;
 
@@ -31,7 +32,7 @@ FitResult CDL012Logistic::Fit() {
 		double partial_b0 = - arma::sum( *y / (1 + ExpyXB) );
 		b0 -= partial_b0/(n*LipschitzConst); // intercept is not regularized
 		ExpyXB %= arma::exp( (b0 - b0old) * *y);
-		std::cout<<"Intercept. "<<Objective(r,B)<<std::endl;
+		//std::cout<<"Intercept. "<<Objective(r,B)<<std::endl;
 
 		for (auto& i: Order){
 
@@ -54,7 +55,7 @@ FitResult CDL012Logistic::Fit() {
 			else if (Biold != 0) { // do nothing if x=0 and B[i] = 0
 				ExpyXB %= arma::exp( - Biold * *y % X->unsafe_col(i));
 				B[i] = 0;
-				std::cout<<"Out. "<<Objective(r,B)<<std::endl;
+				//std::cout<<"Out. "<<Objective(r,B)<<std::endl;
 			}
 
 			//else{
@@ -95,8 +96,9 @@ inline double CDL012Logistic::Objective(arma::vec & r, arma::sp_mat & B) { // hi
 
 
 
-int main(){
+//int main(){
 
+	/*
 	Params P;
 	P.ModelType = "L012Logistic";
 	P.ModelParams = std::vector<double>{1.2,0,0.01};
@@ -140,5 +142,22 @@ int main(){
 	//arma::sign(Xscaled*result.B + result.intercept).print();
 	//std::cout<<"#############"<<std::endl;
 	//arma::sign(X*B_unscaled + result.intercept).print();
+	*/
+
+	/*
+	GridParams PG;
+	PG.Type = "L0L2Logistic";
+	PG.NnzStopNum = 15;
+
+	arma::mat X;
+	X.load("X.csv");
+
+	arma::vec y;
+	y.load("y.csv");
+	auto g = Grid(X, y, PG);
+
+	g.Fit();
+
 	return 0;
-}
+	*/
+//}

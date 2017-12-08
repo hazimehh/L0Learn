@@ -96,13 +96,13 @@ void Grid::Fit()
 		double intercept;
 
 		if (classification){
-			std::tie(B_unscaled, intercept) = DeNormalize(g->B, BetaMultiplier, meanX, meany,false);
+			std::tie(B_unscaled, intercept) = DeNormalize(g->B, BetaMultiplier, meanX, meany);
 					Solutions.push_back(B_unscaled);
-					Intercepts.push_back(g->intercept);
+					Intercepts.push_back(g->intercept + intercept);
 		}
 
 		else{
-			std::tie(B_unscaled, intercept) = DeNormalize(g->B, BetaMultiplier, meanX, meany, true);
+			std::tie(B_unscaled, intercept) = DeNormalize(g->B, BetaMultiplier, meanX, meany);
 					Solutions.push_back(B_unscaled);
 					Intercepts.push_back(intercept);
 		}

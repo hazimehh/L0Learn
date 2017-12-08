@@ -51,7 +51,6 @@ std::vector<FitResult*> Grid1D::Fit(){
 			*Xtr = arma::conv_to< std::vector<double> >::from(Xtrarma);
 			ytXmax = arma::max(Xtrarma);
 		}
-
 		else{
 			ytXmax = ytXmax2d;
 		}
@@ -92,7 +91,6 @@ std::vector<FitResult*> Grid1D::Fit(){
 			  	P.CyclingOrder = 'u';
 			  	P.Uorder = idx; // can be made faster
 			  	Xrmax = (*Xtr)[idx[0]];
-
 		  	}
 
 			//std::cout<< "||X'r||_inf = "<<Xrmax<< std::endl;

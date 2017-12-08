@@ -14,9 +14,6 @@ Grid2D::Grid2D(const arma::mat& Xi, const arma::vec& yi, const GridParams& PGi){
 	Lambda2Min = PG.Lambda2Min;
 
 	P = PG.P;
-	P.Xtr = new std::vector<double>(X->n_cols); // needed! careful
-	Xtr = P.Xtr;
-
 }
 
 std::vector<FitResult*> Grid2D::Fit(){
@@ -37,11 +34,20 @@ std::vector<FitResult*> Grid2D::Fit(){
 		Xtrarma = arma::abs(y->t() * *X).t();
 	}
 
-	*Xtr = arma::conv_to< std::vector<double> >::from(Xtrarma);
-	PG.ytXmax = arma::max(Xtrarma);
+	double ytXmax = arma::max(Xtrarma);
+
+	std::vector<double> Xtrvec = arma::conv_to< std::vector<double> >::from(Xtrarma);
+
+	Xtr = new std::vector<double>(X->n_cols); // needed! careful
+
 	PG.XtrAvailable = true;
 
 	for(auto &l: Lambdas2){
+		*Xtr = Xtrvec;
+
+		PG.Xtr = Xtr;
+		PG.ytXmax = ytXmax;
+
 		PG.P.ModelParams[index] = l;
 		auto Gl = Grid1D(*X, *y, PG).Fit();
 		G.insert(G.end(), Gl.begin(), Gl.end());
