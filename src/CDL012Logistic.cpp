@@ -49,7 +49,7 @@ FitResult CDL012Logistic::Fit() {
 				double Bnew = std::copysign(z, x);
 				B[i] = Bnew;
 				ExpyXB %= arma::exp( (Bnew - Biold) *  *y % X->unsafe_col(i));
-				std::cout<<"In. "<<Objective(r,B)<<std::endl;
+				//std::cout<<"In. "<<Objective(r,B)<<std::endl;
 			}
 
 			else if (Biold != 0) { // do nothing if x=0 and B[i] = 0
