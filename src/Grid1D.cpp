@@ -106,7 +106,7 @@ std::vector<FitResult*> Grid1D::Fit(){
 						for(unsigned int l=0; l<p;++l){
 							if ( std::binary_search(Sp.begin(),Sp.end(),idx[l]) == false ){
 								Xrmax = (*Xtr)[idx[l]];
-								std::cout<<"Grid Iteration: "<<i<<" Xrmax= "<<Xrmax<<std::endl;
+								//std::cout<<"Grid Iteration: "<<i<<" Xrmax= "<<Xrmax<<std::endl;
 								break;
 							}
 						}
