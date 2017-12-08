@@ -6,6 +6,7 @@
 #include "IHTL0.h"
 #include "CDL1.h"
 #include "CDL1Relaxed.h"
+#include "CDL012Logistic.h"
 
 
 CD * make_CD(const arma::mat& Xi, const arma::vec& yi, const Params& P){
@@ -15,5 +16,6 @@ CD * make_CD(const arma::mat& Xi, const arma::vec& yi, const Params& P){
 	else if (P.ModelType == "L1") {return new CDL1(Xi, yi, P);}
 	else if (P.ModelType == "L1Relaxed") {return new CDL1Relaxed(Xi, yi, P);}
 	else if (P.ModelType == "L012") {return new CDL012(Xi, yi, P);}
+	else if (P.ModelType == "L012Logistic") {return new CDL012Logistic(Xi, yi, P);}
 	else if (P.ModelType == "L012KSwaps") {return new CDL012KSwapsExh(Xi, yi, P);}
 }

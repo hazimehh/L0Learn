@@ -19,6 +19,8 @@ private:
 	double LambdaMinFactor;
 	bool Refine;
 	bool PartialSort;
+	bool XtrAvailable;
+	double ytXmax2d;
 
 public:
 	Grid1D(const arma::mat& Xi, const arma::vec& yi, const GridParams& PG);

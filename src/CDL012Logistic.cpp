@@ -38,6 +38,8 @@ FitResult CDL012Logistic::Fit() {
 			// Calculate Partial_i
 			double Biold = B[i];
 			double partial_i = - arma::sum( (*y % X->unsafe_col(i)) / (1 + ExpyXB) ) + twolambda2 * Biold;
+			(*Xtr)[i] = std::abs(partial_i); // abs value of grad
+
 			double x = Biold - partial_i/qp2lamda2;
 			double z = std::abs(x) - lambda1ol;
 

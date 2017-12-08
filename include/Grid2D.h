@@ -14,6 +14,8 @@ private:
 	std::vector<FitResult*> G;
 	double Lambda2Max;
 	double Lambda2Min;
+	std::vector<double> * Xtr;
+	Params P;
 
 public:
 	Grid2D(const arma::mat& Xi, const arma::vec& yi, const GridParams& PGi);
