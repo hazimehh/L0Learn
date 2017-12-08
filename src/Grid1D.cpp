@@ -92,21 +92,24 @@ std::vector<FitResult*> Grid1D::Fit(){
 			  	P.Uorder = idx; // can be made faster
 
 					//
-					std::vector<unsigned int> Sp;
-					arma::sp_mat::const_iterator it;
-					for(it = prevresult->B.begin(); it != prevresult->B.end(); ++it)
-					{
-						Sp.push_back(it.row());
-					}
-
 					Xrmax = (*Xtr)[idx[0]];
-					for(unsigned int l=0; l<p;++l){
-						if ( std::binary_search(Sp.begin(),Sp.end(),idx[l]) == false ){
-							Xrmax = (*Xtr)[idx[l]];
-							break;
+
+					if (i > 0)
+					{
+						std::vector<unsigned int> Sp;
+						arma::sp_mat::const_iterator it;
+						for(it = prevresult->B.begin(); it != prevresult->B.end(); ++it)
+						{
+							Sp.push_back(it.row());
+						}
+
+						for(unsigned int l=0; l<p;++l){
+							if ( std::binary_search(Sp.begin(),Sp.end(),idx[l]) == false ){
+								Xrmax = (*Xtr)[idx[l]];
+								break;
+							}
 						}
 					}
-
 		  	}
 
 			//std::cout<< "||X'r||_inf = "<<Xrmax<< std::endl;
