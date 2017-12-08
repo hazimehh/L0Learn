@@ -24,7 +24,7 @@ Grid1D::Grid1D(const arma::mat& Xi, const arma::vec& yi, const GridParams& PG){
 	Refine = PG.Refine;
 	PartialSort = PG.PartialSort;
 	XtrAvailable = PG.XtrAvailable;
-	if (XtrAvailable){ytXmax2d = PG.ytXmax; *Xtr = *(PG.Xtr);}
+	if (XtrAvailable){ytXmax2d = PG.ytXmax; Xtr = PG.Xtr;}
 }
 
 std::vector<FitResult*> Grid1D::Fit(){

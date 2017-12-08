@@ -99,11 +99,12 @@ int main(){
 
 	Params P;
 	P.ModelType = "L012Logistic";
-	P.ModelParams = std::vector<double>{1.2,0,0};
+	P.ModelParams = std::vector<double>{1.2,0,0.01};
 	P.ActiveSet = false;
 	P.ActiveSetNum = 6;
 	P.Init = 'z';
 	//P.RandomStartSize = 100;
+
 
 	arma::mat X;
 	X.load("X.csv");
@@ -111,6 +112,8 @@ int main(){
 	arma::vec y;
 	y.load("y.csv");
 
+	std::vector<double> * Xtr = new std::vector<double>(X.n_cols);
+	P.Xtr = Xtr;
 
 	arma::mat Xscaled;
 	arma::vec yscaled;
@@ -125,8 +128,17 @@ int main(){
 	auto model = CDL012Logistic(Xscaled, yscaled, P);
 	auto result = model.Fit();
 
+	arma::sp_mat B_unscaled;
+	double intercept;
+	std::tie(B_unscaled, intercept) = DeNormalize(result.B, BetaMultiplier, meanX, meany,false);
+
 	result.B.print();
-	std::cout<<result.intercept<<std::endl;
-	arma::sign(Xscaled*result.B + result.intercept).print();
+	B_unscaled.print();
+
+
+	//std::cout<<result.intercept<<std::endl;
+	//arma::sign(Xscaled*result.B + result.intercept).print();
+	//std::cout<<"#############"<<std::endl;
+	//arma::sign(X*B_unscaled + result.intercept).print();
 	return 0;
 }

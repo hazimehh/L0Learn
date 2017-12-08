@@ -24,7 +24,7 @@ std::vector<FitResult*> Grid2D::Fit(){
 	arma::vec Lambdas2 = arma::logspace(std::log10(Lambda2Min), std::log10(Lambda2Max), G_nrows);
 	Lambdas2 = arma::flipud(Lambdas2);
 
-	uint index;
+	unsigned int index;
 	if (PG.Type == "L0L1" || PG.Type == "L0L1Logistic" || PG.Type == "L1Relaxed"){index = 1;}
 	else if (PG.Type == "L0L2" || PG.Type == "L0L2Logistic") {index = 2;}
 
