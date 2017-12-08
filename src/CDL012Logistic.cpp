@@ -11,7 +11,7 @@ CDL012Logistic::CDL012Logistic(const arma::mat& Xi, const arma::vec& yi, const P
 	thr = std::sqrt((2*ModelParams[0])/qp2lamda2);
  	lambda1 = ModelParams[1];
 	lambda1ol = lambda1 / qp2lamda2;
-	b0 = 0; // Initialize from previous later....!
+	b0 = P.b0; // Initialize from previous later....!
 	ExpyXB = arma::exp(*y % (*X*B + b0)); // Maintained throughout the algorithm
 	Xtr = P.Xtr; Iter = P.Iter; result.ModelParams = P.ModelParams;
 }

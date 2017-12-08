@@ -11,6 +11,7 @@ struct Params{
 	char Init = 'z';
 	unsigned int RandomStartSize = 10;
 	arma::sp_mat * InitialSol;
+	double b0 = 0; // intercept
 	char CyclingOrder = 'c';
 	std::vector<unsigned int> Uorder;
 	bool ActiveSet = true;
