@@ -106,6 +106,7 @@ std::vector<FitResult*> Grid1D::Fit(){
 						for(unsigned int l=0; l<p;++l){
 							if ( std::binary_search(Sp.begin(),Sp.end(),idx[l]) == false ){
 								Xrmax = (*Xtr)[idx[l]];
+								std::cout<<"Grid Iteration: "<<i<<" Xrmax= "<<Xrmax<<std::endl;
 								break;
 							}
 						}
@@ -138,6 +139,7 @@ std::vector<FitResult*> Grid1D::Fit(){
 
 			if (P.Iter>0 && std::abs(Xrmax) < thr) // not needed anymore. Remove later.
 			{ // Iternum>1 ensures that we have a good approximation to Xtr
+				std::cout<<"Wrong Branch!"<<std::endl;
 
 				if (prevresult->IterNum>1 || prevskip == true){currentskip = true;} //// Rethink logic this is correct as
 
