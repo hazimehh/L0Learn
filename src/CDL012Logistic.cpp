@@ -23,7 +23,7 @@ FitResult CDL012Logistic::Fit() {
 	objective = Objective(r, B); ////////
 
 	for (unsigned int t=0; t<MaxIters; ++t){
-		//std::cout<<"CDL012 Logistic"<< t << " " << objective << std::endl;
+		std::cout<<"CDL012 Logistic: "<< t << " " << objective << std::endl;
 
 		Bprev = B;
 
@@ -34,34 +34,73 @@ FitResult CDL012Logistic::Fit() {
 		ExpyXB %= arma::exp( (b0 - b0old) * *y);
 		//std::cout<<"Intercept. "<<Objective(r,B)<<std::endl;
 
-		for (auto& i: Order){
+		//if(!Stabilized || SecondPass)
+		//{
+			for (auto& i: Order){
 
-			// Calculate Partial_i
-			double Biold = B[i];
-			double partial_i = - arma::sum( (*y % X->unsafe_col(i)) / (1 + ExpyXB) ) + twolambda2 * Biold;
-			(*Xtr)[i] = std::abs(partial_i); // abs value of grad
+				// Calculate Partial_i
+				double Biold = B[i];
+				double partial_i = - arma::sum( (*y % X->unsafe_col(i)) / (1 + ExpyXB) ) + twolambda2 * Biold;
+				(*Xtr)[i] = std::abs(partial_i); // abs value of grad
 
-			double x = Biold - partial_i/qp2lamda2;
-			double z = std::abs(x) - lambda1ol;
+				double x = Biold - partial_i/qp2lamda2;
+				double z = std::abs(x) - lambda1ol;
 
 
-			if (z >= thr){	// often false so body is not costly
-				double Bnew = std::copysign(z, x);
-				B[i] = Bnew;
-				ExpyXB %= arma::exp( (Bnew - Biold) *  *y % X->unsafe_col(i));
-				//std::cout<<"In. "<<Objective(r,B)<<std::endl;
-			}
+				if (z >= thr){	// often false so body is not costly
+					double Bnew = std::copysign(z, x);
+					B[i] = Bnew;
+					ExpyXB %= arma::exp( (Bnew - Biold) *  *y % X->unsafe_col(i));
+					//std::cout<<"In. "<<Objective(r,B)<<std::endl;
+				}
 
-			else if (Biold != 0) { // do nothing if x=0 and B[i] = 0
-				ExpyXB %= arma::exp( - Biold * *y % X->unsafe_col(i));
-				B[i] = 0;
-				//std::cout<<"Out. "<<Objective(r,B)<<std::endl;
-			}
+				else if (Biold != 0) { // do nothing if x=0 and B[i] = 0
+					ExpyXB %= arma::exp( - Biold * *y % X->unsafe_col(i));
+					B[i] = 0;
+					//std::cout<<"Out. "<<Objective(r,B)<<std::endl;
+					//}
 
-			//else{
-			//	std::cout<<"ELSE: "<<B[i]<<std::endl;
-			//}
+					//else{
+					//	std::cout<<"ELSE: "<<B[i]<<std::endl;
+					//}
+				}
 		}
+		/*
+		else{
+			for (auto& i: Order){
+				//std::cout<<"In Stabilization!!!"<<std::endl;
+
+				// Calculate Partial_i
+				double Biold = B[i];
+				double partial_i = - arma::sum( (*y % X->unsafe_col(i)) / (1 + ExpyXB) ) + twolambda2 * Biold;
+				double partial2_i = arma::sum( (*y % X->unsafe_col(i) % X->unsafe_col(i) % ExpyXB) / ( (1 + ExpyXB) % (1 + ExpyXB) ) ) + twolambda2;
+				(*Xtr)[i] = std::abs(partial_i); // abs value of grad
+				std::cout<<partial2_i<<std::endl;
+				double x = Biold - 0.5*partial_i/partial2_i; // qp2lamda2
+				double z = std::abs(x) - lambda1ol;
+
+
+				if (z >= thr){	// often false so body is not costly
+					double Bnew = std::copysign(z, x);
+					B[i] = Bnew;
+					ExpyXB %= arma::exp( (Bnew - Biold) *  *y % X->unsafe_col(i));
+					//std::cout<<"In. "<<Objective(r,B)<<std::endl;
+				}
+
+				else if (Biold != 0) { // do nothing if x=0 and B[i] = 0
+					ExpyXB %= arma::exp( - Biold * *y % X->unsafe_col(i));
+					B[i] = 0;
+					//std::cout<<"Out. "<<Objective(r,B)<<std::endl;
+				}
+
+				//else{
+				//	std::cout<<"ELSE: "<<B[i]<<std::endl;
+				//}
+			}
+
+		}
+		*/
+
 
 		//B.print();
 		if (Converged()){
@@ -96,15 +135,16 @@ inline double CDL012Logistic::Objective(arma::vec & r, arma::sp_mat & B) { // hi
 
 
 
-//int main(){
+int main(){
 
-	/*
+
 	Params P;
 	P.ModelType = "L012Logistic";
-	P.ModelParams = std::vector<double>{1.2,0,0.01};
-	P.ActiveSet = false;
+	P.ModelParams = std::vector<double>{18.36,0,0.01};
+	P.ActiveSet = true;
 	P.ActiveSetNum = 6;
 	P.Init = 'z';
+	P.MaxIters = 200;
 	//P.RandomStartSize = 100;
 
 
@@ -132,7 +172,7 @@ inline double CDL012Logistic::Objective(arma::vec & r, arma::sp_mat & B) { // hi
 
 	arma::sp_mat B_unscaled;
 	double intercept;
-	std::tie(B_unscaled, intercept) = DeNormalize(result.B, BetaMultiplier, meanX, meany,false);
+	std::tie(B_unscaled, intercept) = DeNormalize(result.B, BetaMultiplier, meanX, meany);
 
 	result.B.print();
 	B_unscaled.print();
@@ -142,12 +182,12 @@ inline double CDL012Logistic::Objective(arma::vec & r, arma::sp_mat & B) { // hi
 	//arma::sign(Xscaled*result.B + result.intercept).print();
 	//std::cout<<"#############"<<std::endl;
 	//arma::sign(X*B_unscaled + result.intercept).print();
-	*/
+
 
 	/*
 	GridParams PG;
-	PG.Type = "L0L2Logistic";
-	PG.NnzStopNum = 15;
+	PG.Type = "L0Logistic";
+	PG.NnzStopNum = 12;
 
 	arma::mat X;
 	X.load("X.csv");
@@ -158,6 +198,13 @@ inline double CDL012Logistic::Objective(arma::vec & r, arma::sp_mat & B) { // hi
 
 	g.Fit();
 
-	return 0;
+	unsigned int i = g.NnzCount.size();
+	for (uint j=0;j<i;++j){
+		std::cout<<g.NnzCount[j]<<"   "<<g.Lambda0[j]<<std::endl;
+	}
 	*/
-//}
+
+
+	return 0;
+
+}

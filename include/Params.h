@@ -1,6 +1,6 @@
 #ifndef PARAMS_H
 #define PARAMS_H
-#//include <armadillo>
+//#include <armadillo>
 #include "RcppArmadillo.h"
 
 struct Params{
