@@ -1,7 +1,7 @@
 #ifndef PARAMS_H
 #define PARAMS_H
-#include <armadillo>
-//#include "RcppArmadillo.h"
+//#include <armadillo>
+#include "RcppArmadillo.h"
 
 struct Params{
 	std::string ModelType = "L0";
