@@ -112,7 +112,7 @@ std::vector<FitResult*> Grid1D::Fit(){
 				} // handles numerical instability.
 			}
 			else{
-				P.ModelParams[0] = P.ModelParams[0]*0.97;
+				P.ModelParams[0] = std::min(P.ModelParams[0]*0.97, (((Xrmax - P.ModelParams[1])*(Xrmax - P.ModelParams[1]))/(2*(Lipconst))) );
 			}
 
 			double thr = sqrt(2*P.ModelParams[0]*(Lipconst)) + P.ModelParams[1]; // pass this to class? we're calc this twice now
