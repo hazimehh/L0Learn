@@ -90,7 +90,23 @@ std::vector<FitResult*> Grid1D::Fit(){
 			  		std::sort(idx.begin(), idx.end(),[this](unsigned int i1, unsigned int i2) {return (*Xtr)[i1] > (*Xtr)[i2] ;});
 			  	P.CyclingOrder = 'u';
 			  	P.Uorder = idx; // can be made faster
-			  	Xrmax = (*Xtr)[idx[0]];
+
+					//
+					std::vector<unsigned int> Sp;
+					arma::sp_mat::const_iterator it;
+					for(it = prevresult->B.begin(); it != prevresult->B.end(); ++it)
+					{
+						Sp.push_back(it.row());
+					}
+
+					Xrmax = (*Xtr)[idx[0]];
+					for(unsigned int l=0; l<p;++l){
+						if ( Sp.find(idx[l]) != Sp.end() ){
+							Xrmax = (*Xtr)[idx[l]];
+							break;
+						}
+					}
+
 		  	}
 
 			//std::cout<< "||X'r||_inf = "<<Xrmax<< std::endl;
