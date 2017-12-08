@@ -183,7 +183,7 @@ std::vector<FitResult*> Grid1D::Fit(){
 				if(result->B.n_nonzero > StopNum) {break;}
 				//result->B.t().print();
 				P.InitialSol = &(result->B);
-				P.b0 = result.intercept;
+				P.b0 = result->intercept;
 			}
 
 			//std::cout<<"Lambda0, Lambda1, Lambda2: "<<P.ModelParams[0]<<", "<<P.ModelParams[1]<<", "<<P.ModelParams[2]<<std::endl;
