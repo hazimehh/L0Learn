@@ -1,7 +1,7 @@
 #ifndef CD_H
 #define CD_H
-//#include <armadillo>
-#include "RcppArmadillo.h"
+#include <armadillo>
+//#include "RcppArmadillo.h"
 #include "FitResult.h"
 #include "Params.h"
 
@@ -11,7 +11,7 @@ protected:
 	unsigned int n, p;
 	arma::sp_mat B;
 	arma::sp_mat Bprev;
-	unsigned int SameSuppCounter = 0; 
+	unsigned int SameSuppCounter = 0;
 	double objective;
 	arma::vec r; //vector of residuals
 	std::vector<unsigned int> Order; // Cycling order

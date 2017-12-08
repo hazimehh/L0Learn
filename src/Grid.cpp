@@ -53,7 +53,7 @@ void Grid::Fit()
 	}
 	else if(Type=="L1Relaxed"){
 		PG.P.ModelType = "L1Relaxed";
-		PG.Type = "L1Relaxed";		
+		PG.Type = "L1Relaxed";
 	}
 
 

@@ -11,6 +11,7 @@ struct FitResult
 	unsigned int IterNum;
 	arma::vec r;
 	std::vector<double> ModelParams;
+	double intercept; // used by classification models
 };
 
 #endif

@@ -1,12 +1,12 @@
 #ifndef PARAMS_H
 #define PARAMS_H
-//#include <armadillo>
-#include "RcppArmadillo.h"
+#include <armadillo>
+//#include "RcppArmadillo.h"
 
 struct Params{
 	std::string ModelType = "L0";
 	std::vector<double> ModelParams {0,0,0,2};
-	unsigned int MaxIters = 500; 
+	unsigned int MaxIters = 500;
 	double Tol = 1e-8;
 	char Init = 'z';
 	unsigned int RandomStartSize = 10;
