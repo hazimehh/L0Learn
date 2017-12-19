@@ -64,7 +64,7 @@ FitResult CDL012LogisticSwaps::Fit() {
 					if (std::abs(partial_i) >= lambda1 + stl0Lc ){
 						double partial2_i = arma::sum( (X->unsafe_col(i) % X->unsafe_col(i) % ExpyXBnoji) / ( (1 + ExpyXBnoji) % (1 + ExpyXBnoji) ) ) + twolambda2;
 
-						std::cout<<"Adding: "<<i<< std::endl;
+						//std::cout<<"Adding: "<<i<< std::endl;
 
 						unsigned int l = 0;
 						arma::sp_mat Btemp = B;
@@ -82,8 +82,8 @@ FitResult CDL012LogisticSwaps::Fit() {
 								x = Biold - NewtonStepSize*partial_i/partial2_i;
 							}
 							else{
-								std::cout<<"Netwon: "<<TruncatedNewtonStep<<" Normal: "<<1/qp2lamda2<<std::endl;
-								std::cout<<"Truncated Newton is smaller!"<<std::endl;
+								//std::cout<<"Netwon: "<<TruncatedNewtonStep<<" Normal: "<<1/qp2lamda2<<std::endl;
+								//std::cout<<"Truncated Newton is smaller!"<<std::endl;
 								x = Biold - partial_i/qp2lamda2;
 							}
 
@@ -105,7 +105,7 @@ FitResult CDL012LogisticSwaps::Fit() {
 								Btemp[i] = Binew;
 								double ObjTempOld = ObjTemp;
 								ObjTemp = Objective(ExpyXBnoji,Btemp);
-								std::cout<<"O: "<<ObjTemp<<" Gamma "<<NewtonStepSize<<std::endl;
+								//std::cout<<"O: "<<ObjTemp<<" Gamma "<<NewtonStepSize<<std::endl;
 								if (ObjTemp > ObjTempOld){
 									NewtonStepSize /= 2.0;
 									Binew = Biolddescent;
@@ -128,7 +128,7 @@ FitResult CDL012LogisticSwaps::Fit() {
 						//auto l2norm = arma::norm(Btemp,2);
 						//double Fnew = arma::sum(arma::log(1 + 1/ExpyXBnoji)) + ModelParams[0]*Btemp.n_nonzero + ModelParams[1]*arma::norm(Btemp,1) + ModelParams[2]*l2norm*l2norm;
 						double Fnew = Objective(ExpyXBnoji,Btemp);
-						std::cout<<"Fnew: "<<Fnew<<"Index: "<<i<<std::endl;
+						//std::cout<<"Fnew: "<<Fnew<<"Index: "<<i<<std::endl;
 						if (Fnew < Fmin){
 							Fmin = Fnew;
 							maxindex = i;
