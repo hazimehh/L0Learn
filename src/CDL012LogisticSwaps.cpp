@@ -176,6 +176,7 @@ inline double CDL012LogisticSwaps::Objective(arma::vec & r, arma::sp_mat & B) { 
 	return arma::sum(arma::log(1 + 1/r)) + ModelParams[0]*B.n_nonzero + ModelParams[1]*arma::norm(B,1) + ModelParams[2]*l2norm*l2norm;
 }
 
+/*
 int main(){
 
 
@@ -222,3 +223,4 @@ int main(){
 	return 0;
 
 }
+*/

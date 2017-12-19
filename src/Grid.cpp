@@ -85,7 +85,7 @@ void Grid::Fit()
 	}
 
 
-	if (Type == "L0" || Type == "L0Swaps" || Type == "L1" || Type == "L0KSwaps" || Type == "IHT" || Type == "L0Logistic" || Type =="L0Logistic" ){
+	if (Type == "L0" || Type == "L0Swaps" || Type == "L1" || Type == "L0KSwaps" || Type == "IHT" || Type == "L0Logistic" || Type =="L0LogisticSwaps" ){
 		G = Grid1D(Xscaled, yscaled, PG).Fit();
 	}
 	else{
