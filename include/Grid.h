@@ -16,11 +16,11 @@ private:
 
 public:
 
-	std::set<std::string> L0Models = {"L0", "L0Swaps", "L0KSwaps","L0Logistic"};
-	std::set<std::string> L0L1Models = {"L0L1", "L0L1Swaps", "L0L1KSwaps","L0L1Logistic"};
-	std::set<std::string> L0L2Models = {"L0L2", "L0L2Swaps", "L0L2KSwaps","L0L2Logistic"};
+	std::set<std::string> L0Models = {"L0", "L0Swaps", "L0KSwaps","L0Logistic","L0LogisticSwaps"};
+	std::set<std::string> L0L1Models = {"L0L1", "L0L1Swaps", "L0L1KSwaps","L0L1Logistic","L0L1LogisticSwaps"};
+	std::set<std::string> L0L2Models = {"L0L2", "L0L2Swaps", "L0L2KSwaps","L0L2LogisticSwaps"};
 	std::set<std::string> L1Models = {"L1", "L1Relaxed"};
-	std::set<std::string> ClassificationModels = {"L0L1Logistic", "L0L2Logistic", "L0Logistic"};
+	std::set<std::string> ClassificationModels = {"L0L1Logistic", "L0L2Logistic", "L0Logistic", "L0LogisticSwaps", "L0L1LogisticSwaps", "L0L2LogisticSwaps"};
 
 
 	GridParams PG;

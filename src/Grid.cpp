@@ -32,9 +32,20 @@ void Grid::Fit()
 		PG.Type = "L0Logistic";
 	}
 
+	else if (Type == "L0LogisticSwaps"){
+		PG.P.ModelType = "L012LogisticSwaps";
+		PG.Type = "L0Logistic";
+	}
+
 	else if (Type == "L0L1" || Type == "L0L2" ){
 		PG.P.ModelType = "L012";
 		PG.Type = Type;
+	}
+
+	else if (Type == "L0L1LogisticSwaps" || Type == "L0L2LogisticSwaps" ){
+		PG.P.ModelType = "L012LogisticSwaps";
+		if(Type == "L0L1LogisticSwaps"){PG.Type = "L0L1Logistic";}
+		else {PG.Type = "L0L2Logistic";}
 	}
 
 	else if (Type == "L0L1Logistic" || Type == "L0L2Logistic" ){
@@ -74,7 +85,7 @@ void Grid::Fit()
 	}
 
 
-	if (Type == "L0" || Type == "L0Swaps" || Type == "L1" || Type == "L0KSwaps" || Type == "IHT" || Type == "L0Logistic"){
+	if (Type == "L0" || Type == "L0Swaps" || Type == "L1" || Type == "L0KSwaps" || Type == "IHT" || Type == "L0Logistic" || Type =="L0Logistic" ){
 		G = Grid1D(Xscaled, yscaled, PG).Fit();
 	}
 	else{
