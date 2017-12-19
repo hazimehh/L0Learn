@@ -30,7 +30,7 @@ Grid1D::Grid1D(const arma::mat& Xi, const arma::vec& yi, const GridParams& PG){
 std::vector<FitResult*> Grid1D::Fit(){
 
 
-	if (P.ModelType == "L0" || P.ModelType == "L012" || P.ModelType == "L012Swaps" || P.ModelType == "L012KSwaps" || P.ModelType == "L012Logistic"){
+	if (P.ModelType == "L0" || P.ModelType == "L012" || P.ModelType == "L012Swaps" || P.ModelType == "L012KSwaps" || P.ModelType == "L012Logistic" || P.ModelType == "L012LogisticSwaps"){
 		bool scaledown = false;
 
 
