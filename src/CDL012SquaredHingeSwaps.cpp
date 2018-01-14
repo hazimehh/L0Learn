@@ -33,7 +33,7 @@ FitResult CDL012SquaredHingeSwaps::Fit() {
 
 	bool foundbetter;
 	for (unsigned int t=0; t<MaxNumSwaps; ++t){
-		std::cout<<"1Swaps Iteration: "<<t<<". "<<"Obj: "<<objective<<std::endl;
+		//std::cout<<"1Swaps Iteration: "<<t<<". "<<"Obj: "<<objective<<std::endl;
 		//B.print();
 		arma::sp_mat::const_iterator start = B.begin();
 		arma::sp_mat::const_iterator end   = B.end();
