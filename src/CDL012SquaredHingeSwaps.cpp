@@ -123,9 +123,9 @@ FitResult CDL012SquaredHingeSwaps::Fit() {
 
 		result = CDL012SquaredHinge(*X, *y, P).Fit();
 		//ExpyXB = result.ExpyXB;
-		onemyxb = 1 - *y % (*X * B + b0); // no need to calc. - change later.
 		B = result.B;
 		b0 = result.intercept;
+		onemyxb = 1 - *y % (*X * B + b0); // no need to calc. - change later.
 		objective = result.Objective;
 		Fmin = objective;
 		foundbetter = true;
