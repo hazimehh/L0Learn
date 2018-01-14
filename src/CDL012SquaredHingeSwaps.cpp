@@ -73,21 +73,18 @@ FitResult CDL012SquaredHingeSwaps::Fit() {
 						unsigned int l = 0;
 						arma::sp_mat Btemp = B;
 						Btemp[j] = 0;
-						double ObjTemp = Objective(onemyxbnoj,Btemp);
-						double Biolddescent = 0;
+						//double ObjTemp = Objective(onemyxbnoj,Btemp);
+						//double Biolddescent = 0;
 						while(!Converged)
 						{
-							//double x = Biold - partial_i/qp2lamda2;
-
 							double x = Biold - partial_i/qp2lamda2;
 							double z = std::abs(x) - lambda1ol;
 
 							Binew = std::copysign(z, x); // no need to check if >= sqrt(2lambda_0/Lc)
 							onemyxbnoji += (Biold - Binew) * *y % X->unsafe_col(i);
-							//std::cout<<"Here222!!"<<std::endl;
 
 							arma::uvec indicesi = arma::find(onemyxbnoji > 0);
-							partial_i = arma::sum(2 * onemyxbnoj.elem(indicesi) % (- y->elem(indicesi) % X->unsafe_col(i).elem(indicesi)));
+							partial_i = arma::sum(2 * onemyxbnoji.elem(indicesi) % (- y->elem(indicesi) % X->unsafe_col(i).elem(indicesi)));
 
 							if (std::abs((Binew - Biold)/Biold) < 0.0001){Converged = true;}
 
