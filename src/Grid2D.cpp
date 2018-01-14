@@ -22,14 +22,19 @@ std::vector<FitResult*> Grid2D::Fit(){
 	Lambdas2 = arma::flipud(Lambdas2);
 
 	unsigned int index;
-	if (PG.Type == "L0L1" || PG.Type == "L0L1Logistic" || PG.Type == "L1Relaxed"){index = 1;}
-	else if (PG.Type == "L0L2" || PG.Type == "L0L2Logistic") {index = 2;}
+	if (PG.Type == "L0L1" || PG.Type == "L0L1Logistic" || PG.Type == "L0L1Classification" || PG.Type == "L1Relaxed"){index = 1;}
+	else if (PG.Type == "L0L2" || PG.Type == "L0L2Logistic" || PG.Type == "L0L2SquaredHinge") {index = 2;}
 
 
 	arma::vec Xtrarma;
-	if (PG.P.ModelType == "L012Logistic"){
+	if (PG.P.ModelType == "L012Logistic" || PG.P.ModelType == "L012LogisticSwaps"){
 		Xtrarma = 0.5*arma::abs(y->t() * *X).t(); // = gradient of logistic loss at zero
 	}
+
+	else if (PG.P.ModelType == "L012SquaredHinge" || PG.P.ModelType == "L012SquaredHingeSwaps"){
+		Xtrarma = 2*arma::abs(y->t() * *X).t(); // = gradient of loss function at zero
+	}
+
 	else{
 		Xtrarma = arma::abs(y->t() * *X).t();
 	}

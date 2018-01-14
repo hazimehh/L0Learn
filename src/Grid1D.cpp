@@ -30,16 +30,37 @@ Grid1D::Grid1D(const arma::mat& Xi, const arma::vec& yi, const GridParams& PG){
 std::vector<FitResult*> Grid1D::Fit(){
 
 
-	if (P.ModelType == "L0" || P.ModelType == "L012" || P.ModelType == "L012Swaps" || P.ModelType == "L012KSwaps" || P.ModelType == "L012Logistic" || P.ModelType == "L012LogisticSwaps"){
+	if (P.ModelType == "L0" || P.ModelType == "L012" || P.ModelType == "L012Swaps" || P.ModelType == "L012KSwaps"
+	 		|| P.ModelType == "L012Logistic" || P.ModelType == "L012SquaredHinge" ||
+			 P.ModelType == "L012LogisticSwaps" || P.ModelType == "L012SquaredHingeSwaps"){
 		bool scaledown = false;
 
 
 
 		double Lipconst;
 		arma::vec Xtrarma;
-		if (P.ModelType == "L012Logistic"){
+		if (P.ModelType == "L012Logistic" || P.ModelType == "L012LogisticSwaps"){
 			if (!XtrAvailable){Xtrarma = 0.5*arma::abs(y->t() * *X).t();} // = gradient of logistic loss at zero}
 			Lipconst = 0.25+2*P.ModelParams[2];
+		}
+		else if (P.ModelType == "L012SquaredHinge" || P.ModelType == "L012SquaredHingeSwaps"){
+
+			/*
+			Params Ptemp = P;
+			Ptemp.CyclingOrder = 'u';
+			Ptemp.Uorder = std::vector<unsigned int>();
+
+			auto Model = make_CD(*X, *y, Ptemp);
+			FitResult * result = new FitResult;
+			*result = Model->Fit();
+
+			std::cout<<"!!!!!!! Intercept: "<<result->intercept<<std::endl;
+			if (!XtrAvailable){Xtrarma = 2*arma::abs( (y->t() - result->intercept) * *X).t();} // = gradient of loss function at zero}
+			*/
+
+
+			if (!XtrAvailable){Xtrarma = 2*arma::abs(y->t() * *X).t();} // = gradient of loss function at zero}
+			Lipconst = 2+2*P.ModelParams[2];
 		}
 		else{
 			if (!XtrAvailable){Xtrarma = arma::abs(y->t() * *X).t();}
@@ -56,18 +77,18 @@ std::vector<FitResult*> Grid1D::Fit(){
 		}
 
 		double lambdamax = ((ytXmax - P.ModelParams[1])*(ytXmax - P.ModelParams[1]))/(2*(Lipconst));
+		P.ModelParams[0] = lambdamax;
+		P.Init = 'z';
 
 
 		//std::cout<< "Lambda max: "<< lambdamax << std::endl;
-		double lambdamin = lambdamax*LambdaMinFactor;
-		Lambdas = arma::logspace(std::log10(lambdamin), std::log10(lambdamax), G_ncols);
-		Lambdas = arma::flipud(Lambdas);
+		//double lambdamin = lambdamax*LambdaMinFactor;
+		//Lambdas = arma::logspace(std::log10(lambdamin), std::log10(lambdamax), G_ncols);
+		//Lambdas = arma::flipud(Lambdas);
 
 
 		//unsigned int StopNum = (X->n_rows < NnzStopNum) ? X->n_rows : NnzStopNum;
-		P.Init = 'z'; //////////
 		unsigned int StopNum = NnzStopNum;
-		P.ModelParams[0] = Lambdas[0];
 		//std::vector<double>* Xtr = P.Xtr;
 		std::vector<unsigned int> idx(p);
 		double Xrmax;
@@ -131,7 +152,7 @@ std::vector<FitResult*> Grid1D::Fit(){
 					//std::cout<<"INSTABILITY HANDELED"<<std::endl;
 				} // handles numerical instability.
 			}
-			else{
+			else if (i>=1){
 				P.ModelParams[0] = std::min(P.ModelParams[0]*0.97, (((Xrmax - P.ModelParams[1])*(Xrmax - P.ModelParams[1]))/(2*(Lipconst)))*0.97 );
 			}
 

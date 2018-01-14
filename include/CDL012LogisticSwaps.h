@@ -1,4 +1,4 @@
-#ifndef CDL012LogisticSwpas_H
+#ifndef CDL012LogisticSwaps_H
 #define CDL012LogisticSwaps_H
 #include "CD.h"
 #include "FitResult.h"
