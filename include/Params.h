@@ -6,11 +6,12 @@
 struct Params{
 	std::string ModelType = "L0";
 	std::vector<double> ModelParams {0,0,0,2};
-	unsigned int MaxIters = 500; 
+	unsigned int MaxIters = 500;
 	double Tol = 1e-8;
 	char Init = 'z';
 	unsigned int RandomStartSize = 10;
 	arma::sp_mat * InitialSol;
+	double b0 = 0; // intercept
 	char CyclingOrder = 'c';
 	std::vector<unsigned int> Uorder;
 	bool ActiveSet = true;

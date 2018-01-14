@@ -4,9 +4,9 @@
 
 // [[Rcpp::export]]
 Rcpp::List L0LearnFit(const arma::mat& X, const arma::vec& y, const std::string Type, const unsigned int NnzStopNum, const unsigned int G_ncols, const unsigned int G_nrows,
-				const double Lambda2Max, const double Lambda2Min, const bool PartialSort, 
+				const double Lambda2Max, const double Lambda2Min, const bool PartialSort,
 				const unsigned int MaxIters, const double Tol, const bool ActiveSet, const unsigned int ActiveSetNum, const unsigned int MaxNumSwaps){
-    
+
     GridParams PG;
     PG.Type = Type;
     PG.NnzStopNum = NnzStopNum;
@@ -51,7 +51,7 @@ Rcpp::List L0LearnFit(const arma::mat& X, const arma::vec& y, const std::string 
 			indices[i].push_back(j.row() + 1); // +1 to account for R's 1-based indexing
 			values[i].push_back(*j);
 		}
-		
+
     }
 
     if (PG.Type != "-1"){

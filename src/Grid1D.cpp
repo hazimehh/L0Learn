@@ -23,29 +23,72 @@ Grid1D::Grid1D(const arma::mat& Xi, const arma::vec& yi, const GridParams& PG){
 	NnzStopNum = PG.NnzStopNum;
 	Refine = PG.Refine;
 	PartialSort = PG.PartialSort;
+	XtrAvailable = PG.XtrAvailable;
+	if (XtrAvailable){ytXmax2d = PG.ytXmax; Xtr = PG.Xtr;}
 }
 
 std::vector<FitResult*> Grid1D::Fit(){
 
 
-	if (P.ModelType == "L0" || P.ModelType == "L012" || P.ModelType == "L012Swaps" || P.ModelType == "L012KSwaps"){
+	if (P.ModelType == "L0" || P.ModelType == "L012" || P.ModelType == "L012Swaps" || P.ModelType == "L012KSwaps"
+	 		|| P.ModelType == "L012Logistic" || P.ModelType == "L012SquaredHinge" ||
+			 P.ModelType == "L012LogisticSwaps" || P.ModelType == "L012SquaredHingeSwaps"){
 		bool scaledown = false;
-		// Derive lambda_max
-		double ytXmax  = arma::norm(y->t() * *X, "inf");
-		double lambdamax = ((ytXmax - P.ModelParams[1])*(ytXmax - P.ModelParams[1]))/(2*(1+2*P.ModelParams[2]));
+
+
+
+		double Lipconst;
+		arma::vec Xtrarma;
+		if (P.ModelType == "L012Logistic" || P.ModelType == "L012LogisticSwaps"){
+			if (!XtrAvailable){Xtrarma = 0.5*arma::abs(y->t() * *X).t();} // = gradient of logistic loss at zero}
+			Lipconst = 0.25+2*P.ModelParams[2];
+		}
+		else if (P.ModelType == "L012SquaredHinge" || P.ModelType == "L012SquaredHingeSwaps"){
+
+			/*
+			Params Ptemp = P;
+			Ptemp.CyclingOrder = 'u';
+			Ptemp.Uorder = std::vector<unsigned int>();
+
+			auto Model = make_CD(*X, *y, Ptemp);
+			FitResult * result = new FitResult;
+			*result = Model->Fit();
+
+			std::cout<<"!!!!!!! Intercept: "<<result->intercept<<std::endl;
+			if (!XtrAvailable){Xtrarma = 2*arma::abs( (y->t() - result->intercept) * *X).t();} // = gradient of loss function at zero}
+			*/
+
+
+			if (!XtrAvailable){Xtrarma = 2*arma::abs(y->t() * *X).t();} // = gradient of loss function at zero}
+			Lipconst = 2+2*P.ModelParams[2];
+		}
+		else{
+			if (!XtrAvailable){Xtrarma = arma::abs(y->t() * *X).t();}
+			Lipconst = 1+2*P.ModelParams[2];
+		}
+
+		double ytXmax;
+		if (!XtrAvailable){
+			*Xtr = arma::conv_to< std::vector<double> >::from(Xtrarma);
+			ytXmax = arma::max(Xtrarma);
+		}
+		else{
+			ytXmax = ytXmax2d;
+		}
+
+		double lambdamax = ((ytXmax - P.ModelParams[1])*(ytXmax - P.ModelParams[1]))/(2*(Lipconst));
+		P.ModelParams[0] = lambdamax;
+		P.Init = 'z';
 
 
 		//std::cout<< "Lambda max: "<< lambdamax << std::endl;
-		double lambdamin = lambdamax*LambdaMinFactor;
-		Lambdas = arma::logspace(std::log10(lambdamin), std::log10(lambdamax), G_ncols);
-		Lambdas = arma::flipud(Lambdas);
-		*Xtr = arma::conv_to< std::vector<double> >::from(arma::abs(y->t() * *X).t()); // ToDO: double computation, handle later
+		//double lambdamin = lambdamax*LambdaMinFactor;
+		//Lambdas = arma::logspace(std::log10(lambdamin), std::log10(lambdamax), G_ncols);
+		//Lambdas = arma::flipud(Lambdas);
 
 
 		//unsigned int StopNum = (X->n_rows < NnzStopNum) ? X->n_rows : NnzStopNum;
-		P.Init = 'z'; //////////
 		unsigned int StopNum = NnzStopNum;
-		P.ModelParams[0] = Lambdas[0];
 		//std::vector<double>* Xtr = P.Xtr;
 		std::vector<unsigned int> idx(p);
 		double Xrmax;
@@ -68,8 +111,27 @@ std::vector<FitResult*> Grid1D::Fit(){
 			  		std::sort(idx.begin(), idx.end(),[this](unsigned int i1, unsigned int i2) {return (*Xtr)[i1] > (*Xtr)[i2] ;});
 			  	P.CyclingOrder = 'u';
 			  	P.Uorder = idx; // can be made faster
-			  	Xrmax = (*Xtr)[idx[0]];
 
+					//
+					Xrmax = (*Xtr)[idx[0]];
+
+					if (i > 0)
+					{
+						std::vector<unsigned int> Sp;
+						arma::sp_mat::const_iterator it;
+						for(it = prevresult->B.begin(); it != prevresult->B.end(); ++it)
+						{
+							Sp.push_back(it.row());
+						}
+
+						for(unsigned int l=0; l<p;++l){
+							if ( std::binary_search(Sp.begin(),Sp.end(),idx[l]) == false ){
+								Xrmax = (*Xtr)[idx[l]];
+								//std::cout<<"Grid Iteration: "<<i<<" Xrmax= "<<Xrmax<<std::endl;
+								break;
+							}
+						}
+					}
 		  	}
 
 			//std::cout<< "||X'r||_inf = "<<Xrmax<< std::endl;
@@ -84,20 +146,21 @@ std::vector<FitResult*> Grid1D::Fit(){
 
 			// Following part assumes that lambda_0 has been set to the new value
 			if(i>= 1 && !scaledown){
-				P.ModelParams[0] = (((Xrmax - P.ModelParams[1])*(Xrmax - P.ModelParams[1]))/(2*(1+2*P.ModelParams[2])))*0.99; // for numerical stability issues.
+				P.ModelParams[0] = (((Xrmax - P.ModelParams[1])*(Xrmax - P.ModelParams[1]))/(2*(Lipconst)))*0.99; // for numerical stability issues.
 				if (P.ModelParams[0] >= prevresult->ModelParams[0]){
 					P.ModelParams[0] = prevresult->ModelParams[0]*0.97;
 					//std::cout<<"INSTABILITY HANDELED"<<std::endl;
 				} // handles numerical instability.
 			}
-			else{
-				P.ModelParams[0] = P.ModelParams[0]*0.97;
+			else if (i>=1){
+				P.ModelParams[0] = std::min(P.ModelParams[0]*0.97, (((Xrmax - P.ModelParams[1])*(Xrmax - P.ModelParams[1]))/(2*(Lipconst)))*0.97 );
 			}
 
-			double thr = sqrt(2*P.ModelParams[0]*(1+2*P.ModelParams[2])) + P.ModelParams[1]; // pass this to class? we're calc this twice now
+			double thr = sqrt(2*P.ModelParams[0]*(Lipconst)) + P.ModelParams[1]; // pass this to class? we're calc this twice now
 
-			if (P.Iter>0 && std::abs(Xrmax) < thr) 
+			if (P.Iter>0 && std::abs(Xrmax) < thr) // not needed anymore. Remove later.
 			{ // Iternum>1 ensures that we have a good approximation to Xtr
+				std::cout<<"Wrong Branch!"<<std::endl;
 
 				if (prevresult->IterNum>1 || prevskip == true){currentskip = true;} //// Rethink logic this is correct as
 
@@ -134,7 +197,7 @@ std::vector<FitResult*> Grid1D::Fit(){
 
 				*result = Model->Fit();
 
-				if (i>=1 && arma::norm(result->B-(G.back())->B,"inf")<10e-5){scaledown = true;}
+				if (i>=1 && arma::norm(result->B-(G.back())->B,"inf")<10e-5){scaledown = true;} // got same solution
 				else {scaledown = false;}
 
 				G.push_back(result);
@@ -143,6 +206,7 @@ std::vector<FitResult*> Grid1D::Fit(){
 				if(result->B.n_nonzero > StopNum) {break;}
 				//result->B.t().print();
 				P.InitialSol = &(result->B);
+				P.b0 = result->intercept;
 			}
 
 			//std::cout<<"Lambda0, Lambda1, Lambda2: "<<P.ModelParams[0]<<", "<<P.ModelParams[1]<<", "<<P.ModelParams[2]<<std::endl;
@@ -270,7 +334,7 @@ std::vector<FitResult*> Grid1D::Fit(){
 						better = true;
 						//std::cout<<"Found better in reverse grid"<<std::endl;
 					}
-					
+
 
 				}
 

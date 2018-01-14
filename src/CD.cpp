@@ -1,8 +1,8 @@
 #include "CD.h"
 #include <algorithm>
 
-CD::CD(const arma::mat& Xi, const arma::vec& yi, const Params& P) : 
-	ModelType{P.ModelType}, ModelParams{P.ModelParams}, MaxIters{P.MaxIters}, 
+CD::CD(const arma::mat& Xi, const arma::vec& yi, const Params& P) :
+	ModelType{P.ModelType}, ModelParams{P.ModelParams}, MaxIters{P.MaxIters},
 	Tol{P.Tol}, ActiveSet{P.ActiveSet}, ActiveSetNum{P.ActiveSetNum}, CyclingOrder{P.CyclingOrder}
 	{
 		X = &Xi;
@@ -47,7 +47,7 @@ CD::CD(const arma::mat& Xi, const arma::vec& yi, const Params& P) :
 bool CD::Converged(){
 	double objectiveold = objective;
 	objective = this->Objective(r, B);
-	if ((objectiveold - objective)/objectiveold <= Tol) // ToDO: handle case of obj = 0
+	if (std::abs(objectiveold - objective)/objectiveold <= Tol) // handles obj <=0 for non-descent methods
 		return true;
 	else
 		return false;
@@ -97,7 +97,3 @@ void CD::SupportStabilized(){
 	else {SameSuppCounter = 0;}
 
 }
-
-
-
-
