@@ -22,7 +22,7 @@ std::vector<FitResult*> Grid2D::Fit(){
 	Lambdas2 = arma::flipud(Lambdas2);
 
 	unsigned int index;
-	if (PG.Type == "L0L1" || PG.Type == "L0L1Logistic" || PG.Type == "L0L1Classification" || PG.Type == "L1Relaxed"){index = 1;}
+	if (PG.Type == "L0L1" || PG.Type == "L0L1Logistic" || PG.Type == "L0L1SquaredHinge" || PG.Type == "L1Relaxed"){index = 1;}
 	else if (PG.Type == "L0L2" || PG.Type == "L0L2Logistic" || PG.Type == "L0L2SquaredHinge") {index = 2;}
 
 

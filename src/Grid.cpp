@@ -132,7 +132,7 @@ void Grid::Fit()
 		if (classification){
 			std::tie(B_unscaled, intercept) = DeNormalize(g->B, BetaMultiplier, meanX, meany);
 					Solutions.push_back(B_unscaled);
-					Intercepts.push_back(g->intercept + intercept);
+					Intercepts.push_back(g->intercept); //+ intercept
 		}
 
 		else{
@@ -145,6 +145,7 @@ void Grid::Fit()
 }
 
 
+/*
 // Bypass for R interface
 int main(){
 
@@ -179,3 +180,4 @@ int main(){
 	return 0;
 
 }
+*/
