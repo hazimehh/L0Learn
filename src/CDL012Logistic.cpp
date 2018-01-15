@@ -24,7 +24,7 @@ FitResult CDL012Logistic::Fit() {
 	objective = Objective(r, B); ////////
 
 	for (unsigned int t=0; t<MaxIters; ++t){
-		//std::cout<<"CDL012 Logistic: "<< t << " " << objective << " Gamma= "<<NewtonStepSize <<std::endl;
+		std::cout<<"CDL012 Logistic: "<< t << " " << objective << " Gamma= "<<NewtonStepSize <<std::endl;
 		double Oldobjective = objective;
 		Bprev = B;
 
