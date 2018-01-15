@@ -158,6 +158,7 @@ std::vector<FitResult*> Grid1D::Fit(){
 
 			double thr = sqrt(2*P.ModelParams[0]*(Lipconst)) + P.ModelParams[1]; // pass this to class? we're calc this twice now
 
+			/*
 			if (P.Iter>0 && std::abs(Xrmax) < thr) // not needed anymore. Remove later.
 			{ // Iternum>1 ensures that we have a good approximation to Xtr
 				std::cout<<"Wrong Branch!"<<std::endl;
@@ -184,6 +185,8 @@ std::vector<FitResult*> Grid1D::Fit(){
 				}
 
 			}
+
+			*/
 
 			//if(currentskip == true){ // Debugging remove later
 			//	std::cout<<"!!!!Skipped!!!"<<std::endl; // nothing will be pushed back to G, which is fine from MSE perspective.
