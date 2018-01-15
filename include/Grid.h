@@ -22,8 +22,8 @@ public:
 	std::set<std::string> L1Models = {"L1", "L1Relaxed"};
 	std::set<std::string> ClassificationModels = {"L0L1Logistic", "L0L2Logistic", "L0Logistic",
 																								"L0L1SquaredHinge", "L0L2SquaredHinge", "L0SquaredHinge",
-																								"L0LogisticSwaps", "L0L1LogisticSwaps", "L0L2LogisticSwaps"
-																								"L0L1SquaredHingeSwaps", "L0L2SquaredHingeSwaps", "L0SquaredHingeSwaps",};
+																								"L0LogisticSwaps", "L0L1LogisticSwaps", "L0L2LogisticSwaps",
+																								"L0L1SquaredHingeSwaps", "L0L2SquaredHingeSwaps", "L0SquaredHingeSwaps"};
 
 
 	GridParams PG;
