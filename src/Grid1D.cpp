@@ -153,7 +153,7 @@ std::vector<FitResult*> Grid1D::Fit(){
 				} // handles numerical instability.
 			}
 			else if (i>=1){
-				P.ModelParams[0] = std::min(P.ModelParams[0]*0.9, (((Xrmax - P.ModelParams[1])*(Xrmax - P.ModelParams[1]))/(2*(Lipconst)))*0.97 );
+				P.ModelParams[0] = std::min(P.ModelParams[0]*0.7, (((Xrmax - P.ModelParams[1])*(Xrmax - P.ModelParams[1]))/(2*(Lipconst)))*0.97 );
 			} // add 0.9 as an R param
 
 			double thr = sqrt(2*P.ModelParams[0]*(Lipconst)) + P.ModelParams[1]; // pass this to class? we're calc this twice now
@@ -200,8 +200,38 @@ std::vector<FitResult*> Grid1D::Fit(){
 
 				*result = Model->Fit();
 
-				if (i>=1 && arma::norm(result->B-(G.back())->B,"inf")/arma::norm((G.back())->B,"inf")<0.05){scaledown = true;} // got same solution
-				else {scaledown = false;}
+				//if (i>=1 && arma::norm(result->B-(G.back())->B,"inf")/arma::norm((G.back())->B,"inf") < 0.05){scaledown = true;} // got same solution
+
+
+				//
+				scaledown = false;
+				if (i>= 1)
+				{
+					std::vector<unsigned int> Spold;
+					arma::sp_mat::const_iterator itold;
+					for(itold = prevresult->B.begin(); itold != prevresult->B.end(); ++itold)
+					{
+						Spold.push_back(itold.row());
+					}
+
+					std::vector<unsigned int> Spnew;
+					arma::sp_mat::const_iterator itnew;
+					for(itnew = result->B.begin(); itnew != result->B.end(); ++itnew)
+					{
+						Spnew.push_back(itnew.row());
+					}
+
+					bool samesupp = false;
+
+					if (Spold == Spnew){samesupp = true;}
+
+					//
+
+					if (samesupp){scaledown = true;} // got same solution
+				}
+
+
+				//else {scaledown = false;}
 
 				G.push_back(result);
 				//std::cout<<"### ### ###"<<std::endl;
