@@ -200,7 +200,11 @@ std::vector<FitResult*> Grid1D::Fit(){
 
 				*result = Model->Fit();
 
-				if (i>=1 && arma::norm(result->B-(G.back())->B,"inf")/arma::norm((G.back())->B,"inf")<0.05){scaledown = true;} // got same solution
+				//if (i>=1 && arma::norm(result->B-(G.back())->B,"inf")/arma::norm((G.back())->B,"inf") < 0.05){scaledown = true;} // got same solution
+
+				if (i>=1 && arma::find(result->B) == arma::find((G.back())->B)){scaledown = true;} // got same solution
+
+
 				else {scaledown = false;}
 
 				G.push_back(result);
