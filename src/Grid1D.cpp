@@ -153,8 +153,8 @@ std::vector<FitResult*> Grid1D::Fit(){
 				} // handles numerical instability.
 			}
 			else if (i>=1){
-				P.ModelParams[0] = std::min(P.ModelParams[0]*0.97, (((Xrmax - P.ModelParams[1])*(Xrmax - P.ModelParams[1]))/(2*(Lipconst)))*0.97 );
-			}
+				P.ModelParams[0] = std::min(P.ModelParams[0]*0.9, (((Xrmax - P.ModelParams[1])*(Xrmax - P.ModelParams[1]))/(2*(Lipconst)))*0.97 );
+			} // add 0.9 as an R param
 
 			double thr = sqrt(2*P.ModelParams[0]*(Lipconst)) + P.ModelParams[1]; // pass this to class? we're calc this twice now
 
