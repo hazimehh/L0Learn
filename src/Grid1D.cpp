@@ -202,7 +202,30 @@ std::vector<FitResult*> Grid1D::Fit(){
 
 				//if (i>=1 && arma::norm(result->B-(G.back())->B,"inf")/arma::norm((G.back())->B,"inf") < 0.05){scaledown = true;} // got same solution
 
-				if (i>=1 && arma::find(result->B) == arma::find((G.back())->B)){scaledown = true;} // got same solution
+
+				//
+
+				std::vector<unsigned int> Spold;
+				arma::sp_mat::const_iterator itold;
+				for(itold = prevresult->B.begin(); itold != prevresult->B.end(); ++itold)
+				{
+					Spold.push_back(itold.row());
+				}
+
+				std::vector<unsigned int> Spnew;
+				arma::sp_mat::const_iterator itnew;
+				for(itnew = result->B.begin(); itnew != result->B.end(); ++itnew)
+				{
+					Spnew.push_back(itnew.row());
+				}
+
+				bool samesupp = false;
+
+				if (Spold == Spnew){samesupp = true;}
+
+				//
+
+				if (i>=1 && samesupp){scaledown = true;} // got same solution
 
 
 				else {scaledown = false;}
