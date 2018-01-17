@@ -204,31 +204,34 @@ std::vector<FitResult*> Grid1D::Fit(){
 
 
 				//
-
-				std::vector<unsigned int> Spold;
-				arma::sp_mat::const_iterator itold;
-				for(itold = prevresult->B.begin(); itold != prevresult->B.end(); ++itold)
+				scaledown = false;
+				if (i>= 1)
 				{
-					Spold.push_back(itold.row());
+					std::vector<unsigned int> Spold;
+					arma::sp_mat::const_iterator itold;
+					for(itold = prevresult->B.begin(); itold != prevresult->B.end(); ++itold)
+					{
+						Spold.push_back(itold.row());
+					}
+
+					std::vector<unsigned int> Spnew;
+					arma::sp_mat::const_iterator itnew;
+					for(itnew = result->B.begin(); itnew != result->B.end(); ++itnew)
+					{
+						Spnew.push_back(itnew.row());
+					}
+
+					bool samesupp = false;
+
+					if (Spold == Spnew){samesupp = true;}
+
+					//
+
+					if (samesupp){scaledown = true;} // got same solution
 				}
 
-				std::vector<unsigned int> Spnew;
-				arma::sp_mat::const_iterator itnew;
-				for(itnew = result->B.begin(); itnew != result->B.end(); ++itnew)
-				{
-					Spnew.push_back(itnew.row());
-				}
 
-				bool samesupp = false;
-
-				if (Spold == Spnew){samesupp = true;}
-
-				//
-
-				if (i>=1 && samesupp){scaledown = true;} // got same solution
-
-
-				else {scaledown = false;}
+				//else {scaledown = false;}
 
 				G.push_back(result);
 				//std::cout<<"### ### ###"<<std::endl;
