@@ -21,6 +21,7 @@ private:
 	bool PartialSort;
 	bool XtrAvailable;
 	double ytXmax2d;
+	double ScaleDownFactor;
 
 public:
 	Grid1D(const arma::mat& Xi, const arma::vec& yi, const GridParams& PG);
