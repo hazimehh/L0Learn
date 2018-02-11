@@ -9,7 +9,7 @@ FitResult CDL0::Fit() {
 
 	std::vector<unsigned int> FullOrder = Order;
 	bool FirstRestrictedPass = true;
-	if (!ActiveSet){
+	if (ActiveSet){
 		Order.resize(std::min(500,(int)(p/100))); // std::min(1000,Order.size())
 	}
 
