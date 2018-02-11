@@ -15,7 +15,7 @@ Grid::Grid(const arma::mat& X, const arma::vec& y, const GridParams& PGi){
 
 
 
-	std::tie(BetaMultiplier, meanX, meany) = Normalize(X,y, Xscaled, yscaled); // Don't normalize y //!classification
+	std::tie(BetaMultiplier, meanX, meany) = Normalize(X,y, Xscaled, yscaled, false); // Don't normalize y //!classification
 
 }
 
