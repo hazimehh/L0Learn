@@ -10,7 +10,7 @@ FitResult CDL0::Fit() {
 	std::vector<unsigned int> FullOrder = Order;
 	bool FirstRestrictedPass = true;
 	if (ActiveSet){
-		Order.resize(std::min(B.n_nonzero + ScreenSize,(int)(p/10))); // std::min(1000,Order.size())
+		Order.resize(std::min((int)B.n_nonzero + ScreenSize,(int)(p/10))); // std::min(1000,Order.size())
 	}
 
 	bool ActiveSetInitial = ActiveSet;
