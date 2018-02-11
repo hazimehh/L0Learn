@@ -11,7 +11,11 @@ CD::CD(const arma::mat& Xi, const arma::vec& yi, const Params& P) :
 		n = X->n_rows;
 		p = X->n_cols;
 
-		if (P.Init == 'r') {
+		if (P.Init == 'u'){
+			B = *(P.InitialSol);
+		}
+
+		else if (P.Init == 'r') {
 			arma::urowvec row_indices = arma::randi<arma::urowvec>(P.RandomStartSize,arma::distr_param(0,p-1));
 			row_indices = arma::unique(row_indices);
 			auto rsize = row_indices.n_cols;
@@ -24,23 +28,23 @@ CD::CD(const arma::mat& Xi, const arma::vec& yi, const Params& P) :
 
 			B = arma::sp_mat(false, indices, values, p, 1, false, false);
 		}
-		else if (P.Init == 'u'){
-			B = *(P.InitialSol);
-		}
+
 		else {
 			B = arma::sp_mat(p,1);
 		}
 
-		if (CyclingOrder == 'c'){
+		if (CyclingOrder == 'u'){
+			Order = P.Uorder;
+		}
+
+		else if (CyclingOrder == 'c'){
 			std::vector<unsigned int> cyclic(p);
 			std::iota(std::begin(cyclic), std::end(cyclic), 0);
 			Order = cyclic;
 		}
-		else if (CyclingOrder == 'u'){
-			Order = P.Uorder;
-		}
 
-		r = *y - *X*B;
+
+		//r = *y - *X*B;
 	}
 
 

@@ -14,6 +14,7 @@ Grid1D::Grid1D(const arma::mat& Xi, const arma::vec& yi, const GridParams& PG){
 	P.Xtr = new std::vector<double>(X->n_cols); // needed! careful
 	P.ytX = new arma::rowvec(X->n_cols);
 	P.D = new std::map<unsigned int, arma::rowvec>();
+	P.r = new arma::vec(Xi.n_rows);
 	Xtr = P.Xtr;
 	ytX = P.ytX;
 	G_ncols = PG.G_ncols;
@@ -67,12 +68,13 @@ std::vector<FitResult*> Grid1D::Fit(){
 			if (!XtrAvailable){Xtrarma = 2*arma::abs(y->t() * *X).t();} // = gradient of loss function at zero}
 			Lipconst = 2+2*P.ModelParams[2];
 		}
-		else{
+		else{ // regression
 			if (!XtrAvailable){
 				*ytX =  y->t() * *X;
 				Xtrarma = arma::abs(*ytX).t(); // Least squares
 			}
 			Lipconst = 1+2*P.ModelParams[2];
+			*P.r = *y; // B = 0 initially
 		}
 
 		double ytXmax;
@@ -254,6 +256,7 @@ std::vector<FitResult*> Grid1D::Fit(){
 				//result->B.t().print();
 				P.InitialSol = &(result->B);
 				P.b0 = result->intercept;
+				*P.r = result->r;
 			}
 
 			//std::cout<<"Lambda0, Lambda1, Lambda2: "<<P.ModelParams[0]<<", "<<P.ModelParams[1]<<", "<<P.ModelParams[2]<<std::endl;
