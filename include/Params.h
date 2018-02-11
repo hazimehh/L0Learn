@@ -22,6 +22,7 @@ struct Params{
 	arma::rowvec * ytX;
 	std::map<unsigned int, arma::rowvec> * D;
 	unsigned int Iter =0; // Current iteration number in the grid
+	unsigned int ScreenSize = 1000;
 };
 
 #endif

@@ -7,8 +7,8 @@
 using namespace Rcpp;
 
 // L0LearnFit
-Rcpp::List L0LearnFit(const arma::mat& X, const arma::vec& y, const std::string Type, const unsigned int NnzStopNum, const unsigned int G_ncols, const unsigned int G_nrows, const double Lambda2Max, const double Lambda2Min, const bool PartialSort, const unsigned int MaxIters, const double Tol, const bool ActiveSet, const unsigned int ActiveSetNum, const unsigned int MaxNumSwaps, const double ScaleDownFactor);
-RcppExport SEXP _L0Learn_L0LearnFit(SEXP XSEXP, SEXP ySEXP, SEXP TypeSEXP, SEXP NnzStopNumSEXP, SEXP G_ncolsSEXP, SEXP G_nrowsSEXP, SEXP Lambda2MaxSEXP, SEXP Lambda2MinSEXP, SEXP PartialSortSEXP, SEXP MaxItersSEXP, SEXP TolSEXP, SEXP ActiveSetSEXP, SEXP ActiveSetNumSEXP, SEXP MaxNumSwapsSEXP, SEXP ScaleDownFactorSEXP) {
+Rcpp::List L0LearnFit(const arma::mat& X, const arma::vec& y, const std::string Type, const unsigned int NnzStopNum, const unsigned int G_ncols, const unsigned int G_nrows, const double Lambda2Max, const double Lambda2Min, const bool PartialSort, const unsigned int MaxIters, const double Tol, const bool ActiveSet, const unsigned int ActiveSetNum, const unsigned int MaxNumSwaps, const double ScaleDownFactor,  unsigned int ScreenSize );
+RcppExport SEXP _L0Learn_L0LearnFit(SEXP XSEXP, SEXP ySEXP, SEXP TypeSEXP, SEXP NnzStopNumSEXP, SEXP G_ncolsSEXP, SEXP G_nrowsSEXP, SEXP Lambda2MaxSEXP, SEXP Lambda2MinSEXP, SEXP PartialSortSEXP, SEXP MaxItersSEXP, SEXP TolSEXP, SEXP ActiveSetSEXP, SEXP ActiveSetNumSEXP, SEXP MaxNumSwapsSEXP, SEXP ScaleDownFactorSEXP, SEXP ScreenSizeSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -27,13 +27,14 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const unsigned int >::type ActiveSetNum(ActiveSetNumSEXP);
     Rcpp::traits::input_parameter< const unsigned int >::type MaxNumSwaps(MaxNumSwapsSEXP);
     Rcpp::traits::input_parameter< const double >::type ScaleDownFactor(ScaleDownFactorSEXP);
-    rcpp_result_gen = Rcpp::wrap(L0LearnFit(X, y, Type, NnzStopNum, G_ncols, G_nrows, Lambda2Max, Lambda2Min, PartialSort, MaxIters, Tol, ActiveSet, ActiveSetNum, MaxNumSwaps, ScaleDownFactor));
+    Rcpp::traits::input_parameter< const unsigned int >::type ScreenSize(ScreenSizeSEXP);
+    rcpp_result_gen = Rcpp::wrap(L0LearnFit(X, y, Type, NnzStopNum, G_ncols, G_nrows, Lambda2Max, Lambda2Min, PartialSort, MaxIters, Tol, ActiveSet, ActiveSetNum, MaxNumSwaps, ScaleDownFactor, ScreenSize));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_L0Learn_L0LearnFit", (DL_FUNC) &_L0Learn_L0LearnFit, 15},
+    {"_L0Learn_L0LearnFit", (DL_FUNC) &_L0Learn_L0LearnFit, 16},
     {NULL, NULL, 0}
 };
 

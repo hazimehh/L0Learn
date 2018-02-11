@@ -10,6 +10,7 @@ private:
 	arma::rowvec * ytX; // new imp
 	std::map<unsigned int, arma::rowvec> * D; //new imp
 	unsigned int Iter;
+	unsigned int ScreenSize;
 	FitResult result;
 public:
 	CDL0(const arma::mat& Xi, const arma::vec& yi, const Params& P);

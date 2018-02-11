@@ -1,6 +1,6 @@
 #include "CDL0.h"
 
-CDL0::CDL0(const arma::mat& Xi, const arma::vec& yi, const Params& P) : CD(Xi, yi, P) {thr = sqrt(2*ModelParams[0]); Xtr = P.Xtr; Iter = P.Iter; result.ModelParams = P.ModelParams;}
+CDL0::CDL0(const arma::mat& Xi, const arma::vec& yi, const Params& P) : CD(Xi, yi, P) {thr = sqrt(2*ModelParams[0]); Xtr = P.Xtr; Iter = P.Iter; result.ModelParams = P.ModelParams; ScreenSize = P.ScreenSize;}
 
 FitResult CDL0::Fit() {
 
@@ -10,7 +10,7 @@ FitResult CDL0::Fit() {
 	std::vector<unsigned int> FullOrder = Order;
 	bool FirstRestrictedPass = true;
 	if (ActiveSet){
-		Order.resize(std::min(500,(int)(p/100))); // std::min(1000,Order.size())
+		Order.resize(std::min(B.n_nonzero + ScreenSize,(int)(p/10))); // std::min(1000,Order.size())
 	}
 
 	bool ActiveSetInitial = ActiveSet;
