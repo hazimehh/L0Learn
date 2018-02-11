@@ -8,12 +8,11 @@ FitResult CDL0::Fit() {
 	objective = Objective(r, B);
 
 	std::vector<unsigned int> FullOrder = Order;
-	Order.resize(std::min(1000,(int)(p/100))); // std::min(1000,Order.size())
+	Order.resize(1000); // std::min(1000,Order.size())
 	bool FirstRestrictedPass = true;
-	bool ActiveSetInitial = ActiveSet;
 
 	for (unsigned int t=0; t<MaxIters; ++t){
-		//std::cout<< t << " " << objective << std::endl;
+		std::cout<< t << " " << objective << std::endl;
 		Bprev = B;
 
 		for (auto& i: Order){
@@ -32,10 +31,12 @@ FitResult CDL0::Fit() {
 			}
 		}
 
+		// stabilize -> converge -> Fullcheck -> stabilize
+
 		if (Converged()){
 			result.IterNum = t+1;
 
-			if(FirstRestrictedPass && ActiveSetInitial){
+			if(FirstRestrictedPass){
 				FirstRestrictedPass = false;
 				Order = FullOrder;
 				Stabilized = false;
@@ -43,7 +44,7 @@ FitResult CDL0::Fit() {
 			}
 
 			else{
-				if (Stabilized == true && ActiveSetInitial){ // && !SecondPass
+				if (Stabilized == true ){ // && !SecondPass
 					Order = OldOrder; // Recycle over all coordinates to make sure the achieved point is a CW-min.
 					//SecondPass = true; // a 2nd pass will be performed
 					Stabilized = false;

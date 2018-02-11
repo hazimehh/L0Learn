@@ -16,6 +16,7 @@ private:
 	bool LambdaU;
 	unsigned int NnzStopNum;
 	std::vector<double> * Xtr;
+	arma::rowvec * ytX;
 	double LambdaMinFactor;
 	bool Refine;
 	bool PartialSort;

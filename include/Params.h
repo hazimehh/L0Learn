@@ -2,6 +2,7 @@
 #define PARAMS_H
 //#include <armadillo>
 #include "RcppArmadillo.h"
+#include <map>
 
 struct Params{
 	std::string ModelType = "L0";
@@ -18,6 +19,8 @@ struct Params{
 	unsigned int ActiveSetNum = 6;
 	unsigned int MaxNumSwaps = 200; // Used by CDSwaps
 	std::vector<double> * Xtr;
+	arma::rowvec * ytX;
+	std::map<unsigned int, arma::rowvec> * D;
 	unsigned int Iter =0; // Current iteration number in the grid
 };
 

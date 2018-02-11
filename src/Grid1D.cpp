@@ -1,6 +1,7 @@
 #include "Grid1D.h"
 #include "MakeCD.h"
 #include <algorithm>
+#include <map>
 
 Grid1D::Grid1D(const arma::mat& Xi, const arma::vec& yi, const GridParams& PG){
 	// automatically selects lambda_0 (but assumes other lambdas are given in PG.P.ModelParams)
@@ -11,7 +12,10 @@ Grid1D::Grid1D(const arma::mat& Xi, const arma::vec& yi, const GridParams& PG){
 	ScaleDownFactor = PG.ScaleDownFactor;
 	P = PG.P;
 	P.Xtr = new std::vector<double>(X->n_cols); // needed! careful
+	P.ytX = new arma::rowvec(X->n_cols);
+	P.D = new std::map<unsigned int, arma::rowvec>();
 	Xtr = P.Xtr;
+	ytX = P.ytX;
 	G_ncols = PG.G_ncols;
 	G.reserve(G_ncols);
 	if (PG.LambdaU){Lambdas = PG.Lambdas;}
@@ -64,7 +68,10 @@ std::vector<FitResult*> Grid1D::Fit(){
 			Lipconst = 2+2*P.ModelParams[2];
 		}
 		else{
-			if (!XtrAvailable){Xtrarma = arma::abs(y->t() * *X).t();}
+			if (!XtrAvailable){
+				*ytX =  y->t() * *X;
+				Xtrarma = arma::abs(*ytX).t(); // Least squares
+			}
 			Lipconst = 1+2*P.ModelParams[2];
 		}
 
@@ -201,6 +208,7 @@ std::vector<FitResult*> Grid1D::Fit(){
 
 				*result = Model->Fit();
 
+
 				//if (i>=1 && arma::norm(result->B-(G.back())->B,"inf")/arma::norm((G.back())->B,"inf") < 0.05){scaledown = true;} // got same solution
 
 
@@ -232,9 +240,14 @@ std::vector<FitResult*> Grid1D::Fit(){
 				}
 
 
+
+
+
 				//else {scaledown = false;}
 
 				G.push_back(result);
+
+
 				//std::cout<<"### ### ###"<<std::endl;
 				//std::cout<<"Iteration: "<<i<<". "<<"Nnz: "<< result->B.n_nonzero << ". Lambda: "<<P.ModelParams[0]<< std::endl;
 				if(result->B.n_nonzero > StopNum) {break;}

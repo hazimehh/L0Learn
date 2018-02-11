@@ -7,6 +7,8 @@ class CDL0 : public CD {
 private:
 	double thr;
 	std::vector<double> * Xtr;
+	arma::rowvec * ytX; // new imp
+	std::map<unsigned int, arma::rowvec> * D; //new imp
 	unsigned int Iter;
 	FitResult result;
 public:
