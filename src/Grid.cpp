@@ -153,7 +153,9 @@ void Grid::Fit()
 /*
 // Bypass for R interface
 int main(){
-
+	std::cout<<"Enter Method"<<std::endl;
+	std::string method;
+	std::cin>>method;
 	arma::mat X;
 	X.load("X_training.csv");
 
@@ -161,9 +163,9 @@ int main(){
 	y.load("y_training.csv");
 
 	GridParams PG;
-	PG.Lambda2Max = 0.01;
-	PG.Lambda2Min = 0.01;
-	PG.Type = "L0"; //Classification
+	PG.Lambda2Max = 1;
+	PG.Lambda2Min = 1;
+	PG.Type = method; //Classification
 	PG.P.Tol = 1e-4;
 	PG.P.ActiveSetNum = 2;
 	PG.G_nrows = 1;

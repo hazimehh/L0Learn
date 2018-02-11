@@ -10,6 +10,7 @@ private:
 	double lambda1;
 	std::vector<double> * Xtr;
 	unsigned int Iter;
+	unsigned int ScreenSize;
 	FitResult result;
 public:
 	CDL012(const arma::mat& Xi, const arma::vec& yi, const Params& P);
