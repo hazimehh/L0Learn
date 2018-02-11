@@ -8,8 +8,11 @@ FitResult CDL0::Fit() {
 	objective = Objective(r, B);
 
 	std::vector<unsigned int> FullOrder = Order;
-	Order.resize(std::min(1000,(int)(p/100))); // std::min(1000,Order.size())
-	bool FirstRestrictedPass = true;
+	if (!ActiveSet){
+		Order.resize(std::min(1000,(int)(p/100))); // std::min(1000,Order.size())
+		bool FirstRestrictedPass = true;
+	}
+
 	bool ActiveSetInitial = ActiveSet;
 
 	for (unsigned int t=0; t<MaxIters; ++t){
