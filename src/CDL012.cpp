@@ -2,7 +2,8 @@
 
 
 CDL012::CDL012(const arma::mat& Xi, const arma::vec& yi, const Params& P) : CD(Xi, yi, P) {thr = std::sqrt((2*ModelParams[0])/(1+2*ModelParams[2]));
-Onep2lamda2 = 1+2*ModelParams[2]; lambda1 = ModelParams[1]; Xtr = P.Xtr; Iter = P.Iter; result.ModelParams = P.ModelParams; ScreenSize = P.ScreenSize; r = *P.r;}
+Onep2lamda2 = 1+2*ModelParams[2]; lambda1 = ModelParams[1]; Xtr = P.Xtr; Iter = P.Iter; result.ModelParams = P.ModelParams; ScreenSize = P.ScreenSize; r = *P.r;
+Range1p.resize(p); std::iota(std::begin(Range1p), std::end(Range1p), 0);}
 
 FitResult CDL012::Fit() {
 
@@ -49,6 +50,7 @@ FitResult CDL012::Fit() {
 			result.IterNum = t+1;
 
 			if(FirstRestrictedPass && ActiveSetInitial){
+				if (CWMinCheck()){break;}
 				FirstRestrictedPass = false;
 				Order = FullOrder;
 				Stabilized = false;
@@ -57,6 +59,7 @@ FitResult CDL012::Fit() {
 
 			else{
 				if (Stabilized == true && ActiveSetInitial){ // && !SecondPass
+					if (CWMinCheck()){break;}
 					Order = OldOrder; // Recycle over all coordinates to make sure the achieved point is a CW-min.
 					//SecondPass = true; // a 2nd pass will be performed
 					Stabilized = false;
@@ -83,4 +86,34 @@ FitResult CDL012::Fit() {
 inline double CDL012::Objective(arma::vec & r, arma::sp_mat & B) { // hint inline
 	auto l2norm = arma::norm(B,2);
 	return 0.5*arma::dot(r,r) + ModelParams[0]*B.n_nonzero + ModelParams[1]*arma::norm(B,1) + ModelParams[2]*l2norm*l2norm;
+}
+
+
+bool CDL012::CWMinCheck(){
+				// Get the Sc = FullOrder - Order
+				std::vector<unsigned int> S;
+				for(arma::sp_mat::const_iterator it = B.begin(); it != B.end(); ++it){S.push_back(it.row());}
+
+				std::vector<unsigned int> Sc;
+				set_difference(
+				Range1p.begin(),
+				Range1p.end(),
+				S.begin(),
+				S.end(),
+				back_inserter(Sc));
+
+				bool Cwmin = true;
+				for (auto& i: Sc){
+					double x = arma::dot(r,X->unsafe_col(i));
+					double absx = std::abs(x);
+					(*Xtr)[i] = absx; // do abs here instead from when sorting
+					double z = (absx - lambda1)/Onep2lamda2;
+
+					if (z >= thr){	// often false so body is not costly
+						B[i] = std::copysign(z, x);
+						r -= X->unsafe_col(i)*B[i];
+					}
+				}
+				return Cwmin;
+
 }

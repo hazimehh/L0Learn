@@ -149,7 +149,7 @@ void Grid::Fit()
 
 }
 
-/*
+
 // Bypass for R interface
 int main(){
 	std::cout<<"Enter Method"<<std::endl;
@@ -162,13 +162,15 @@ int main(){
 	y.load("y_training.csv");
 
 	GridParams PG;
-	PG.Lambda2Max = 1;
-	PG.Lambda2Min = 1;
+	PG.Lambda2Max = 0.001;
+	PG.Lambda2Min = 0.001;
 	PG.Type = method; //Classification
 	PG.P.Tol = 1e-4;
 	PG.P.ActiveSetNum = 2;
 	PG.G_nrows = 1;
-	PG.G_ncols = 86;
+	PG.G_ncols = 100;
+	PG.NnzStopNum = 200;
+	PG.P.ScreenSize = 100;
 
 	auto start = std::chrono::steady_clock::now();
 
@@ -187,4 +189,3 @@ int main(){
 	return 0;
 
 }
-*/
