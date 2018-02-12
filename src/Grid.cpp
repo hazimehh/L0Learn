@@ -149,7 +149,7 @@ void Grid::Fit()
 
 }
 
-
+/*
 // Bypass for R interface
 int main(){
 	std::cout<<"Enter Method"<<std::endl;
@@ -189,3 +189,4 @@ int main(){
 	return 0;
 
 }
+*/
