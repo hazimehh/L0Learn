@@ -1,0 +1,96 @@
+#include "CDL0.h"
+
+CDL0::CDL0(const arma::mat& Xi, const arma::vec& yi, const Params& P) : CD(Xi, yi, P) {
+	thr = sqrt(2*ModelParams[0]); Xtr = P.Xtr; Iter = P.Iter; result.ModelParams = P.ModelParams;
+	ytX = P.ytX; D = P.D;
+
+}
+
+FitResult CDL0::Fit() {
+
+	bool SecondPass = false;
+	//objective = Objective(r, B);
+	std::cout<<"### In CD ###"<<std::endl;
+
+	for (unsigned int t=0; t<MaxIters; ++t){
+
+		//r = *y - *X * B;
+		//objective = Objective(r, B);
+		//std::cout<< t << " " << objective << std::endl;
+		std::cout<<"t: "<<t<<std::endl;
+		Bprev = B;
+
+		for (auto& i: Order){
+			//double cor = arma::dot(r,X->unsafe_col(i));
+			double cor = (*ytX)[i];
+			arma::sp_mat::const_iterator it;
+			//std::cout<<"Before Cor"<<std::endl;
+
+			for(it = B.begin(); it != B.end(); ++it)
+			{
+				cor -= (*it) * D->at(it.row())[i]; // D[it][i] = <X_{it},X_{i}>
+
+			}
+
+
+			//std::cout<<"After Cor"<<std::endl;
+
+			(*Xtr)[i] = std::abs(cor); // do abs here instead from when sorting
+			double Bi = B[i]; // B[i] is costly
+			double x = cor + Bi;
+
+			if (x >= thr || x <= -thr){	// often false so body is not costly
+				//std::cout<<"In thresholding 0"<<std::endl;
+				if(D->count(i) == 0){
+					//std::cout<<"In thresholding 1"<<std::endl;
+					auto start = std::chrono::steady_clock::now();
+
+					(*D)[i] = X->unsafe_col(i).t() * *X;
+
+					auto end = std::chrono::steady_clock::now();
+
+					auto diff = end-start;
+
+					std::cout << "D Update: " << i << " "<<std::chrono::duration <double, std::milli> (diff).count() << " ms" << std::endl;
+					//std::cout<<"In thresholding 2"<<std::endl;
+				}
+				B[i] = x;
+			}
+
+			else if (Bi != 0) { // do nothing if x=0 and B[i] = 0
+				B[i] = 0;
+			}
+		}
+
+		//std::cout<<"After thresholding"<<std::endl;
+
+
+
+		if (arma::norm(B - Bprev, "inf") < 1e-4){
+			result.IterNum = t+1;
+			if (Stabilized == true && !SecondPass){
+				Order = OldOrder; // Recycle over all coordinates to make sure the achieved point is a CW-min.
+				SecondPass = true; // a 2nd pass will be performed
+			}
+
+			else{
+				//std::cout<<"Converged in "<<t+1<<" iterations."<<std::endl;
+				break;
+			}
+
+		}
+		if (ActiveSet){SupportStabilized();}
+
+	}
+
+
+	//result.Objective = objective;
+	result.B = B;
+	result.Model = this;
+	//result.r = r; // change to pointer later
+	return result;
+}
+
+inline double CDL0::Objective(arma::vec & r, arma::sp_mat & B) { // hint inline
+	return 0.5*arma::dot(r,r) + ModelParams[0]*B.n_nonzero;
+}

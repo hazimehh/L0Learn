@@ -13,7 +13,9 @@ Grid::Grid(const arma::mat& X, const arma::vec& y, const GridParams& PGi){
 		classification = true;
 	}
 
-	std::tie(BetaMultiplier, meanX, meany) = Normalize(X,y, Xscaled, yscaled,!classification); // Don't normalize y
+
+
+	std::tie(BetaMultiplier, meanX, meany) = Normalize(X,y, Xscaled, yscaled, !classification); // Don't normalize y //!classification
 
 }
 
@@ -115,7 +117,6 @@ void Grid::Fit()
 		G = Grid2D(Xscaled, yscaled, PG).Fit();
 	}
 
-
     for (auto &g: G){
         Lambda0.push_back(g->ModelParams[0]);
 
@@ -142,26 +143,34 @@ void Grid::Fit()
 		}
 
   }
-}
 
+
+
+
+}
 
 /*
 // Bypass for R interface
 int main(){
-
+	std::cout<<"Enter Method"<<std::endl;
+	std::string method;
+	std::cin>>method;
 	arma::mat X;
-	X.load("X.csv");
+	X.load("X_training.csv");
 
 	arma::vec y;
-	y.load("y.csv");
+	y.load("y_training.csv");
 
 	GridParams PG;
-	PG.Lambda2Max = 0.01;
-	PG.Lambda2Min = 0.01;
-	PG.Type = "L0L2SquaredHinge"; //Classification
+	PG.Lambda2Max = 0.001;
+	PG.Lambda2Min = 0.001;
+	PG.Type = method; //Classification
 	PG.P.Tol = 1e-4;
+	PG.P.ActiveSetNum = 2;
 	PG.G_nrows = 1;
-	PG.G_ncols = 20;
+	PG.G_ncols = 100;
+	PG.NnzStopNum = 200;
+	PG.P.ScreenSize = 100;
 
 	auto start = std::chrono::steady_clock::now();
 
@@ -174,7 +183,7 @@ int main(){
 
 	std::cout << std::chrono::duration <double, std::milli> (diff).count() << " ms" << std::endl;
 
-	for(auto &sol:g.Solutions){sol.print();}
+	//for(auto &sol:g.Solutions){sol.print();}
 
 
 	return 0;

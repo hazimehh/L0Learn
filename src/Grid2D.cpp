@@ -37,8 +37,11 @@ std::vector<FitResult*> Grid2D::Fit(){
 	unsigned int index;
 	if (PG.Type == "L0L1" || PG.Type == "L0L1Logistic" || PG.Type == "L0L1SquaredHinge" || PG.Type == "L1Relaxed"){
 		index = 1;
-		Lambda2Max = ytXmax;
-		Lambda2Min = Lambda2Max * LambdaMinFactor;
+		if(G_nrows != 1){
+			Lambda2Max = ytXmax;
+			Lambda2Min = Lambda2Max * LambdaMinFactor;
+		}
+
 	}
 	else if (PG.Type == "L0L2" || PG.Type == "L0L2Logistic" || PG.Type == "L0L2SquaredHinge") {index = 2;}
 

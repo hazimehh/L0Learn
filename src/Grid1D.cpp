@@ -1,6 +1,7 @@
 #include "Grid1D.h"
 #include "MakeCD.h"
 #include <algorithm>
+#include <map>
 
 Grid1D::Grid1D(const arma::mat& Xi, const arma::vec& yi, const GridParams& PG){
 	// automatically selects lambda_0 (but assumes other lambdas are given in PG.P.ModelParams)
@@ -8,9 +9,14 @@ Grid1D::Grid1D(const arma::mat& Xi, const arma::vec& yi, const GridParams& PG){
 	y = &yi;
 	p = Xi.n_cols;
 	LambdaMinFactor = PG.LambdaMinFactor;
+	ScaleDownFactor = PG.ScaleDownFactor;
 	P = PG.P;
 	P.Xtr = new std::vector<double>(X->n_cols); // needed! careful
+	P.ytX = new arma::rowvec(X->n_cols);
+	P.D = new std::map<unsigned int, arma::rowvec>();
+	P.r = new arma::vec(Xi.n_rows);
 	Xtr = P.Xtr;
+	ytX = P.ytX;
 	G_ncols = PG.G_ncols;
 	G.reserve(G_ncols);
 	if (PG.LambdaU){Lambdas = PG.Lambdas;}
@@ -62,9 +68,13 @@ std::vector<FitResult*> Grid1D::Fit(){
 			if (!XtrAvailable){Xtrarma = 2*arma::abs(y->t() * *X).t();} // = gradient of loss function at zero}
 			Lipconst = 2+2*P.ModelParams[2];
 		}
-		else{
-			if (!XtrAvailable){Xtrarma = arma::abs(y->t() * *X).t();}
+		else{ // regression
+			if (!XtrAvailable){
+				*ytX =  y->t() * *X;
+				Xtrarma = arma::abs(*ytX).t(); // Least squares
+			}
 			Lipconst = 1+2*P.ModelParams[2];
+			*P.r = *y; // B = 0 initially
 		}
 
 		double ytXmax;
@@ -153,7 +163,7 @@ std::vector<FitResult*> Grid1D::Fit(){
 				} // handles numerical instability.
 			}
 			else if (i>=1){
-				P.ModelParams[0] = std::min(P.ModelParams[0]*0.7, (((Xrmax - P.ModelParams[1])*(Xrmax - P.ModelParams[1]))/(2*(Lipconst)))*0.97 );
+				P.ModelParams[0] = std::min(P.ModelParams[0]*ScaleDownFactor, (((Xrmax - P.ModelParams[1])*(Xrmax - P.ModelParams[1]))/(2*(Lipconst)))*0.97 );
 			} // add 0.9 as an R param
 
 			double thr = sqrt(2*P.ModelParams[0]*(Lipconst)) + P.ModelParams[1]; // pass this to class? we're calc this twice now
@@ -200,6 +210,7 @@ std::vector<FitResult*> Grid1D::Fit(){
 
 				*result = Model->Fit();
 
+
 				//if (i>=1 && arma::norm(result->B-(G.back())->B,"inf")/arma::norm((G.back())->B,"inf") < 0.05){scaledown = true;} // got same solution
 
 
@@ -231,15 +242,21 @@ std::vector<FitResult*> Grid1D::Fit(){
 				}
 
 
+
+
+
 				//else {scaledown = false;}
 
 				G.push_back(result);
+
+
 				//std::cout<<"### ### ###"<<std::endl;
 				//std::cout<<"Iteration: "<<i<<". "<<"Nnz: "<< result->B.n_nonzero << ". Lambda: "<<P.ModelParams[0]<< std::endl;
 				if(result->B.n_nonzero > StopNum) {break;}
 				//result->B.t().print();
 				P.InitialSol = &(result->B);
 				P.b0 = result->intercept;
+				*P.r = result->r;
 			}
 
 			//std::cout<<"Lambda0, Lambda1, Lambda2: "<<P.ModelParams[0]<<", "<<P.ModelParams[1]<<", "<<P.ModelParams[2]<<std::endl;
