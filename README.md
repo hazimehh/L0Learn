@@ -1,5 +1,6 @@
-# L0Learn: Fast Algorithms for L0-regularized Learning
-## Hussein Hazimeh and Rahul Mazumder
+# L0Learn
+---
+## Fast Best Subset Selection: Coordinate Descent and Local Combinatorial Optimization Algorithms 
 
 ### Introduction
 L0Learn is a highly optimized framework for solving L0-regularized regression (and soon classification) problems. We consider sparse linear regression problems where the loss function is penalized by combinations of the L0, L1, and L2 norms. Specifically, the framework can approximate the solutions of the following three problems
@@ -8,7 +9,7 @@ L0Learn is a highly optimized framework for solving L0-regularized regression (a
 <img src="https://user-images.githubusercontent.com/11324150/31854351-b6847b12-b665-11e7-879d-a7668f395267.png" width = 300>
 <img src="https://user-images.githubusercontent.com/11324150/31854353-b816a1f8-b665-11e7-86a2-9b3c3c7bde34.png" width = 300>
 
-The optimization is done using coordinate descent-type methods over a grid of the regularization parameter(s) values. The details of the algorithms are going to be published in an upcoming paper.
+The optimization is done using coordinate descent and local combinatorial optimization over a grid of the regularization parameter(s) values. We describe the details of the algorithms in our paper: Fast Best Subset Selection: Coordinate Descent and Local Combinatorial Optimization Algorithms ([PDF](https://arxiv.org/abs/1803.01454)). 
 
 The framework is implemented in C++ along with an easy-to-use R interface. Below we provide the installation instructions for the R package.
 
@@ -65,3 +66,20 @@ which prints the non-zero coefficients along with the intercept term. We can als
 L0Learn.predict(fit,X,7)
 ```
 We have demonstrated the simple case of using an L0 penalty alone. For more elaborate penalties/algorithms you can try the other models (i.e., L0Swaps, L0L1, L0L1Swaps, L0L2, and L0L2Swaps).
+
+## Citing L0Learn
+If you find L0Learn useful in your research, please consider citing the following paper:
+```
+@ARTICLE{2018arXiv180301454H,
+   author = {{Hazimeh}, H. and {Mazumder}, R.},
+   title = "{Fast Best Subset Selection: Coordinate Descent and Local Combinatorial Optimization Algorithms}",
+   journal = {ArXiv e-prints},
+   archivePrefix = "arXiv",
+   eprint = {1803.01454},
+   primaryClass = "stat.CO",
+   keywords = {Statistics - Computation, Mathematics - Optimization and Control, Statistics - Machine Learning},
+   year = 2018,
+   month = mar,
+   adsurl = {http://adsabs.harvard.edu/abs/2018arXiv180301454H},
+}
+```
