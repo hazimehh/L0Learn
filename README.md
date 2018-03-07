@@ -1,5 +1,4 @@
-# L0Learn
-## Fast Best Subset Selection: Coordinate Descent and Local Combinatorial Optimization Algorithms 
+# L0Learn: Fast Best Subset Selection
 
 ### Introduction
 L0Learn is a highly optimized framework for solving L0-regularized regression (and soon classification) problems. We consider sparse linear regression problems where the loss function is penalized by combinations of the L0, L1, and L2 norms. Specifically, the framework can approximate the solutions of the following three problems
@@ -8,7 +7,7 @@ L0Learn is a highly optimized framework for solving L0-regularized regression (a
 <img src="https://user-images.githubusercontent.com/11324150/31854351-b6847b12-b665-11e7-879d-a7668f395267.png" width = 300>
 <img src="https://user-images.githubusercontent.com/11324150/31854353-b816a1f8-b665-11e7-86a2-9b3c3c7bde34.png" width = 300>
 
-The optimization is done using coordinate descent and local combinatorial optimization over a grid of the regularization parameter(s) values. We describe the details of the algorithms in our paper: Fast Best Subset Selection: Coordinate Descent and Local Combinatorial Optimization Algorithms ([PDF](https://arxiv.org/abs/1803.01454)). 
+The optimization is done using coordinate descent and local combinatorial optimization over a grid of the regularization parameter(s) values. We describe the details of the algorithms in our paper: Fast Best Subset Selection: Coordinate Descent and Local Combinatorial Optimization Algorithms ([arXiv link](https://arxiv.org/abs/1803.01454)). 
 
 The framework is implemented in C++ along with an easy-to-use R interface. Below we provide the installation instructions for the R package.
 
