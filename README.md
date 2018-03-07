@@ -1,5 +1,4 @@
 # L0Learn
----
 ## Fast Best Subset Selection: Coordinate Descent and Local Combinatorial Optimization Algorithms 
 
 ### Introduction
