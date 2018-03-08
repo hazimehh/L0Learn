@@ -1,4 +1,4 @@
-# L0Learn: Fast Best Subset Selection
+# L0Learn: Fast Best Subset Selection [![Build Status](https://travis-ci.org/hazimehh/L0Learn.svg?branch=master)](https://travis-ci.org/hazimehh/L0Learn)
 
 ## Introduction
 L0Learn is a highly efficient framework for solving L0-regularized regression and classification problems. It can (approximately) solve the following three problems, where the empirical risk is penalized by combinations of the L0, L1, and L2 norms:
