@@ -47,7 +47,7 @@ Rcpp::List L0LearnFit(const arma::mat& X, const arma::vec& y, const std::string 
     std::string SecondParameter = "-1";
     if (PG.P.Specs.L0L1)
     	SecondParameter = "Gamma";
-    else if PG.P.Specs.L0L2)
+    else if (PG.P.Specs.L0L2)
     	SecondParameter = "Gamma";
 		/*
     else if (PG.P.Specs.L1Relaxed)
