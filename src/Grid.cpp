@@ -8,14 +8,13 @@
 // Assumes PG.P.Specs have been already set
 Grid::Grid(const arma::mat& X, const arma::vec& y, const GridParams& PGi){
 	PG = PGi;
+	std::tie(BetaMultiplier, meanX, meany) = Normalize(X,y, Xscaled, yscaled, !PG.P.Specs.Classification); // Don't normalize y
 }
 
 void Grid::Fit()
 {
 
 	  std::vector<FitResult*> G;
-
-		std::tie(BetaMultiplier, meanX, meany) = Normalize(X,y, Xscaled, yscaled, !PG.P.Specs.Classification); // Don't normalize y
 
 		if (PG.P.Specs.L0){
 			G = Grid1D(Xscaled, yscaled, PG).Fit();
