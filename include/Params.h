@@ -1,11 +1,14 @@
 #ifndef PARAMS_H
 #define PARAMS_H
+#include <map>
 //#include <armadillo>
 #include "RcppArmadillo.h"
-#include <map>
+#include "Model.h"
 
 struct Params{
-	std::string ModelType = "L0";
+
+	Model Specs;
+	//std::string ModelType = "L0";
 	std::vector<double> ModelParams {0,0,0,2};
 	unsigned int MaxIters = 500;
 	double Tol = 1e-8;

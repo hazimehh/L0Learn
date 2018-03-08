@@ -20,11 +20,11 @@ Grid2D::Grid2D(const arma::mat& Xi, const arma::vec& yi, const GridParams& PGi){
 std::vector<FitResult*> Grid2D::Fit(){
 
 	arma::vec Xtrarma;
-	if (PG.P.ModelType == "L012Logistic" || PG.P.ModelType == "L012LogisticSwaps"){
+	if (PG.P.Specs.Logistic){
 		Xtrarma = 0.5*arma::abs(y->t() * *X).t(); // = gradient of logistic loss at zero
 	}
 
-	else if (PG.P.ModelType == "L012SquaredHinge" || PG.P.ModelType == "L012SquaredHingeSwaps"){
+	else if (PG.P.Specs.SquaredHinge){
 		Xtrarma = 2*arma::abs(y->t() * *X).t(); // = gradient of loss function at zero
 	}
 
@@ -35,7 +35,7 @@ std::vector<FitResult*> Grid2D::Fit(){
 	double ytXmax = arma::max(Xtrarma);
 
 	unsigned int index;
-	if (PG.Type == "L0L1" || PG.Type == "L0L1Logistic" || PG.Type == "L0L1SquaredHinge" || PG.Type == "L1Relaxed"){
+	if (PG.P.Specs.L0L1){
 		index = 1;
 		if(G_nrows != 1){
 			Lambda2Max = ytXmax;
@@ -43,7 +43,7 @@ std::vector<FitResult*> Grid2D::Fit(){
 		}
 
 	}
-	else if (PG.Type == "L0L2" || PG.Type == "L0L2Logistic" || PG.Type == "L0L2SquaredHinge") {index = 2;}
+	else if (PG.P.Specs.L0L2) {index = 2;}
 
 	arma::vec Lambdas2 = arma::logspace(std::log10(Lambda2Min), std::log10(Lambda2Max), G_nrows);
 	Lambdas2 = arma::flipud(Lambdas2);
