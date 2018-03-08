@@ -8,8 +8,9 @@ using namespace Rcpp;
 
 // L0LearnFit
 Rcpp::List L0LearnFit(const arma::mat& X, const arma::vec& y, const std::string Loss, const std::string Penalty, const std::string Algorithm, const unsigned int NnzStopNum, const unsigned int G_ncols, const unsigned int G_nrows, const double Lambda2Max, const double Lambda2Min, const bool PartialSort, const unsigned int MaxIters, const double Tol, const bool ActiveSet, const unsigned int ActiveSetNum, const unsigned int MaxNumSwaps, const double ScaleDownFactor,  unsigned int ScreenSize );
-RcppExport SEXP _L0Learn_L0LearnFit(SEXP XSEXP, SEXP ySEXP, SEXP LossSEXP, SEXP PenaltySEXP,  SEXP AlgorithmSEXP, SEXP NnzStopNumSEXP, SEXP G_ncolsSEXP, SEXP G_nrowsSEXP, SEXP Lambda2MaxSEXP, SEXP Lambda2MinSEXP, SEXP PartialSortSEXP, SEXP MaxItersSEXP, SEXP TolSEXP, SEXP ActiveSetSEXP, SEXP ActiveSetNumSEXP, SEXP MaxNumSwapsSEXP, SEXP ScaleDownFactorSEXP, SEXP ScreenSizeSEXP) {
-BEGIN_RCPP
+RcppExport SEXP _L0Learn_L0LearnFit(SEXP XSEXP, SEXP ySEXP, SEXP LossSEXP, SEXP PenaltySEXP,  SEXP AlgorithmSEXP, SEXP NnzStopNumSEXP, SEXP G_ncolsSEXP, SEXP G_nrowsSEXP, SEXP Lambda2MaxSEXP, SEXP Lambda2MinSEXP, SEXP PartialSortSEXP, SEXP MaxItersSEXP, SEXP TolSEXP, SEXP ActiveSetSEXP, SEXP ActiveSetNumSEXP, SEXP MaxNumSwapsSEXP, SEXP ScaleDownFactorSEXP, SEXP ScreenSizeSEXP)
+{
+    BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP);
@@ -32,15 +33,17 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const unsigned int >::type ScreenSize(ScreenSizeSEXP);
     rcpp_result_gen = Rcpp::wrap(L0LearnFit(X, y, Loss, Penalty, Algorithm, NnzStopNum, G_ncols, G_nrows, Lambda2Max, Lambda2Min, PartialSort, MaxIters, Tol, ActiveSet, ActiveSetNum, MaxNumSwaps, ScaleDownFactor, ScreenSize));
     return rcpp_result_gen;
-END_RCPP
+    END_RCPP
 }
 
-static const R_CallMethodDef CallEntries[] = {
+static const R_CallMethodDef CallEntries[] =
+{
     {"_L0Learn_L0LearnFit", (DL_FUNC) &_L0Learn_L0LearnFit, 18}, // last entry = num of function parameters
     {NULL, NULL, 0}
 };
 
-RcppExport void R_init_L0Learn(DllInfo *dll) {
+RcppExport void R_init_L0Learn(DllInfo *dll)
+{
     R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
     R_useDynamicSymbols(dll, FALSE);
 }
