@@ -5,7 +5,7 @@ L0Learn is a highly optimized framework for solving L0-regularized regression an
 
 <img src="https://github.com/hazimehh/L0Learn/blob/NewInterface/misc/l0problems.png" width = 400>
 
-L0Learn currently supports the following loss functions: Sqaured Error Loss, Logistic Loss, and Squared Hinge Loss. The optimization is done using coordinate descent and local combinatorial optimization algorithms over a grid of  regularization parameter(s) values. We describe the details of the algorithms in our paper: Fast Best Subset Selection: Coordinate Descent and Local Combinatorial Optimization Algorithms ([arXiv link](https://arxiv.org/abs/1803.01454)). 
+L0Learn currently supports the following loss functions: Squared Error Loss, Logistic Loss, and Squared Hinge Loss. The optimization is done using coordinate descent and local combinatorial optimization algorithms over a grid of  regularization parameter(s) values. We describe the details of the algorithms in our paper: Fast Best Subset Selection: Coordinate Descent and Local Combinatorial Optimization Algorithms ([arXiv link](https://arxiv.org/abs/1803.01454)). 
 
 The toolkit is implemented in C++ along with an easy-to-use R interface. Below we provide the installation instructions for the R package.
 
