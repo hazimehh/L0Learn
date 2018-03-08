@@ -27,24 +27,18 @@ Rcpp::List L0LearnFit(const arma::mat& X, const arma::vec& y, const std::string 
 		P.ScreenSize = ScreenSize;
     PG.P = P;
 
-		switch (Loss){
-			case "SquaredError": PG.P.Specs.SquaredError = true; break;
-			case "Logistic": PG.P.Specs.Logistic = true; PG.P.Specs.Classification = true; break;
-			case "SquaredHinge": PG.P.Specs.SquaredHinge = true; PG.P.Specs.Classification = true; break;
-		}
+		if (Loss == "SquaredError"){PG.P.Specs.SquaredError = true;}
+		else if (Loss == "Logistic"){PG.P.Specs.Logistic = true; PG.P.Specs.Classification = true;}
+		else if (Loss == "SquaredHinge") {PG.P.Specs.SquaredHinge = true; PG.P.Specs.Classification = true;}
 
-		switch (Algorithm){
-			case "CD": PG.P.Specs.CD = true; break;
-			case "CDPSI": PG.P.Specs.PSI = true; break;
-		}
+		if (Algorithm == "CD"){PG.P.Specs.CD = true;}
+		else if (Algorithm == "CDPSI"){PG.P.Specs.PSI = true;}
 
-		switch (Penalty){
-			case "L0": PG.P.Specs.L0 = true; break;
-			case "L0L2": PG.P.Specs.L0L2 = true; break;
-			case "L0L1": PG.P.Specs.L0L1 = true; break;
-			//case "L1": PG.P.Specs.L1 = true; break;
-			//case "L1Relaxed": PG.P.Specs.L1Relaxed = true; break;
-		}
+		if (Penalty == "L0"){ PG.P.Specs.L0 = true;}
+		else if if (Penalty == "L0L2"){ PG.P.Specs.L0L2 = true;}
+		else if if (Penalty == "L0L1"){ PG.P.Specs.L0L1 = true;}
+		//case "L1": PG.P.Specs.L1 = true;
+		//case "L1Relaxed": PG.P.Specs.L1Relaxed = true;
 
     Grid G(X,y,PG);
     G.Fit();
