@@ -36,20 +36,16 @@ Grid1D::Grid1D(const arma::mat& Xi, const arma::vec& yi, const GridParams& PG){
 std::vector<FitResult*> Grid1D::Fit(){
 
 
-	if (P.ModelType == "L0" || P.ModelType == "L012" || P.ModelType == "L012Swaps" || P.ModelType == "L012KSwaps"
-	 		|| P.ModelType == "L012Logistic" || P.ModelType == "L012SquaredHinge" ||
-			 P.ModelType == "L012LogisticSwaps" || P.ModelType == "L012SquaredHingeSwaps"){
+	if (P.Specs.L0 || P.Specs.L0L2 || P.Specs.L0L1){
 		bool scaledown = false;
-
-
 
 		double Lipconst;
 		arma::vec Xtrarma;
-		if (P.ModelType == "L012Logistic" || P.ModelType == "L012LogisticSwaps"){
+		if (P.Specs.Logistic){
 			if (!XtrAvailable){Xtrarma = 0.5*arma::abs(y->t() * *X).t();} // = gradient of logistic loss at zero}
 			Lipconst = 0.25+2*P.ModelParams[2];
 		}
-		else if (P.ModelType == "L012SquaredHinge" || P.ModelType == "L012SquaredHingeSwaps"){
+		else if (P.Specs.SquaredHinge){
 
 			/*
 			Params Ptemp = P;
@@ -68,7 +64,8 @@ std::vector<FitResult*> Grid1D::Fit(){
 			if (!XtrAvailable){Xtrarma = 2*arma::abs(y->t() * *X).t();} // = gradient of loss function at zero}
 			Lipconst = 2+2*P.ModelParams[2];
 		}
-		else{ // regression
+
+		else{ // SquaredError
 			if (!XtrAvailable){
 				*ytX =  y->t() * *X;
 				Xtrarma = arma::abs(*ytX).t(); // Least squares
@@ -152,8 +149,6 @@ std::vector<FitResult*> Grid1D::Fit(){
 			//std::cout<< "||X'r||_inf = "<<Xrmax<< std::endl;
 
 
-
-
 			// Following part assumes that lambda_0 has been set to the new value
 			if(i>= 1 && !scaledown){
 				P.ModelParams[0] = (((Xrmax - P.ModelParams[1])*(Xrmax - P.ModelParams[1]))/(2*(Lipconst)))*0.99; // for numerical stability issues.
@@ -210,11 +205,8 @@ std::vector<FitResult*> Grid1D::Fit(){
 
 				*result = Model->Fit();
 
-
 				//if (i>=1 && arma::norm(result->B-(G.back())->B,"inf")/arma::norm((G.back())->B,"inf") < 0.05){scaledown = true;} // got same solution
 
-
-				//
 				scaledown = false;
 				if (i>= 1)
 				{
@@ -272,7 +264,7 @@ std::vector<FitResult*> Grid1D::Fit(){
 	}
 
 
-	else if (P.ModelType == "L1" || P.ModelType == "L1Relaxed"){
+	else if (P.Specs.L1 || P.Specs.L1Relaxed){
 
 
 		*Xtr = arma::conv_to< std::vector<double> >::from(arma::abs(y->t() * *X).t()); // ToDO: double computation, handle later

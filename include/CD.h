@@ -20,7 +20,6 @@ protected:
 public:
 	const arma::mat * X;
 	const arma::vec * y;
-	std::string ModelType;
 	std::vector<double> ModelParams;
 
 	char CyclingOrder;
