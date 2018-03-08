@@ -24,7 +24,7 @@ std::vector<FitResult*> Grid2D::Fit(){
 		Xtrarma = 0.5*arma::abs(y->t() * *X).t(); // = gradient of logistic loss at zero
 	}
 
-	else if ((PG.P.Specs.SquaredHinge){
+	else if (PG.P.Specs.SquaredHinge){
 		Xtrarma = 2*arma::abs(y->t() * *X).t(); // = gradient of loss function at zero
 	}
 
