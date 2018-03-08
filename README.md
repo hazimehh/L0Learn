@@ -1,13 +1,13 @@
 # L0Learn: Fast Best Subset Selection
 
 ## Introduction
-L0Learn is a highly optimized framework for solving L0-regularized regression and classification problems. It can solve problems where the empirical risk is penalized by combinations of the L0, L1, and L2 norms; specifically, it approximates the solutions of the following three problems
+L0Learn is a highly efficient framework for solving L0-regularized regression and classification problems. It can (approximately) solve the following three problems, where the empirical risk is penalized by combinations of the L0, L1, and L2 norms:
 
 <img src="https://github.com/hazimehh/L0Learn/blob/NewInterface/misc/l0problems.png" width = 400>
 
-L0Learn currently supports the following loss functions: Squared Error Loss, Logistic Loss, and Squared Hinge Loss. The optimization is done using coordinate descent and local combinatorial optimization algorithms over a grid of  regularization parameter(s) values. We describe the details of the algorithms in our paper: Fast Best Subset Selection: Coordinate Descent and Local Combinatorial Optimization Algorithms ([arXiv link](https://arxiv.org/abs/1803.01454)). 
+L0Learn currently supports the following loss functions: Squared Error Loss, Logistic Loss, and Squared Hinge Loss. The optimization is done using coordinate descent and local combinatorial search over a grid of regularization parameter(s) values. We describe the details of the algorithms in our paper: *Fast Best Subset Selection: Coordinate Descent and Local Combinatorial Optimization Algorithms* ([arXiv link](https://arxiv.org/abs/1803.01454)). 
 
-The toolkit is implemented in C++ along with an easy-to-use R interface. Below we provide the installation instructions for the R package.
+The toolkit is implemented in C++11 and can often run faster than popular sparse learning toolkits (see our experiments in the paper above). We also provide an easy-to-use R interface.
 
 ## R Package Installation
 Most of the toolkit is built using C++11, which might not be compatible with older versions of R. Before proceeding with the installation we recommend installing the latest version of R (currently 3.4). In R, you will need first to install and load the "devtools" package:
