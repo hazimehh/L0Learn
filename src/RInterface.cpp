@@ -35,8 +35,8 @@ Rcpp::List L0LearnFit(const arma::mat& X, const arma::vec& y, const std::string 
 		else if (Algorithm == "CDPSI"){PG.P.Specs.PSI = true;}
 
 		if (Penalty == "L0"){ PG.P.Specs.L0 = true;}
-		else if if (Penalty == "L0L2"){ PG.P.Specs.L0L2 = true;}
-		else if if (Penalty == "L0L1"){ PG.P.Specs.L0L1 = true;}
+		else if (Penalty == "L0L2"){ PG.P.Specs.L0L2 = true;}
+		else if (Penalty == "L0L1"){ PG.P.Specs.L0L1 = true;}
 		//case "L1": PG.P.Specs.L1 = true;
 		//case "L1Relaxed": PG.P.Specs.L1Relaxed = true;
 
