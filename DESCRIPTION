@@ -7,6 +7,7 @@ Author: Hussein Hazimeh
 	Rahul Mazumder
 Maintainer: Hussein Hazimeh <hazimeh@mit.edu>
 Description: Highly optimized coordinate descent-based algorithms for (approximately) solving L0 regularized learning problems.
-License: MIT
-Imports: Rcpp (>= 0.12.13), Matrix
+License: MIT + file LICENSE
+Imports: Rcpp (>= 0.12.13), Matrix, methods
 LinkingTo: Rcpp, RcppArmadillo
+RoxygenNote: 6.0.1
