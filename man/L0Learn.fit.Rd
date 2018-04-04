@@ -8,8 +8,8 @@ L0Learn.fit(X, y, Loss = "SquaredError", Penalty = "L0", Algorithm = "CD",
   MaxSuppSize = 100, NLambda = 100, NGamma = 10, GammaMax = 10,
   GammaMin = 1e-04, PartialSort = TRUE, MaxIters = 200, Tol = 1e-06,
   ActiveSet = TRUE, ActiveSetNum = 3, MaxSwaps = 100,
-  ScaleDownFactor = 0.8, ScreenSize = 1000, AutoLambda0 = FALSE,
-  Lambda0Grid = c())
+  ScaleDownFactor = 0.8, ScreenSize = 1000, AutoLambda0 = TRUE,
+  Lambda0Grid = c(0))
 }
 \arguments{
 \item{X}{The data matrix.}

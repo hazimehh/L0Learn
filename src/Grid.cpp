@@ -37,11 +37,13 @@ void Grid::Fit()
 
         NnzCount.push_back(g->B.n_nonzero);
 
-        if (g->IterNum != PG.P.MaxIters){
-            Converged.push_back(true)
+        if (g->IterNum != PG.P.MaxIters)
+        {
+            Converged.push_back(true);
         }
-        else{
-            Converged.push_back(false)
+        else
+        {
+            Converged.push_back(false);
         }
 
         arma::sp_mat B_unscaled;
