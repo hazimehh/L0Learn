@@ -15,7 +15,6 @@ class CDL012SquaredHinge : public CD
         double b0;
         std::vector<double> * Xtr;
         unsigned int Iter;
-        FitResult result;
         arma::vec onemyxb;
 
     public:

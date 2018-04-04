@@ -84,7 +84,8 @@ Rcpp::List L0LearnFit(const arma::mat& X, const arma::vec& y, const std::string 
                                   Rcpp::Named("SuppSize") = G.NnzCount,
                                   Rcpp::Named("BetaIndices") = indices,
                                   Rcpp::Named("BetaValues") = values,
-                                  Rcpp::Named("Intercept") = G.Intercepts);
+                                  Rcpp::Named("Intercept") = G.Intercepts,
+                                  Rcpp::Named("Converged") = G.Converged);
     }
 
     else
@@ -93,6 +94,8 @@ Rcpp::List L0LearnFit(const arma::mat& X, const arma::vec& y, const std::string 
                                   Rcpp::Named("SuppSize") = G.NnzCount,
                                   Rcpp::Named("BetaIndices") = indices,
                                   Rcpp::Named("BetaValues") = values,
-                                  Rcpp::Named("Intercept") = G.Intercepts);
+                                  Rcpp::Named("Intercept") = G.Intercepts,
+                                  Rcpp::Named("Converged") = G.Converged);
+
     }
 }

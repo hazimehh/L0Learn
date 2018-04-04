@@ -127,8 +127,6 @@ FitResult CDL012Logistic::Fit()
         //B.print();
         if (Converged())
         {
-
-            result.IterNum = t + 1;
             if (Stabilized == true && !SecondPass)
             {
                 Order = OldOrder; // Recycle over all coordinates to make sure the achieved point is a CW-min.
@@ -165,6 +163,8 @@ FitResult CDL012Logistic::Fit()
     result.Model = this;
     result.intercept = b0;
     result.ExpyXB = ExpyXB;
+    result.IterNum = CurrentIters;
+
     return result;
 }
 

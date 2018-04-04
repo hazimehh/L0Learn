@@ -13,7 +13,6 @@ class CDL012 : public CD
         unsigned int Iter;
         unsigned int ScreenSize;
         std::vector<unsigned int> Range1p;
-        FitResult result;
     public:
         CDL012(const arma::mat& Xi, const arma::vec& yi, const Params& P);
 

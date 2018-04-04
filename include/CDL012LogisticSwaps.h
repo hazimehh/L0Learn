@@ -17,7 +17,6 @@ class CDL012LogisticSwaps : public CD
         arma::vec ExpyXB;
         std::vector<double> * Xtr;
         unsigned int Iter;
-        FitResult result;
 
         unsigned int MaxNumSwaps;
         Params P;

@@ -56,8 +56,6 @@ FitResult CDL012::Fit()
         //B.print();
         if (Converged())
         {
-            result.IterNum = t + 1;
-
             if(FirstRestrictedPass && ActiveSetInitial)
             {
                 if (CWMinCheck()) {break;}
@@ -93,6 +91,7 @@ FitResult CDL012::Fit()
     result.B = B;
     result.Model = this;
     result.r = r; // change to pointer later
+    result.IterNum = CurrentIters;
     return result;
 }
 

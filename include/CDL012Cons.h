@@ -11,7 +11,6 @@ class CDL012Cons : public CD
         unsigned int k = 100;
         double thr;
         unsigned int Iter;
-        FitResult result;
         double Onep2lamda2;
 
     public:

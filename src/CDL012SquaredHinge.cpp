@@ -87,7 +87,6 @@ FitResult CDL012SquaredHinge::Fit()
         if (Converged())
         {
 
-            result.IterNum = t + 1;
             if (Stabilized == true && !SecondPass)
             {
                 Order = OldOrder; // Recycle over all coordinates to make sure the achieved point is a CW-min.
@@ -110,6 +109,7 @@ FitResult CDL012SquaredHinge::Fit()
     result.B = B;
     result.Model = this;
     result.intercept = b0;
+    result.IterNum = CurrentIters;
     return result;
 }
 

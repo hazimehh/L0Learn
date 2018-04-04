@@ -16,7 +16,6 @@ class CDL012SquaredHingeSwaps : public CD
         double stl0Lc;
         std::vector<double> * Xtr;
         unsigned int Iter;
-        FitResult result;
 
         unsigned int MaxNumSwaps;
         Params P;

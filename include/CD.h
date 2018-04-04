@@ -17,6 +17,7 @@ class CD
         arma::vec r; //vector of residuals
         std::vector<unsigned int> Order; // Cycling order
         std::vector<unsigned int> OldOrder; // Cycling order to be used after support stabilization + convergence.
+        FitResult result;
 
     public:
         const arma::mat * X;
@@ -25,6 +26,7 @@ class CD
 
         char CyclingOrder;
         unsigned int MaxIters;
+        unsigned int CurrentIters; // current number of iterations - maintained by Converged()
         double Tol;
         bool ActiveSet;
         unsigned int ActiveSetNum;

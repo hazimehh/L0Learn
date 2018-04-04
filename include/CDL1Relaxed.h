@@ -8,7 +8,6 @@ class CDL1Relaxed : public CD
     private:
         double thr;
         std::vector<double> * Xtr;
-        FitResult result;
 
     public:
         CDL1Relaxed(const arma::mat& Xi, const arma::vec& yi, const Params& P);

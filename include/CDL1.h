@@ -8,7 +8,6 @@ class CDL1 : public CD
     private:
         double thr;
         std::vector<double> * Xtr;
-        FitResult result;
 
     public:
         CDL1(const arma::mat& Xi, const arma::vec& yi, const Params& P);

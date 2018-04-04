@@ -47,11 +47,14 @@ CD::CD(const arma::mat& Xi, const arma::vec& yi, const Params& P) :
         std::iota(std::begin(cyclic), std::end(cyclic), 0);
         Order = cyclic;
     }
+
+    CurrentIters = 0;
 }
 
 
 bool CD::Converged()
 {
+    CurrentIters += 1; // keeps track of the number of calls to Converged
     double objectiveold = objective;
     objective = this->Objective(r, B);
     if (std::abs(objectiveold - objective) / objectiveold <= Tol) // handles obj <=0 for non-descent methods

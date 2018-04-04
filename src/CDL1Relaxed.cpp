@@ -43,8 +43,6 @@ FitResult CDL1Relaxed::Fit()
         //B.print();
         if (Converged())
         {
-
-            result.IterNum = t + 1;
             if (Stabilized == true && !SecondPass)
             {
                 Order = OldOrder; // Recycle over all coordinates to make sure the achieved point is a CW-min.
@@ -86,6 +84,7 @@ FitResult CDL1Relaxed::Fit()
     result.Objective = objective;
     result.B = B;
     result.Model = this;
+    result.IterNum = CurrentIters;
     return result;
 }
 

@@ -16,7 +16,6 @@ class CDL012Logistic : public CD
         arma::vec ExpyXB;
         std::vector<double> * Xtr;
         unsigned int Iter;
-        FitResult result;
     public:
         CDL012Logistic(const arma::mat& Xi, const arma::vec& yi, const Params& P);
 

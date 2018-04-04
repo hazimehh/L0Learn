@@ -23,6 +23,7 @@ class Grid
         std::vector<unsigned int> NnzCount;
         std::vector<arma::sp_mat> Solutions;
         std::vector<double> Intercepts;
+        std::vector<bool> Converged;
 
         Grid(const arma::mat& X, const arma::vec& y, const GridParams& PG);
 
