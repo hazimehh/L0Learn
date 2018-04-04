@@ -6,49 +6,64 @@
 #include <chrono> // Remove
 
 // Assumes PG.P.Specs have been already set
-Grid::Grid(const arma::mat& X, const arma::vec& y, const GridParams& PGi){
-	PG = PGi;
-	std::tie(BetaMultiplier, meanX, meany) = Normalize(X,y, Xscaled, yscaled, !PG.P.Specs.Classification); // Don't normalize y
+Grid::Grid(const arma::mat& X, const arma::vec& y, const GridParams& PGi)
+{
+    PG = PGi;
+    std::tie(BetaMultiplier, meanX, meany) = Normalize(X, y, Xscaled, yscaled, !PG.P.Specs.Classification); // Don't normalize y
 }
 
 void Grid::Fit()
 {
 
-	  std::vector<FitResult*> G;
+    std::vector<FitResult*> G;
 
-		if (PG.P.Specs.L0){
-			G = Grid1D(Xscaled, yscaled, PG).Fit();
-		}
-		else{
-			G = Grid2D(Xscaled, yscaled, PG).Fit();
-		}
+    if (PG.P.Specs.L0)
+    {
+        G = Grid1D(Xscaled, yscaled, PG).Fit();
+    }
+    else
+    {
+        G = Grid2D(Xscaled, yscaled, PG).Fit();
+    }
 
-    for (auto &g: G){
+    for (auto &g : G)
+    {
         Lambda0.push_back(g->ModelParams[0]);
 
         if (PG.P.Specs.L0L1)
-        	Lambda12.push_back(g->ModelParams[1]);
+        { Lambda12.push_back(g->ModelParams[1]); }
         else if (PG.P.Specs.L0L2)
-        	Lambda12.push_back(g->ModelParams[2]);
+        { Lambda12.push_back(g->ModelParams[2]); }
 
         NnzCount.push_back(g->B.n_nonzero);
 
-		arma::sp_mat B_unscaled;
-		double intercept;
+        if (g->IterNum != PG.P.MaxIters)
+        {
+            Converged.push_back(true);
+        }
+        else
+        {
+            Converged.push_back(false);
+        }
 
-		if (PG.P.Specs.Classification){
-			std::tie(B_unscaled, intercept) = DeNormalize(g->B, BetaMultiplier, meanX, meany);
-					Solutions.push_back(B_unscaled);
-					Intercepts.push_back(g->intercept + intercept); // + needed
-		}
+        arma::sp_mat B_unscaled;
+        double intercept;
 
-		else{
-			std::tie(B_unscaled, intercept) = DeNormalize(g->B, BetaMultiplier, meanX, meany);
-					Solutions.push_back(B_unscaled);
-					Intercepts.push_back(intercept);
-		}
+        if (PG.P.Specs.Classification)
+        {
+            std::tie(B_unscaled, intercept) = DeNormalize(g->B, BetaMultiplier, meanX, meany);
+            Solutions.push_back(B_unscaled);
+            Intercepts.push_back(g->intercept + intercept); // + needed
+        }
 
-  }
+        else
+        {
+            std::tie(B_unscaled, intercept) = DeNormalize(g->B, BetaMultiplier, meanX, meany);
+            Solutions.push_back(B_unscaled);
+            Intercepts.push_back(intercept);
+        }
+
+    }
 
 }
 

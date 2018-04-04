@@ -4,29 +4,30 @@
 #include "GridParams.h"
 #include "FitResult.h"
 
-class Grid1D{
-private:
-	unsigned int G_ncols;
-	Params P;
-	const arma::mat * X;
-	const arma::vec * y;
-	unsigned int p;
-	std::vector<FitResult*> G;
-	arma::vec Lambdas;
-	bool LambdaU;
-	unsigned int NnzStopNum;
-	std::vector<double> * Xtr;
-	arma::rowvec * ytX;
-	double LambdaMinFactor;
-	bool Refine;
-	bool PartialSort;
-	bool XtrAvailable;
-	double ytXmax2d;
-	double ScaleDownFactor;
+class Grid1D
+{
+    private:
+        unsigned int G_ncols;
+        Params P;
+        const arma::mat * X;
+        const arma::vec * y;
+        unsigned int p;
+        std::vector<FitResult*> G;
+        arma::vec Lambdas;
+        bool LambdaU;
+        unsigned int NnzStopNum;
+        std::vector<double> * Xtr;
+        arma::rowvec * ytX;
+        double LambdaMinFactor;
+        bool Refine;
+        bool PartialSort;
+        bool XtrAvailable;
+        double ytXmax2d;
+        double ScaleDownFactor;
 
-public:
-	Grid1D(const arma::mat& Xi, const arma::vec& yi, const GridParams& PG);
-	std::vector<FitResult*> Fit();
+    public:
+        Grid1D(const arma::mat& Xi, const arma::vec& yi, const GridParams& PG);
+        std::vector<FitResult*> Fit();
 };
 
 #endif

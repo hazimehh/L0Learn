@@ -1,12 +1,13 @@
 Package: L0Learn
 Type: Package
-Title: L0 Regularization Algorithms
-Version: 1.0-0
-Date: 2017-10-20
+Title: Fast Algorithms for Best Subset Selection
+Version: 0.2-2
+Date: 2018-04-04
 Author: Hussein Hazimeh
 	Rahul Mazumder
 Maintainer: Hussein Hazimeh <hazimeh@mit.edu>
 Description: Highly optimized coordinate descent-based algorithms for (approximately) solving L0 regularized learning problems.
-License: GPL-2
-Imports: Rcpp (>= 0.12.13), Matrix
+License: MIT + file LICENSE
+Imports: Rcpp (>= 0.12.13), Matrix, methods
 LinkingTo: Rcpp, RcppArmadillo
+RoxygenNote: 6.0.1

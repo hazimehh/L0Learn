@@ -1,0 +1,6 @@
+language: R
+r:
+  - release
+sudo: false
+cache: packages
+warnings_are_errors: false
