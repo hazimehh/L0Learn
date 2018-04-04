@@ -8,8 +8,8 @@ L0Learn.fit(X, y, Loss = "SquaredError", Penalty = "L0", Algorithm = "CD",
   MaxSuppSize = 100, NLambda = 100, NGamma = 10, GammaMax = 10,
   GammaMin = 1e-04, PartialSort = TRUE, MaxIters = 200, Tol = 1e-06,
   ActiveSet = TRUE, ActiveSetNum = 3, MaxSwaps = 100,
-  ScaleDownFactor = 0.8, ScreenSize = 1000, AutoLambda0 = TRUE,
-  Lambda0Grid = c(0))
+  ScaleDownFactor = 0.8, ScreenSize = 1000, AutoLambda = TRUE,
+  LambdaGrid = c(0))
 }
 \arguments{
 \item{X}{The data matrix.}
@@ -42,14 +42,14 @@ automatically selected by the toolkit.}
 \item{GammaMin}{The minimum value of Gamma when using the L0L2 penalty. For the L0L1 penalty, GammaMin
 specifies the fraction of GammaMax at which the grid ends.}
 
-\item{PartialSort}{If true partial sorting will be used for sorting the coordinates (see our paper for
+\item{PartialSort}{If TRUE partial sorting will be used for sorting the coordinates (see our paper for
 for details). Otherwise, full sorting is used.}
 
 \item{MaxIters}{The maximum number of iterations (full cycles) for CD per grid point.}
 
 \item{Tol}{The tolerance which decides when to terminate CD (based on the relative change in the objective).}
 
-\item{ActiveSet}{If true, performs active set updates.}
+\item{ActiveSet}{If TRUE, performs active set updates.}
 
 \item{ActiveSetNum}{The number of consecutive times a support should appear before declaring support stabilization.}
 
@@ -61,10 +61,10 @@ of Tuning Parameters).}
 
 \item{ScreenSize}{The number of coordinates to cycle over when performing correlation screening.}
 
-\item{AutoLambda0}{If FALSE, the user specifier a grid of Lambda0 values through the Lambda0Grid parameter. Otherwise,
+\item{AutoLambda}{If FALSE, the user specifier a grid of Lambda0 values through the Lambda0Grid parameter. Otherwise,
 if TRUE, the values of Lambda0 are automatically selected based on the data.}
 
-\item{Lambda0Grid}{A vector of Lambda0 values to use in computing the regularization path. This is ignored unless AutoLambda0 = FALSE.}
+\item{LambdaGrid}{A vector of Lambda0 values to use in computing the regularization path. This is ignored unless AutoLambda0 = FALSE.}
 }
 \value{
 An object of type "L0Learn" containing all the solutions in the computed regularization path.

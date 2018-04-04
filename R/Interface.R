@@ -22,28 +22,28 @@
 #' automatically selected by the toolkit.
 #' @param GammaMin The minimum value of Gamma when using the L0L2 penalty. For the L0L1 penalty, GammaMin
 #' specifies the fraction of GammaMax at which the grid ends.
-#' @param PartialSort If true partial sorting will be used for sorting the coordinates (see our paper for
+#' @param PartialSort If TRUE partial sorting will be used for sorting the coordinates (see our paper for
 #' for details). Otherwise, full sorting is used.
 #' @param MaxIters The maximum number of iterations (full cycles) for CD per grid point.
 #' @param Tol The tolerance which decides when to terminate CD (based on the relative change in the objective).
-#' @param ActiveSet If true, performs active set updates.
+#' @param ActiveSet If TRUE, performs active set updates.
 #' @param ActiveSetNum The number of consecutive times a support should appear before declaring support stabilization.
 #' @param MaxSwaps The maximum number of swaps used by CDPSI for each grid point.
 #' @param ScaleDownFactor This parameter decides how close the selected Lambda values are. The choice should be between
 #' strictly between 0 and 1 (i.e., 0 and 1 are not allowed). For details, see our paper - Section 5 on Adaptive Selection
 #' of Tuning Parameters).
 #' @param ScreenSize The number of coordinates to cycle over when performing correlation screening.
-#' @param AutoLambda0 If FALSE, the user specifier a grid of Lambda0 values through the Lambda0Grid parameter. Otherwise,
+#' @param AutoLambda If FALSE, the user specifier a grid of Lambda0 values through the Lambda0Grid parameter. Otherwise,
 #' if TRUE, the values of Lambda0 are automatically selected based on the data.
-#' @param Lambda0Grid A vector of Lambda0 values to use in computing the regularization path. This is ignored unless AutoLambda0 = FALSE.
+#' @param LambdaGrid A vector of Lambda0 values to use in computing the regularization path. This is ignored unless AutoLambda0 = FALSE.
 #' @return An object of type "L0Learn" containing all the solutions in the computed regularization path.
 #' @export
 L0Learn.fit <- function(X,y, Loss="SquaredError", Penalty="L0", Algorithm="CD", MaxSuppSize=100, NLambda=100, NGamma=10,
 						GammaMax=10, GammaMin=0.0001, PartialSort = TRUE, MaxIters=200,
-						Tol=1e-6, ActiveSet=TRUE, ActiveSetNum=3, MaxSwaps=100, ScaleDownFactor=0.8, ScreenSize=1000, AutoLambda0 = TRUE, Lambda0Grid = c(0))
+						Tol=1e-6, ActiveSet=TRUE, ActiveSetNum=3, MaxSwaps=100, ScaleDownFactor=0.8, ScreenSize=1000, AutoLambda = TRUE, LambdaGrid = c(0))
 {
 	# The C++ function uses LambdaU = 1 for user-specified grid. In R, we use AutoLambda0 = 0 for user-specified grid (thus the negation when passing the paramter to the function below)
-	G <- .Call('_L0Learn_L0LearnFit', PACKAGE = 'L0Learn', X, y, Loss, Penalty, Algorithm, MaxSuppSize, NLambda, NGamma, GammaMax, GammaMin, PartialSort, MaxIters, Tol, ActiveSet, ActiveSetNum, MaxSwaps, ScaleDownFactor, ScreenSize, !AutoLambda0, Lambda0Grid)
+	G <- .Call('_L0Learn_L0LearnFit', PACKAGE = 'L0Learn', X, y, Loss, Penalty, Algorithm, MaxSuppSize, NLambda, NGamma, GammaMax, GammaMin, PartialSort, MaxIters, Tol, ActiveSet, ActiveSetNum, MaxSwaps, ScaleDownFactor, ScreenSize, !AutoLambda, LambdaGrid)
 
 	class(G) <- "L0Learn"
 	G$.n <- dim(X)[1]
