@@ -33,14 +33,17 @@
 #' strictly between 0 and 1 (i.e., 0 and 1 are not allowed). For details, see our paper - Section 5 on Adaptive Selection
 #' of Tuning Parameters).
 #' @param ScreenSize The number of coordinates to cycle over when performing correlation screening.
+#' @param AutoLambda0 If FALSE, the user specifier a grid of Lambda0 values through the Lambda0Grid parameter. Otherwise,
+#' if TRUE, the values of Lambda0 are automatically selected based on the data.
+#' @param Lambda0Grid A vector of Lambda0 values to use in computing the regularization path. This is ignored unless AutoLambda0 = FALSE.
 #' @return An object of type "L0Learn" containing all the solutions in the computed regularization path.
 #' @export
 L0Learn.fit <- function(X,y, Loss="SquaredError", Penalty="L0", Algorithm="CD", MaxSuppSize=100, NLambda=100, NGamma=10,
 						GammaMax=10, GammaMin=0.0001, PartialSort = TRUE, MaxIters=200,
-						Tol=1e-6, ActiveSet=TRUE, ActiveSetNum=3, MaxSwaps=100, ScaleDownFactor=0.8, ScreenSize=1000)
+						Tol=1e-6, ActiveSet=TRUE, ActiveSetNum=3, MaxSwaps=100, ScaleDownFactor=0.8, ScreenSize=1000, AutoLambda0 = FALSE, Lambda0Grid = c())
 {
-	G <- .Call('_L0Learn_L0LearnFit', PACKAGE = 'L0Learn', X,y, Loss, Penalty, Algorithm, MaxSuppSize, NLambda, NGamma,
-						GammaMax, GammaMin, PartialSort, MaxIters, Tol, ActiveSet, ActiveSetNum, MaxSwaps, ScaleDownFactor, ScreenSize)
+	G <- .Call('_L0Learn_L0LearnFit', PACKAGE = 'L0Learn', X, y, Loss, Penalty, Algorithm, MaxSuppSize, NLambda, NGamma, GammaMax, GammaMin, PartialSort, MaxIters, Tol, ActiveSet, ActiveSetNum, MaxSwaps, ScaleDownFactor, ScreenSize, AutoLambda0, Lambda0Grid)
+
 	class(G) <- "L0Learn"
 	G$.n <- dim(X)[1]
 	G$.p <- dim(X)[2]

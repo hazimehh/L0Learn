@@ -7,7 +7,7 @@ struct GridParams
     Params P;
     unsigned int G_ncols = 100;
     unsigned int G_nrows = 10;
-    bool LambdaU;
+    bool LambdaU = false;
     unsigned int NnzStopNum = 200;
     double LambdaMinFactor = 0.01;
     arma::vec Lambdas;

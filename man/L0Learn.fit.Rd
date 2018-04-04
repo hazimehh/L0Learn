@@ -8,7 +8,8 @@ L0Learn.fit(X, y, Loss = "SquaredError", Penalty = "L0", Algorithm = "CD",
   MaxSuppSize = 100, NLambda = 100, NGamma = 10, GammaMax = 10,
   GammaMin = 1e-04, PartialSort = TRUE, MaxIters = 200, Tol = 1e-06,
   ActiveSet = TRUE, ActiveSetNum = 3, MaxSwaps = 100,
-  ScaleDownFactor = 0.8, ScreenSize = 1000)
+  ScaleDownFactor = 0.8, ScreenSize = 1000, AutoLambda0 = FALSE,
+  Lambda0Grid = c())
 }
 \arguments{
 \item{X}{The data matrix.}
@@ -59,6 +60,11 @@ strictly between 0 and 1 (i.e., 0 and 1 are not allowed). For details, see our p
 of Tuning Parameters).}
 
 \item{ScreenSize}{The number of coordinates to cycle over when performing correlation screening.}
+
+\item{AutoLambda0}{If FALSE, the user specifier a grid of Lambda0 values through the Lambda0Grid parameter. Otherwise,
+if TRUE, the values of Lambda0 are automatically selected based on the data.}
+
+\item{Lambda0Grid}{A vector of Lambda0 values to use in computing the regularization path. This is ignored unless AutoLambda0 = FALSE.}
 }
 \value{
 An object of type "L0Learn" containing all the solutions in the computed regularization path.

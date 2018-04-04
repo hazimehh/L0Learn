@@ -18,9 +18,20 @@ Grid1D::Grid1D(const arma::mat& Xi, const arma::vec& yi, const GridParams& PG)
     P.r = new arma::vec(Xi.n_rows);
     Xtr = P.Xtr;
     ytX = P.ytX;
-    G_ncols = PG.G_ncols;
+
+    LambdaU = PG.LambdaU;
+
+    if (!LambdaU)
+    {
+      G_ncols = PG.G_ncols;
+    }
+    else
+    {
+      G_ncols = PG.Lambdas.n_rows; // override the user's ncols if LambdaU = 1
+    }
+
     G.reserve(G_ncols);
-    if (PG.LambdaU) {Lambdas = PG.Lambdas;}
+    if (LambdaU) {Lambdas = PG.Lambdas;} // user-defined lambda0 grid
     /*
     else {
     	Lambdas.reserve(G_ncols);
@@ -36,8 +47,6 @@ Grid1D::Grid1D(const arma::mat& Xi, const arma::vec& yi, const GridParams& PG)
 
 std::vector<FitResult*> Grid1D::Fit()
 {
-
-
     if (P.Specs.L0 || P.Specs.L0L2 || P.Specs.L0L1)
     {
         bool scaledown = false;
@@ -93,7 +102,15 @@ std::vector<FitResult*> Grid1D::Fit()
         }
 
         double lambdamax = ((ytXmax - P.ModelParams[1]) * (ytXmax - P.ModelParams[1])) / (2 * (Lipconst));
-        P.ModelParams[0] = lambdamax;
+        if (!LambdaU)
+        {
+            P.ModelParams[0] = lambdamax;
+        }
+        else
+        {
+            P.ModelParams[0] = Lambdas[0];
+        }
+
         P.Init = 'z';
 
 
@@ -162,7 +179,7 @@ std::vector<FitResult*> Grid1D::Fit()
 
 
             // Following part assumes that lambda_0 has been set to the new value
-            if(i >= 1 && !scaledown)
+            if(i >= 1 && !scaledown && !LambdaU)
             {
                 P.ModelParams[0] = (((Xrmax - P.ModelParams[1]) * (Xrmax - P.ModelParams[1])) / (2 * (Lipconst))) * 0.99; // for numerical stability issues.
                 if (P.ModelParams[0] >= prevresult->ModelParams[0])
@@ -171,10 +188,15 @@ std::vector<FitResult*> Grid1D::Fit()
                     //std::cout<<"INSTABILITY HANDELED"<<std::endl;
                 } // handles numerical instability.
             }
-            else if (i >= 1)
+            else if (i >= 1 && !LambdaU)
             {
                 P.ModelParams[0] = std::min(P.ModelParams[0] * ScaleDownFactor, (((Xrmax - P.ModelParams[1]) * (Xrmax - P.ModelParams[1])) / (2 * (Lipconst))) * 0.97 );
             } // add 0.9 as an R param
+
+            else if (i >= 1 && LambdaU)
+            {
+                P.ModelParams[0] = Lambdas[i];
+            }
 
             double thr = sqrt(2 * P.ModelParams[0] * (Lipconst)) + P.ModelParams[1]; // pass this to class? we're calc this twice now
 
