@@ -28,6 +28,7 @@ void Grid::Fit()
         G = Grid2D(Xscaled, yscaled, PG).Fit();
     }
 
+    std::cout<<"Here -1"<< std::endl;
 
     //for (auto &g : G)
     for (unsigned int i=0; i<G.size(); ++i)
@@ -39,6 +40,8 @@ void Grid::Fit()
 
         for (auto &g : G[i])
         {
+            std::cout<<"Here -2"<< std::endl;
+
             Lambda0[i].push_back(g->ModelParams[0]);
 
             NnzCount[i].push_back(g->B.n_nonzero);
@@ -55,6 +58,8 @@ void Grid::Fit()
             arma::sp_mat B_unscaled;
             double intercept;
 
+            std::cout<<"Here -3"<< std::endl;
+
             if (PG.P.Specs.Classification)
             {
                 std::tie(B_unscaled, intercept) = DeNormalize(g->B, BetaMultiplier, meanX, meany);
@@ -68,6 +73,10 @@ void Grid::Fit()
                 Solutions[i].push_back(B_unscaled);
                 Intercepts[i].push_back(intercept);
             }
+
+            std::cout<<"Here -4"<< std::endl;
+
+
         }
 
     }
