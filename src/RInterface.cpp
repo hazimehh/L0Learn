@@ -47,6 +47,8 @@ Rcpp::List L0LearnFit(const arma::mat& X, const arma::vec& y, const std::string 
     Grid G(X, y, PG);
     G.Fit();
 
+    std::cout<<"Here 1"<< std::endl;
+
     std::string FirstParameter = "lambda";
     std::string SecondParameter = "-1";
     if (PG.P.Specs.L0L1)
@@ -66,17 +68,23 @@ Rcpp::List L0LearnFit(const arma::mat& X, const arma::vec& y, const std::string 
 
     // Next Construct the list of Sparse Beta Matrices.
     std::vector<arma::sp_mat> Bs;
+    std::cout<<"Here 2"<< std::endl;
+
     for (unsigned int i=0; i<G.Lambda12.size(); ++i)
     {
         // create the px(reg path size) sparse sparseMatrix
         arma::sp_mat B(p,G.Solutions[i].size());
+        std::cout<<"Here 3"<< std::endl;
+
         for (unsigned int j=0; j<G.Solutions[i].size(); ++j)
         {
+            std::cout<<"Here 4"<< std::endl;
             B.col(j) = G.Solutions[i][j];
         }
 
         // append the sparse matrix
         Bs.push_back(B);
+        std::cout<<"Here 5"<< std::endl;
 
     }
 
