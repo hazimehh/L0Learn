@@ -21,6 +21,7 @@ void Grid::Fit()
     {
         auto G1D = Grid1D(Xscaled, yscaled, PG).Fit();
         G.push_back(G1D);
+        Lambda12.push_back(0);
     }
     else
     {
