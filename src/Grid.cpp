@@ -28,6 +28,13 @@ void Grid::Fit()
         G = Grid2D(Xscaled, yscaled, PG).Fit();
     }
 
+    Lambda0 = std::vector< std::vector<double> >(G.size());
+    NnzCount = std::vector< std::vector<unsigned int> >(G.size());
+    Solutions = std::vector< std::vector<arma::sp_mat> >(G.size());
+    Intercepts = std::vector< std::vector<double> >(G.size());
+    Converged = std::vector< std::vector<bool> >(G.size());
+
+
     std::cout<<"Here -1"<< std::endl;
 
     //for (auto &g : G)
