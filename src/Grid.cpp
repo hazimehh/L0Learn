@@ -35,7 +35,6 @@ void Grid::Fit()
     Converged = std::vector< std::vector<bool> >(G.size());
 
 
-    std::cout<<"Here -1"<< std::endl;
 
     //for (auto &g : G)
     for (unsigned int i=0; i<G.size(); ++i)
@@ -47,7 +46,6 @@ void Grid::Fit()
 
         for (auto &g : G[i])
         {
-            std::cout<<"Here -2"<< std::endl;
 
             Lambda0[i].push_back(g->ModelParams[0]);
 
@@ -65,7 +63,6 @@ void Grid::Fit()
             arma::sp_mat B_unscaled;
             double intercept;
 
-            std::cout<<"Here -3"<< std::endl;
 
             if (PG.P.Specs.Classification)
             {
@@ -80,8 +77,6 @@ void Grid::Fit()
                 Solutions[i].push_back(B_unscaled);
                 Intercepts[i].push_back(intercept);
             }
-
-            std::cout<<"Here -4"<< std::endl;
 
 
         }
