@@ -10,7 +10,7 @@ Rcpp::List L0LearnFit(const arma::mat& X, const arma::vec& y, const std::string 
                       const unsigned int ActiveSetNum, const unsigned int MaxNumSwaps,
                       const double ScaleDownFactor, unsigned int ScreenSize, const bool LambdaU, const arma::vec Lambdas)
 {
-
+    auto p = X.n_cols;
     GridParams PG;
     PG.NnzStopNum = NnzStopNum;
     PG.G_ncols = G_ncols;
@@ -47,12 +47,12 @@ Rcpp::List L0LearnFit(const arma::mat& X, const arma::vec& y, const std::string 
     Grid G(X, y, PG);
     G.Fit();
 
-    std::string FirstParameter = "Lambda";
+    std::string FirstParameter = "lambda";
     std::string SecondParameter = "-1";
     if (PG.P.Specs.L0L1)
-    { SecondParameter = "Gamma"; }
+    { SecondParameter = "gamma"; }
     else if (PG.P.Specs.L0L2)
-    { SecondParameter = "Gamma"; }
+    { SecondParameter = "gamma"; } // might change later so leave
     /*
     else if (PG.P.Specs.L1Relaxed)
     {
@@ -63,39 +63,43 @@ Rcpp::List L0LearnFit(const arma::mat& X, const arma::vec& y, const std::string 
     FirstParameter = "Lambda";
     */
 
-    std::vector<std::vector<unsigned int>> indices(G.Solutions.size());
-    std::vector<std::vector<double>> values(G.Solutions.size());
 
-    for(unsigned int i = 0; i < G.Solutions.size(); ++i)
+    // Next Construct the list of Sparse Beta Matrices.
+    std::vector<arma::sp_mat> Bs;
+    for (unsigned int i=0; i<G.Lambda12.size(); ++i)
     {
-        arma::sp_mat::const_iterator j;
-        for(j = G.Solutions[i].begin(); j != G.Solutions[i].end(); ++j)
+        // create the px(reg path size) sparse sparseMatrix
+        arma::sp_mat B(p,G.Solutions[i].size());
+        for (unsigned int j=0; j<G.Solutions[i].size(); ++j)
         {
-            indices[i].push_back(j.row() + 1); // +1 to account for R's 1-based indexing
-            values[i].push_back(*j);
+            B.col(j) = G.Solutions[i][j];
         }
 
+        // append the sparse matrix
+        Bs.push_back(B);
+
     }
+
+
+
 
     if (PG.Type != "-1")
     {
         return Rcpp::List::create(Rcpp::Named(FirstParameter) = G.Lambda0,
                                   Rcpp::Named(SecondParameter) = G.Lambda12,
                                   Rcpp::Named("SuppSize") = G.NnzCount,
-                                  Rcpp::Named("BetaIndices") = indices,
-                                  Rcpp::Named("BetaValues") = values,
-                                  Rcpp::Named("Intercept") = G.Intercepts,
+                                  Rcpp::Named("beta") = Bs,
+                                  Rcpp::Named("a0") = G.Intercepts,
                                   Rcpp::Named("Converged") = G.Converged);
     }
 
     else
     {
-        return Rcpp::List::create(Rcpp::Named(FirstParameter) = G.Lambda0,
-                                  Rcpp::Named("SuppSize") = G.NnzCount,
-                                  Rcpp::Named("BetaIndices") = indices,
-                                  Rcpp::Named("BetaValues") = values,
-                                  Rcpp::Named("Intercept") = G.Intercepts,
-                                  Rcpp::Named("Converged") = G.Converged);
+        return Rcpp::List::create(Rcpp::Named(FirstParameter) = G.Lambda0[0],
+                                  Rcpp::Named("SuppSize") = G.NnzCount[0],
+                                  Rcpp::Named("beta") = Bs[0],
+                                  Rcpp::Named("a0") = G.Intercepts[0],
+                                  Rcpp::Named("Converged") = G.Converged[0]);
 
     }
 }

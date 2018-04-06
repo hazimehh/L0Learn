@@ -46,8 +46,8 @@ L0Learn.fit <- function(X,y, Loss="SquaredError", Penalty="L0", Algorithm="CD", 
 	G <- .Call('_L0Learn_L0LearnFit', PACKAGE = 'L0Learn', X, y, Loss, Penalty, Algorithm, MaxSuppSize, NLambda, NGamma, GammaMax, GammaMin, PartialSort, MaxIters, Tol, ActiveSet, ActiveSetNum, MaxSwaps, ScaleDownFactor, ScreenSize, !AutoLambda, LambdaGrid)
 
 	class(G) <- "L0Learn"
-	G$.n <- dim(X)[1]
-	G$.p <- dim(X)[2]
+	G$n <- dim(X)[1]
+	G$p <- dim(X)[2]
 	G
 }
 
