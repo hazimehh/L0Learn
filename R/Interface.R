@@ -45,7 +45,8 @@ L0Learn.fit <- function(X,y, Loss="SquaredError", Penalty="L0", Algorithm="CD", 
 	# The C++ function uses LambdaU = 1 for user-specified grid. In R, we use AutoLambda0 = 0 for user-specified grid (thus the negation when passing the paramter to the function below)
 	M <- .Call('_L0Learn_L0LearnFit', PACKAGE = 'L0Learn', X, y, Loss, Penalty, Algorithm, MaxSuppSize, NLambda, NGamma, GammaMax, GammaMin, PartialSort, MaxIters, Tol, ActiveSet, ActiveSetNum, MaxSwaps, ScaleDownFactor, ScreenSize, !AutoLambda, LambdaGrid)
 
-	G = list =(beta = M$beta[[1]], lambda=M$lambda)
+
+	G = list(beta = M$beta[[1]], lambda=M$lambda, a0=M$a0, converged = M$Converged, suppsize= M$SuppSize)
 
 	class(G) <- "L0Learn"
 	G$n <- dim(X)[1]
