@@ -48,11 +48,7 @@ Rcpp::List L0LearnFit(const arma::mat& X, const arma::vec& y, const std::string 
     G.Fit();
 
     std::string FirstParameter = "lambda";
-    std::string SecondParameter = "-1";
-    if (PG.P.Specs.L0L1)
-    { SecondParameter = "gamma"; }
-    else if (PG.P.Specs.L0L2)
-    { SecondParameter = "gamma"; } // might change later so leave
+    std::string SecondParameter = "gamma";
     /*
     else if (PG.P.Specs.L1Relaxed)
     {
@@ -85,7 +81,7 @@ Rcpp::List L0LearnFit(const arma::mat& X, const arma::vec& y, const std::string 
 
 
 
-    if (PG.Type != "-1")
+    if (!PG.P.Specs.L0)
     {
         return Rcpp::List::create(Rcpp::Named(FirstParameter) = G.Lambda0,
                                   Rcpp::Named(SecondParameter) = G.Lambda12,
