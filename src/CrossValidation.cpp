@@ -176,7 +176,7 @@ Rcpp::List L0LearnCV(const arma::mat& X, const arma::vec& y, const std::string L
         { // i indexes the gamma parameter
             for (unsigned int k=0; k<Gtraining.Lambda0[i].size(); ++k)
             { // k indexes the solutions for a specific gamma
-                arma::vec r = y - Xvalidation*Gtraining.Solutions[i][k] + Gtraining.Solutions[i][k];
+                arma::vec r = yvalidation - Xvalidation*Gtraining.Solutions[i][k] + Gtraining.Solutions[i][k];
                 CVError[i][k,j] = arma::dot(r,r);
             }
         }
