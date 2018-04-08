@@ -130,10 +130,10 @@ Rcpp::List L0LearnCV(const arma::mat& X, const arma::vec& y, const std::string L
 
         // validationindicesarma contains the randomly permuted validation indices as a uvec
         arma::uvec validationindicesarma;
-    		validationindicesarma = arma::conv_to< arma::uvec >::from(validationindices).elem(indices);
+    		validationindicesarma = indices.elem(arma::conv_to< arma::uvec >::from(validationindices));
         // trainingindicesarma is similar to validationindicesarma but for training
         arma::uvec trainingindicesarma;
-    		trainingindicesarma = arma::conv_to< arma::uvec >::from(trainingindices).elem(indices);
+    		trainingindicesarma = indices.elem(arma::conv_to< arma::uvec >::from(trainingindices));
 
         arma::mat Xtraining = X.rows(trainingindicesarma);
         arma::mat ytraining = y.elem(trainingindicesarma);
