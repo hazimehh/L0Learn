@@ -182,8 +182,8 @@ Rcpp::List L0LearnCV(const arma::mat& X, const arma::vec& y, const std::string L
         }
   	}
 
-    arma::field<arma::vec> CVMeans;
-    arma::field<arma::vec> CVSDs;
+    arma::field<arma::vec> CVMeans(Ngamma); // PROBLEM HERE!!!
+    arma::field<arma::vec> CVSDs(Ngamma);
 
     for(unsigned int i=0; i<Ngamma; ++i)
     {
