@@ -104,7 +104,7 @@ Rcpp::List L0LearnCV(const arma::mat& X, const arma::vec& y, const std::string L
     int samplesperfold = std::ceil(n/double(nfolds));
   	int samplesinlastfold = samplesperfold - (samplesperfold*nfolds - n);
 
-  	std::vector<unsigned int> fullindices(p);
+  	std::vector<unsigned int> fullindices(X.n_rows);
   	std::iota(fullindices.begin(), fullindices.end(), 0);
 
     std::cout<<"HERE3"<<std::endl;
