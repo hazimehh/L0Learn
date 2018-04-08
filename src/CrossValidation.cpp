@@ -80,7 +80,7 @@ Rcpp::List L0LearnCV(const arma::mat& X, const arma::vec& y, const std::string L
         Bs[i] = B;
     }
 
-
+    std::cout<<"HERE1"<<std::endl;
 
     // CV starts here
 
@@ -95,6 +95,8 @@ Rcpp::List L0LearnCV(const arma::mat& X, const arma::vec& y, const std::string L
         CVError[i] = arma::mat(G.Lambda0[i].size(),nfolds);
     }
 
+    std::cout<<"HERE2"<<std::endl;
+
 
     arma::uvec a = arma::linspace<arma::uvec>(0, X.n_rows-1, X.n_rows);
   	arma::uvec indices = arma::shuffle(a);
@@ -105,6 +107,7 @@ Rcpp::List L0LearnCV(const arma::mat& X, const arma::vec& y, const std::string L
   	std::vector<unsigned int> fullindices(p);
   	std::iota(fullindices.begin(), fullindices.end(), 0);
 
+    std::cout<<"HERE3"<<std::endl;
 
 
   	for (unsigned int j=0; j<nfolds;++j)
@@ -122,6 +125,9 @@ Rcpp::List L0LearnCV(const arma::mat& X, const arma::vec& y, const std::string L
     		std::set_difference(fullindices.begin(), fullindices.end(), validationindices.begin(), validationindices.end(),
                             std::inserter(trainingindices, trainingindices.begin()));
 
+        std::cout<<"HERE4"<<std::endl;
+
+
         // validationindicesarma contains the randomly permuted validation indices as a uvec
         arma::uvec validationindicesarma;
     		validationindicesarma = arma::conv_to< arma::uvec >::from(validationindices).elem(indices);
@@ -135,6 +141,7 @@ Rcpp::List L0LearnCV(const arma::mat& X, const arma::vec& y, const std::string L
         arma::mat Xvalidation = X.rows(validationindicesarma);
         arma::mat yvalidation = y.elem(validationindicesarma);
 
+        std::cout<<"HERE5"<<std::endl;
 
         PG.LambdasGrid = G.Lambda0;
         Grid Gtraining(Xtraining, ytraining, PG);
@@ -162,6 +169,7 @@ Rcpp::List L0LearnCV(const arma::mat& X, const arma::vec& y, const std::string L
 
     // CV ends here.
 
+    std::cout<<"HERE6"<<std::endl;
 
 
     if (!PG.P.Specs.L0)
