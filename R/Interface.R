@@ -4,7 +4,7 @@
 #' choice of regularization (which can be a combination of the L0, L1, and L2 (squared) norms).
 #' @param X The data matrix.
 #' @param y The response vector.
-#' @param Loss The loss function to be minimized. The currently supported choice is"SquaredError".
+#' @param Loss The loss function to be minimized. The currently supported choice is "SquaredError".
 #' @param Penalty The type of regularization. This can take either one of the following choices:
 #' "L0", "L0L2", and "L0L1".
 #' @param Algorithm The type of algorithm used to minimize the objective. Currently "CD" and "CDPSI" are
@@ -13,7 +13,7 @@
 #' of increased running time).
 #' @param MaxSuppSize The maximum support size to reach in the grid before termination. We recommend setting
 #' this to a small fraction of min(n,p) (e.g. 0.05 * min(n,p)) as L0 regularization typically selects a small
-#' portion of nonzeros.
+#' portion of non-zeros.
 #' @param NLambda The number of Lambda values to select (recall that Lambda is the regularization parameter
 #' corresponding to the L0 norm).
 #' @param NGamma The number of Gamma values to select (recall that Gamma is the regularization parameter
@@ -36,7 +36,14 @@
 #' @param AutoLambda If FALSE, the user specifier a grid of Lambda0 values through the Lambda0Grid parameter. Otherwise,
 #' if TRUE, the values of Lambda0 are automatically selected based on the data.
 #' @param LambdaGrid A vector of Lambda0 values to use in computing the regularization path. This is ignored unless AutoLambda0 = FALSE.
-#' @return An object of type "L0Learn" containing all the solutions in the computed regularization path.
+#' @return An S3 object of type "L0Learn" describing the regularization path. The object has the following members:
+#' \item{a0} {For L0, this is a sequence of intercepts. Note for L0L1 and L0L2, a0 is a list of intercept sequences, where each member of the list corresponds to a single gamma value.}
+#' \item{beta} {For L0, this is a matrix of coefficients of dimensions p x \code{length(lambda)}, where each column corresponds to a single lambda value. For L0L1 and L0L2
+#' this is a list of coefficient matrices, where each matrix corresponds to a single gamma value. }
+#' \item{lambda} {For L0, lambda is a sequence of lambda values. For L0L1 and L0L1, it is a list of lambda sequences, each corresponding to a single gamma value.}
+#' \item{gamma} {For L0L1 and L0L2, this is a sequence of gamma values.}
+#' \item{suppsize} {For L0, this is a sequence of support sizes (number of non-zero coefficients). For L0L1 and L02, it is a list of support size sequences, each representing a single gamma value.}
+#' \item{converged} {For L0, this is a sequence indicating whether the algorithm converged at the current point in the regularization path. For L0L1 and L0L2, this is a list of sequences, each representing a single gamma value.}
 #' @export
 L0Learn.fit <- function(X,y, Loss="SquaredError", Penalty="L0", Algorithm="CD", MaxSuppSize=100, NLambda=100, NGamma=10,
 						GammaMax=10, GammaMin=0.0001, PartialSort = TRUE, MaxIters=200,
@@ -45,8 +52,7 @@ L0Learn.fit <- function(X,y, Loss="SquaredError", Penalty="L0", Algorithm="CD", 
 	# The C++ function uses LambdaU = 1 for user-specified grid. In R, we use AutoLambda0 = 0 for user-specified grid (thus the negation when passing the paramter to the function below)
 	M <- .Call('_L0Learn_L0LearnFit', PACKAGE = 'L0Learn', X, y, Loss, Penalty, Algorithm, MaxSuppSize, NLambda, NGamma, GammaMax, GammaMin, PartialSort, MaxIters, Tol, ActiveSet, ActiveSetNum, MaxSwaps, ScaleDownFactor, ScreenSize, !AutoLambda, LambdaGrid)
 
-
-	G = list(beta = M$beta[[1]], lambda=M$lambda, a0=M$a0, converged = M$Converged, suppsize= M$SuppSize)
+	G = list(beta = M$beta, lambda=lapply(M$lambda,signif, digits=6), a0=M$a0, converged = M$Converged, suppsize= M$SuppSize, gamma=M$gamma, penalty=Penalty)
 
 	class(G) <- "L0Learn"
 	G$n <- dim(X)[1]
@@ -56,45 +62,47 @@ L0Learn.fit <- function(X,y, Loss="SquaredError", Penalty="L0", Algorithm="CD", 
 
 #' @title Extract Solutions
 #'
-#' @description Extracts a specific solution in the path
+#' @description Extracts a specific solution in the regularization path
 #' @param fit The output of L0Learn.fit
-#' @param index The index of the solution to extract. A summary of the solutions
-#' and their indices can be viewed by print(fit)
+#' @param lambda The value(s) of lambda at which to extract the solution.
+#' @param gamma The value of gamma at which to extract the solution. Note that, unlike lambda, this can only take single values.
 #' @export
-L0Learn.coef <- function(fit,index){
-	p = fit$.p
-	B = sparseVector(unlist(fit["BetaValues"][[1]][index]), unlist(fit["BetaIndices"][[1]][index]),p)
-	B = as(B,"sparseMatrix")
-	intercept = fit["Intercept"][[1]][index]
-	#print(list(summary(B),intercept))
-	out = list(Beta=B,Intercept=intercept);
-	class(out) <- "L0Learncoef"
-	out
-}
+coef.L0Learn <- function(fit,lambda,gamma=0){
+		if (fit$penalty=="L0")
+		{
+				indices = match(lambda,fit$lambda)
+				t = rbind(fit$a0[indices],fit$beta[,indices,drop=FALSE])
+				rownames(t) = c("Intercept",paste(rep("V",fit$p),1:fit$p,sep=""))
 
-#' @title Print L0Learn.coef object
-#'
-#' @description Prints a summary of L0Learn.coef
-#' @param x L0Learn.coef object
-#' @param ... ignore
-#' @method print L0Learncoef
-#' @export
-print.L0Learncoef <- function(x, ...){
-	print(list(Beta=summary(x$Beta),Intercept=x$Intercept))
+		}
+		else
+		{
+				gammaindex = match(gamma, fit$gamma)
+				indices = match(lambda,fit$lambda[[gammaindex]])
+				t = rbind(fit$a0[[gammaindex]][indices],fit$beta[[gammaindex]][,indices,drop=FALSE])
+				rownames(t) = c("Intercept",paste(rep("V",fit$p),1:fit$p,sep=""))
+		}
+		t
 }
 
 
-#' @title Prediction
+
+#' @title Predict Response
 #'
 #' @description Predicts the response for a given sample
 #' @param fit The output of L0Learn.fit
-#' @param x The sample which can be a vector or a matrix
-#' @param index The index of the solution to use for prediction. A summary of the solutions
-#' and their indices can be viewed by print(fit)
+#' @param newx A matrix on which predictions are made. The matrix should have p columns.
+#' @param lambda The value(s) of lambda to use for prediction. A summary of the lambdas in the regularization
+#' path can be obtained using \code{print(fit)}.
+#' @param gamma The value of gamma to use for prediction. A summary of the gammas in the regularization
+#' path can be obtained using \code{print(fit)}.
 #' @export
-L0Learn.predict <- function(fit,x,index){
-	c = L0Learn.coef(fit,index)
-	c$Intercept + x%*%c$Beta
+predict.L0Learn <- function(fit,newx,lambda,gamma=0)
+{
+		beta = coef.L0Learn(fit, lambda, gamma)
+		# add a column of ones for the intercept
+		x = cbind(1,newx)
+		x%*%beta
 }
 
 #' @title Print L0Learn.fit object
@@ -105,10 +113,11 @@ L0Learn.predict <- function(fit,x,index){
 #' @method print L0Learn
 #' @export
 print.L0Learn <- function(x, ...){
-	if(exists("Gamma",x)){
-		data.frame(x["Lambda"], x["Gamma"],x["SuppSize"])
+	if(fit$penalty!="L0"){
+		gammas = rep(fit$gamma, times=lapply(fit$lambda, length) )
+		data.frame(lambda = unlist(x["lambda"]), gamma = gammas, suppsize = unlist(x["suppsize"]), row.names = NULL)
 	}
 	else{
-		data.frame(x["Lambda"],x["SuppSize"])
+		data.frame(lambda = unlist(x["lambda"]), suppsize = x["suppsize"], row.names = NULL)
 	}
 }

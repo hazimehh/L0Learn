@@ -61,14 +61,15 @@ std::vector< std::vector<FitResult*> > Grid2D::Fit()
 
     PG.XtrAvailable = true;
 
-    for(auto &l : Lambdas2)
+    for(unsigned int i=0; i<Lambdas2.size();++i) //auto &l : Lambdas2
     {
         *Xtr = Xtrvec;
 
         PG.Xtr = Xtr;
         PG.ytXmax = ytXmax;
 
-        PG.P.ModelParams[index] = l;
+        PG.P.ModelParams[index] = Lambdas2[i];
+        PG.Lambdas = PG.LambdasGrid[i];
         auto Gl = Grid1D(*X, *y, PG).Fit();
         G.push_back(Gl);
     }

@@ -8,7 +8,7 @@ Rcpp::List L0LearnFit(const arma::mat& X, const arma::vec& y, const std::string 
                       const double Lambda2Max, const double Lambda2Min, const bool PartialSort,
                       const unsigned int MaxIters, const double Tol, const bool ActiveSet,
                       const unsigned int ActiveSetNum, const unsigned int MaxNumSwaps,
-                      const double ScaleDownFactor, unsigned int ScreenSize, const bool LambdaU, const arma::vec Lambdas)
+                      const double ScaleDownFactor, unsigned int ScreenSize, const bool LambdaU, const std::vector< std::vector<double> > Lambdas)
 {
     auto p = X.n_cols;
     GridParams PG;
@@ -21,7 +21,8 @@ Rcpp::List L0LearnFit(const arma::mat& X, const arma::vec& y, const std::string 
     PG.PartialSort = PartialSort;
     PG.ScaleDownFactor = ScaleDownFactor;
     PG.LambdaU = LambdaU;
-    PG.Lambdas = Lambdas;
+    PG.LambdasGrid = Lambdas;
+    PG.Lambdas = Lambdas[0]; // to handle the case of L0 (i.e., Grid1D)
     Params P;
     P.MaxIters = MaxIters;
     P.Tol = Tol;
@@ -94,6 +95,7 @@ Rcpp::List L0LearnFit(const arma::mat& X, const arma::vec& y, const std::string 
     else
     {
         return Rcpp::List::create(Rcpp::Named(FirstParameter) = G.Lambda0[0],
+                                  Rcpp::Named(SecondParameter) = 0,
                                   Rcpp::Named("SuppSize") = G.NnzCount[0],
                                   Rcpp::Named("beta") = Bs[0],
                                   Rcpp::Named("a0") = G.Intercepts[0],
