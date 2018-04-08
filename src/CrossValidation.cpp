@@ -141,10 +141,24 @@ Rcpp::List L0LearnCV(const arma::mat& X, const arma::vec& y, const std::string L
         arma::uvec trainingindicesarma;
     		trainingindicesarma = indices.elem(arma::conv_to< arma::uvec >::from(trainingindices));
 
+
+        std::cout<<"HERE4.6"<<std::endl;
+
+
         arma::mat Xtraining = X.rows(trainingindicesarma);
+        std::cout<<"HERE4.7"<<std::endl;
+
         arma::mat ytraining = y.elem(trainingindicesarma);
 
+        std::cout<<"HERE4.8"<<std::endl;
+
+
+
+
         arma::mat Xvalidation = X.rows(validationindicesarma);
+
+        std::cout<<"HERE4.9"<<std::endl;
+
         arma::mat yvalidation = y.elem(validationindicesarma);
 
         std::cout<<"HERE5"<<std::endl;
