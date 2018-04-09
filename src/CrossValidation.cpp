@@ -182,11 +182,15 @@ Rcpp::List L0LearnCV(const arma::mat& X, const arma::vec& y, const std::string L
         }
   	}
 
+    std::cout<<"HERE6"<<std::endl;
+
     arma::field<arma::vec> CVMeans(Ngamma); // PROBLEM HERE!!!
     arma::field<arma::vec> CVSDs(Ngamma);
 
     for(unsigned int i=0; i<Ngamma; ++i)
     {
+        std::cout<<"HERE6.5"<<std::endl;
+
         CVMeans[i] = arma::mean(CVError[i],1);
 
         CVSDs[i] = arma::stddev(CVError[i],1);
@@ -194,7 +198,7 @@ Rcpp::List L0LearnCV(const arma::mat& X, const arma::vec& y, const std::string L
 
     // CV ends here.
 
-    std::cout<<"HERE6"<<std::endl;
+    std::cout<<"HERE7"<<std::endl;
 
 
     if (!PG.P.Specs.L0)
