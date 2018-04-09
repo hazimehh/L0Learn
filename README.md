@@ -6,7 +6,7 @@
 ## Introduction
 L0Learn is a highly efficient framework for solving L0-regularized regression (and soon classification) problems. It can (approximately) solve the following three problems, where the squared error loss is penalized by combinations of the L0, L1, and L2 norms:
 
-<img src="https://github.com/hazimehh/L0Learn/blob/master/misc/regeqs.png" width = 350>
+<img src="https://github.com/hazimehh/L0Learn/blob/master/misc/regeqs.png" width = 450>
 
 The optimization is done using coordinate descent and local combinatorial search over a grid of regularization parameter(s) values. We describe the details of the algorithms in our paper: *Fast Best Subset Selection: Coordinate Descent and Local Combinatorial Optimization Algorithms* ([arXiv link](https://arxiv.org/abs/1803.01454)). 
 
