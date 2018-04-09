@@ -69,7 +69,8 @@ std::vector< std::vector<FitResult*> > Grid2D::Fit()
         PG.ytXmax = ytXmax;
 
         PG.P.ModelParams[index] = Lambdas2[i];
-        PG.Lambdas = PG.LambdasGrid[i];
+        if (PG.LambdaU == true)
+            PG.Lambdas = PG.LambdasGrid[i];
         auto Gl = Grid1D(*X, *y, PG).Fit();
         G.push_back(Gl);
     }
