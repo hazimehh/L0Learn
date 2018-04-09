@@ -191,11 +191,11 @@ Rcpp::List L0LearnCV(const arma::mat& X, const arma::vec& y, const std::string L
     {
         std::cout<<"HERE6.5"<<std::endl;
 
-        arma::mean(CVError[i],1).print();
+        //arma::mean(CVError[i],1).print();
 
         std::cout<<"HERE6.6"<<std::endl;
 
-        arma::stddev(CVError[i],1).print();
+        //arma::stddev(CVError[i],0,1).print();
 
         CVMeans[i] = arma::mean(CVError[i],1);
 
