@@ -11,6 +11,7 @@ struct GridParams
     unsigned int NnzStopNum = 200;
     double LambdaMinFactor = 0.01;
     arma::vec Lambdas;
+    std::vector< std::vector<double> > LambdasGrid;
     double Lambda2Max = 0.1;
     double Lambda2Min = 0.001;
     std::string Type = "L0";

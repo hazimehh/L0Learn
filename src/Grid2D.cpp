@@ -10,7 +10,7 @@ Grid2D::Grid2D(const arma::mat& Xi, const arma::vec& yi, const GridParams& PGi)
     PG = PGi;
     G_nrows = PG.G_nrows;
     G_ncols = PG.G_ncols;
-    G.reserve(G_nrows * G_ncols);
+    G.reserve(G_nrows);
     Lambda2Max = PG.Lambda2Max;
     Lambda2Min = PG.Lambda2Min;
     LambdaMinFactor = PG.LambdaMinFactor;
@@ -18,7 +18,7 @@ Grid2D::Grid2D(const arma::mat& Xi, const arma::vec& yi, const GridParams& PGi)
     P = PG.P;
 }
 
-std::vector<FitResult*> Grid2D::Fit()
+std::vector< std::vector<FitResult*> > Grid2D::Fit()
 {
 
     arma::vec Xtrarma;
@@ -61,16 +61,17 @@ std::vector<FitResult*> Grid2D::Fit()
 
     PG.XtrAvailable = true;
 
-    for(auto &l : Lambdas2)
+    for(unsigned int i=0; i<Lambdas2.size();++i) //auto &l : Lambdas2
     {
         *Xtr = Xtrvec;
 
         PG.Xtr = Xtr;
         PG.ytXmax = ytXmax;
 
-        PG.P.ModelParams[index] = l;
+        PG.P.ModelParams[index] = Lambdas2[i];
+        PG.Lambdas = PG.LambdasGrid[i];
         auto Gl = Grid1D(*X, *y, PG).Fit();
-        G.insert(G.end(), Gl.begin(), Gl.end());
+        G.push_back(Gl);
     }
 
     return G;

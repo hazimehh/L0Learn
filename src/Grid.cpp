@@ -15,52 +15,70 @@ Grid::Grid(const arma::mat& X, const arma::vec& y, const GridParams& PGi)
 void Grid::Fit()
 {
 
-    std::vector<FitResult*> G;
+    std::vector< std::vector<FitResult*> > G;
 
     if (PG.P.Specs.L0)
     {
-        G = Grid1D(Xscaled, yscaled, PG).Fit();
+        auto G1D = Grid1D(Xscaled, yscaled, PG).Fit();
+        G.push_back(G1D);
+        Lambda12.push_back(0);
     }
     else
     {
         G = Grid2D(Xscaled, yscaled, PG).Fit();
     }
 
-    for (auto &g : G)
+    Lambda0 = std::vector< std::vector<double> >(G.size());
+    NnzCount = std::vector< std::vector<unsigned int> >(G.size());
+    Solutions = std::vector< std::vector<arma::sp_mat> >(G.size());
+    Intercepts = std::vector< std::vector<double> >(G.size());
+    Converged = std::vector< std::vector<bool> >(G.size());
+
+
+
+    //for (auto &g : G)
+    for (unsigned int i=0; i<G.size(); ++i)
     {
-        Lambda0.push_back(g->ModelParams[0]);
-
         if (PG.P.Specs.L0L1)
-        { Lambda12.push_back(g->ModelParams[1]); }
+        { Lambda12.push_back(G[i][0]->ModelParams[1]); }
         else if (PG.P.Specs.L0L2)
-        { Lambda12.push_back(g->ModelParams[2]); }
+        { Lambda12.push_back(G[i][0]->ModelParams[2]); }
 
-        NnzCount.push_back(g->B.n_nonzero);
-
-        if (g->IterNum != PG.P.MaxIters)
+        for (auto &g : G[i])
         {
-            Converged.push_back(true);
-        }
-        else
-        {
-            Converged.push_back(false);
-        }
 
-        arma::sp_mat B_unscaled;
-        double intercept;
+            Lambda0[i].push_back(g->ModelParams[0]);
 
-        if (PG.P.Specs.Classification)
-        {
-            std::tie(B_unscaled, intercept) = DeNormalize(g->B, BetaMultiplier, meanX, meany);
-            Solutions.push_back(B_unscaled);
-            Intercepts.push_back(g->intercept + intercept); // + needed
-        }
+            NnzCount[i].push_back(g->B.n_nonzero);
 
-        else
-        {
-            std::tie(B_unscaled, intercept) = DeNormalize(g->B, BetaMultiplier, meanX, meany);
-            Solutions.push_back(B_unscaled);
-            Intercepts.push_back(intercept);
+            if (g->IterNum != PG.P.MaxIters)
+            {
+                Converged[i].push_back(true);
+            }
+            else
+            {
+                Converged[i].push_back(false);
+            }
+
+            arma::sp_mat B_unscaled;
+            double intercept;
+
+
+            if (PG.P.Specs.Classification)
+            {
+                std::tie(B_unscaled, intercept) = DeNormalize(g->B, BetaMultiplier, meanX, meany);
+                Solutions[i].push_back(B_unscaled);
+                Intercepts[i].push_back(g->intercept + intercept); // + needed
+            }
+
+            else
+            {
+                std::tie(B_unscaled, intercept) = DeNormalize(g->B, BetaMultiplier, meanX, meany);
+                Solutions[i].push_back(B_unscaled);
+                Intercepts[i].push_back(intercept);
+            }
+
+
         }
 
     }

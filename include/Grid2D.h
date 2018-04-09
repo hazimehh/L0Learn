@@ -12,7 +12,7 @@ class Grid2D
         const arma::mat * X;
         const arma::vec * y;
         unsigned int p;
-        std::vector<FitResult*> G;
+        std::vector< std::vector<FitResult*> > G; // each inner vector corresponds to a single lambda_1/lambda_2
         double Lambda2Max;
         double Lambda2Min;
         double LambdaMinFactor;
@@ -23,7 +23,7 @@ class Grid2D
     public:
         Grid2D(const arma::mat& Xi, const arma::vec& yi, const GridParams& PGi);
 
-        std::vector<FitResult*> Fit();
+        std::vector< std::vector<FitResult*> > Fit();
 
 };
 
