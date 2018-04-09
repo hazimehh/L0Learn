@@ -199,7 +199,7 @@ Rcpp::List L0LearnCV(const arma::mat& X, const arma::vec& y, const std::string L
 
         CVMeans[i] = arma::mean(CVError[i],1);
 
-        CVSDs[i] = arma::stddev(CVError[i],1);
+        CVSDs[i] = arma::stddev(CVError[i],0,1);
     }
 
     // CV ends here.
