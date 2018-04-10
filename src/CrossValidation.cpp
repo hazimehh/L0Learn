@@ -145,6 +145,8 @@ Rcpp::List L0LearnCV(const arma::mat& X, const arma::vec& y, const std::string L
 
         arma::mat yvalidation = y.elem(validationindicesarma);
 
+        PG.LambdaU = true;
+        PG.XtrAvailable = false; // reset XtrAvailable since its changed upon every call
         PG.LambdasGrid = G.Lambda0;
         Grid Gtraining(Xtraining, ytraining, PG);
         Gtraining.Fit();
