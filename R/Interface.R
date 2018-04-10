@@ -212,10 +212,10 @@ print.L0Learn <- function(x, ...){
 #' @export
 plot.L0Learn <- function(x, ...)
 {
-		x = log10(unlist(x$lambda))
+		xvals = log10(unlist(x$lambda))
 		y = x$cvmeans[[1]]
 		sd = x$cvsds[[1]]
-		plot(x, y, ylim=range(c(0, y+sd)),
+		plot(xvals, y, ylim=range(c(0, y+sd)),
 		    pch=19, xlab="Log(lambda)", ylab="CV Error")
-		arrows(x, y-sd, x, y+sd, length=0.05, angle=90, code=3)
+		arrows(xvals, y-sd, xvals, y+sd, length=0.05, angle=90, code=3)
 }
