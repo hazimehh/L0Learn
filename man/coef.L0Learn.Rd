@@ -4,10 +4,10 @@
 \alias{coef.L0Learn}
 \title{Extract Solutions}
 \usage{
-\method{coef}{L0Learn}(fit, lambda, gamma = 0)
+\method{coef}{L0Learn}(object, lambda, gamma = 0)
 }
 \arguments{
-\item{fit}{The output of L0Learn.fit}
+\item{object}{The output of L0Learn.fit}
 
 \item{lambda}{The value(s) of lambda at which to extract the solution.}
 

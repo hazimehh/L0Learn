@@ -4,10 +4,10 @@
 \alias{plot.L0Learn}
 \title{Plot Cross-validation Errors}
 \usage{
-\method{plot}{L0Learn}(cvfit, ...)
+\method{plot}{L0Learn}(x, ...)
 }
 \arguments{
-\item{cvfit}{L0Learn.cvfit object}
+\item{x}{L0Learn.fit object}
 
 \item{...}{ignore}
 }

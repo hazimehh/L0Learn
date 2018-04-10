@@ -4,10 +4,10 @@
 \alias{predict.L0Learn}
 \title{Predict Response}
 \usage{
-\method{predict}{L0Learn}(fit, newx, lambda, gamma = 0)
+\method{predict}{L0Learn}(object, newx, lambda, gamma = 0)
 }
 \arguments{
-\item{fit}{The output of L0Learn.fit}
+\item{object}{The output of L0Learn.fit}
 
 \item{newx}{A matrix on which predictions are made. The matrix should have p columns.}
 
@@ -16,6 +16,8 @@ path can be obtained using \code{print(fit)}.}
 
 \item{gamma}{The value of gamma to use for prediction. A summary of the gammas in the regularization
 path can be obtained using \code{print(fit)}.}
+
+\item{...}{ignore}
 }
 \description{
 Predicts the response for a given sample

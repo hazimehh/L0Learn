@@ -171,6 +171,7 @@ FitResult CDL012Logistic::Fit()
 inline double CDL012Logistic::Objective(arma::vec & r, arma::sp_mat & B)   // hint inline
 {
     auto l2norm = arma::norm(B, 2);
+    // arma::sum(arma::log(1 + 1 / ExpyXB)) is the negative log-likelihood
     return arma::sum(arma::log(1 + 1 / ExpyXB)) + ModelParams[0] * B.n_nonzero + ModelParams[1] * arma::norm(B, 1) + ModelParams[2] * l2norm * l2norm;
 }
 

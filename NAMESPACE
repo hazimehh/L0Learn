@@ -1,6 +1,7 @@
 useDynLib(L0Learn)
 importFrom(Rcpp, evalCpp)
 importFrom(methods, as)
+importFrom(graphics, arrows, plot)
 import(Matrix)
 S3method(coef,L0Learn)
 S3method(plot,L0Learn)

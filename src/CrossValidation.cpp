@@ -153,8 +153,20 @@ Rcpp::List L0LearnCV(const arma::mat& X, const arma::vec& y, const std::string L
         { // i indexes the gamma parameter
             for (unsigned int k=0; k<Gtraining.Lambda0[i].size(); ++k)
             { // k indexes the solutions for a specific gamma
-                arma::vec r = yvalidation - Xvalidation*Gtraining.Solutions[i][k] + Gtraining.Intercepts[i][k];
-                CVError[i][k,j] = arma::dot(r,r);
+                if (PG.P.Specs.SquaredError)
+                {
+                    arma::vec r = yvalidation - Xvalidation*Gtraining.Solutions[i][k] + Gtraining.Intercepts[i][k];
+                    CVError[i][k,j] = arma::dot(r,r);
+                }
+
+                else if (PG.P.Specs.Logistic)
+                {
+                    arma::sp_mat B = Gtraining.Solutions[i][k];
+                    double b0 = Gtraining.Intercepts[i][k];
+                    arma::vec ExpyXB = arma::exp(yvalidation % (Xvalidation * B + b0));
+                    CVError[i][k,j] = arma::sum(arma::log(1 + 1 / ExpyXB));
+                }
+
             }
         }
   	}
