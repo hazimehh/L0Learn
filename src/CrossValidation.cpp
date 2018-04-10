@@ -83,7 +83,7 @@ Rcpp::List L0LearnCV(const arma::mat& X, const arma::vec& y, const std::string L
 
     // CV starts here
 
-    arma::arma_rng::set_seed(seed);
+    // arma::arma_rng::set_seed(seed);
 
     //Solutions = std::vector< std::vector<arma::sp_mat> >(G.size());
     //Intercepts = std::vector< std::vector<double> >(G.size());
