@@ -121,7 +121,7 @@ L0Learn.fit <- function(X,y, Loss="SquaredError", Penalty="L0", Algorithm="CD", 
 #' @export
 L0Learn.cvfit <- function(X,y, Loss="SquaredError", Penalty="L0", Algorithm="CD", MaxSuppSize=100, NLambda=100, NGamma=10,
 						GammaMax=10, GammaMin=0.0001, PartialSort = TRUE, MaxIters=200,
-						Tol=1e-6, ActiveSet=TRUE, ActiveSetNum=3, MaxSwaps=100, ScaleDownFactor=0.8, ScreenSize=1000, AutoLambda = TRUE, LambdaGrid = c(0), Nfolds=10, Seed=1)
+						Tol=1e-6, ActiveSet=TRUE, ActiveSetNum=3, MaxSwaps=100, ScaleDownFactor=0.8, ScreenSize=1000, AutoLambda = TRUE, LambdaGrid = list(0), Nfolds=10, Seed=1)
 {
 	set.seed(Seed)
 	# The C++ function uses LambdaU = 1 for user-specified grid. In R, we use AutoLambda0 = 0 for user-specified grid (thus the negation when passing the paramter to the function below)

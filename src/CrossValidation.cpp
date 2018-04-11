@@ -8,7 +8,7 @@ Rcpp::List L0LearnCV(const arma::mat& X, const arma::vec& y, const std::string L
                       const double Lambda2Max, const double Lambda2Min, const bool PartialSort,
                       const unsigned int MaxIters, const double Tol, const bool ActiveSet,
                       const unsigned int ActiveSetNum, const unsigned int MaxNumSwaps,
-                      const double ScaleDownFactor, unsigned int ScreenSize, const bool LambdaU, const arma::vec Lambdas,
+                      const double ScaleDownFactor, unsigned int ScreenSize, const bool LambdaU, const std::vector< std::vector<double> > Lambdas,
                       const unsigned int nfolds, const double seed)
 {
     auto p = X.n_cols;
@@ -23,8 +23,7 @@ Rcpp::List L0LearnCV(const arma::mat& X, const arma::vec& y, const std::string L
     PG.PartialSort = PartialSort;
     PG.ScaleDownFactor = ScaleDownFactor;
     PG.LambdaU = LambdaU;
-    PG.Lambdas = Lambdas;
-    Params P;
+    PG.Lambdas = Lambdas[0]; // to handle the case of L0 (i.e., Grid1D)    Params P;
     P.MaxIters = MaxIters;
     P.Tol = Tol;
     P.ActiveSet = ActiveSet;
