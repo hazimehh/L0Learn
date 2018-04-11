@@ -7,7 +7,7 @@
 using namespace Rcpp;
 
 // L0LearnCV
-Rcpp::List L0LearnCV(const arma::mat& X, const arma::vec& y, const std::string Loss, const std::string Penalty, const std::string Algorithm, const unsigned int NnzStopNum, const unsigned int G_ncols, const unsigned int G_nrows, const double Lambda2Max, const double Lambda2Min, const bool PartialSort, const unsigned int MaxIters, const double Tol, const bool ActiveSet, const unsigned int ActiveSetNum, const unsigned int MaxNumSwaps, const double ScaleDownFactor, unsigned int ScreenSize, const bool LambdaU, const arma::vec Lambdas, const unsigned int nfolds, const double seed);
+Rcpp::List L0LearnCV(const arma::mat& X, const arma::vec& y, const std::string Loss, const std::string Penalty, const std::string Algorithm, const unsigned int NnzStopNum, const unsigned int G_ncols, const unsigned int G_nrows, const double Lambda2Max, const double Lambda2Min, const bool PartialSort, const unsigned int MaxIters, const double Tol, const bool ActiveSet, const unsigned int ActiveSetNum, const unsigned int MaxNumSwaps, const double ScaleDownFactor, unsigned int ScreenSize, const bool LambdaU, const std::vector< std::vector<double> > Lambdas, const unsigned int nfolds, const double seed);
 RcppExport SEXP _L0Learn_L0LearnCV(SEXP XSEXP, SEXP ySEXP, SEXP LossSEXP, SEXP PenaltySEXP, SEXP AlgorithmSEXP, SEXP NnzStopNumSEXP, SEXP G_ncolsSEXP, SEXP G_nrowsSEXP, SEXP Lambda2MaxSEXP, SEXP Lambda2MinSEXP, SEXP PartialSortSEXP, SEXP MaxItersSEXP, SEXP TolSEXP, SEXP ActiveSetSEXP, SEXP ActiveSetNumSEXP, SEXP MaxNumSwapsSEXP, SEXP ScaleDownFactorSEXP, SEXP ScreenSizeSEXP, SEXP LambdaUSEXP, SEXP LambdasSEXP, SEXP nfoldsSEXP, SEXP seedSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
@@ -31,7 +31,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const double >::type ScaleDownFactor(ScaleDownFactorSEXP);
     Rcpp::traits::input_parameter< unsigned int >::type ScreenSize(ScreenSizeSEXP);
     Rcpp::traits::input_parameter< const bool >::type LambdaU(LambdaUSEXP);
-    Rcpp::traits::input_parameter< const arma::vec >::type Lambdas(LambdasSEXP);
+    Rcpp::traits::input_parameter< const std::vector< std::vector<double> > >::type Lambdas(LambdasSEXP);
     Rcpp::traits::input_parameter< const unsigned int >::type nfolds(nfoldsSEXP);
     Rcpp::traits::input_parameter< const double >::type seed(seedSEXP);
     rcpp_result_gen = Rcpp::wrap(L0LearnCV(X, y, Loss, Penalty, Algorithm, NnzStopNum, G_ncols, G_nrows, Lambda2Max, Lambda2Min, PartialSort, MaxIters, Tol, ActiveSet, ActiveSetNum, MaxNumSwaps, ScaleDownFactor, ScreenSize, LambdaU, Lambdas, nfolds, seed));

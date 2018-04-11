@@ -23,7 +23,9 @@ Rcpp::List L0LearnCV(const arma::mat& X, const arma::vec& y, const std::string L
     PG.PartialSort = PartialSort;
     PG.ScaleDownFactor = ScaleDownFactor;
     PG.LambdaU = LambdaU;
-    PG.Lambdas = Lambdas[0]; // to handle the case of L0 (i.e., Grid1D)    Params P;
+    PG.LambdasGrid = Lambdas;
+    PG.Lambdas = Lambdas[0]; // to handle the case of L0 (i.e., Grid1D)
+    Params P;
     P.MaxIters = MaxIters;
     P.Tol = Tol;
     P.ActiveSet = ActiveSet;

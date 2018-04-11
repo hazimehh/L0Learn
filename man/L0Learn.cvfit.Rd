@@ -9,7 +9,7 @@ L0Learn.cvfit(X, y, Loss = "SquaredError", Penalty = "L0",
   GammaMax = 10, GammaMin = 1e-04, PartialSort = TRUE, MaxIters = 200,
   Tol = 1e-06, ActiveSet = TRUE, ActiveSetNum = 3, MaxSwaps = 100,
   ScaleDownFactor = 0.8, ScreenSize = 1000, AutoLambda = TRUE,
-  LambdaGrid = c(0), Nfolds = 10, Seed = 1)
+  LambdaGrid = list(0), Nfolds = 10, Seed = 1)
 }
 \arguments{
 \item{X}{The data matrix.}
