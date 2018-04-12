@@ -155,6 +155,7 @@ Rcpp::List L0LearnCV(const arma::mat& X, const arma::vec& y, const std::string L
         for (unsigned int i=0; i<Ngamma; ++i)
         { // i indexes the gamma parameter
             for (unsigned int k=0; k<Gtraining.Lambda0[i].size(); ++k)
+            std::cout<<"Gtraining.Lambda0[i].size(): "<<Gtraining.Lambda0[i].size()<<std::endl;
             { // k indexes the solutions for a specific gamma
                 if (PG.P.Specs.SquaredError)
                 {
