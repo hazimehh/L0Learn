@@ -167,6 +167,8 @@ Rcpp::List L0LearnCV(const arma::mat& X, const arma::vec& y, const std::string L
                     arma::sp_mat B = Gtraining.Solutions[i][k];
                     double b0 = Gtraining.Intercepts[i][k];
                     arma::vec ExpyXB = arma::exp(yvalidation % (Xvalidation * B + b0));
+                    std::cout<< "ExpyXB: "<<std::endl;
+                    ExpyXB.print();
                     CVError[i][k,j] = arma::sum(arma::log(1 + 1 / ExpyXB));
                 }
 

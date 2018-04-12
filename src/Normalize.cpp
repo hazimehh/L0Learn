@@ -10,8 +10,9 @@ std::tuple<arma::vec, arma::vec, double>  Normalize(const arma::mat& X, const ar
 
     X_normalized = X.each_row() - meanX;
     arma::rowvec scaleX = std::sqrt(n) * arma::stddev(X_normalized, 1, 0); // contains the l2norm of every col
+    scaleX.replace(0, -1);
     X_normalized.each_row() /= scaleX;
-    if (X_normalized.has_nan()){X_normalized.replace(arma::datum::nan, 0); } // handles the case of constant columns
+    if (X_normalized.has_nan()){X_normalized.replace(arma::datum::nan, 0); } // can handle numerical instabilities.
 
     arma::vec BetaMultiplier;
     double meany = 0;
