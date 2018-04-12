@@ -168,6 +168,12 @@ Rcpp::List L0LearnCV(const arma::mat& X, const arma::vec& y, const std::string L
                     double b0 = Gtraining.Intercepts[i][k];
                     arma::vec ExpyXB = arma::exp(yvalidation % (Xvalidation * B + b0));
                     CVError[i][k,j] = arma::sum(arma::log(1 + 1 / ExpyXB));
+                    if (CVError[i][k,j] < 0)
+                    {
+                        std::cout<<"Detected Negative CV Errors!!! "<<CVError[i][k,j]<<std::endl;
+                        ExpyXB.print();
+                        B.print();
+                    }
                 }
 
             }
