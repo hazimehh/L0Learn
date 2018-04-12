@@ -91,10 +91,12 @@ Rcpp::List L0LearnCV(const arma::mat& X, const arma::vec& y, const std::string L
 
     unsigned int Ngamma = G.Lambda12.size();
 
-    std::vector< arma::mat > CVError (G.Solutions.size());
+    //std::vector< arma::mat > CVError (G.Solutions.size());
+    std::vector< arma::mat > CVError;
     for(unsigned int i=0; i<G.Solutions.size(); ++i)
     {
-        CVError[i] = arma::mat(G.Lambda0[i].size(),nfolds, arma::fill::zeros);
+        //CVError[i] = arma::mat(G.Lambda0[i].size(),nfolds, arma::fill::zeros);
+        CVError.push_back(arma::mat(G.Lambda0[i].size(),nfolds, arma::fill::zeros));
     }
 
 
