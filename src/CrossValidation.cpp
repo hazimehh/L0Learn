@@ -156,7 +156,6 @@ Rcpp::List L0LearnCV(const arma::mat& X, const arma::vec& y, const std::string L
         { // i indexes the gamma parameter
             for (unsigned int k=0; k<Gtraining.Lambda0[i].size(); ++k)
             { // k indexes the solutions for a specific gamma
-                std::cout<<"Gtraining.Lambda0[i].size(): "<<Gtraining.Lambda0[i].size()<<std::endl;
 
                 if (PG.P.Specs.SquaredError)
                 {
@@ -170,6 +169,7 @@ Rcpp::List L0LearnCV(const arma::mat& X, const arma::vec& y, const std::string L
                     double b0 = Gtraining.Intercepts[i][k];
                     arma::vec ExpyXB = arma::exp(yvalidation % (Xvalidation * B + b0));
                     CVError[i][k,j] = arma::sum(arma::log(1 + 1 / ExpyXB));
+                    std::cout<<"CVError[i][k,j]: "<<CVError[i][k,j]<<" "<<"arma::sum(): "<<arma::sum(arma::log(1 + 1 / ExpyXB))<<std::endl;
                     if (CVError[i][k,j] < 0)
                     {
                         std::cout<<"Detected Negative CV Errors!!! "<<CVError[i][k,j]<<std::endl;
