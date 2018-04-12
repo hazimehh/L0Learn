@@ -91,7 +91,9 @@ Rcpp::List L0LearnCV(const arma::mat& X, const arma::vec& y, const std::string L
 
     unsigned int Ngamma = G.Lambda12.size();
 
-    std::vector< arma::mat > CVError (G.Solutions.size());
+    //std::vector< arma::mat > CVError (G.Solutions.size());
+    arma::field< arma::mat > CVError (G.Solutions.size());
+
     for(unsigned int i=0; i<G.Solutions.size(); ++i)
     {
         CVError[i] = arma::mat(G.Lambda0[i].size(),nfolds, arma::fill::zeros);
@@ -168,8 +170,8 @@ Rcpp::List L0LearnCV(const arma::mat& X, const arma::vec& y, const std::string L
                     arma::sp_mat B = Gtraining.Solutions[i][k];
                     double b0 = Gtraining.Intercepts[i][k];
                     arma::vec ExpyXB = arma::exp(yvalidation % (Xvalidation * B + b0));
-                    CVError[i][k,j] = arma::sum(arma::log(1 + 1 / ExpyXB));
-                    std::cout<<"i, j, k"<<i<<" "<<j<<" "<<k<<" CVError[i][k,j]: "<<CVError[i][k,j]<<std::endl;
+                    CVError[i](k,j) = arma::sum(arma::log(1 + 1 / ExpyXB));
+                    std::cout<<"i, j, k"<<i<<" "<<j<<" "<<k<<" CVError[i](k,j): "<<CVError[i](k,j)<<std::endl;
                     CVError[i].print();
                 }
 
