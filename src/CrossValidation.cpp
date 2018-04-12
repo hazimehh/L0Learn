@@ -171,8 +171,8 @@ Rcpp::List L0LearnCV(const arma::mat& X, const arma::vec& y, const std::string L
                     double b0 = Gtraining.Intercepts[i][k];
                     arma::vec ExpyXB = arma::exp(yvalidation % (Xvalidation * B + b0));
                     CVError[i](k,j) = arma::sum(arma::log(1 + 1 / ExpyXB));
-                    std::cout<<"i, j, k"<<i<<" "<<j<<" "<<k<<" CVError[i](k,j): "<<CVError[i](k,j)<<std::endl;
-                    CVError[i].print();
+                    //std::cout<<"i, j, k"<<i<<" "<<j<<" "<<k<<" CVError[i](k,j): "<<CVError[i](k,j)<<std::endl;
+                    //CVError[i].print();
                 }
 
             }
@@ -185,10 +185,7 @@ Rcpp::List L0LearnCV(const arma::mat& X, const arma::vec& y, const std::string L
 
     for(unsigned int i=0; i<Ngamma; ++i)
     {
-
-        CVError[i].print();
-
-        arma::mean(CVError[i],1).print();
+        //arma::mean(CVError[i],1).print();
 
         //arma::stddev(CVError[i],0,1).print();
 
