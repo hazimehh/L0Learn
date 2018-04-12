@@ -91,12 +91,10 @@ Rcpp::List L0LearnCV(const arma::mat& X, const arma::vec& y, const std::string L
 
     unsigned int Ngamma = G.Lambda12.size();
 
-    //std::vector< arma::mat > CVError (G.Solutions.size());
-    std::vector< arma::mat > CVError;
+    std::vector< arma::mat > CVError (G.Solutions.size());
     for(unsigned int i=0; i<G.Solutions.size(); ++i)
     {
-        //CVError[i] = arma::mat(G.Lambda0[i].size(),nfolds, arma::fill::zeros);
-        CVError.push_back(arma::mat(G.Lambda0[i].size(),nfolds, arma::fill::zeros));
+        CVError[i] = arma::mat(G.Lambda0[i].size(),nfolds, arma::fill::zeros);
     }
 
 
@@ -172,12 +170,7 @@ Rcpp::List L0LearnCV(const arma::mat& X, const arma::vec& y, const std::string L
                     arma::vec ExpyXB = arma::exp(yvalidation % (Xvalidation * B + b0));
                     CVError[i][k,j] = arma::sum(arma::log(1 + 1 / ExpyXB));
                     std::cout<<"i, j, k"<<i<<" "<<j<<" "<<k<<" CVError[i][k,j]: "<<CVError[i][k,j]<<std::endl;
-                    if (CVError[i][k,j] < 0)
-                    {
-                        std::cout<<"Detected Negative CV Errors!!! "<<CVError[i][k,j]<<std::endl;
-                        ExpyXB.print();
-                        B.print();
-                    }
+                    CVError[i].print();
                 }
 
             }
