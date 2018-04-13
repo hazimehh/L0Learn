@@ -162,7 +162,7 @@ Rcpp::List L0LearnCV(const arma::mat& X, const arma::vec& y, const std::string L
                 if (PG.P.Specs.SquaredError)
                 {
                     arma::vec r = yvalidation - Xvalidation*Gtraining.Solutions[i][k] + Gtraining.Intercepts[i][k];
-                    CVError[i][k,j] = arma::dot(r,r);
+                    CVError[i](k,j) = arma::dot(r,r);
                 }
 
                 else if (PG.P.Specs.Logistic)
