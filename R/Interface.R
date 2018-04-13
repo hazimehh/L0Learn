@@ -152,7 +152,7 @@ coef.L0Learn <- function(object,lambda,gamma=0){
 		}
 		else
 		{
-				gammaindex = match(gamma, object$gamma)
+				gammaindex = which(abs(object$gamma-gamma)==min(abs(object$gamma-gamma)))
 				indices = match(lambda,object$lambda[[gammaindex]])
 				t = rbind(object$a0[[gammaindex]][indices],object$beta[[gammaindex]][,indices,drop=FALSE])
 				rownames(t) = c("Intercept",paste(rep("V",object$p),1:object$p,sep=""))
@@ -210,11 +210,20 @@ print.L0Learn <- function(x, ...){
 #' @param ... ignore
 #' @method plot L0Learn
 #' @export
-plot.L0Learn <- function(x, ...)
+plot.L0Learn <- function(x, gamma="single", ...)
 {
-		xvals = log10(unlist(x$lambda))
-		y = x$cvmeans[[1]]
-		sd = x$cvsds[[1]]
+		if (gamma == "single")
+		{
+				gammaindex = 1
+		}
+		else
+		{
+				#gammaindex = match(gamma, x$gamma)
+				gammaindex = which(abs(x$gamma-gamma)==min(abs(x$gamma-gamma)))
+		}
+		xvals = log10(unlist(x$lambda[[gammaindex]]))
+		y = x$cvmeans[[gammaindex]]
+		sd = x$cvsds[[gammaindex]]
 		plot(xvals, y, ylim=range(c(0, y+sd)),
 		    pch=19, xlab="Log(lambda)", ylab="CV Error")
 		arrows(xvals, y-sd, xvals, y+sd, length=0.05, angle=90, code=3)
