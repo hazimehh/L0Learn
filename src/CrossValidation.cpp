@@ -151,6 +151,7 @@ Rcpp::List L0LearnCV(const arma::mat& X, const arma::vec& y, const std::string L
         PG.LambdaU = true;
         PG.XtrAvailable = false; // reset XtrAvailable since its changed upon every call
         PG.LambdasGrid = G.Lambda0;
+        if (PG.P.Specs.L0 == true){PG.Lambdas = PG.LambdasGrid[0];}
         Grid Gtraining(Xtraining, ytraining, PG);
         Gtraining.Fit();
 
@@ -216,7 +217,7 @@ Rcpp::List L0LearnCV(const arma::mat& X, const arma::vec& y, const std::string L
                                   Rcpp::Named("beta") = Bs[0],
                                   Rcpp::Named("a0") = G.Intercepts[0],
                                   Rcpp::Named("Converged") = G.Converged[0],
-                                  Rcpp::Named("CVMeans") = CVMeans,
-                                  Rcpp::Named("CVSDs") = CVSDs );
+                                  Rcpp::Named("CVMeans") = CVMeans[0],
+                                  Rcpp::Named("CVSDs") = CVSDs[0] );
     }
 }

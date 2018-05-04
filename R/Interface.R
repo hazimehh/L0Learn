@@ -210,21 +210,23 @@ print.L0Learn <- function(x, ...){
 #' @param ... ignore
 #' @method plot L0Learn
 #' @export
-plot.L0Learn <- function(x, gamma="single", ...)
+plot.L0Learn <- function(x, gamma, ...)
 {
-		if (gamma == "single")
+		if (x$penalty == "L0")
 		{
-				gammaindex = 1
+				xvals = log10(unlist(x$lambda))
+				yy = x$cvmeans
+				sd = x$cvsds
 		}
 		else
 		{
 				#gammaindex = match(gamma, x$gamma)
 				gammaindex = which(abs(x$gamma-gamma)==min(abs(x$gamma-gamma)))
+				xvals = log10(unlist(x$lambda[[gammaindex]]))
+				yy = x$cvmeans[[gammaindex]]
+				sd = x$cvsds[[gammaindex]]
 		}
-		xvals = log10(unlist(x$lambda[[gammaindex]]))
-		y = x$cvmeans[[gammaindex]]
-		sd = x$cvsds[[gammaindex]]
-		plot(xvals, y, ylim=range(c(0, y+sd)),
+		plot(xvals, yy, ylim=range(c(0, yy+sd)),
 		    pch=19, xlab="Log(lambda)", ylab="CV Error")
-		arrows(xvals, y-sd, xvals, y+sd, length=0.05, angle=90, code=3)
+		arrows(xvals, yy-sd, xvals, yy+sd, length=0.05, angle=90, code=3)
 }

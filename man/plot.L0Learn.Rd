@@ -4,7 +4,7 @@
 \alias{plot.L0Learn}
 \title{Plot Cross-validation Errors}
 \usage{
-\method{plot}{L0Learn}(x, ...)
+\method{plot}{L0Learn}(x, gamma, ...)
 }
 \arguments{
 \item{x}{L0Learn.fit object}
