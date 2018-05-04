@@ -67,7 +67,7 @@ if TRUE, the values of Lambda0 are automatically selected based on the data.}
 \item{LambdaGrid}{A vector of Lambda0 values to use in computing the regularization path. This is ignored unless AutoLambda0 = FALSE.}
 }
 \value{
-An S3 object of type "L0Learn" describing the regularization path. The object has the following members:
+An S3 object of type "L0Learn" describing the regularization path. The object has the following members.
 \item{a0} {For L0, this is a sequence of intercepts. Note for L0L1 and L0L2, a0 is a list of intercept sequences,
 where each member of the list corresponds to a single gamma value.}
 \item{beta} {For L0, this is a matrix of coefficients of dimensions p x \code{length(lambda)}, where each column

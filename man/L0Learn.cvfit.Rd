@@ -66,12 +66,17 @@ if TRUE, the values of Lambda0 are automatically selected based on the data.}
 
 \item{LambdaGrid}{A vector of Lambda0 values to use in computing the regularization path. This is ignored unless AutoLambda0 = FALSE.}
 
-\item{Nfolds}{The number of folds for cross-validation}
+\item{Nfolds}{The number of folds for cross-validation.}
 
-\item{Seed}{The seed used in randomly shuffling the data for cross-validation}
+\item{Seed}{The seed used in randomly shuffling the data for cross-validation.}
 }
 \value{
-An S3 object of type "L0Learn" describing the regularization path. The object has the following members:
+An S3 object of type "L0Learn" describing the regularization path. The object has the following members.
+\item{cvmeans} {For L0, this is a sequence of cross-validation errors: cvmeans[i] corresponds to the solution indexed by lambda[i].
+For L0L1 and L0L2, cvmeans is a list, where each element is a sequence corresponding to a particular gamma, i.e.,
+cvmeans[[i]] is the sequence of cross-validation errors corresponding to gamma[i].}
+\item{cvsds} {For L0, this is a sequence of standard deviations for the cross-validation errors. For L0L1 and L0L2, it is a list of
+sequences: cvsds[[i]] corresponds to cvmeans[[i]].}
 \item{a0} {For L0, this is a sequence of intercepts. Note for L0L1 and L0L2, a0 is a list of intercept sequences,
 where each member of the list corresponds to a single gamma value.}
 \item{beta} {For L0, this is a matrix of coefficients of dimensions p x \code{length(lambda)}, where each column

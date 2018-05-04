@@ -9,6 +9,8 @@
 \arguments{
 \item{x}{L0Learn.fit object}
 
+\item{gamma}{The gamma value for L0L1 and L0L2 models. This is ignored for L0.}
+
 \item{...}{ignore}
 }
 \description{
