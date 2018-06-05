@@ -13,7 +13,7 @@ CDL012LogisticSwaps::CDL012LogisticSwaps(const arma::mat& Xi, const arma::vec& y
     stl0Lc = std::sqrt((2 * ModelParams[0]) * qp2lamda2);
     lambda1 = ModelParams[1];
     lambda1ol = lambda1 / qp2lamda2;
-    Xtr = P.Xtr; Iter = P.Iter; result.ModelParams = P.ModelParams;
+    Xtr = P.Xtr; Iter = P.Iter; result.ModelParams = P.ModelParams; Xy = P.Xy;
 
 }
 
@@ -52,7 +52,7 @@ FitResult CDL012LogisticSwaps::Fit()
         {
 
             // Remove j
-            arma::vec ExpyXBnoj = ExpyXB % arma::exp( - B[j] *  *y % X->unsafe_col(j));
+            arma::vec ExpyXBnoj = ExpyXB % arma::exp( - B[j] *  Xy->unsafe_col(j));
 
 
             for(unsigned int i = 0; i < p; ++i)
@@ -63,7 +63,7 @@ FitResult CDL012LogisticSwaps::Fit()
 
                     double Biold = 0;
                     double Binew;
-                    double partial_i = - arma::sum( (*y % X->unsafe_col(i)) / (1 + ExpyXBnoji) ); // + twolambda2 * Biold
+                    double partial_i = - arma::sum( (Xy->unsafe_col(i)) / (1 + ExpyXBnoji) ); // + twolambda2 * Biold
 
                     bool Converged = false;
                     if (std::abs(partial_i) >= lambda1 + stl0Lc )
@@ -103,7 +103,7 @@ FitResult CDL012LogisticSwaps::Fit()
                             //std::cout<<"Here222!!"<<std::endl;
 
 
-                            partial_i = - arma::sum( (*y % X->unsafe_col(i)) / (1 + ExpyXBnoji) ) + twolambda2 * Binew;
+                            partial_i = - arma::sum( (Xy->unsafe_col(i)) / (1 + ExpyXBnoji) ) + twolambda2 * Binew;
                             partial2_i = arma::sum( (X->unsafe_col(i) % X->unsafe_col(i) % ExpyXBnoji) / ( (1 + ExpyXBnoji) % (1 + ExpyXBnoji) ) ) + twolambda2;
 
                             //if (std::abs((Binew - Biold)/Biold) < 0.000001){Converged = true;}

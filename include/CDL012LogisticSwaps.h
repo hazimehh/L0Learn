@@ -16,6 +16,7 @@ class CDL012LogisticSwaps : public CD
         double stl0Lc;
         arma::vec ExpyXB;
         std::vector<double> * Xtr;
+        arma::mat * Xy;
         unsigned int Iter;
 
         unsigned int MaxNumSwaps;

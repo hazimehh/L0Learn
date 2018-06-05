@@ -25,6 +25,9 @@ std::vector< std::vector<FitResult*> > Grid2D::Fit()
     if (PG.P.Specs.Logistic)
     {
         Xtrarma = 0.5 * arma::abs(y->t() * *X).t(); // = gradient of logistic loss at zero
+        arma::mat Xy = *y % *X;
+        PG.P.Xy = new arma::mat;
+        *PG.P.Xy = Xy;
     }
 
     else if (PG.P.Specs.SquaredHinge)
@@ -36,6 +39,7 @@ std::vector< std::vector<FitResult*> > Grid2D::Fit()
     {
         Xtrarma = arma::abs(y->t() * *X).t();
     }
+
 
     double ytXmax = arma::max(Xtrarma);
 
@@ -58,6 +62,7 @@ std::vector< std::vector<FitResult*> > Grid2D::Fit()
     std::vector<double> Xtrvec = arma::conv_to< std::vector<double> >::from(Xtrarma);
 
     Xtr = new std::vector<double>(X->n_cols); // needed! careful
+
 
     PG.XtrAvailable = true;
 

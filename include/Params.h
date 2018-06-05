@@ -28,6 +28,7 @@ struct Params
     unsigned int Iter = 0; // Current iteration number in the grid
     unsigned int ScreenSize = 1000;
     arma::vec * r;
+    arma::mat * Xy; // used for classification.
 };
 
 #endif

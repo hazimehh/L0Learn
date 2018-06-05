@@ -14,7 +14,7 @@ CDL012Logistic::CDL012Logistic(const arma::mat& Xi, const arma::vec& yi, const P
     lambda1ol = lambda1 / qp2lamda2;
     b0 = P.b0; // Initialize from previous later....!
     ExpyXB = arma::exp(*y % (*X * B + b0)); // Maintained throughout the algorithm
-    Xtr = P.Xtr; Iter = P.Iter; result.ModelParams = P.ModelParams;
+    Xtr = P.Xtr; Iter = P.Iter; result.ModelParams = P.ModelParams; Xy = P.Xy;
 }
 
 FitResult CDL012Logistic::Fit()
@@ -45,7 +45,7 @@ FitResult CDL012Logistic::Fit()
 
                 // Calculate Partial_i
                 double Biold = B[i];
-                double partial_i = - arma::sum( (*y % X->unsafe_col(i)) / (1 + ExpyXB) ) + twolambda2 * Biold;
+                double partial_i = - arma::sum( (Xy->unsafe_col(i)) / (1 + ExpyXB) ) + twolambda2 * Biold;
                 (*Xtr)[i] = std::abs(partial_i); // abs value of grad
 
                 double x = Biold - partial_i / qp2lamda2;
@@ -56,13 +56,13 @@ FitResult CDL012Logistic::Fit()
                 {
                     double Bnew = std::copysign(z, x);
                     B[i] = Bnew;
-                    ExpyXB %= arma::exp( (Bnew - Biold) *  *y % X->unsafe_col(i));
+                    ExpyXB %= arma::exp( (Bnew - Biold) *  Xy->unsafe_col(i));
                     //std::cout<<"In. "<<Objective(r,B)<<std::endl;
                 }
 
                 else if (Biold != 0)   // do nothing if x=0 and B[i] = 0
                 {
-                    ExpyXB %= arma::exp( - Biold * *y % X->unsafe_col(i));
+                    ExpyXB %= arma::exp( - Biold * Xy->unsafe_col(i));
                     B[i] = 0;
                     //std::cout<<"Out. "<<Objective(r,B)<<std::endl;
                     //}
@@ -82,7 +82,7 @@ FitResult CDL012Logistic::Fit()
 
                 // Calculate Partial_i
                 double Biold = B[i];
-                double partial_i = - arma::sum( (*y % X->unsafe_col(i)) / (1 + ExpyXB) ) + twolambda2 * Biold;
+                double partial_i = - arma::sum( (Xy->unsafe_col(i)) / (1 + ExpyXB) ) + twolambda2 * Biold;
                 double partial2_i = arma::sum( (X->unsafe_col(i) % X->unsafe_col(i) % ExpyXB) / ( (1 + ExpyXB) % (1 + ExpyXB) ) ) + twolambda2;
                 (*Xtr)[i] = std::abs(partial_i); // abs value of grad
                 //std::cout<<partial2_i<<std::endl;
@@ -104,13 +104,13 @@ FitResult CDL012Logistic::Fit()
                 {
                     double Bnew = std::copysign(z, x);
                     B[i] = Bnew;
-                    ExpyXB %= arma::exp( (Bnew - Biold) *  *y % X->unsafe_col(i));
+                    ExpyXB %= arma::exp( (Bnew - Biold) *  Xy->unsafe_col(i));
                     //std::cout<<"In. "<<Objective(r,B)<<std::endl;
                 }
 
                 else if (Biold != 0)   // do nothing if x=0 and B[i] = 0
                 {
-                    ExpyXB %= arma::exp( - Biold * *y % X->unsafe_col(i));
+                    ExpyXB %= arma::exp( - Biold * Xy->unsafe_col(i));
                     B[i] = 0;
                     //std::cout<<"Out. "<<Objective(r,B)<<std::endl;
                 }
