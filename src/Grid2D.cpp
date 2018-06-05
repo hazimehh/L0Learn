@@ -25,7 +25,7 @@ std::vector< std::vector<FitResult*> > Grid2D::Fit()
     if (PG.P.Specs.Logistic)
     {
         Xtrarma = 0.5 * arma::abs(y->t() * *X).t(); // = gradient of logistic loss at zero
-        arma::mat Xy = *y % *X;
+        arma::mat Xy =  X->each_col() % *y;
         PG.P.Xy = new arma::mat;
         *PG.P.Xy = Xy;
     }
