@@ -2,6 +2,7 @@
 #include "CDL012Logistic.h"
 
 #include "Normalize.h" // Remove later
+#include <chrono>
 
 CDL012LogisticSwaps::CDL012LogisticSwaps(const arma::mat& Xi, const arma::vec& yi, const Params& Pi) : CD(Xi, yi, Pi)
 {
@@ -19,6 +20,9 @@ CDL012LogisticSwaps::CDL012LogisticSwaps(const arma::mat& Xi, const arma::vec& y
 
 FitResult CDL012LogisticSwaps::Fit()
 {
+    auto start = std::chrono::high_resolution_clock::now();
+
+
     auto result = CDL012Logistic(*X, *y, P).Fit(); // result will be maintained till the end
     b0 = result.intercept; // Initialize from previous later....!
     B = result.B;
@@ -31,10 +35,12 @@ FitResult CDL012LogisticSwaps::Fit()
 
     P.Init = 'u';
 
+
+
     bool foundbetter;
     for (unsigned int t = 0; t < MaxNumSwaps; ++t)
     {
-        //std::cout<<"1Swaps Iteration: "<<t<<". "<<"Obj: "<<objective<<std::endl;
+        std::cout<<"1Swaps Iteration: "<<t<<". "<<"Obj: "<<objective<<std::endl;
         //B.print();
         arma::sp_mat::const_iterator start = B.begin();
         arma::sp_mat::const_iterator end   = B.end();
@@ -54,11 +60,17 @@ FitResult CDL012LogisticSwaps::Fit()
             // Remove j
             arma::vec ExpyXBnoj = ExpyXB % arma::exp( - B[j] *  Xy->unsafe_col(j));
 
+            auto start1 = std::chrono::high_resolution_clock::now();
             ///
             arma::rowvec gradient = - arma::sum( Xy->each_col() / (1 + ExpyXBnoj) , 0); // + twolambda2 * Biold // sum column-wise
             arma::uvec indices = arma::sort_index(arma::abs(gradient),"descend");
             bool foundbetteri = false;
             ///
+            auto end1 = std::chrono::high_resolution_clock::now();
+            std::cout<<"grad computation:  "<<std::chrono::duration_cast<std::chrono::milliseconds>(end1-start1).count() << " ms " << std::endl;
+
+
+            auto start2 = std::chrono::high_resolution_clock::now();
             for(unsigned int ll = 0; ll < std::min(100, (int) p); ++ll)
             {
                 unsigned int i = indices(ll);
@@ -116,6 +128,9 @@ FitResult CDL012LogisticSwaps::Fit()
 
 
                 }
+                auto end2 = std::chrono::high_resolution_clock::now();
+                std::cout<<"restricted:  "<<std::chrono::duration_cast<std::chrono::milliseconds>(end2-start2).count() << " ms " << std::endl;
+
                 if (foundbetteri == true)
                 {
                       B[j] = 0;
@@ -132,6 +147,10 @@ FitResult CDL012LogisticSwaps::Fit()
                       break;
                 }
             }
+
+
+
+
         }
 
         if(!foundbetter) {result.Model = this; return result;}
@@ -140,6 +159,11 @@ FitResult CDL012LogisticSwaps::Fit()
 
     //std::cout<<"Did not achieve CW Swap min" << std::endl;
     result.Model = this;
+
+    auto end = std::chrono::high_resolution_clock::now();
+    std::cout<<std::chrono::duration_cast<std::chrono::milliseconds>(end-start).count() << " ms " << std::endl;
+
+
     return result;
 }
 
