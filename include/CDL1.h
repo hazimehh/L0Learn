@@ -3,18 +3,18 @@
 #include "CD.h"
 #include "FitResult.h"
 
-class CDL1 : public CD {
-private:
-	double thr;
-	std::vector<double> * Xtr;
-	FitResult result;
+class CDL1 : public CD
+{
+    private:
+        double thr;
+        std::vector<double> * Xtr;
 
-public:
-	CDL1(const arma::mat& Xi, const arma::vec& yi, const Params& P);
+    public:
+        CDL1(const arma::mat& Xi, const arma::vec& yi, const Params& P);
 
-	FitResult Fit() final;
+        FitResult Fit() final;
 
-	double Objective(arma::vec & r, arma::sp_mat & B) final;
+        double Objective(arma::vec & r, arma::sp_mat & B) final;
 
 };
 

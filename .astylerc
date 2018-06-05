@@ -1,0 +1,17 @@
+--style=allman
+
+--indent=spaces
+
+--attach-inlines
+
+--indent-classes
+
+--pad-oper
+
+--pad-comma
+
+--add-one-line-braces
+
+--keep-one-line-blocks
+
+--keep-one-line-statements

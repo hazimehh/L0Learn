@@ -3,17 +3,18 @@
 #include "CD.h"
 
 
-class CDL012KSwapsExh : public CD { // Calls CDL012 irrespective of P.ModelType
-private:
-	unsigned int MaxNumSwaps;
-	Params P;
-	unsigned int K;
-public:
-	CDL012KSwapsExh(const arma::mat& Xi, const arma::vec& yi, const Params& Pi);
+class CDL012KSwapsExh : public CD   // Calls CDL012 irrespective of P.ModelType
+{
+    private:
+        unsigned int MaxNumSwaps;
+        Params P;
+        unsigned int K;
+    public:
+        CDL012KSwapsExh(const arma::mat& Xi, const arma::vec& yi, const Params& Pi);
 
-	FitResult Fit() final ;
+        FitResult Fit() final ;
 
-	double Objective(arma::vec & r, arma::sp_mat & B) final;
+        double Objective(arma::vec & r, arma::sp_mat & B) final;
 
 };
 
