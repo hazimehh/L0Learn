@@ -86,42 +86,48 @@ FitResult CDL012LogisticSwaps::Fit()
                     //if (std::abs(partial_i) >= lambda1 + stl0Lc )
                     //{
                         //std::cout<<"Adding: "<<i<< std::endl;
-                        arma::sp_mat Btemp = B;
-                        Btemp[j] = 0;
-                        double ObjTemp = Objective(ExpyXBnoji, Btemp);
-                        double Biolddescent = 0;
-                        while(!Converged)
-                        {
-                            double x = Biold - partial_i/qp2lamda2;
-                            double z = std::abs(x) - lambda1ol;
-                            Binew = std::copysign(z, x); // no need to check if >= sqrt(2lambda_0/Lc)
+                    arma::sp_mat Btemp = B;
+                    Btemp[j] = 0;
+                    double ObjTemp = Objective(ExpyXBnoji, Btemp);
+                    unsigned int innerindex = 0;
 
-                            if (ObjTemp < Fmin)
-                            {
-                                Fmin = ObjTemp;
-                                maxindex = i;
-                                Bmaxindex = Binew;
-                                foundbetteri = true;
-                                break;
-                            }
+                    double x = Biold - partial_i/qp2lamda2;
+                    double z = std::abs(x) - lambda1ol;
+                    Binew = std::copysign(z, x); // no need to check if >= sqrt(2lambda_0/Lc)
 
-                            ExpyXBnoji %= arma::exp( (Binew - Biold) *  Xy->unsafe_col(i));
-                            partial_i = - arma::sum( (Xy->unsafe_col(i)) / (1 + ExpyXBnoji) ) + twolambda2 * Binew;
+                    while(!Converged && innerindex < 5  && ObjTemp >= Fmin) // ObjTemp >= Fmin
+                    {
+                        ExpyXBnoji %= arma::exp( (Binew - Biold) *  Xy->unsafe_col(i));
+                        partial_i = - arma::sum( (Xy->unsafe_col(i)) / (1 + ExpyXBnoji) ) + twolambda2 * Binew;
 
-                            //if (std::abs((Binew - Biold)/Biold) < 0.0001){Converged = true;}
+                        if (std::abs((Binew - Biold)/Biold) < 0.0001){Converged = true;}
 
-                            Btemp[i] = Binew;
-                            double ObjTempOld = ObjTemp;
-                            ObjTemp = Objective(ExpyXBnoji, Btemp);
+                        //Btemp[i] = Binew;
+                        //double ObjTempOld = ObjTemp;
+                        //ObjTemp = Objective(ExpyXBnoji, Btemp);
+                        //if (std::abs(ObjTemp - ObjTempOld) / ObjTempOld < 0.001) {Converged = true;}
+                        Biold = Binew;
+                        x = Biold - partial_i/qp2lamda2;
+                        z = std::abs(x) - lambda1ol;
+                        Binew = std::copysign(z, x); // no need to check if >= sqrt(2lambda_0/Lc)
+                        innerindex += 1;
+                    }
 
-                            if (std::abs(ObjTemp - ObjTempOld) / ObjTempOld < 0.001) {Converged = true;}
 
-                            Biold = Binew;
+                    Btemp[i] = Binew;
+                    ObjTemp = Objective(ExpyXBnoji, Btemp);
 
-                        }
+                    if (ObjTemp < Fmin)
+                    {
+                        Fmin = ObjTemp;
+                        maxindex = i;
+                        Bmaxindex = Binew;
+                        foundbetteri = true;
+                        break;
+                    }
 
-                        // Can be made much faster (later)
-                        Btemp[i] = Binew;
+                    // Can be made much faster (later)
+                    Btemp[i] = Binew;
 
                     //}
 
