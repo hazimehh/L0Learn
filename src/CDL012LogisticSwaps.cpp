@@ -128,8 +128,6 @@ FitResult CDL012LogisticSwaps::Fit()
 
 
                 }
-                auto end2 = std::chrono::high_resolution_clock::now();
-                std::cout<<"restricted:  "<<std::chrono::duration_cast<std::chrono::milliseconds>(end2-start2).count() << " ms " << std::endl;
 
                 if (foundbetteri == true)
                 {
@@ -148,6 +146,8 @@ FitResult CDL012LogisticSwaps::Fit()
                 }
             }
 
+            auto end2 = std::chrono::high_resolution_clock::now();
+            std::cout<<"restricted:  "<<std::chrono::duration_cast<std::chrono::milliseconds>(end2-start2).count() << " ms " << std::endl;
 
 
 
