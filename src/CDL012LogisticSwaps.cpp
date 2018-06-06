@@ -20,9 +20,6 @@ CDL012LogisticSwaps::CDL012LogisticSwaps(const arma::mat& Xi, const arma::vec& y
 
 FitResult CDL012LogisticSwaps::Fit()
 {
-    auto start = std::chrono::high_resolution_clock::now();
-
-
     auto result = CDL012Logistic(*X, *y, P).Fit(); // result will be maintained till the end
     b0 = result.intercept; // Initialize from previous later....!
     B = result.B;
@@ -40,7 +37,7 @@ FitResult CDL012LogisticSwaps::Fit()
     bool foundbetter;
     for (unsigned int t = 0; t < MaxNumSwaps; ++t)
     {
-        std::cout<<"1Swaps Iteration: "<<t<<". "<<"Obj: "<<objective<<std::endl;
+        //std::cout<<"1Swaps Iteration: "<<t<<". "<<"Obj: "<<objective<<std::endl;
         //B.print();
         arma::sp_mat::const_iterator start = B.begin();
         arma::sp_mat::const_iterator end   = B.end();
@@ -60,17 +57,17 @@ FitResult CDL012LogisticSwaps::Fit()
             // Remove j
             arma::vec ExpyXBnoj = ExpyXB % arma::exp( - B[j] *  Xy->unsafe_col(j));
 
-            auto start1 = std::chrono::high_resolution_clock::now();
+            //auto start1 = std::chrono::high_resolution_clock::now();
             ///
             arma::rowvec gradient = - arma::sum( Xy->each_col() / (1 + ExpyXBnoj) , 0); // + twolambda2 * Biold // sum column-wise
             arma::uvec indices = arma::sort_index(arma::abs(gradient),"descend");
             bool foundbetteri = false;
             ///
-            auto end1 = std::chrono::high_resolution_clock::now();
-            std::cout<<"grad computation:  "<<std::chrono::duration_cast<std::chrono::milliseconds>(end1-start1).count() << " ms " << std::endl;
+            //auto end1 = std::chrono::high_resolution_clock::now();
+            //std::cout<<"grad computation:  "<<std::chrono::duration_cast<std::chrono::milliseconds>(end1-start1).count() << " ms " << std::endl;
 
 
-            auto start2 = std::chrono::high_resolution_clock::now();
+            //auto start2 = std::chrono::high_resolution_clock::now();
             for(unsigned int ll = 0; ll < std::min(100, (int) p); ++ll)
             {
                 unsigned int i = indices(ll);
@@ -83,9 +80,7 @@ FitResult CDL012LogisticSwaps::Fit()
                     //double partial_i = - arma::sum( (Xy->unsafe_col(i)) / (1 + ExpyXBnoji) ); // + twolambda2 * Biold
                     double partial_i = gradient[i];
                     bool Converged = false;
-                    //if (std::abs(partial_i) >= lambda1 + stl0Lc )
-                    //{
-                        //std::cout<<"Adding: "<<i<< std::endl;
+
                     arma::sp_mat Btemp = B;
                     Btemp[j] = 0;
                     double ObjTemp = Objective(ExpyXBnoji, Btemp);
@@ -102,14 +97,10 @@ FitResult CDL012LogisticSwaps::Fit()
 
                         if (std::abs((Binew - Biold)/Biold) < 0.0001){
                           Converged = true;
-                          std::cout<<"swaps converged!!!"<<std::endl;
+                          //std::cout<<"swaps converged!!!"<<std::endl;
 
                         }
 
-                        //Btemp[i] = Binew;
-                        //double ObjTempOld = ObjTemp;
-                        //ObjTemp = Objective(ExpyXBnoji, Btemp);
-                        //if (std::abs(ObjTemp - ObjTempOld) / ObjTempOld < 0.001) {Converged = true;}
                         Biold = Binew;
                         x = Biold - partial_i/qp2lamda2;
                         z = std::abs(x) - lambda1ol;
@@ -155,24 +146,17 @@ FitResult CDL012LogisticSwaps::Fit()
                 }
             }
 
-            auto end2 = std::chrono::high_resolution_clock::now();
-            std::cout<<"restricted:  "<<std::chrono::duration_cast<std::chrono::milliseconds>(end2-start2).count() << " ms " << std::endl;
+            //auto end2 = std::chrono::high_resolution_clock::now();
+            //std::cout<<"restricted:  "<<std::chrono::duration_cast<std::chrono::milliseconds>(end2-start2).count() << " ms " << std::endl;
 
-            if (foundbetter){break;}
+            //if (foundbetter){break;}
 
         }
 
         if(!foundbetter) {result.Model = this; return result;}
     }
 
-
-    //std::cout<<"Did not achieve CW Swap min" << std::endl;
     result.Model = this;
-
-    auto end = std::chrono::high_resolution_clock::now();
-    std::cout<<std::chrono::duration_cast<std::chrono::milliseconds>(end-start).count() << " ms " << std::endl;
-
-
     return result;
 }
 
