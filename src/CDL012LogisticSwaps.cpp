@@ -123,7 +123,6 @@ FitResult CDL012LogisticSwaps::Fit()
                         maxindex = i;
                         Bmaxindex = Binew;
                         foundbetteri = true;
-                        break;
                     }
 
                     // Can be made much faster (later)
