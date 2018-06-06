@@ -100,7 +100,11 @@ FitResult CDL012LogisticSwaps::Fit()
                         ExpyXBnoji %= arma::exp( (Binew - Biold) *  Xy->unsafe_col(i));
                         partial_i = - arma::sum( (Xy->unsafe_col(i)) / (1 + ExpyXBnoji) ) + twolambda2 * Binew;
 
-                        if (std::abs((Binew - Biold)/Biold) < 0.0001){Converged = true;}
+                        if (std::abs((Binew - Biold)/Biold) < 0.0001){
+                          Converged = true;
+                          std::cout<<"swaps converged!!!"<<std::endl;
+
+                        }
 
                         //Btemp[i] = Binew;
                         //double ObjTempOld = ObjTemp;
@@ -154,7 +158,7 @@ FitResult CDL012LogisticSwaps::Fit()
             auto end2 = std::chrono::high_resolution_clock::now();
             std::cout<<"restricted:  "<<std::chrono::duration_cast<std::chrono::milliseconds>(end2-start2).count() << " ms " << std::endl;
 
-
+            if (foundbetter){break;}
 
         }
 
