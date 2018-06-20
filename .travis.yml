@@ -7,3 +7,7 @@ r:
 sudo: false
 cache: packages
 warnings_are_errors: false
+after_failure:
+  - cat 00check.log
+after_success:
+  - cat 00check.log
