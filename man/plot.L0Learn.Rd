@@ -4,12 +4,14 @@
 \alias{plot.L0Learn}
 \title{Plot Cross-validation Errors}
 \usage{
-\method{plot}{L0Learn}(x, gamma)
+\method{plot}{L0Learn}(x, gamma, ...)
 }
 \arguments{
 \item{x}{L0Learn.fit object}
 
 \item{gamma}{The gamma value for L0L1 and L0L2 models. This is ignored for L0.}
+
+\item{...}{ignore}
 }
 \description{
 Plots cross-validation errors

@@ -3,8 +3,10 @@
 #' @description Plots cross-validation errors
 #' @param x L0Learn.fit object
 #' @param gamma The gamma value for L0L1 and L0L2 models. This is ignored for L0.
+#' @param ... ignore
+#' @method plot L0Learn
 #' @export
-plot.L0Learn <- function(x, gamma)
+plot.L0Learn <- function(x, gamma, ...)
 {
 		if (x$penalty == "L0")
 		{
@@ -20,7 +22,7 @@ plot.L0Learn <- function(x, gamma)
 				yy = x$cvmeans[[gammaindex]]
 				sd = x$cvsds[[gammaindex]]
 		}
-		graphics::plot(xvals, yy, ylim=range(c(0, yy+sd)),
+		plot(xvals, yy, ylim=range(c(0, yy+sd)),
 		    pch=19, xlab="Log(lambda)", ylab="CV Error")
-		graphics::arrows(xvals, yy-sd, xvals, yy+sd, length=0.05, angle=90, code=3)
+		arrows(xvals, yy-sd, xvals, yy+sd, length=0.05, angle=90, code=3)
 }
