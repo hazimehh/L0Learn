@@ -8,6 +8,6 @@ sudo: false
 cache: packages
 warnings_are_errors: false
 after_failure:
-  - cat 00check.log
+  - cat /home/travis/build/hazimehh/L0Learn/L0Learn.Rcheck/00check.log
 after_success:
-  - cat 00check.log
+  - cat /home/travis/build/hazimehh/L0Learn/L0Learn.Rcheck/00check.log
