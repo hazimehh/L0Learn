@@ -1,4 +1,4 @@
-#ifndef CCDL012SquaredHinge_H
+#ifndef CDL012SquaredHinge_H
 #define CDL012SquaredHinge_H
 #include "CD.h"
 #include "FitResult.h"
