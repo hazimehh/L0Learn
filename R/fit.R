@@ -1,4 +1,5 @@
-#' @useDynLib L0Learn # import C++ compiled code
+# import C++ compiled code
+#' @useDynLib L0Learn
 #' @importFrom Rcpp evalCpp
 #' @importFrom methods as
 #' @importFrom graphics arrows plot
