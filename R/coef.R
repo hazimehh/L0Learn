@@ -3,14 +3,9 @@
 #' @description Extracts a specific solution in the regularization path
 #' @param object The output of L0Learn.fit
 #' @param ... ignore
-#' @export
-coef <- function(object, ...){
-  UseMethod("coef")
-}
-
-#' @rdname coef
 #' @param lambda The value(s) of lambda at which to extract the solution.
 #' @param gamma The value of gamma at which to extract the solution. Note that, unlike lambda, this can only take single values.
+#' @method coef L0Learn
 #' @export
 coef.L0Learn <- function(object,lambda,gamma=0, ...){
 		if (object$penalty=="L0")

@@ -3,17 +3,12 @@
 #' @description Predicts the response for a given sample
 #' @param object The output of L0Learn.fit
 #' @param ... ignore
-#' @export
-predict <- function(object, ...){
-  UseMethod("predict")
-}
-
-#' @rdname predict
 #' @param newx A matrix on which predictions are made. The matrix should have p columns.
 #' @param lambda The value(s) of lambda to use for prediction. A summary of the lambdas in the regularization
 #' path can be obtained using \code{print(fit)}.
 #' @param gamma The value of gamma to use for prediction. A summary of the gammas in the regularization
 #' path can be obtained using \code{print(fit)}.
+#' @method predict L0Learn
 #' @export
 predict.L0Learn <- function(object,newx,lambda,gamma=0, ...)
 {

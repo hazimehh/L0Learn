@@ -3,12 +3,7 @@
 #' @description Prints a summary of L0Learn.fit
 #' @param x L0Learn.fit object
 #' @param ... ignore
-#' @export
-print <- function(x, ...){
-  UseMethod("print")
-}
-
-#' @rdname print
+#' @method print L0Learn
 #' @export
 print.L0Learn <- function(x, ...){
 	if(x$penalty!="L0"){
