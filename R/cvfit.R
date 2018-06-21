@@ -31,10 +31,10 @@ L0Learn.cvfit <- function(x,y, loss="SquaredError", penalty="L0", algorithm="CD"
 	# The C++ function uses LambdaU = 1 for user-specified grid. In R, we use AutoLambda0 = 0 for user-specified grid (thus the negation when passing the paramter to the function below)
 	M <- .Call('_L0Learn_L0LearnCV', PACKAGE = 'L0Learn', x, y, loss, penalty, algorithm, maxSuppSize, nLambda, nGamma, gammaMax, gammaMin, partialSort, maxIters, tol, activeSet, activeSetNum, maxSwaps, scaleDownFactor, screenSize, !autoLambda, lambdaGrid,nFolds,seed)
 
-	G <- list(beta = M$beta, lambda=lapply(M$lambda,signif, digits=6), a0=M$a0, converged = M$Converged, suppSize= M$SuppSize, gamma=M$gamma, penalty=Penalty, cvMeans=M$CVMeans,cvSDs=M$CVSDs, loss=Loss)
+	G <- list(beta = M$beta, lambda=lapply(M$lambda,signif, digits=6), a0=M$a0, converged = M$Converged, suppSize= M$SuppSize, gamma=M$gamma, penalty=penalty, cvMeans=M$CVMeans,cvSDs=M$CVSDs, loss=loss)
 
 	class(G) <- "L0Learn"
-	G$n <- dim(X)[1]
-	G$p <- dim(X)[2]
+	G$n <- dim(x)[1]
+	G$p <- dim(x)[2]
 	G
 }
