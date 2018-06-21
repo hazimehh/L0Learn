@@ -13,9 +13,9 @@ print <- function(x, ...){
 print.L0Learn <- function(x, ...){
 	if(x$penalty!="L0"){
 		gammas = rep(x$gamma, times=lapply(x$lambda, length) )
-		data.frame(lambda = unlist(x["lambda"]), gamma = gammas, suppsize = unlist(x["suppsize"]), row.names = NULL)
+		data.frame(lambda = unlist(x["lambda"]), gamma = gammas, suppsize = unlist(x["suppSize"]), row.names = NULL)
 	}
 	else{
-		data.frame(lambda = unlist(x["lambda"]), suppsize = x["suppsize"], row.names = NULL)
+		data.frame(lambda = unlist(x["lambda"]), suppsize = x["suppSize"], row.names = NULL)
 	}
 }
