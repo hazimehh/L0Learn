@@ -2,12 +2,15 @@
 % Please edit documentation in R/predict.R
 \name{predict.L0Learn}
 \alias{predict.L0Learn}
+\alias{predict.L0LearnCV}
 \title{Predict Response}
 \usage{
 \method{predict}{L0Learn}(object, newx, lambda, gamma = 0, ...)
+
+\method{predict}{L0LearnCV}(object, newx, lambda, gamma = 0, ...)
 }
 \arguments{
-\item{object}{The output of L0Learn.fit}
+\item{object}{The output of L0Learn.fit or L0Learn.cvfit}
 
 \item{newx}{A matrix on which predictions are made. The matrix should have p columns.}
 

@@ -76,7 +76,7 @@ corresponds to a single gamma value.}
 \item{lambda}{For L0, lambda is a sequence of lambda values. For L0L1 and L0L1, it is a list of lambda sequences,
 each corresponding to a single gamma value.}
 \item{gamma}{For L0L1 and L0L2, this is a sequence of gamma values.}
-\item{suppSize}{For L0, this is a sequence of support sizes (number of non-zero coefficients). For L0L1 and L02,
+\item{suppSize}{For L0, this is a sequence of support sizes (number of non-zero coefficients). For L0L1 and L0L2,
 it is a list of support size sequences, each representing a single gamma value.}
 \item{converged}{For L0, this is a sequence indicating whether the algorithm converged at the current point in the
 regularization path. For L0L1 and L0L2, this is a list of sequences, each representing a single gamma value.}

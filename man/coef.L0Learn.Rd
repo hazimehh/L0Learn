@@ -2,12 +2,15 @@
 % Please edit documentation in R/coef.R
 \name{coef.L0Learn}
 \alias{coef.L0Learn}
+\alias{coef.L0LearnCV}
 \title{Extract Solutions}
 \usage{
 \method{coef}{L0Learn}(object, lambda, gamma = 0, ...)
+
+\method{coef}{L0LearnCV}(object, lambda, gamma = 0, ...)
 }
 \arguments{
-\item{object}{The output of L0Learn.fit}
+\item{object}{The output of L0Learn.fit or L0Learn.cvfit}
 
 \item{lambda}{The value(s) of lambda at which to extract the solution.}
 

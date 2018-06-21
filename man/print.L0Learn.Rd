@@ -2,12 +2,15 @@
 % Please edit documentation in R/print.R
 \name{print.L0Learn}
 \alias{print.L0Learn}
+\alias{print.L0LearnCV}
 \title{Print L0Learn.fit object}
 \usage{
 \method{print}{L0Learn}(x, ...)
+
+\method{print}{L0LearnCV}(x, ...)
 }
 \arguments{
-\item{x}{L0Learn.fit object}
+\item{x}{The output of L0Learn.fit or L0Learn.cvfit}
 
 \item{...}{ignore}
 }

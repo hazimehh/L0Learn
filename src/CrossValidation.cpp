@@ -197,6 +197,7 @@ Rcpp::List L0LearnCV(const arma::mat& X, const arma::vec& y, const std::string L
 
     // CV ends here.
 
+    /*
     if (!PG.P.Specs.L0)
     {
         return Rcpp::List::create(Rcpp::Named(FirstParameter) = G.Lambda0,
@@ -220,4 +221,14 @@ Rcpp::List L0LearnCV(const arma::mat& X, const arma::vec& y, const std::string L
                                   Rcpp::Named("CVMeans") = CVMeans[0],
                                   Rcpp::Named("CVSDs") = CVSDs[0] );
     }
+    */
+    return Rcpp::List::create(Rcpp::Named(FirstParameter) = G.Lambda0,
+                              Rcpp::Named(SecondParameter) = G.Lambda12, // contains 0 in case of L0
+                              Rcpp::Named("SuppSize") = G.NnzCount,
+                              Rcpp::Named("beta") = Bs,
+                              Rcpp::Named("a0") = G.Intercepts,
+                              Rcpp::Named("Converged") = G.Converged,
+                              Rcpp::Named("CVMeans") = CVMeans,
+                              Rcpp::Named("CVSDs") = CVSDs );
+
 }

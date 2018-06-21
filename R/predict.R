@@ -1,7 +1,7 @@
 #' @title Predict Response
 #'
 #' @description Predicts the response for a given sample
-#' @param object The output of L0Learn.fit
+#' @param object The output of L0Learn.fit or L0Learn.cvfit
 #' @param ... ignore
 #' @param newx A matrix on which predictions are made. The matrix should have p columns.
 #' @param lambda The value(s) of lambda to use for prediction. A summary of the lambdas in the regularization
@@ -21,4 +21,12 @@ predict.L0Learn <- function(object,newx,lambda,gamma=0, ...)
 				prediction = sign(prediction)
 		}
 		prediction
+}
+
+#' @rdname predict.L0Learn
+#' @method predict L0LearnCV
+#' @export
+predict.L0LearnCV <- function(object,newx,lambda,gamma=0, ...)
+{
+    predict.L0Learn(object$fit,newx,lambda,gamma=0, ...)
 }
