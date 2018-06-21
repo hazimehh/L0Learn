@@ -281,7 +281,7 @@ std::vector<FitResult*> Grid1D::Fit()
 
                 //std::cout<<"### ### ###"<<std::endl;
                 //std::cout<<"Iteration: "<<i<<". "<<"Nnz: "<< result->B.n_nonzero << ". Lambda: "<<P.ModelParams[0]<< std::endl;
-                if(result->B.n_nonzero > StopNum) {break;}
+                if(result->B.n_nonzero >= StopNum) {break;}
                 //result->B.t().print();
                 P.InitialSol = &(result->B);
                 P.b0 = result->intercept;
