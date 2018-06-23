@@ -16,17 +16,17 @@ L0Learn.cvfit(x, y, loss = "SquaredError", penalty = "L0",
 
 \item{y}{The response vector.}
 
-\item{loss}{The loss function to be minimized. The currently supported choice is "SquaredError".}
+\item{loss}{The loss function to be minimized. Currently we support the choice "SquaredError".}
 
 \item{penalty}{The type of regularization. This can take either one of the following choices:
 "L0", "L0L2", and "L0L1".}
 
-\item{algorithm}{The type of algorithm used to minimize the objective. Currently "CD" and "CDPSI" are
-are supported. "CD" is a variant of cyclic coordinate descent and can run very fast. "CDPSI" performs
-local combinatorial search on top of CD and thus can achieve higher quality solutions (at the expense
+\item{algorithm}{The type of algorithm used to minimize the objective function. Currently "CD" and "CDPSI" are
+are supported. "CD" is a variant of cyclic coordinate descent and runs very fast. "CDPSI" performs
+local combinatorial search on top of CD and typically achieves higher quality solutions (at the expense
 of increased running time).}
 
-\item{maxSuppSize}{The maximum support size to reach in the grid before termination. We recommend setting
+\item{maxSuppSize}{The maximum support size at which to terminate the regularization path. We recommend setting
 this to a small fraction of min(n,p) (e.g. 0.05 * min(n,p)) as L0 regularization typically selects a small
 portion of non-zeros.}
 
@@ -37,12 +37,12 @@ corresponding to the L0 norm).}
 corresponding to L1 or L2, depending on the chosen penalty).}
 
 \item{gammaMax}{The maximum value of Gamma when using the L0L2 penalty. For the L0L1 penalty this is
-automatically selected by the toolkit.}
+automatically selected.}
 
-\item{gammaMin}{The minimum value of Gamma when using the L0L2 penalty. For the L0L1 penalty, gammaMin
-specifies the fraction of gammaMax at which the grid ends.}
+\item{gammaMin}{The minimum value of Gamma when using the L0L2 penalty. For the L0L1 penalty, the minimum
+value of gamma in the grid is set to gammaMin * gammaMax.}
 
-\item{partialSort}{If TRUE partial sorting will be used for sorting the coordinates (see our paper for
+\item{partialSort}{If TRUE partial sorting will be used for sorting the coordinates to do greedy cycling (see our paper for
 for details). Otherwise, full sorting is used.}
 
 \item{maxIters}{The maximum number of iterations (full cycles) for CD per grid point.}
@@ -56,15 +56,15 @@ for details). Otherwise, full sorting is used.}
 \item{maxSwaps}{The maximum number of swaps used by CDPSI for each grid point.}
 
 \item{scaleDownFactor}{This parameter decides how close the selected Lambda values are. The choice should be between
-strictly between 0 and 1 (i.e., 0 and 1 are not allowed). For details, see our paper - Section 5 on Adaptive Selection
-of Tuning Parameters).}
+strictly between 0 and 1 (i.e., 0 and 1 are not allowed). Larger values lead to closer lambdas and typically to smaller
+gaps between the support sizes. For details, see our paper - Section 5 on Adaptive Selection of Tuning Parameters).}
 
-\item{screenSize}{The number of coordinates to cycle over when performing correlation screening.}
+\item{screenSize}{The number of coordinates to cycle over when performing initial correlation screening.}
 
-\item{autoLambda}{If FALSE, the user specifier a grid of Lambda0 values through the Lambda0Grid parameter. Otherwise,
-if TRUE, the values of Lambda0 are automatically selected based on the data.}
+\item{autoLambda}{If FALSE, the user specifier a grid of Lambda values through the lambdaGrid parameter. Otherwise,
+if TRUE, the values of Lambda are automatically selected based on the data.}
 
-\item{lambdaGrid}{A vector of Lambda0 values to use in computing the regularization path. This is ignored unless autoLambda0 = FALSE.}
+\item{lambdaGrid}{A vector of Lambda values to use in computing the regularization path. This is ignored unless autoLambda = FALSE.}
 
 \item{nFolds}{The number of folds for cross-validation.}
 
@@ -72,13 +72,28 @@ if TRUE, the values of Lambda0 are automatically selected based on the data.}
 }
 \value{
 An S3 object of type "L0Learn" describing the regularization path. The object has the following members.
-\item{cvMeans}{For L0, this is a sequence of cross-validation errors: cvMeans[i] corresponds to the solution indexed by lambda[i].
-For L0L1 and L0L2, cvMeans is a list, where each element is a sequence corresponding to a particular gamma, i.e.,
-cvMeans[[i]] is the sequence of cross-validation errors corresponding to gamma[i].}
-\item{cvSDs}{For L0, this is a sequence of standard deviations for the cross-validation errors. For L0L1 and L0L2, it is a list of
-sequences: cvSDs[[i]] corresponds to cvMeans[[i]].}
+\item{cvMeans}{This is a list, where the ith element is a sequence of cross-validation errors corresponding to the ith gamma value}
+\item{cvSDs}{This a list, where the ith element is a sequence of standard deviations for the cross-validation errors: cvSDs[[i]] corresponds to cvMeans[[i]].}
 \item{fit}{The fitted model with type "L0Learn", i.e., this is the same object returned by \code{\link{L0Learn.fit}}.}
 }
 \description{
-Fits an L0 model on the full data and performs K-fold cross-validation.
+Fits an L0 model and performs K-fold cross-validation.
+}
+\examples{
+# Generate synthetic data for this example
+data <- GenSynthetic(n=500,p=1000,k=10,seed=1)
+X = data$X
+y = data$y
+
+# Perform 5-fold cross-validation on an L0L2 Model with 5 values of Gamma ranging from 0.0001 to 10
+fit <- L0Learn.cvfit(X, y, nFolds=5, seed=1, penalty="L0L2", maxSuppSize=20, nGamma=5,
+    gammaMin=0.0001, gammaMax = 10)
+print(fit)
+# Plot the graph of cross-validation error versus lambda for gamma = 0.0001
+plot(fit, gamma=0.0001)
+# Extract the coefficients at lambda = 0.0361829 and gamma = 0.0001
+coef(fit, lambda=0.0361829, gamma=0.0001)
+# Apply the fitted model on X to predict the response
+predict(fit, newx = X, lambda=0.0361829, gamma=0.0001)
+
 }

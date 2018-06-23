@@ -16,17 +16,17 @@ L0Learn.fit(x, y, loss = "SquaredError", penalty = "L0", algorithm = "CD",
 
 \item{y}{The response vector.}
 
-\item{loss}{The loss function to be minimized. The currently supported choice is "SquaredError".}
+\item{loss}{The loss function to be minimized. Currently we support the choice "SquaredError".}
 
 \item{penalty}{The type of regularization. This can take either one of the following choices:
 "L0", "L0L2", and "L0L1".}
 
-\item{algorithm}{The type of algorithm used to minimize the objective. Currently "CD" and "CDPSI" are
-are supported. "CD" is a variant of cyclic coordinate descent and can run very fast. "CDPSI" performs
-local combinatorial search on top of CD and thus can achieve higher quality solutions (at the expense
+\item{algorithm}{The type of algorithm used to minimize the objective function. Currently "CD" and "CDPSI" are
+are supported. "CD" is a variant of cyclic coordinate descent and runs very fast. "CDPSI" performs
+local combinatorial search on top of CD and typically achieves higher quality solutions (at the expense
 of increased running time).}
 
-\item{maxSuppSize}{The maximum support size to reach in the grid before termination. We recommend setting
+\item{maxSuppSize}{The maximum support size at which to terminate the regularization path. We recommend setting
 this to a small fraction of min(n,p) (e.g. 0.05 * min(n,p)) as L0 regularization typically selects a small
 portion of non-zeros.}
 
@@ -37,12 +37,12 @@ corresponding to the L0 norm).}
 corresponding to L1 or L2, depending on the chosen penalty).}
 
 \item{gammaMax}{The maximum value of Gamma when using the L0L2 penalty. For the L0L1 penalty this is
-automatically selected by the toolkit.}
+automatically selected.}
 
-\item{gammaMin}{The minimum value of Gamma when using the L0L2 penalty. For the L0L1 penalty, gammaMin
-specifies the fraction of gammaMax at which the grid ends.}
+\item{gammaMin}{The minimum value of Gamma when using the L0L2 penalty. For the L0L1 penalty, the minimum
+value of gamma in the grid is set to gammaMin * gammaMax.}
 
-\item{partialSort}{If TRUE partial sorting will be used for sorting the coordinates (see our paper for
+\item{partialSort}{If TRUE partial sorting will be used for sorting the coordinates to do greedy cycling (see our paper for
 for details). Otherwise, full sorting is used.}
 
 \item{maxIters}{The maximum number of iterations (full cycles) for CD per grid point.}
@@ -56,32 +56,57 @@ for details). Otherwise, full sorting is used.}
 \item{maxSwaps}{The maximum number of swaps used by CDPSI for each grid point.}
 
 \item{scaleDownFactor}{This parameter decides how close the selected Lambda values are. The choice should be between
-strictly between 0 and 1 (i.e., 0 and 1 are not allowed). For details, see our paper - Section 5 on Adaptive Selection
-of Tuning Parameters).}
+strictly between 0 and 1 (i.e., 0 and 1 are not allowed). Larger values lead to closer lambdas and typically to smaller
+gaps between the support sizes. For details, see our paper - Section 5 on Adaptive Selection of Tuning Parameters).}
 
-\item{screenSize}{The number of coordinates to cycle over when performing correlation screening.}
+\item{screenSize}{The number of coordinates to cycle over when performing initial correlation screening.}
 
-\item{autoLambda}{If FALSE, the user specifier a grid of Lambda0 values through the Lambda0Grid parameter. Otherwise,
-if TRUE, the values of Lambda0 are automatically selected based on the data.}
+\item{autoLambda}{If FALSE, the user specifier a grid of Lambda values through the lambdaGrid parameter. Otherwise,
+if TRUE, the values of Lambda are automatically selected based on the data.}
 
-\item{lambdaGrid}{A vector of Lambda0 values to use in computing the regularization path. This is ignored unless autoLambda0 = FALSE.}
+\item{lambdaGrid}{A vector of Lambda values to use in computing the regularization path. This is ignored unless autoLambda = FALSE.}
 }
 \value{
 An S3 object of type "L0Learn" describing the regularization path. The object has the following members.
-\item{a0}{For L0, this is a sequence of intercepts. Note for L0L1 and L0L2, a0 is a list of intercept sequences,
-where each member of the list corresponds to a single gamma value.}
-\item{beta}{For L0, this is a matrix of coefficients of dimensions p x \code{length(lambda)}, where each column
-corresponds to a single lambda value. For L0L1 and L0L2, this is a list of coefficient matrices, where each matrix
-corresponds to a single gamma value.}
-\item{lambda}{For L0, lambda is a sequence of lambda values. For L0L1 and L0L1, it is a list of lambda sequences,
-each corresponding to a single gamma value.}
-\item{gamma}{For L0L1 and L0L2, this is a sequence of gamma values.}
-\item{suppSize}{For L0, this is a sequence of support sizes (number of non-zero coefficients). For L0L1 and L0L2,
-it is a list of support size sequences, each representing a single gamma value.}
-\item{converged}{For L0, this is a sequence indicating whether the algorithm converged at the current point in the
-regularization path. For L0L1 and L0L2, this is a list of sequences, each representing a single gamma value.}
+\item{a0}{a0 is a list of intercept sequences. The ith element of the list (i.e., a0[[i]]) is the sequence of intercepts corresponding to the ith gamma value (i.e., gamma[i]).}
+\item{beta}{This is a list of coefficient matrices. The ith element of the list is a p x \code{length(lambda)} matrix which
+corresponds to the ith gamma value. The jth column in the coefficient matrix is the vector of coefficients for the jth lambda value.}
+\item{lambda}{This is the list of lambda sequences used in fitting the model. The ith element of lambda (i.e., lambda[[i]]) is a sequence
+of Lambda values corresponding to the ith gamma value.}
+\item{gamma}{This is the sequence of gamma values used in fitting the model.}
+\item{suppSize}{This is a list of support size sequences. The ith element of the list is a sequences of support sizes (i.e., number of non-zero coefficients)
+corresponding to the ith gamma value.}
+\item{converged}{This is a list of sequences. The ith element of the list is a sequence corresponding to the ith value of gamma, where the jth element in
+in the sequence indicates whether the algorithm has converged at the jth value of lambda.}
 }
 \description{
 Computes the regularization path for the specified loss function and
-choice of regularization (which can be a combination of the L0, L1, and L2 (squared) norms).
+penalty function (which can be a combination of the L0, L1, and L2 norms).
+}
+\examples{
+# Generate synthetic data for this example
+data <- GenSynthetic(n=500,p=1000,k=10,seed=1)
+X = data$X
+y = data$y
+
+# Fit an L0 Model with a maximum of 50 non-zeros using coordinate descent
+fit1 <- L0Learn.fit(X, y, penalty="L0", maxSuppSize=50)
+print(fit1)
+# Extract the coefficients at lambda = 0.0325142
+coef(fit1, lambda=0.0325142)
+# Apply the fitted model on X to predict the response
+predict(fit1, newx = X, lambda=0.0325142)
+
+# Fit an L0 Model with a maximum of 50 non-zeros using coordinate descent and local search
+fit2 <- L0Learn.fit(X, y, penalty="L0", algorithm="CDPSI", maxSuppSize=50)
+print(fit2)
+
+# Fit an L0L2 Model with 10 values of Gamma ranging from 0.0001 to 10, using coordinate descent
+fit3 <- L0Learn.fit(X, y, penalty="L0L2", maxSuppSize=50, nGamma=10, gammaMin=0.0001, gammaMax = 10)
+print(fit3)
+# Extract the coefficients at lambda = 0.0361829 and gamma = 0.0001
+coef(fit3, lambda=0.0361829, gamma=0.0001)
+# Apply the fitted model on X to predict the response
+predict(fit3, newx = X, lambda=0.0361829, gamma=0.0001)
+
 }

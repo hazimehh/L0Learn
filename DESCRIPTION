@@ -1,13 +1,13 @@
 Package: L0Learn
 Type: Package
 Title: Fast Algorithms for Best Subset Selection
-Version: 0.3-0
-Date: 2018-06-20
-Author: Hussein Hazimeh
-	Rahul Mazumder
+Version: 0.4
+Date: 2018-06-23
+Author: Hussein Hazimeh, Rahul Mazumder
 Maintainer: Hussein Hazimeh <hazimeh@mit.edu>
 Description: Highly optimized coordinate descent and local combinatorial search algorithms for (approximately) solving L0-regularized learning problems.
 License: MIT + file LICENSE
-Imports: Rcpp (>= 0.12.13), Matrix, methods
+Depends: R (>= 3.3.0)
+Imports: Rcpp (>= 0.12.13), Matrix, methods, ggplot2, reshape2
 LinkingTo: Rcpp, RcppArmadillo
 RoxygenNote: 6.0.1
