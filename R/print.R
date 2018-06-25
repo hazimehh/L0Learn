@@ -8,7 +8,7 @@
 print.L0Learn <- function(x, ...)
 {
 		gammas = rep(x$gamma, times=lapply(x$lambda, length) )
-		data.frame(lambda = unlist(x["lambda"]), gamma = gammas, suppsize = unlist(x["suppSize"]), row.names = NULL)
+		data.frame(lambda = unlist(x["lambda"]), gamma = gammas, suppSize = unlist(x["suppSize"]), row.names = NULL)
 }
 
 #' @rdname print.L0Learn

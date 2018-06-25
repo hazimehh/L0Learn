@@ -11,3 +11,6 @@ Depends: R (>= 3.3.0)
 Imports: Rcpp (>= 0.12.13), Matrix, methods, ggplot2, reshape2
 LinkingTo: Rcpp, RcppArmadillo
 RoxygenNote: 6.0.1
+Suggests: knitr,
+    rmarkdown
+VignetteBuilder: knitr
