@@ -32,5 +32,5 @@ coef.L0Learn <- function(object,lambda,gamma=0, ...){
 #' @method coef L0LearnCV
 #' @export
 coef.L0LearnCV <- function(object,lambda,gamma=0, ...){
-    coef.L0Learn(object$fit,lambda,gamma=0, ...)
+    coef.L0Learn(object$fit,lambda,gamma, ...)
 }
