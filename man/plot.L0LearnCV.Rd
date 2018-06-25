@@ -4,7 +4,7 @@
 \alias{plot.L0LearnCV}
 \title{Plot Cross-validation Errors}
 \usage{
-\method{plot}{L0LearnCV}(x, gamma, ...)
+\method{plot}{L0LearnCV}(x, gamma = 0, ...)
 }
 \arguments{
 \item{x}{The output of L0Learn.cvfit}

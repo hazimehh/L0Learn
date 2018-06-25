@@ -18,7 +18,7 @@
 #' @importFrom reshape2 melt
 #' @method plot L0Learn
 #' @export
-plot.L0Learn <- function(x, gamma, ...)
+plot.L0Learn <- function(x, gamma=0, ...)
 {
 		j = which(abs(x$gamma-gamma)==min(abs(x$gamma-gamma)))
 		p = x$p
@@ -68,7 +68,7 @@ plot.L0Learn <- function(x, gamma, ...)
 #'
 #' @method plot L0LearnCV
 #' @export
-plot.L0LearnCV <- function(x, gamma, ...)
+plot.L0LearnCV <- function(x, gamma=0, ...)
 {
 		j = which(abs(x$fit$gamma-gamma)==min(abs(x$fit$gamma-gamma)))
 		data = data.frame(x=x$fit$suppSize[[j]], y=x$cvMeans[[j]], sd=x$cvSDs[[j]])

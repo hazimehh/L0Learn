@@ -40,5 +40,5 @@ predict.L0Learn <- function(object,newx,lambda,gamma=0, ...)
 #' @export
 predict.L0LearnCV <- function(object,newx,lambda,gamma=0, ...)
 {
-    predict.L0Learn(object$fit,newx,lambda,gamma=0, ...)
+    predict.L0Learn(object$fit,newx,lambda,gamma, ...)
 }

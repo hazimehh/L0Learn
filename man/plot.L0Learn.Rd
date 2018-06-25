@@ -4,7 +4,7 @@
 \alias{plot.L0Learn}
 \title{Plot Regularization Path}
 \usage{
-\method{plot}{L0Learn}(x, gamma, ...)
+\method{plot}{L0Learn}(x, gamma = 0, ...)
 }
 \arguments{
 \item{x}{The output of L0Learn.fit}
