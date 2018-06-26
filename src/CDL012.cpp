@@ -11,7 +11,7 @@ CDL012::CDL012(const arma::mat& Xi, const arma::vec& yi, const Params& P) : CD(X
 FitResult CDL012::Fit()
 {
 
-    bool SecondPass = false;
+    // bool SecondPass = false;
 
     objective = Objective(r, B);
 

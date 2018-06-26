@@ -33,4 +33,6 @@ CD * make_CD(const arma::mat& Xi, const arma::vec& yi, const Params& P)
         else if (P.Specs.PSI) {return new CDL012SquaredHingeSwaps(Xi, yi, P);}
     }
 
+    return new CDL0(Xi, yi, P); // handle later
+
 }

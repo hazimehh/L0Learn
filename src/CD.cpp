@@ -2,8 +2,8 @@
 #include <algorithm>
 
 CD::CD(const arma::mat& Xi, const arma::vec& yi, const Params& P) :
-    ModelParams{P.ModelParams}, MaxIters{P.MaxIters},
-    Tol{P.Tol}, CyclingOrder{P.CyclingOrder}, ActiveSet{P.ActiveSet}, ActiveSetNum{P.ActiveSetNum}
+    ModelParams{P.ModelParams}, CyclingOrder{P.CyclingOrder}, MaxIters{P.MaxIters},
+    Tol{P.Tol}, ActiveSet{P.ActiveSet}, ActiveSetNum{P.ActiveSetNum}
 {
     X = &Xi;
     y = &yi;

@@ -60,9 +60,10 @@ plot.L0Learn <- function(x, gamma=0, ...)
 #' X = data$X
 #' y = data$y
 #'
-#' # Perform 5-fold cross-validation on an L0L2 Model with 5 values of Gamma ranging from 0.0001 to 10
-#' fit <- L0Learn.cvfit(X, y, nFolds=5, seed=1, penalty="L0L2", maxSuppSize=20, nGamma=5,
-#'										  gammaMin=0.0001, gammaMax = 10)
+#' # Perform 5-fold cross-validation on an L0L2 Model with 5 values of
+#' # Gamma ranging from 0.0001 to 10
+#' fit <- L0Learn.cvfit(X, y, nFolds=5, seed=1, penalty="L0L2",
+#' maxSuppSize=20, nGamma=5, gammaMin=0.0001, gammaMax = 10)
 #' # Plot the graph of cross-validation error versus lambda for gamma = 0.0001
 #' plot(fit, gamma=0.0001)
 #'

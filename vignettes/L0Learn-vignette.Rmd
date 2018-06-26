@@ -1,6 +1,9 @@
 ---
 title: "L0Learn Vignette"
-author: "Hussein Hazimeh and Rahul Mazumder"
+#author:  "Hussein Hazimeh and Rahul Mazumder"
+author:
+- name: Hussein Hazimeh and Rahul Mazumder
+- name: Massachusetts Institute of Technology (MIT)
 date: "`r Sys.Date()`"
 #output: rmarkdown::html_vignette
 #output:
@@ -53,13 +56,13 @@ knit_hooks$set(output = function(x, options) {
 
 
 # Introduction
-L0Learn is a fast toolkit for fitting linear models with L0 regularization. This type of regularization selects the best subset of features and can outperform commonly used feature selection methods (e.g., Lasso and MCP) under many sparse learning regimes. The toolkit can (approximately) solve any of the following three problems
+`L0Learn` is a fast toolkit for fitting linear models with L0 regularization. This type of regularization selects the best subset of features and can outperform commonly used feature selection methods (e.g., Lasso and MCP) under many sparse learning regimes. The toolkit can (approximately) solve any of the following three problems
 $$
 \min_{\beta} \frac{1}{2} || y - X \beta ||^2 + \lambda ||\beta||_0 \quad \quad (L0) \\
 \min_{\beta} \frac{1}{2} || y - X \beta ||^2 + \lambda ||\beta||_0 + \gamma||\beta||_1 \quad (L0L1) \\
 \min_{\beta} \frac{1}{2} || y - X \beta ||^2 + \lambda ||\beta||_0 + \gamma||\beta||_2^2  \quad (L0L2)
 $$
-where $||\beta||_0$ denotes the L0 norm of $\beta$, i.e., the number of non-zeros in $\beta$. The parameter $\lambda$ controls the strength of the L0 regularization (larger $\lambda$ leads to less non-zeros). The parameter $\gamma$ controls the strength of the shrinkage component (which is the L1 norm in case of L0L1 or squared L2 norm in case of L0L2); adding a shrinkage term to L0 can be very effective in avoiding overfitting. The fitting is done over a grid of $\lambda$ and $\gamma$ values to generate a regularization path. 
+where $||\beta||_0$ denotes the L0 norm of $\beta$, i.e., the number of non-zeros in $\beta$. The parameter $\lambda$ controls the strength of the L0 regularization (larger $\lambda$ leads to less non-zeros). The parameter $\gamma$ controls the strength of the shrinkage component (which is the L1 norm in case of L0L1 or squared L2 norm in case of L0L2); adding a shrinkage term to L0 can be very effective in avoiding overfitting and typically leads to better predictive models. The fitting is done over a grid of $\lambda$ and $\gamma$ values to generate a regularization path. 
 
 The algorithms provided in `L0Learn` are based on cyclic coordinate descent and local combinatorial search. Many computational tricks and heuristics are used to speed up the algorithms and improve the solution quality. These heuristics include warm starts, active set convergence, correlation screening, greedy cycling order, and efficient methods for updating the residuals through exploiting sparsity and problem dimensions. Moreover, we employed a new computationally efficient method for dynamically selecting the regularization parameter $\lambda$ in the path. For more details on the algorithms used, please refer to our paper [Fast Best Subset Selection: Coordinate Descent and Local Combinatorial Optimization Algorithms](https://arxiv.org/abs/1803.01454). 
 
@@ -70,7 +73,7 @@ L0Learn can be installed directly from CRAN by executing:
 ```{r, eval=FALSE}
 install.packages("L0Learn")
 ```
-If you face installation issues please refer to the [Intallation Troubleshooting Wiki](https://github.com/hazimehh/L0Learn/wiki/Installation-Troubleshooting). If the issue is not resolved, please consider submitting an issue on [L0Learn's Github Repo](https://github.com/hazimehh/L0Learn).
+If you face installation issues please refer to the [Intallation Troubleshooting Wiki](https://github.com/hazimehh/L0Learn/wiki/Installation-Troubleshooting). If the issue is not resolved, you can submit an issue on [L0Learn's Github Repo](https://github.com/hazimehh/L0Learn).
 
 # Tutorial
 To demonstrate how `L0Learn` works, we will first generate a synthetic dataset and then proceed to fitting L0-regularized models. The synthetic dataset (y,X) will be generated from a sparse linear model as follows:
@@ -117,18 +120,18 @@ We can make predictions using a specific solution in the grid using the function
 predict(fit, newx=X, lambda=0.0325142, gamma=0)
 ```
 We can also visualize the regularization path by plotting the coefficients of the estimated B versus the support size (i.e., the number of non-zeros) using the `plot(fit,gamma)` method as follows:
-```{r, fig.height = 4, fig.width = 7, out.width="50%", dpi=300}
+```{r, fig.height = 4, fig.width = 7, out.width="80%", dpi=300}
 plot(fit, gamma=0)
 ```
 
-The legend of the plot presents the variables in the order they entered the regularization path. For example, variable 7 is the first variable to enter the path, and variable 6 is the second to enter. Thus, roughly speaking, we can view the first $k$ variables in the legend as the best subset of size $k$. Moreovoer, we note that the output of the `plot` function above is a `ggplot` object, which can be further customized using the `ggplot2` package. 
+The legend of the plot presents the variables in the order they entered the regularization path. For example, variable 7 is the first variable to enter the path, and variable 6 is the second to enter. Thus, roughly speaking, we can view the first $k$ variables in the legend as the best subset of size $k$. Moreover, we note that the output of the `plot` function above is a `ggplot` object, which can be further customized using the `ggplot2` package. 
 
-## Fitting L0L2 Models
+## Fitting L0L2 and L0L1 Models
 We have demonstrated the simple case of using an L0 penalty. We can also fit more elaborate models that combine L0-regularization with shrinkage-inducing penalties like the L1 norm or squared L2 norm. Adding shrinkage helps in avoiding overfitting and typically improves the predictive performance of the models. Next, we will discuss how to fit a model using the L0L2 penalty for a two-dimensional grid of $\lambda$ and $\gamma$ values. Recall that by default, `L0Learn` automatically selects the $\lambda$ sequence, so we only need to specify the $\gamma$ sequence. Suppose we want to fit an L0L2 model with a maximum of 20 non-zeros and a sequence of 5 $\gamma$ values ranging between 0.0001 and 10. We can do so by calling `L0Learn.fit` with `penalty="L0L2"`, `nGamma=5`, `gammaMin=0.0001`, and `gammaMax=10` as follows:
 ```{r}
 fit <- L0Learn.fit(X, y, penalty="L0L2", nGamma = 5, gammaMin = 0.0001, gammaMax = 10, maxSuppSize=20)
 ```
-L0Learn will generate a grid of 5 $\gamma$ values equi-spaced on the logarithmic scale between 0.0001 and 10. Similar to the case of L0, we can print a summary of the regularization path using the `print` function as follows:
+`L0Learn` will generate a grid of 5 $\gamma$ values equi-spaced on the logarithmic scale between 0.0001 and 10. Similar to the case of L0, we can print a summary of the regularization path using the `print` function as follows:
 ```{r output.lines=30}
 print(fit)
 ```
@@ -143,10 +146,10 @@ predict(fit, newx=X, lambda=0.0011539, gamma=10)
 The regularization path can be also plot at a specific $\gamma$ using `plot(fit, gamma)`. Finally, we note that fitting an L0L1 model can be done by just changing the `penalty` to "L0L1" in the above (in this case `gammaMax` will be ignored since it is automatically selected by the toolkit; see the reference manual for more details.)
 
 ## Higher-quality Solutions using Local Search
-By default, L0Learn uses coordinate descent (CD) to fit models. Since the objective function is non-convex, the choice of the optimization algorithm can have a significant effect on the solution quality (different algorithms can lead to solutions with very different objective values). A more elaborate algorithm based on combinatorial search can be used by setting the parameter `algorithm="CDPSI"` in the call to `L0Learn.fit`. `CDPSI` typically leads to higher-quality solutions compared to CD, especially when the features are highly correlated. CDPSI is slower than CD, however, for typical applications it terminates in the order of seconds.
+By default, `L0Learn` uses coordinate descent (CD) to fit models. Since the objective function is non-convex, the choice of the optimization algorithm can have a significant effect on the solution quality (different algorithms can lead to solutions with very different objective values). A more elaborate algorithm based on combinatorial search can be used by setting the parameter `algorithm="CDPSI"` in the call to `L0Learn.fit`. `CDPSI` typically leads to higher-quality solutions compared to CD, especially when the features are highly correlated. CDPSI is slower than CD, however, for typical applications it terminates in the order of seconds.
 
 ## User-specified Lambda Grids
-By default, L0Learn selects the sequence of lambda values in an efficient manner to avoid wasted computation (since close $\lambda$ values can typically lead to the same solution). Advanced users of the toolkit can change this default behavior and supply their own sequence of $\lambda$ values. This can be done by setting the `autoLambda` parameter to `FALSE` and supplying the $\lambda$ values through the parameter `lambdaGrid`. Specifically, the value assigned to `lambdaGrid` should be a list with the same length as `nGamma` in case of L0L2/L0L1 and of length 1 in case of L0. The ith element in `LambdaGrid` should be a **decreasing** sequence of lambda values which are used by the algorithm for the ith value of gamma. For example, to fit an L0 model with the sequence of user-specified lambda values: 1, 1e-1, 1e-2, 1e-3, 1e-4, we run the following:
+By default, `L0Learn` selects the sequence of lambda values in an efficient manner to avoid wasted computation (since close $\lambda$ values can typically lead to the same solution). Advanced users of the toolkit can change this default behavior and supply their own sequence of $\lambda$ values. This can be done by setting the `autoLambda` parameter to `FALSE` and supplying the $\lambda$ values through the parameter `lambdaGrid`. Specifically, the value assigned to `lambdaGrid` should be a list with the same length as `nGamma` in case of L0L2/L0L1 and of length 1 in case of L0. The ith element in `LambdaGrid` should be a **decreasing** sequence of lambda values which are used by the algorithm for the ith value of gamma. For example, to fit an L0 model with the sequence of user-specified lambda values: 1, 1e-1, 1e-2, 1e-3, 1e-4, we run the following:
 ```{r}
 userLambda <- list()
 userLambda[[1]] <- c(1, 1e-1, 1e-2, 1e-3, 1e-4)
@@ -170,7 +173,7 @@ Note that the object `cvfit` has a member `fit` (accessed using `cvfit$fit`) whi
 lapply(cvfit$cvMeans, min)
 ```
 The above output indicates that the 4th value of gamma achieves the lowest CV error (`=0.9899542`). We can plot the CV errors against the support size for the 4th value of gamma, i.e., `gamma = cvfit$fit$gamma[4]`, using:
-```{r, fig.height = 4, fig.width = 7, out.width="50%", dpi=300}
+```{r, fig.height = 4, fig.width = 7, out.width="80%", dpi=300}
 plot(cvfit, gamma=cvfit$fit$gamma[4])
 ```
 

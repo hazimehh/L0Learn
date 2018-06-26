@@ -10,7 +10,7 @@ CDL0::CDL0(const arma::mat& Xi, const arma::vec& yi, const Params& P) : CD(Xi, y
 FitResult CDL0::Fit()
 {
 
-    bool SecondPass = false;
+    //bool SecondPass = false;
     objective = Objective(r, B);
 
     std::vector<unsigned int> FullOrder = Order;

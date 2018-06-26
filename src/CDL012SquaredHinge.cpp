@@ -45,7 +45,6 @@ FitResult CDL012SquaredHinge::Fit()
     for (unsigned int t = 0; t < MaxIters; ++t)
     {
         //std::cout<<"CDL012 Logistic: "<< t << " " << objective <<std::endl;
-        double Oldobjective = objective;
         Bprev = B;
 
         // Update the intercept
@@ -90,7 +89,7 @@ FitResult CDL012SquaredHinge::Fit()
             if (Stabilized == true && !SecondPass)
             {
                 Order = OldOrder; // Recycle over all coordinates to make sure the achieved point is a CW-min.
-                SecondPass = true; // a 2nd pass will be performed
+                // SecondPass = true; // a 2nd pass will be performed
             }
 
             else

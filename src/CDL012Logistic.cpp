@@ -130,7 +130,7 @@ FitResult CDL012Logistic::Fit()
             if (Stabilized == true && !SecondPass)
             {
                 Order = OldOrder; // Recycle over all coordinates to make sure the achieved point is a CW-min.
-                SecondPass = true; // a 2nd pass will be performed
+                //SecondPass = true; // a 2nd pass will be performed
             }
 
             else
