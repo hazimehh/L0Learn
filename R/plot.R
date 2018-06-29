@@ -45,8 +45,8 @@ plot.L0Learn <- function(x, gamma=0, ...)
 		#breaks = x$suppSize[[j]]
 
 		#plot
-		ggplot(plot_data, aes_string(x="id",y="value",group="variable",colour="variable")) + geom_point() + geom_line(aes_string(lty="variable")) +
-		labs(x = "Support Size", y = "Coefficient") + theme(axis.title=element_text(size=14)) # + scale_x_continuous(breaks = breaks) + theme(axis.text = element_text(size = 12))
+		ggplot(plot_data, aes_string(x="id",y="value",group="variable",colour="variable")) + geom_point(size=2.5) +
+		labs(x = "Support Size", y = "Coefficient") + theme(axis.title=element_text(size=14)) # + scale_x_continuous(breaks = breaks) + theme(axis.text = element_text(size = 12)) + geom_line(aes_string(lty="variable"),alpha=0.3)
 }
 
 #' @title Plot Cross-validation Errors
