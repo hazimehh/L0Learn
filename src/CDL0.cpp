@@ -4,7 +4,7 @@ CDL0::CDL0(const arma::mat& Xi, const arma::vec& yi, const Params& P) : CD(Xi, y
 {
     thr = sqrt(2 * ModelParams[0]); Xtr = P.Xtr; Iter = P.Iter;
     result.ModelParams = P.ModelParams; ScreenSize = P.ScreenSize;
-    r = *P.r; Range1p.resize(p); std::iota(std::begin(Range1p), std::end(Range1p), 0);
+    r = *P.r; Range1p.resize(p); std::iota(std::begin(Range1p), std::end(Range1p), 0); NoSelectK = P.NoSelectK;
 }
 
 FitResult CDL0::Fit()
@@ -17,7 +17,7 @@ FitResult CDL0::Fit()
     bool FirstRestrictedPass = true;
     if (ActiveSet)
     {
-        Order.resize(std::min((int) (B.n_nonzero + ScreenSize), (int)(p))); // std::min(1000,Order.size())
+        Order.resize(std::min((int) (B.n_nonzero + ScreenSize + NoSelectK), (int)(p))); // std::min(1000,Order.size())
     }
 
     bool ActiveSetInitial = ActiveSet;
@@ -32,7 +32,7 @@ FitResult CDL0::Fit()
             (*Xtr)[i] = std::abs(cor); // do abs here instead from when sorting
             double Bi = B[i]; // B[i] is costly
             double x = cor + Bi;
-            if (x >= thr || x <= -thr) 	// often false so body is not costly
+            if (x >= thr || x <= -thr || i < NoSelectK) 	// often false so body is not costly
             {
                 r += X->unsafe_col(i) * (Bi - x);
                 B[i] = x;

@@ -21,6 +21,7 @@ class CDL012LogisticSwaps : public CD
 
         unsigned int MaxNumSwaps;
         Params P;
+        unsigned int NoSelectK;
 
     public:
         CDL012LogisticSwaps(const arma::mat& Xi, const arma::vec& yi, const Params& P);

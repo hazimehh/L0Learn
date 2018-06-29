@@ -15,6 +15,7 @@ CDL012SquaredHinge::CDL012SquaredHinge(const arma::mat& Xi, const arma::vec& yi,
     b0 = P.b0; // Initialize from previous later....!
     Xtr = P.Xtr; Iter = P.Iter; result.ModelParams = P.ModelParams;
     onemyxb = 1 - *y % (*X * B + b0);
+    NoSelectK = P.NoSelectK;
 }
 
 
@@ -67,7 +68,7 @@ FitResult CDL012SquaredHinge::Fit()
             double z = std::abs(x) - lambda1ol;
 
 
-            if (z >= thr) 	// often false so body is not costly
+            if (z >= thr || i < NoSelectK) 	// often false so body is not costly
             {
                 //std::cout<<"z: "<<z<<" thr: "<<thr<<" Biold"<<Biold<<std::endl;
                 double Bnew = std::copysign(z, x);

@@ -24,6 +24,7 @@ class Grid1D
         bool XtrAvailable;
         double ytXmax2d;
         double ScaleDownFactor;
+        unsigned int NoSelectK;
 
     public:
         Grid1D(const arma::mat& Xi, const arma::vec& yi, const GridParams& PG);

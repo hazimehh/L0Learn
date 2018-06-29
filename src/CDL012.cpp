@@ -5,7 +5,7 @@ CDL012::CDL012(const arma::mat& Xi, const arma::vec& yi, const Params& P) : CD(X
 {
     thr = std::sqrt((2 * ModelParams[0]) / (1 + 2 * ModelParams[2]));
     Onep2lamda2 = 1 + 2 * ModelParams[2]; lambda1 = ModelParams[1]; Xtr = P.Xtr; Iter = P.Iter; result.ModelParams = P.ModelParams; ScreenSize = P.ScreenSize; r = *P.r;
-    Range1p.resize(p); std::iota(std::begin(Range1p), std::end(Range1p), 0);
+    Range1p.resize(p); std::iota(std::begin(Range1p), std::end(Range1p), 0); NoSelectK = P.NoSelectK;
 }
 
 FitResult CDL012::Fit()
@@ -19,7 +19,7 @@ FitResult CDL012::Fit()
     bool FirstRestrictedPass = true;
     if (ActiveSet)
     {
-        Order.resize(std::min((int) (B.n_nonzero + ScreenSize), (int)(p))); // std::min(1000,Order.size())
+        Order.resize(std::min((int) (B.n_nonzero + ScreenSize + NoSelectK), (int)(p))); // std::min(1000,Order.size())
     }
 
     bool ActiveSetInitial = ActiveSet;
@@ -39,7 +39,7 @@ FitResult CDL012::Fit()
             double x = cor + Bi; // x is beta_tilde_i
             double z = (std::abs(x) - lambda1) / Onep2lamda2;
 
-            if (z >= thr) 	// often false so body is not costly
+            if (z >= thr || i < NoSelectK) 	// often false so body is not costly
             {
                 B[i] = std::copysign(z, x);
 

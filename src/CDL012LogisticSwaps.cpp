@@ -15,7 +15,7 @@ CDL012LogisticSwaps::CDL012LogisticSwaps(const arma::mat& Xi, const arma::vec& y
     lambda1 = ModelParams[1];
     lambda1ol = lambda1 / qp2lamda2;
     Xtr = P.Xtr; Iter = P.Iter; result.ModelParams = P.ModelParams; Xy = P.Xy;
-
+    NoSelectK = P.NoSelectK;
 }
 
 FitResult CDL012LogisticSwaps::Fit()
@@ -44,7 +44,7 @@ FitResult CDL012LogisticSwaps::Fit()
         std::vector<unsigned int> NnzIndices;
         for(arma::sp_mat::const_iterator it = start; it != end; ++it)
         {
-            NnzIndices.push_back(it.row()); // i is
+          if (it.row() >= NoSelectK){NnzIndices.push_back(it.row());}
         }
         // Can easily shuffle here...
         //std::shuffle(std::begin(Order), std::end(Order), engine);
@@ -68,10 +68,11 @@ FitResult CDL012LogisticSwaps::Fit()
 
 
             //auto start2 = std::chrono::high_resolution_clock::now();
+            // Later: make sure this scans at least 100 coordinates from outside supp (now it does not)
             for(unsigned int ll = 0; ll < std::min(100, (int) p); ++ll)
             {
                 unsigned int i = indices(ll);
-                if(B[i] == 0)
+                if(B[i] == 0 && i >= NoSelectK)
                 {
                     arma::vec ExpyXBnoji = ExpyXBnoj;
 

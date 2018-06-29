@@ -15,6 +15,7 @@ CDL012Logistic::CDL012Logistic(const arma::mat& Xi, const arma::vec& yi, const P
     b0 = P.b0; // Initialize from previous later....!
     ExpyXB = arma::exp(*y % (*X * B + b0)); // Maintained throughout the algorithm
     Xtr = P.Xtr; Iter = P.Iter; result.ModelParams = P.ModelParams; Xy = P.Xy;
+    NoSelectK = P.NoSelectK;
 }
 
 FitResult CDL012Logistic::Fit()
@@ -52,7 +53,7 @@ FitResult CDL012Logistic::Fit()
                 double z = std::abs(x) - lambda1ol;
 
 
-                if (z >= thr) 	// often false so body is not costly
+                if (z >= thr || i < NoSelectK) 	// often false so body is not costly
                 {
                     double Bnew = std::copysign(z, x);
                     B[i] = Bnew;

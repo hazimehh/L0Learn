@@ -42,7 +42,7 @@ FitResult CDL012SquaredHingeSwaps::Fit()
         std::vector<unsigned int> NnzIndices;
         for(arma::sp_mat::const_iterator it = start; it != end; ++it)
         {
-            NnzIndices.push_back(it.row()); // i is
+            if (it.row() >= NoSelectK){NnzIndices.push_back(it.row());}
         }
         // Can easily shuffle here...
         //std::shuffle(std::begin(Order), std::end(Order), engine);
@@ -60,7 +60,7 @@ FitResult CDL012SquaredHingeSwaps::Fit()
 
             for(unsigned int i = 0; i < p; ++i)
             {
-                if(B[i] == 0)
+                if(B[i] == 0 && i>=NoSelectK)
                 {
 
                     double Biold = 0;

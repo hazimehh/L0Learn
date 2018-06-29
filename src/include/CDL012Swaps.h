@@ -7,6 +7,7 @@ class CDL012Swaps : public CD   // Calls CDL012 irrespective of P.ModelType
     private:
         unsigned int MaxNumSwaps;
         Params P;
+        unsigned int NoSelectK;
     public:
         CDL012Swaps(const arma::mat& Xi, const arma::vec& yi, const Params& Pi);
 

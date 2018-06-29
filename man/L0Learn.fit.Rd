@@ -9,7 +9,7 @@ L0Learn.fit(x, y, loss = "SquaredError", penalty = "L0", algorithm = "CD",
   gammaMin = 1e-04, partialSort = TRUE, maxIters = 200, tol = 1e-06,
   activeSet = TRUE, activeSetNum = 3, maxSwaps = 100,
   scaleDownFactor = 0.8, screenSize = 1000, autoLambda = TRUE,
-  lambdaGrid = list(0))
+  lambdaGrid = list(0), excludeFirstK = 0)
 }
 \arguments{
 \item{x}{The data matrix.}
@@ -65,6 +65,9 @@ gaps between the support sizes. For details, see our paper - Section 5 on Adapti
 if TRUE, the values of Lambda are automatically selected based on the data.}
 
 \item{lambdaGrid}{A vector of Lambda values to use in computing the regularization path. This is ignored unless autoLambda = FALSE.}
+
+\item{excludeFirstK}{This parameter takes non-negative integers. The first excludeFirstK features in x will be excluded from variable selection,
+i.e., the first excludeFirstK variables will not be included in the L0-norm penalty (they will still be included in the L1 or L2 norm penalties.).}
 }
 \value{
 An S3 object of type "L0Learn" describing the regularization path. The object has the following members.

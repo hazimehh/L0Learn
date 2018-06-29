@@ -16,6 +16,7 @@ class CDL012SquaredHinge : public CD
         std::vector<double> * Xtr;
         unsigned int Iter;
         arma::vec onemyxb;
+        unsigned int NoSelectK;
 
     public:
         CDL012SquaredHinge(const arma::mat& Xi, const arma::vec& yi, const Params& P);

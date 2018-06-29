@@ -9,7 +9,7 @@ L0Learn.cvfit(x, y, loss = "SquaredError", penalty = "L0",
   gammaMax = 10, gammaMin = 1e-04, partialSort = TRUE, maxIters = 200,
   tol = 1e-06, activeSet = TRUE, activeSetNum = 3, maxSwaps = 100,
   scaleDownFactor = 0.8, screenSize = 1000, autoLambda = TRUE,
-  lambdaGrid = list(0), nFolds = 10, seed = 1)
+  lambdaGrid = list(0), nFolds = 10, seed = 1, excludeFirstK = 0)
 }
 \arguments{
 \item{x}{The data matrix.}
@@ -69,6 +69,9 @@ if TRUE, the values of Lambda are automatically selected based on the data.}
 \item{nFolds}{The number of folds for cross-validation.}
 
 \item{seed}{The seed used in randomly shuffling the data for cross-validation.}
+
+\item{excludeFirstK}{This parameter takes non-negative integers. The first excludeFirstK features in x will be excluded from variable selection,
+i.e., the first excludeFirstK variables will not be included in the L0-norm penalty (they will still be included in the L1 or L2 norm penalties.).}
 }
 \value{
 An S3 object of type "L0Learn" describing the regularization path. The object has the following members.

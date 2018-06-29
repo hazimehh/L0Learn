@@ -29,6 +29,7 @@ struct Params
     unsigned int ScreenSize = 1000;
     arma::vec * r;
     arma::mat * Xy; // used for classification.
+    unsigned int NoSelectK = 0;
 };
 
 #endif

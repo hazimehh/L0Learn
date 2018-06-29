@@ -1,7 +1,7 @@
 #include "CDL012Swaps.h"
 #include "CDL012.h"
 
-CDL012Swaps::CDL012Swaps(const arma::mat& Xi, const arma::vec& yi, const Params& Pi) : CD(Xi, yi, Pi) {MaxNumSwaps = Pi.MaxNumSwaps; P = Pi;}
+CDL012Swaps::CDL012Swaps(const arma::mat& Xi, const arma::vec& yi, const Params& Pi) : CD(Xi, yi, Pi) {MaxNumSwaps = Pi.MaxNumSwaps; P = Pi; NoSelectK=P.NoSelectK;}
 
 FitResult CDL012Swaps::Fit()
 {
@@ -20,7 +20,7 @@ FitResult CDL012Swaps::Fit()
         std::vector<unsigned int> NnzIndices;
         for(arma::sp_mat::const_iterator it = start; it != end; ++it)
         {
-            NnzIndices.push_back(it.row()); // i is
+          if (it.row() >= NoSelectK){NnzIndices.push_back(it.row());}
         }
         // Can easily shuffle here...
         //std::shuffle(std::begin(Order), std::end(Order), engine);
@@ -46,7 +46,7 @@ FitResult CDL012Swaps::Fit()
             //std::vector<arma::uword> Sctemp; // ToDO: Very slow change later..
             double maxcorr = -1;
             unsigned int maxindex;
-            for(unsigned int j = 0; j < p; ++j) // Can be made much faster..
+            for(unsigned int j = NoSelectK; j < p; ++j) // Can be made much faster..
             {
                 if (std::fabs(riX[j]) > maxcorr && B[j] == 0)
                 {

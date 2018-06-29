@@ -18,6 +18,7 @@ Grid1D::Grid1D(const arma::mat& Xi, const arma::vec& yi, const GridParams& PG)
     P.r = new arma::vec(Xi.n_rows);
     Xtr = P.Xtr;
     ytX = P.ytX;
+    NoSelectK = P.NoSelectK;
 
     LambdaU = PG.LambdaU;
 
@@ -139,15 +140,16 @@ std::vector<FitResult*> Grid1D::Fit()
             if (prevskip == false)
             {
                 std::iota(idx.begin(), idx.end(), 0); // make global class var later
-                if (PartialSort && p > 5000)
-                    std::partial_sort(idx.begin(), idx.begin() + 5000, idx.end(), [this](unsigned int i1, unsigned int i2) {return (*Xtr)[i1] > (*Xtr)[i2] ;});
+                // Exclude the first NoSelectK features from sorting.
+                if (PartialSort && p > 5000 + NoSelectK)
+                    std::partial_sort(idx.begin() + NoSelectK, idx.begin() + 5000 + NoSelectK, idx.end(), [this](unsigned int i1, unsigned int i2) {return (*Xtr)[i1] > (*Xtr)[i2] ;});
                 else
-                    std::sort(idx.begin(), idx.end(), [this](unsigned int i1, unsigned int i2) {return (*Xtr)[i1] > (*Xtr)[i2] ;});
+                    std::sort(idx.begin() + NoSelectK, idx.end(), [this](unsigned int i1, unsigned int i2) {return (*Xtr)[i1] > (*Xtr)[i2] ;});
                 P.CyclingOrder = 'u';
                 P.Uorder = idx; // can be made faster
 
                 //
-                Xrmax = (*Xtr)[idx[0]];
+                Xrmax = (*Xtr)[idx[NoSelectK]];
 
                 if (i > 0)
                 {
@@ -158,7 +160,7 @@ std::vector<FitResult*> Grid1D::Fit()
                         Sp.push_back(it.row());
                     }
 
-                    for(unsigned int l = 0; l < p; ++l)
+                    for(unsigned int l = NoSelectK; l < p; ++l)
                     {
                         if ( std::binary_search(Sp.begin(), Sp.end(), idx[l]) == false )
                         {

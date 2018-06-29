@@ -9,7 +9,7 @@ Rcpp::List L0LearnCV(const arma::mat& X, const arma::vec& y, const std::string L
                       const unsigned int MaxIters, const double Tol, const bool ActiveSet,
                       const unsigned int ActiveSetNum, const unsigned int MaxNumSwaps,
                       const double ScaleDownFactor, unsigned int ScreenSize, const bool LambdaU, const std::vector< std::vector<double> > Lambdas,
-                      const unsigned int nfolds, const double seed)
+                      const unsigned int nfolds, const double seed, const unsigned int ExcludeFirstK)
 {
     auto p = X.n_cols;
     auto n = X.n_rows;
@@ -32,6 +32,7 @@ Rcpp::List L0LearnCV(const arma::mat& X, const arma::vec& y, const std::string L
     P.ActiveSetNum = ActiveSetNum;
     P.MaxNumSwaps = MaxNumSwaps;
     P.ScreenSize = ScreenSize;
+    P.NoSelectK = ExcludeFirstK;
     PG.P = P;
 
     if (Loss == "SquaredError") {PG.P.Specs.SquaredError = true;}
