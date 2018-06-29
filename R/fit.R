@@ -28,7 +28,7 @@
 #' @param gammaMax The maximum value of Gamma when using the L0L2 penalty. For the L0L1 penalty this is
 #' automatically selected.
 #' @param gammaMin The minimum value of Gamma when using the L0L2 penalty. For the L0L1 penalty, the minimum
-#' value of gamma in the grid is set to gammaMin * gammaMax.
+#' value of gamma in the grid is set to gammaMin * gammaMax. Note that this should be a strictly positive quantity.
 #' @param partialSort If TRUE partial sorting will be used for sorting the coordinates to do greedy cycling (see our paper for
 #' for details). Otherwise, full sorting is used.
 #' @param maxIters The maximum number of iterations (full cycles) for CD per grid point.

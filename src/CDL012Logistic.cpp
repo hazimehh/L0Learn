@@ -53,7 +53,7 @@ FitResult CDL012Logistic::Fit()
                 double z = std::abs(x) - lambda1ol;
 
 
-                if (z >= thr || i < NoSelectK) 	// often false so body is not costly
+                if (z >= thr || (i < NoSelectK && z>0) ) 	// often false so body is not costly
                 {
                     double Bnew = std::copysign(z, x);
                     B[i] = Bnew;

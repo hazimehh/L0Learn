@@ -39,7 +39,7 @@ FitResult CDL012::Fit()
             double x = cor + Bi; // x is beta_tilde_i
             double z = (std::abs(x) - lambda1) / Onep2lamda2;
 
-            if (z >= thr || i < NoSelectK) 	// often false so body is not costly
+            if (z >= thr || (i < NoSelectK && z>0) ) 	// often false so body is not costly
             {
                 B[i] = std::copysign(z, x);
 

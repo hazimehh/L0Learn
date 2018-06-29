@@ -68,7 +68,7 @@ FitResult CDL012SquaredHinge::Fit()
             double z = std::abs(x) - lambda1ol;
 
 
-            if (z >= thr || i < NoSelectK) 	// often false so body is not costly
+            if (z >= thr || (i < NoSelectK && z>0)) 	// often false so body is not costly
             {
                 //std::cout<<"z: "<<z<<" thr: "<<thr<<" Biold"<<Biold<<std::endl;
                 double Bnew = std::copysign(z, x);

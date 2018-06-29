@@ -4,7 +4,7 @@
 #' @description Fits an L0 model and performs K-fold cross-validation.
 #' @param nFolds The number of folds for cross-validation.
 #' @param seed The seed used in randomly shuffling the data for cross-validation.
-#' @return An S3 object of type "L0Learn" describing the regularization path. The object has the following members.
+#' @return An S3 object of type "L0LearnCV" describing the regularization path. The object has the following members.
 #' \item{cvMeans}{This is a list, where the ith element is a sequence of cross-validation errors corresponding to the ith gamma value}
 #' \item{cvSDs}{This a list, where the ith element is a sequence of standard deviations for the cross-validation errors: cvSDs[[i]] corresponds to cvMeans[[i]].}
 #' \item{fit}{The fitted model with type "L0Learn", i.e., this is the same object returned by \code{\link{L0Learn.fit}}.}

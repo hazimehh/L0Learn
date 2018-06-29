@@ -177,7 +177,7 @@ The above output indicates that the 4th value of gamma achieves the lowest CV er
 plot(cvfit, gamma=cvfit$fit$gamma[4])
 ```
 
-The above plot is produced the `ggplot2` package and can be further customized by the user. To extract the optimal $\lambda$ (i.e., the one with minimum CV error) in this plot we execute the following: 
+The above plot is produced using the `ggplot2` package and can be further customized by the user. To extract the optimal $\lambda$ (i.e., the one with minimum CV error) in this plot we execute the following: 
 ```{r}
 optimalGammaIndex = 4 # index of the optimal gamma identified previously
 optimalLambdaIndex = which.min(cvfit$cvMeans[[optimalGammaIndex]])
