@@ -4,12 +4,14 @@
 \alias{plot.L0Learn}
 \title{Plot Regularization Path}
 \usage{
-\method{plot}{L0Learn}(x, gamma = 0, ...)
+\method{plot}{L0Learn}(x, gamma = 0, showLines = FALSE, ...)
 }
 \arguments{
 \item{x}{The output of L0Learn.fit}
 
 \item{gamma}{The value of gamma at which to plot.}
+
+\item{showLines}{If TRUE, the lines connecting the points in the plot are shown.}
 
 \item{...}{ignore}
 }

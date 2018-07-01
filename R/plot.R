@@ -3,6 +3,7 @@
 #' @description Plots the regularization path for a given gamma.
 #' @param gamma The value of gamma at which to plot.
 #' @param x The output of L0Learn.fit
+#' @param showLines If TRUE, the lines connecting the points in the plot are shown.
 #' @param ... ignore
 #'
 #' @examples
@@ -18,7 +19,7 @@
 #' @importFrom reshape2 melt
 #' @method plot L0Learn
 #' @export
-plot.L0Learn <- function(x, gamma=0, ...)
+plot.L0Learn <- function(x, gamma=0, showLines=FALSE, ...)
 {
 		j = which(abs(x$gamma-gamma)==min(abs(x$gamma-gamma)))
 		p = x$p
@@ -45,8 +46,13 @@ plot.L0Learn <- function(x, gamma=0, ...)
 		#breaks = x$suppSize[[j]]
 
 		#plot
-		ggplot(plot_data, aes_string(x="id",y="value",group="variable",colour="variable")) + geom_point(size=2.5) +
-		labs(x = "Support Size", y = "Coefficient") + theme(axis.title=element_text(size=14)) + geom_line(aes_string(lty="variable"),alpha=0.3) # + scale_x_continuous(breaks = breaks) + theme(axis.text = element_text(size = 12)) 
+		plotObject = ggplot(plot_data, aes_string(x="id",y="value",group="variable",colour="variable")) + geom_point(size=2.5) +
+		labs(x = "Support Size", y = "Coefficient") + theme(axis.title=element_text(size=14)) # + scale_x_continuous(breaks = breaks) + theme(axis.text = element_text(size = 12))
+
+		if (showLines == TRUE){
+				plotObject = plotObject + geom_line(aes_string(lty="variable"),alpha=0.3)
+		}
+		plotObject
 }
 
 #' @title Plot Cross-validation Errors
