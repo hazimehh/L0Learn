@@ -40,7 +40,7 @@ corresponding to L1 or L2, depending on the chosen penalty).}
 automatically selected.}
 
 \item{gammaMin}{The minimum value of Gamma when using the L0L2 penalty. For the L0L1 penalty, the minimum
-value of gamma in the grid is set to gammaMin * gammaMax.}
+value of gamma in the grid is set to gammaMin * gammaMax. Note that this should be a strictly positive quantity.}
 
 \item{partialSort}{If TRUE partial sorting will be used for sorting the coordinates to do greedy cycling (see our paper for
 for details). Otherwise, full sorting is used.}
@@ -74,13 +74,14 @@ if TRUE, the values of Lambda are automatically selected based on the data.}
 i.e., the first excludeFirstK variables will not be included in the L0-norm penalty (they will still be included in the L1 or L2 norm penalties.).}
 }
 \value{
-An S3 object of type "L0Learn" describing the regularization path. The object has the following members.
-\item{cvMeans}{This is a list, where the ith element is a sequence of cross-validation errors corresponding to the ith gamma value}
+An S3 object of type "L0LearnCV" describing the regularization path. The object has the following members.
+\item{cvMeans}{This is a list, where the ith element is the sequence of cross-validation errors corresponding to the ith gamma value, i.e., the sequence
+cvMeans[[i]] corresponds to fit$gamma[i]}
 \item{cvSDs}{This a list, where the ith element is a sequence of standard deviations for the cross-validation errors: cvSDs[[i]] corresponds to cvMeans[[i]].}
 \item{fit}{The fitted model with type "L0Learn", i.e., this is the same object returned by \code{\link{L0Learn.fit}}.}
 }
 \description{
-Fits an L0 model and performs K-fold cross-validation.
+Computes a regularization path and performs K-fold cross-validation.
 }
 \examples{
 # Generate synthetic data for this example

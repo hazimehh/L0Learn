@@ -1,13 +1,14 @@
 Package: L0Learn
 Type: Package
 Title: Fast Algorithms for Best Subset Selection
-Version: 1.1.0
-Date: 2018-06-29
+Version: 1.0.0
+Date: 2018-07-01
 Author: Hussein Hazimeh, Rahul Mazumder
 Maintainer: Hussein Hazimeh <hazimeh@mit.edu>
 Description: Highly optimized toolkit for (approximately) solving L0-regularized learning problems.
-    The algorithms are based on coordinate descent and local combinatorial search. For more details, check
-    the paper by Hazimeh and Mazumder (2018); the link is provided in the URL field below.
+    The algorithms are based on coordinate descent and local combinatorial search.
+    For more details, check the paper by Hazimeh and Mazumder (2018) <arXiv:1803.01454>;
+    the link is provided in the URL field below.
 URL: https://arxiv.org/abs/1803.01454
 License: MIT + file LICENSE
 Depends: R (>= 3.3.0)

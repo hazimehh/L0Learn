@@ -7,10 +7,11 @@
 #' \deqn{\min_{\beta} \frac{1}{2} || y - X \beta ||^2 + \lambda ||\beta||_0 \quad \quad (L0)}
 #' \deqn{\min_{\beta} \frac{1}{2} || y - X \beta ||^2 + \lambda ||\beta||_0 + \gamma||\beta||_1 \quad (L0L1)}
 #' \deqn{\min_{\beta} \frac{1}{2} || y - X \beta ||^2 + \lambda ||\beta||_0 + \gamma||\beta||_2^2  \quad (L0L2)}
-#' over a grid of \eqn{\lambda} and \eqn{\gamma} values. Optimization can be done using cyclic coordinate descent (CD)
-#' or local combinatorial search. The core of the toolkit is implemented in C++ and employs many computational
-#' tricks and heuristics, leading to very competitive running times. CD runs very fast and typically leads to relatively
-#' good solutions. Local combinatorial search leads to higher quality solutions (at the expense of increased running times).
+#' over a grid of \eqn{\lambda} and \eqn{\gamma} values. Pathwise optimization can be done using either cyclic
+#' coordinate descent (CD) or local combinatorial search. The core of the toolkit is implemented in C++ and employs
+#' many computational tricks and heuristics, leading to competitive running times. CD runs very fast and typically
+#' leads to relatively good solutions. Local combinatorial search can find higher-quality solutions (at the
+#' expense of increased running times).
 #' The toolkit has the following six main methods:
 #' \itemize{
 #' \item{\code{\link{L0Learn.fit}}: }{Fits an L0-regularized model.}
@@ -20,4 +21,6 @@
 #' \item{\code{\link[=predict.L0Learn]{predict}}: }{Predicts response using a solution in the path.}
 #' \item{\code{\link[=plot.L0Learn]{plot}}: }{Plots the regularization path or cross-validation error.}
 #' }
+#' @references Hazimeh and Mazumder (2018). Fast Best Subset Selection: Coordinate Descent and Local Combinatorial
+#' Optimization Algorithms, \url{https://arxiv.org/abs/1803.01454}.
 NULL

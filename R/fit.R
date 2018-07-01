@@ -48,14 +48,14 @@
 #' @return An S3 object of type "L0Learn" describing the regularization path. The object has the following members.
 #' \item{a0}{a0 is a list of intercept sequences. The ith element of the list (i.e., a0[[i]]) is the sequence of intercepts corresponding to the ith gamma value (i.e., gamma[i]).}
 #' \item{beta}{This is a list of coefficient matrices. The ith element of the list is a p x \code{length(lambda)} matrix which
-#' corresponds to the ith gamma value. The jth column in the coefficient matrix is the vector of coefficients for the jth lambda value.}
-#' \item{lambda}{This is the list of lambda sequences used in fitting the model. The ith element of lambda (i.e., lambda[[i]]) is a sequence
+#' corresponds to the ith gamma value. The jth column in each coefficient matrix is the vector of coefficients for the jth lambda value.}
+#' \item{lambda}{This is the list of lambda sequences used in fitting the model. The ith element of lambda (i.e., lambda[[i]]) is the sequence
 #' of Lambda values corresponding to the ith gamma value.}
 #' \item{gamma}{This is the sequence of gamma values used in fitting the model.}
-#' \item{suppSize}{This is a list of support size sequences. The ith element of the list is a sequences of support sizes (i.e., number of non-zero coefficients)
+#' \item{suppSize}{This is a list of support size sequences. The ith element of the list is a sequence of support sizes (i.e., number of non-zero coefficients)
 #' corresponding to the ith gamma value.}
-#' \item{converged}{This is a list of sequences. The ith element of the list is a sequence corresponding to the ith value of gamma, where the jth element in
-#' in the sequence indicates whether the algorithm has converged at the jth value of lambda.}
+#' \item{converged}{This is a list of sequences for checking whether the algorithm has converged at every grid point. The ith element of the list is a sequence
+#' corresponding to the ith value of gamma, where the jth element in each sequence indicates whether the algorithm has converged at the jth value of lambda.}
 #'
 #' @examples
 #' # Generate synthetic data for this example
