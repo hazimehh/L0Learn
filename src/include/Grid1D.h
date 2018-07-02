@@ -1,5 +1,6 @@
 #ifndef GRID1D_H
 #define GRID1D_H
+#include <memory>
 #include "Params.h"
 #include "GridParams.h"
 #include "FitResult.h"

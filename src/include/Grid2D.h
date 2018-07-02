@@ -1,5 +1,6 @@
 #ifndef GRID2D_H
 #define GRID2D_H
+#include <memory>
 #include "GridParams.h"
 #include "FitResult.h"
 
@@ -12,7 +13,7 @@ class Grid2D
         const arma::mat * X;
         const arma::vec * y;
         unsigned int p;
-        std::vector< std::vector<std::unique_ptr<FitResult> > > G; // each inner vector corresponds to a single lambda_1/lambda_2
+        std::vector<std::vector<std::unique_ptr<FitResult>>> G; // each inner vector corresponds to a single lambda_1/lambda_2
         double Lambda2Max;
         double Lambda2Min;
         double LambdaMinFactor;
@@ -23,7 +24,7 @@ class Grid2D
     public:
         Grid2D(const arma::mat& Xi, const arma::vec& yi, const GridParams& PGi);
         ~Grid2D();
-        std::vector< std::vector<std::unique_ptr<FitResult> > > Fit();
+        std::vector<std::vector<std::unique_ptr<FitResult>>> Fit();
 
 };
 
