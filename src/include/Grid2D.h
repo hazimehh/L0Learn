@@ -22,7 +22,7 @@ class Grid2D
 
     public:
         Grid2D(const arma::mat& Xi, const arma::vec& yi, const GridParams& PGi);
-
+        ~Grid2D();
         std::vector< std::vector<FitResult*> > Fit();
 
 };

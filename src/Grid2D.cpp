@@ -18,6 +18,12 @@ Grid2D::Grid2D(const arma::mat& Xi, const arma::vec& yi, const GridParams& PGi)
     P = PG.P;
 }
 
+
+Grid2D::~Grid2D(){
+    delete Xtr;
+    if (PG.P.Specs.Logistic){delete PG.P.Xy;}
+}
+
 std::vector< std::vector<FitResult*> > Grid2D::Fit()
 {
 

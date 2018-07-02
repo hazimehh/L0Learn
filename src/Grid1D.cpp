@@ -46,6 +46,17 @@ Grid1D::Grid1D(const arma::mat& Xi, const arma::vec& yi, const GridParams& PG)
     if (XtrAvailable) {ytXmax2d = PG.ytXmax; Xtr = PG.Xtr;}
 }
 
+Grid1D::~Grid1D()
+{
+    // delete all dynamically allocated memory
+    delete P.Xtr;
+    delete P.ytX;
+    delete P.D;
+    delete P.r;
+}
+
+
+
 std::vector<FitResult*> Grid1D::Fit()
 {
     if (P.Specs.L0 || P.Specs.L0L2 || P.Specs.L0L1)

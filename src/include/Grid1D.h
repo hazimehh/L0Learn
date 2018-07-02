@@ -28,6 +28,7 @@ class Grid1D
 
     public:
         Grid1D(const arma::mat& Xi, const arma::vec& yi, const GridParams& PG);
+        ~Grid1D();
         std::vector<FitResult*> Fit();
 };
 
