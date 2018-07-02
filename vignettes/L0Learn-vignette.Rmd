@@ -1,0 +1,215 @@
+---
+title: "L0Learn Vignette"
+#author:  "Hussein Hazimeh and Rahul Mazumder"
+author:
+- name: Hussein Hazimeh and Rahul Mazumder
+- name: Massachusetts Institute of Technology (MIT)
+date: "`r Sys.Date()`"
+#output: rmarkdown::html_vignette
+#output:
+#  prettydoc::html_pretty:
+#    theme: cayman
+#    highlight: github
+#    toc: true
+output:
+  html_document:
+    theme: united
+    highlight: tango
+    toc: true
+    toc_float:
+      collapsed: false
+vignette: >
+  %\VignetteIndexEntry{L0Learn Vignette}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  comment = "#>"
+)
+```
+```{r echo = FALSE}
+# Thanks to Yihui Xie for providing this code
+library(knitr)
+hook_output <- knit_hooks$get("output")
+knit_hooks$set(output = function(x, options) {
+   lines <- options$output.lines
+   if (is.null(lines)) {
+     return(hook_output(x, options))  # pass to default hook
+   }
+   x <- unlist(strsplit(x, "\n"))
+   more <- "..."
+   if (length(lines)==1) {        # first n lines
+     if (length(x) > lines) {
+       # truncate the output, but add ....
+       x <- c(head(x, lines), more)
+     }
+   } else {
+     x <- c(more, x[lines], more)
+   }
+   # paste these lines together
+   x <- paste(c(x, ""), collapse = "\n")
+   hook_output(x, options)
+ })
+```
+
+
+# Introduction
+`L0Learn` is a fast toolkit for fitting linear models with L0 regularization. This type of regularization selects the best subset of features and can outperform commonly used feature selection methods (e.g., Lasso and MCP) under many sparse learning regimes. The toolkit can (approximately) solve the following three problems
+$$
+\min_{\beta} \frac{1}{2} || y - X \beta ||^2 + \lambda ||\beta||_0 \quad \quad (L0) 
+$$
+$$
+\min_{\beta} \frac{1}{2} || y - X \beta ||^2 + \lambda ||\beta||_0 + \gamma||\beta||_1 \quad (L0L1) 
+$$
+
+$$
+\min_{\beta} \frac{1}{2} || y - X \beta ||^2 + \lambda ||\beta||_0 + \gamma||\beta||_2^2  \quad (L0L2)
+$$
+where $||\beta||_0$ denotes the L0 norm of $\beta$, i.e., the number of non-zeros in $\beta$. The parameter $\lambda$ controls the strength of the L0 regularization (larger $\lambda$ leads to less non-zeros). The parameter $\gamma$ controls the strength of the shrinkage component (which is the L1 norm in case of L0L1 or squared L2 norm in case of L0L2); adding a shrinkage term to L0 can be very effective in avoiding overfitting and typically leads to better predictive models. The fitting is done over a grid of $\lambda$ and $\gamma$ values to generate a regularization path. 
+
+The algorithms provided in `L0Learn` are based on cyclic coordinate descent and local combinatorial search. Many computational tricks and heuristics are used to speed up the algorithms and improve the solution quality. These heuristics include warm starts, active set convergence, correlation screening, greedy cycling order, and efficient methods for updating the residuals through exploiting sparsity and problem dimensions. Moreover, we employed a new computationally efficient method for dynamically selecting the regularization parameter $\lambda$ in the path. For more details on the algorithms used, please refer to our paper [Fast Best Subset Selection: Coordinate Descent and Local Combinatorial Optimization Algorithms](https://arxiv.org/abs/1803.01454). 
+
+The toolkit is implemented in C++ along with an easy-to-use R interface. In this vigenette, we provide a short tutorial on using the R interface. Particularly, we will demonstrate how use L0Learn's main functions for fitting models, cross-validation, and visualization.
+
+# Installation
+L0Learn can be installed directly from CRAN by executing:
+```{r, eval=FALSE}
+install.packages("L0Learn")
+```
+If you face installation issues please refer to the [Intallation Troubleshooting Wiki](https://github.com/hazimehh/L0Learn/wiki/Installation-Troubleshooting). If the issue is not resolved, you can submit an issue on [L0Learn's Github Repo](https://github.com/hazimehh/L0Learn).
+
+# Tutorial
+To demonstrate how `L0Learn` works, we will first generate a synthetic dataset and then proceed to fitting L0-regularized models. The synthetic dataset (y,X) will be generated from a sparse linear model as follows:
+
+* X is a 500x1000 design matrix with iid standard normal entries
+* B is a 1000x1 vector with the first 10 entries set to 1 and the rest are zeros.
+* e is a 500x1 vector with iid standard normal entries
+* y is a 500x1 response vector such that y  = XB + e
+
+This dataset can be generated in R as follows:
+```{r}
+set.seed(1) # fix the seed to get a reproducible result
+X = matrix(rnorm(500*1000),nrow=500,ncol=1000)
+B = c(rep(1,10),rep(0,990))
+e = rnorm(500)
+y = X%*%B + e
+```
+We will use L0Learn to estimate B from the data (y,X). First we load L0Learn:
+```{r}
+library(L0Learn)
+```
+We will start by fitting a simple L0 model and then proceed to the case of L0L2 and L0L1.
+
+## Fitting L0 Models
+To fit a path of solutions for the L0-regularized model with at most 20 non-zeros using coordinate descent (CD), we use the `L0Learn.fit` function as follows:
+```{r}
+fit <- L0Learn.fit(X, y, penalty="L0", maxSuppSize=20)
+```
+This will generate solutions for a sequence of $\lambda$ values (chosen automatically by the algorithm). To view the sequence of $\lambda$ along with the associated support sizes (i.e., the number of non-zeros), we use the `print` method as follows:
+```{r}
+print(fit)
+```
+Note that the path is terminated at the first occurrence of a support size exceeding `maxSuppSize`. To extract the estimated B for particular values of $\lambda$ and $\gamma$, we use the function `coef(fit,lambda,gamma)`. For example, the solution at $\lambda = 0.0325142$ (which corresponds to a support size of 10) can be extracted using
+```{r output.lines=15}
+coef(fit, lambda=0.0325142, gamma=0)
+```
+
+The output is a sparse vector of type `dgCMatrix`. The first element in the vector is the intercept and the rest are the B coefficients. Aside from the intercept, the only non-zeros in the above solution are coordinates 1, 2, 3, ..., 10, which are the non-zero coordinates in the true support (used to generated the data). Thus, this solution successfully recovers the true support. Note that on some BLAS implementations, the `lambda` value we used above (i.e., `0.0325142`) might be slightly different due to the limitations of numerical precision.
+
+The sequence of $\lambda$ generated by `L0Learn` is stored in the object `fit`. Specifically, `fit$lambda` is a list, where each element of the list is a sequence of $\lambda$ values corresponding to a single value of $\gamma$. Since L0 has only one value of $\gamma$ (i.e., 0), we can access the sequence of $\lambda$ values using `fit$lambda[[1]]`. Thus, $\lambda=0.0325142$ we used previously can be accessed using `fit$lambda[[1]][7]` (since it is the 7th value in the output of `print`). So the previous solution can also be extracted using `coef(fit,lambda=fit$lambda[[1]][7], gamma=0)`.
+
+We can make predictions using a specific solution in the grid using the function `predict(fit,newx,lambda,gamma)` where newx is a testing sample (vector or matrix). For example, to predict the response for the samples in the data matrix X using the solution with $\lambda=0.0325142$, we call the prediction function as follows:
+```{r output.lines=15}
+predict(fit, newx=X, lambda=0.0325142, gamma=0)
+```
+We can also visualize the regularization path by plotting the coefficients of the estimated B versus the support size (i.e., the number of non-zeros) using the `plot(fit,gamma)` method as follows:
+```{r, fig.height = 4, fig.width = 7, out.width="80%", dpi=300}
+plot(fit, gamma=0)
+```
+
+The legend of the plot presents the variables in the order they entered the regularization path. For example, variable 7 is the first variable to enter the path, and variable 6 is the second to enter. Thus, roughly speaking, we can view the first $k$ variables in the legend as the best subset of size $k$. To show the lines connecting the points in the plot, we can set the parameter `showLines=TRUE` in the `plot` function, i.e., call `plot(fit, gamma=0, showLines=TRUE)`. Moreover, we note that the output of the `plot` function above is a `ggplot` object, which can be further customized using the `ggplot2` package. 
+
+## Fitting L0L2 and L0L1 Models
+We have demonstrated the simple case of using an L0 penalty. We can also fit more elaborate models that combine L0 regularization with shrinkage-inducing penalties like the L1 norm or squared L2 norm. Adding shrinkage helps in avoiding overfitting and typically improves the predictive performance of the models. Next, we will discuss how to fit a model using the L0L2 penalty for a two-dimensional grid of $\lambda$ and $\gamma$ values. Recall that by default, `L0Learn` automatically selects the $\lambda$ sequence, so we only need to specify the $\gamma$ sequence. Suppose we want to fit an L0L2 model with a maximum of 20 non-zeros and a sequence of 5 $\gamma$ values ranging between 0.0001 and 10. We can do so by calling `L0Learn.fit` with `penalty="L0L2"`, `nGamma=5`, `gammaMin=0.0001`, and `gammaMax=10` as follows:
+```{r}
+fit <- L0Learn.fit(X, y, penalty="L0L2", nGamma = 5, gammaMin = 0.0001, gammaMax = 10, maxSuppSize=20)
+```
+`L0Learn` will generate a grid of 5 $\gamma$ values equi-spaced on the logarithmic scale between 0.0001 and 10. Similar to the case of L0, we can print a summary of the regularization path using the `print` function as follows:
+```{r output.lines=30}
+print(fit)
+```
+The sequence of $\gamma$ values can be accessed using `fit$gamma`. To extract a solution we use the `coef` method. For example, extracting the solution at $\lambda=0.0011539$ and $\gamma=10$ can be done using
+```{r output.lines=15}
+coef(fit,lambda=0.0011539, gamma=10)
+```
+Similarly, we can predict the response at this pair of $\lambda$ and $\gamma$ for the matrix X using 
+```{r eval=FALSE}
+predict(fit, newx=X, lambda=0.0011539, gamma=10)
+```
+The regularization path can also be plot at a specific $\gamma$ using `plot(fit, gamma)`. Finally, we note that fitting an L0L1 model can be done by just changing the `penalty` to "L0L1" in the above (in this case `gammaMax` will be ignored since it is automatically selected by the toolkit; see the reference manual for more details.)
+
+## Higher-quality Solutions using Local Search
+By default, `L0Learn` uses coordinate descent (CD) to fit models. Since the objective function is non-convex, the choice of the optimization algorithm can have a significant effect on the solution quality (different algorithms can lead to solutions with very different objective values). A more elaborate algorithm based on combinatorial search can be used by setting the parameter `algorithm="CDPSI"` in the call to `L0Learn.fit`. `CDPSI` typically leads to higher-quality solutions compared to CD, especially when the features are highly correlated. CDPSI is slower than CD, however, for typical applications it terminates in the order of seconds.
+
+## Cross-validation
+We will demonstrate how to use K-fold cross-validation (CV) to select the optimal values of the tuning parameters $\lambda$ and $\gamma$. To perform CV, we use the `L0Learn.cvfit` function, which takes the same parameters as `L0Learn.fit`, in addition to the number of folds using the `nFolds` parameter and a seed value using the `seed` parameter (this is used when randomly shuffling the data before performing CV). 
+
+For example, to perform 5-fold CV using the `L0L2` penalty (over a range of 5 `gamma` values between 0.0001 and 0.1) with a maximum of 50 non-zeros, we run:
+```{r}
+cvfit = L0Learn.cvfit(X, y, nFolds=5, seed=1, penalty="L0L2", nGamma=5, gammaMin=0.0001, gammaMax=0.1, maxSuppSize=50)
+```
+Note that the object `cvfit` has a member `fit` (accessed using `cvfit$fit`) which is output of running `L0Learn.fit` on (y,X). The cross-validation errors can be accessed using the `cvMeans` attribute of `cvfit`: `cvfit$cvMeans` is a list where the ith element, `cvfit$cvMeans[[i]]`, stores the cross-validation errors for the ith value of gamma (`cvfit$fit$gamma[i]`). To find the minimum cross-validation error for every `gamma`, we call the `min` function for every element in the list `cvfit$cvMeans`, as follows:
+```{r}
+lapply(cvfit$cvMeans, min)
+```
+The above output indicates that the 4th value of gamma achieves the lowest CV error (`=0.9899542`). We can plot the CV errors against the support size for the 4th value of gamma, i.e., `gamma = cvfit$fit$gamma[4]`, using:
+```{r, fig.height = 4, fig.width = 7, out.width="80%", dpi=300}
+plot(cvfit, gamma=cvfit$fit$gamma[4])
+```
+
+The above plot is produced using the `ggplot2` package and can be further customized by the user. To extract the optimal $\lambda$ (i.e., the one with minimum CV error) in this plot, we execute the following: 
+```{r}
+optimalGammaIndex = 4 # index of the optimal gamma identified previously
+optimalLambdaIndex = which.min(cvfit$cvMeans[[optimalGammaIndex]])
+optimalLambda = cvfit$fit$lambda[[optimalGammaIndex]][optimalLambdaIndex]
+optimalLambda
+```
+To print the solution corresponding to the optimal gamma/lambda pair:
+```{r output.lines=15}
+coef(cvfit, lambda=optimalLambda, gamma=cvfit$fit$gamma[4])
+```
+The optimal solution (above) selected by cross-validation correctly recovers the support of the true vector of coefficients used to generated the model.
+
+## Selection on Subset of Variables
+In certain applications, it is desirable to always include some of the variables in the model and perform variable selection on others. `L0Learn` supports this option through the `excludeFirstK` parameter. Specifically, setting `excludeFirstK = K` (where K is a non-negative integer) instructs `L0Learn` to exclude the first K variables in the data matrix `X` from the L0-norm penalty (those K variables will still be penalized using the L2 or L1 norm penalties.). For example, below we fit an `L0` model and exclude the first 3 variables from selection by setting `excludeFirstK = 3`:
+```{r}
+fit <- L0Learn.fit(X, y, penalty="L0", maxSuppSize=20, excludeFirstK=3)
+```
+Plotting the regularization path:
+```{r, fig.height = 4, fig.width = 7, out.width="80%", dpi=300}
+plot(fit, gamma=0)
+```
+
+We can see in the plot above that first 3 variables are included in all the solutions of the path.
+
+## User-specified Lambda Grids
+By default, `L0Learn` selects the sequence of lambda values in an efficient manner to avoid wasted computation (since close $\lambda$ values can typically lead to the same solution). Advanced users of the toolkit can change this default behavior and supply their own sequence of $\lambda$ values. This can be done by setting the `autoLambda` parameter to `FALSE` and supplying the $\lambda$ values through the parameter `lambdaGrid`. Specifically, the value assigned to `lambdaGrid` should be a list with the same length as `nGamma` in case of L0L2/L0L1 and of length 1 in case of L0. The ith element in `LambdaGrid` should be a **decreasing** sequence of lambda values which are used by the algorithm for the ith value of gamma. For example, to fit an L0 model with the sequence of user-specified lambda values: 1, 1e-1, 1e-2, 1e-3, 1e-4, we run the following:
+```{r}
+userLambda <- list()
+userLambda[[1]] <- c(1, 1e-1, 1e-2, 1e-3, 1e-4)
+fit <- L0Learn.fit(X, y, penalty="L0", autoLambda=FALSE, lambdaGrid=userLambda)
+```
+To verify the results we print the fit object:
+```{r}
+print(fit)
+```
+Note that the $\lambda$ values above are the desired values. For L0L2 and L0L1 penalties, the same can be done where the lambdaGrid parameter should be assigned a list of size `nGamma`.
+
+## Advanced Options
+For more advanced options supported by `L0Learn`, please refer to the [Reference Manual](https://cran.r-project.org/web/packages/L0Learn/L0Learn.pdf), which contains a detailed description of the API.
+
+# References
+Hussein Hazimeh and Rahul Mazumder. (2018).
+[Fast Best Subset Selection: Coordinate Descent and Local Combinatorial Optimization Algorithms](https://arxiv.org/abs/1803.01454)

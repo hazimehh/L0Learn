@@ -18,13 +18,22 @@ Grid2D::Grid2D(const arma::mat& Xi, const arma::vec& yi, const GridParams& PGi)
     P = PG.P;
 }
 
-std::vector< std::vector<FitResult*> > Grid2D::Fit()
+
+Grid2D::~Grid2D(){
+    delete Xtr;
+    if (PG.P.Specs.Logistic){delete PG.P.Xy;}
+}
+
+std::vector< std::vector<std::unique_ptr<FitResult> > > Grid2D::Fit()
 {
 
     arma::vec Xtrarma;
     if (PG.P.Specs.Logistic)
     {
         Xtrarma = 0.5 * arma::abs(y->t() * *X).t(); // = gradient of logistic loss at zero
+        arma::mat Xy =  X->each_col() % *y;
+        PG.P.Xy = new arma::mat;
+        *PG.P.Xy = Xy;
     }
 
     else if (PG.P.Specs.SquaredHinge)
@@ -36,6 +45,7 @@ std::vector< std::vector<FitResult*> > Grid2D::Fit()
     {
         Xtrarma = arma::abs(y->t() * *X).t();
     }
+
 
     double ytXmax = arma::max(Xtrarma);
 
@@ -59,6 +69,7 @@ std::vector< std::vector<FitResult*> > Grid2D::Fit()
 
     Xtr = new std::vector<double>(X->n_cols); // needed! careful
 
+
     PG.XtrAvailable = true;
 
     for(unsigned int i=0; i<Lambdas2.size();++i) //auto &l : Lambdas2
@@ -71,10 +82,12 @@ std::vector< std::vector<FitResult*> > Grid2D::Fit()
         PG.P.ModelParams[index] = Lambdas2[i];
         if (PG.LambdaU == true)
             PG.Lambdas = PG.LambdasGrid[i];
-        auto Gl = Grid1D(*X, *y, PG).Fit();
-        G.push_back(Gl);
+
+        //std::vector<std::unique_ptr<FitResult>> Gl();
+        //auto Gl = Grid1D(*X, *y, PG).Fit();
+        G.push_back(std::move(Grid1D(*X, *y, PG).Fit()));
     }
 
-    return G;
+    return std::move(G);
 
 }

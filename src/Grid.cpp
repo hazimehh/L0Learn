@@ -2,8 +2,7 @@
 #include "Grid1D.h"
 #include "Grid2D.h"
 #include "Normalize.h"
-
-#include <chrono> // Remove
+#include <memory>
 
 // Assumes PG.P.Specs have been already set
 Grid::Grid(const arma::mat& X, const arma::vec& y, const GridParams& PGi)
@@ -15,17 +14,15 @@ Grid::Grid(const arma::mat& X, const arma::vec& y, const GridParams& PGi)
 void Grid::Fit()
 {
 
-    std::vector< std::vector<FitResult*> > G;
-
+    std::vector< std::vector<std::unique_ptr<FitResult> > > G;
     if (PG.P.Specs.L0)
     {
-        auto G1D = Grid1D(Xscaled, yscaled, PG).Fit();
-        G.push_back(G1D);
+        G.push_back(std::move(Grid1D(Xscaled, yscaled, PG).Fit()));
         Lambda12.push_back(0);
     }
     else
     {
-        G = Grid2D(Xscaled, yscaled, PG).Fit();
+        G = std::move(Grid2D(Xscaled, yscaled, PG).Fit());
     }
 
     Lambda0 = std::vector< std::vector<double> >(G.size());

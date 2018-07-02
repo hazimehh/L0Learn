@@ -18,6 +18,7 @@ Grid1D::Grid1D(const arma::mat& Xi, const arma::vec& yi, const GridParams& PG)
     P.r = new arma::vec(Xi.n_rows);
     Xtr = P.Xtr;
     ytX = P.ytX;
+    NoSelectK = P.NoSelectK;
 
     LambdaU = PG.LambdaU;
 
@@ -45,7 +46,18 @@ Grid1D::Grid1D(const arma::mat& Xi, const arma::vec& yi, const GridParams& PG)
     if (XtrAvailable) {ytXmax2d = PG.ytXmax; Xtr = PG.Xtr;}
 }
 
-std::vector<FitResult*> Grid1D::Fit()
+Grid1D::~Grid1D()
+{
+    // delete all dynamically allocated memory
+    delete P.Xtr;
+    delete P.ytX;
+    delete P.D;
+    delete P.r;
+}
+
+
+
+std::vector<std::unique_ptr<FitResult>> Grid1D::Fit()
 {
     if (P.Specs.L0 || P.Specs.L0L2 || P.Specs.L0L1)
     {
@@ -131,23 +143,30 @@ std::vector<FitResult*> Grid1D::Fit()
         {
             //std::cout<<"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! STARTED GRID ITER: "<<i<<std::endl;
 
-            auto prevresult = G.back(); // prevresult is ptr to the prev result object
 
+            FitResult *  prevresult = new FitResult; // prevresult is ptr to the prev result object
+            //std::unique_ptr<FitResult> prevresult;
+            if (i > 0)
+            {
+              //prevresult = std::move(G.back());
+              *prevresult = *(G.back());
+            }
 
             currentskip = false;
 
             if (prevskip == false)
             {
                 std::iota(idx.begin(), idx.end(), 0); // make global class var later
-                if (PartialSort && p > 5000)
-                    std::partial_sort(idx.begin(), idx.begin() + 5000, idx.end(), [this](unsigned int i1, unsigned int i2) {return (*Xtr)[i1] > (*Xtr)[i2] ;});
+                // Exclude the first NoSelectK features from sorting.
+                if (PartialSort && p > 5000 + NoSelectK)
+                    std::partial_sort(idx.begin() + NoSelectK, idx.begin() + 5000 + NoSelectK, idx.end(), [this](unsigned int i1, unsigned int i2) {return (*Xtr)[i1] > (*Xtr)[i2] ;});
                 else
-                    std::sort(idx.begin(), idx.end(), [this](unsigned int i1, unsigned int i2) {return (*Xtr)[i1] > (*Xtr)[i2] ;});
+                    std::sort(idx.begin() + NoSelectK, idx.end(), [this](unsigned int i1, unsigned int i2) {return (*Xtr)[i1] > (*Xtr)[i2] ;});
                 P.CyclingOrder = 'u';
                 P.Uorder = idx; // can be made faster
 
                 //
-                Xrmax = (*Xtr)[idx[0]];
+                Xrmax = (*Xtr)[idx[NoSelectK]];
 
                 if (i > 0)
                 {
@@ -158,7 +177,7 @@ std::vector<FitResult*> Grid1D::Fit()
                         Sp.push_back(it.row());
                     }
 
-                    for(unsigned int l = 0; l < p; ++l)
+                    for(unsigned int l = NoSelectK; l < p; ++l)
                     {
                         if ( std::binary_search(Sp.begin(), Sp.end(), idx[l]) == false )
                         {
@@ -198,7 +217,7 @@ std::vector<FitResult*> Grid1D::Fit()
                 P.ModelParams[0] = Lambdas[i];
             }
 
-            double thr = sqrt(2 * P.ModelParams[0] * (Lipconst)) + P.ModelParams[1]; // pass this to class? we're calc this twice now
+            // double thr = sqrt(2 * P.ModelParams[0] * (Lipconst)) + P.ModelParams[1]; // pass this to class? we're calc this twice now
 
             /*
             if (P.Iter>0 && std::abs(Xrmax) < thr) // not needed anymore. Remove later.
@@ -238,8 +257,8 @@ std::vector<FitResult*> Grid1D::Fit()
             {
 
                 auto Model = make_CD(*X, *y, P);
-                FitResult * result = new FitResult; // Later: Double check memory leaks..
-
+                //FitResult * result = new FitResult; // Later: Double check memory leaks..
+                std::unique_ptr<FitResult> result(new FitResult);
                 *result = Model->Fit();
 
                 //if (i>=1 && arma::norm(result->B-(G.back())->B,"inf")/arma::norm((G.back())->B,"inf") < 0.05){scaledown = true;} // got same solution
@@ -270,22 +289,15 @@ std::vector<FitResult*> Grid1D::Fit()
                     if (samesupp) {scaledown = true;} // got same solution
                 }
 
-
-
-
-
                 //else {scaledown = false;}
-
-                G.push_back(result);
-
-
+                G.push_back(std::move(result));
                 //std::cout<<"### ### ###"<<std::endl;
                 //std::cout<<"Iteration: "<<i<<". "<<"Nnz: "<< result->B.n_nonzero << ". Lambda: "<<P.ModelParams[0]<< std::endl;
-                if(result->B.n_nonzero > StopNum) {break;}
+                if(G.back()->B.n_nonzero >= StopNum) {break;}
                 //result->B.t().print();
-                P.InitialSol = &(result->B);
-                P.b0 = result->intercept;
-                *P.r = result->r;
+                P.InitialSol = &(G.back()->B);
+                P.b0 = G.back()->intercept;
+                *P.r = G.back()->r;
             }
 
             //std::cout<<"Lambda0, Lambda1, Lambda2: "<<P.ModelParams[0]<<", "<<P.ModelParams[1]<<", "<<P.ModelParams[2]<<std::endl;
@@ -301,6 +313,7 @@ std::vector<FitResult*> Grid1D::Fit()
     }
 
 
+/*
     else if (P.Specs.L1 || P.Specs.L1Relaxed)
     {
 
@@ -356,7 +369,7 @@ std::vector<FitResult*> Grid1D::Fit()
         }
     }
 
-
+*/
 
 
 
@@ -391,6 +404,7 @@ std::vector<FitResult*> Grid1D::Fit()
     }
     */
 
+    /*
     if (Refine == true)
     {
         for (unsigned int i = 0; i < 20; ++i)
@@ -444,6 +458,7 @@ std::vector<FitResult*> Grid1D::Fit()
             if (better == false) {break;} //fixed grid.
         }
     }
+    */
 
-    return G;
+    return std::move(G);
 }

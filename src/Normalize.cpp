@@ -4,7 +4,7 @@
 std::tuple<arma::vec, arma::vec, double>  Normalize(const arma::mat& X, const arma::vec& y, arma::mat & X_normalized, arma::vec & y_normalized, bool Normalizey = false)
 {
     unsigned int n = X.n_rows;
-    unsigned int p = X.n_cols;
+    // unsigned int p = X.n_cols;
 
     arma::rowvec meanX = arma::mean(X, 0);
 
