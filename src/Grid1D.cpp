@@ -289,13 +289,8 @@ std::vector<std::unique_ptr<FitResult>> Grid1D::Fit()
                     if (samesupp) {scaledown = true;} // got same solution
                 }
 
-
-
-
-
                 //else {scaledown = false;}
-
-
+                G.push_back(std::move(result));
                 //std::cout<<"### ### ###"<<std::endl;
                 //std::cout<<"Iteration: "<<i<<". "<<"Nnz: "<< result->B.n_nonzero << ". Lambda: "<<P.ModelParams[0]<< std::endl;
                 if(G.back()->B.n_nonzero >= StopNum) {break;}
@@ -464,5 +459,6 @@ std::vector<std::unique_ptr<FitResult>> Grid1D::Fit()
         }
     }
     */
+
     return std::move(G);
 }
