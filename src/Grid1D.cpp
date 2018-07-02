@@ -132,8 +132,9 @@ std::vector<FitResult*> Grid1D::Fit()
         {
             //std::cout<<"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! STARTED GRID ITER: "<<i<<std::endl;
 
-            auto prevresult = G.back(); // prevresult is ptr to the prev result object
 
+            FitResult *  prevresult; // prevresult is ptr to the prev result object
+            if (i > 0){prevresult = G.back();}
 
             currentskip = false;
 

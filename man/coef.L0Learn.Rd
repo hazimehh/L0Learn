@@ -12,9 +12,9 @@
 \arguments{
 \item{object}{The output of L0Learn.fit or L0Learn.cvfit}
 
-\item{lambda}{The value(s) of lambda at which to extract the solution.}
+\item{lambda}{The value of lambda at which to extract the solution.}
 
-\item{gamma}{The value of gamma at which to extract the solution. Note that, unlike lambda, this can only take single values.}
+\item{gamma}{The value of gamma at which to extract the solution.}
 
 \item{...}{ignore}
 }

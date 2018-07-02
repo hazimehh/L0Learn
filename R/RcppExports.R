@@ -8,3 +8,4 @@ L0LearnCV <- function(X, y, Loss, Penalty, Algorithm, NnzStopNum, G_ncols, G_nro
 L0LearnFit <- function(X, y, Loss, Penalty, Algorithm, NnzStopNum, G_ncols, G_nrows, Lambda2Max, Lambda2Min, PartialSort, MaxIters, Tol, ActiveSet, ActiveSetNum, MaxNumSwaps, ScaleDownFactor, ScreenSize, LambdaU, Lambdas, ExcludeFirstK) {
     .Call('_L0Learn_L0LearnFit', PACKAGE = 'L0Learn', X, y, Loss, Penalty, Algorithm, NnzStopNum, G_ncols, G_nrows, Lambda2Max, Lambda2Min, PartialSort, MaxIters, Tol, ActiveSet, ActiveSetNum, MaxNumSwaps, ScaleDownFactor, ScreenSize, LambdaU, Lambdas, ExcludeFirstK)
 }
+

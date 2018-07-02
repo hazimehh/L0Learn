@@ -4,7 +4,7 @@
 #' @param object The output of L0Learn.fit or L0Learn.cvfit
 #' @param ... ignore
 #' @param newx A matrix on which predictions are made. The matrix should have p columns.
-#' @param lambda The value(s) of lambda to use for prediction. A summary of the lambdas in the regularization
+#' @param lambda The value of lambda to use for prediction. A summary of the lambdas in the regularization
 #' path can be obtained using \code{print(fit)}.
 #' @param gamma The value of gamma to use for prediction. A summary of the gammas in the regularization
 #' path can be obtained using \code{print(fit)}.
