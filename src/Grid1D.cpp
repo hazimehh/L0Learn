@@ -57,7 +57,7 @@ Grid1D::~Grid1D()
 
 
 
-std::vector<FitResult*> Grid1D::Fit()
+std::vector<std::unique_ptr<FitResult>> Grid1D::Fit()
 {
     if (P.Specs.L0 || P.Specs.L0L2 || P.Specs.L0L1)
     {
@@ -144,8 +144,13 @@ std::vector<FitResult*> Grid1D::Fit()
             //std::cout<<"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! STARTED GRID ITER: "<<i<<std::endl;
 
 
-            FitResult *  prevresult; // prevresult is ptr to the prev result object
-            if (i > 0){prevresult = G.back();}
+            FitResult *  prevresult = new FitResult; // prevresult is ptr to the prev result object
+            //std::unique_ptr<FitResult> prevresult;
+            if (i > 0)
+            {
+              //prevresult = std::move(G.back());
+              *prevresult = *(G.back());
+            }
 
             currentskip = false;
 
@@ -252,8 +257,8 @@ std::vector<FitResult*> Grid1D::Fit()
             {
 
                 auto Model = make_CD(*X, *y, P);
-                FitResult * result = new FitResult; // Later: Double check memory leaks..
-
+                //FitResult * result = new FitResult; // Later: Double check memory leaks..
+                std::unique_ptr<FitResult> result(new FitResult);
                 *result = Model->Fit();
 
                 //if (i>=1 && arma::norm(result->B-(G.back())->B,"inf")/arma::norm((G.back())->B,"inf") < 0.05){scaledown = true;} // got same solution
@@ -290,16 +295,14 @@ std::vector<FitResult*> Grid1D::Fit()
 
                 //else {scaledown = false;}
 
-                G.push_back(result);
-
 
                 //std::cout<<"### ### ###"<<std::endl;
                 //std::cout<<"Iteration: "<<i<<". "<<"Nnz: "<< result->B.n_nonzero << ". Lambda: "<<P.ModelParams[0]<< std::endl;
-                if(result->B.n_nonzero >= StopNum) {break;}
+                if(G.back()->B.n_nonzero >= StopNum) {break;}
                 //result->B.t().print();
-                P.InitialSol = &(result->B);
-                P.b0 = result->intercept;
-                *P.r = result->r;
+                P.InitialSol = &(G.back()->B);
+                P.b0 = G.back()->intercept;
+                *P.r = G.back()->r;
             }
 
             //std::cout<<"Lambda0, Lambda1, Lambda2: "<<P.ModelParams[0]<<", "<<P.ModelParams[1]<<", "<<P.ModelParams[2]<<std::endl;
@@ -315,6 +318,7 @@ std::vector<FitResult*> Grid1D::Fit()
     }
 
 
+/*
     else if (P.Specs.L1 || P.Specs.L1Relaxed)
     {
 
@@ -370,7 +374,7 @@ std::vector<FitResult*> Grid1D::Fit()
         }
     }
 
-
+*/
 
 
 
@@ -405,6 +409,7 @@ std::vector<FitResult*> Grid1D::Fit()
     }
     */
 
+    /*
     if (Refine == true)
     {
         for (unsigned int i = 0; i < 20; ++i)
@@ -458,6 +463,6 @@ std::vector<FitResult*> Grid1D::Fit()
             if (better == false) {break;} //fixed grid.
         }
     }
-
-    return G;
+    */
+    return std::move(G);
 }

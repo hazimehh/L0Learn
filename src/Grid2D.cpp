@@ -24,7 +24,7 @@ Grid2D::~Grid2D(){
     if (PG.P.Specs.Logistic){delete PG.P.Xy;}
 }
 
-std::vector< std::vector<FitResult*> > Grid2D::Fit()
+std::vector< std::vector<std::unique_ptr<FitResult> > > Grid2D::Fit()
 {
 
     arma::vec Xtrarma;
@@ -82,10 +82,12 @@ std::vector< std::vector<FitResult*> > Grid2D::Fit()
         PG.P.ModelParams[index] = Lambdas2[i];
         if (PG.LambdaU == true)
             PG.Lambdas = PG.LambdasGrid[i];
-        auto Gl = Grid1D(*X, *y, PG).Fit();
-        G.push_back(Gl);
+
+        //std::vector<std::unique_ptr<FitResult>> Gl();
+        //auto Gl = Grid1D(*X, *y, PG).Fit();
+        G.push_back(std::move(Grid1D(*X, *y, PG).Fit()));
     }
 
-    return G;
+    return std::move(G);
 
 }
