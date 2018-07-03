@@ -2,6 +2,8 @@
 
 ### Hussein Hazimeh and Rahul Mazumder 
 
+### This branch is for the old non-CRAN version of L0Learn. For the latest version, please [click here](https://github.com/hazimehh/L0Learn).
+
 
 ## Introduction
 L0Learn is a highly efficient framework for solving L0-regularized regression (and soon classification) problems. It can (approximately) solve the following three problems, where the squared error loss is penalized by combinations of the L0, L1, and L2 norms:
@@ -20,7 +22,7 @@ library(devtools)
 ```
 Now you can install and load the "L0Learn" package as follows:
 ```
-install_github("hazimehh/L0Learn")
+install_github("hazimehh/L0Learn",ref="beta")
 library(L0Learn)
 ```
 If you experience problems during the installation of devtools or L0Learn, please refer to the [Troubleshooting Wiki](https://github.com/hazimehh/L0Learn/wiki/Installation-Troubleshooting).
