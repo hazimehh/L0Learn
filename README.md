@@ -14,7 +14,7 @@ The toolkit is implemented in C++11 and can often run faster than popular sparse
 ## R Package Installation and Usage
 L0Learn 1.0.2 is now available on CRAN. For installation instructions and a tutorial, please refer to [L0Learn's Vignette](http://www.mit.edu/~hazimeh/L0Learn-vignette.html). For a detailed description of the API, check the [Reference Manual](https://cran.r-project.org/web/packages/L0Learn/L0Learn.pdf).
 
-Note for users who have been using L0Learn before July 2018: The new CRAN version introduces many new major features, which unfortunately required doing some changes to the API. The old non-CRAN version (i.e., the one installed directly using devtools from Github) is now archived and its API will not be maintained anymore. As a courtesy, you can still access the old version and its documentation at this [link](https://github.com/hazimehh/L0Learn/tree/Beta). The API of the CRAN version is now stable, and we will ensure backward compatibility in the future versions of L0Learn.
+For users who have been using L0Learn before July 1, 2018, please check this [Wiki page](https://github.com/hazimehh/L0Learn/wiki/Note-for-previous-users) for more information on the changes introduced in the new CRAN version.
 
 ## Citing L0Learn
 If you find L0Learn useful in your research, please consider citing the following paper:
