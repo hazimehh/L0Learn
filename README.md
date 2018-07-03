@@ -8,9 +8,11 @@ L0Learn is a highly efficient framework for solving L0-regularized regression (a
 
 <img src="https://github.com/hazimehh/L0Learn/blob/master/misc/regeqs.png" width = 450>
 
-The optimization is done using coordinate descent and local combinatorial search over a grid of regularization parameter(s) values. We describe the details of the algorithms in our paper: *Fast Best Subset Selection: Coordinate Descent and Local Combinatorial Optimization Algorithms* ([arXiv link](https://arxiv.org/abs/1803.01454)). 
 
-The toolkit is implemented in C++11 and can often run faster than popular sparse learning toolkits (see our experiments in the paper above). We also provide an easy-to-use R interface.
+The optimization is done using coordinate descent and local combinatorial search over a grid of regularization parameter(s) values. Many computational tricks and heuristics are used to speed up the algorithms and improve the solution quality. These heuristics include warm starts, active set convergence, correlation screening, greedy cycling order, and efficient methods for updating the residuals through exploiting sparsity and problem dimensions. Moreover, we employed a new computationally efficient method for dynamically selecting the regularization parameter λ in the path. We describe the details of the algorithms in our paper: *Fast Best Subset Selection: Coordinate Descent and Local Combinatorial Optimization Algorithms* ([arXiv link](https://arxiv.org/abs/1803.01454)). 
+
+The toolkit is implemented in C++11 and can often run faster than popular sparse learning toolkits (see our experiments in the paper above). We also provide an easy-to-use R interface; see the section below for installation and usage of the R package.
+
 ## R Package Installation and Usage
 L0Learn 1.0.2 is now available on CRAN. For installation instructions and a tutorial, please refer to [L0Learn's Vignette](http://www.mit.edu/~hazimeh/L0Learn-vignette.html). For a detailed description of the API, check the [Reference Manual](https://cran.r-project.org/web/packages/L0Learn/L0Learn.pdf).
 
