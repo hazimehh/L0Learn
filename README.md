@@ -11,22 +11,10 @@ L0Learn is a highly efficient framework for solving L0-regularized regression (a
 The optimization is done using coordinate descent and local combinatorial search over a grid of regularization parameter(s) values. We describe the details of the algorithms in our paper: *Fast Best Subset Selection: Coordinate Descent and Local Combinatorial Optimization Algorithms* ([arXiv link](https://arxiv.org/abs/1803.01454)). 
 
 The toolkit is implemented in C++11 and can often run faster than popular sparse learning toolkits (see our experiments in the paper above). We also provide an easy-to-use R interface.
+## R Package Installation and Usage
+L0Learn 1.0.2 is now available on CRAN. For installation instructions and a tutorial, please refer to [L0Learn's Vignette](http://www.mit.edu/~hazimeh/L0Learn-vignette.html). For a detailed description of the API, check the [Reference Manual](https://cran.r-project.org/web/packages/L0Learn/L0Learn.pdf).
 
-## R Package Installation
-Most of the toolkit is built using C++11, which might not be compatible with older versions of R. Before proceeding with the installation we recommend installing the latest version of R (currently 3.4). In R, you will need first to install and load the "devtools" package:
-```
-install.packages("devtools")
-library(devtools)
-```
-Now you can install and load the "L0Learn" package as follows:
-```
-install_github("hazimehh/L0Learn")
-library(L0Learn)
-```
-If you experience problems during the installation of devtools or L0Learn, please refer to the [Troubleshooting Wiki](https://github.com/hazimehh/L0Learn/wiki/Installation-Troubleshooting).
-
-## Usage
-Please refer to the [Usage Wiki](https://github.com/hazimehh/L0Learn/wiki/Usage) for a description of the API and a demonstration. 
+Note for users who have been using L0Learn before July 2018: The new CRAN version introduces many new major features, which unfortunately required doing some changes to the API. The old non-CRAN version (i.e., the one installed directly using devtools from Github) is now archived and its API will not be maintained anymore. As a courtesy, you can still access the old version and its documentation at this [link](https://github.com/hazimehh/L0Learn/tree/Beta). The API of the CRAN version is now stable, and we will ensure backward compatibility in the future versions of L0Learn.
 
 ## Citing L0Learn
 If you find L0Learn useful in your research, please consider citing the following paper:
