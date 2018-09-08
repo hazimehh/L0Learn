@@ -26,11 +26,6 @@ FitResult CDL012Swaps::Fit()
         //std::shuffle(std::begin(Order), std::end(Order), engine);
         foundbetter = false;
 
-
-
-        //arma::uvec Sc (Sctemp);
-
-
         arma::vec r = *y - *X * B; // ToDO: take from CD !! No need for this computation.
 
 
@@ -39,11 +34,7 @@ FitResult CDL012Swaps::Fit()
 
 
             arma::rowvec riX = (r + B[i] * X->unsafe_col(i)).t() * *X; // expensive computation ## call the new function here, inlined? ##
-            //std::cout<<"HERE1!!!" << std::endl;
 
-            //auto maxindex = arma::index_max(arma::abs(riX.elem(Sc)));
-
-            //std::vector<arma::uword> Sctemp; // ToDO: Very slow change later..
             double maxcorr = -1;
             unsigned int maxindex;
             for(unsigned int j = NoSelectK; j < p; ++j) // Can be made much faster..
@@ -60,6 +51,7 @@ FitResult CDL012Swaps::Fit()
                 B[i] = 0;
                 B[maxindex] = (riX[maxindex] - std::copysign(ModelParams[1], riX[maxindex])) / (1 + 2 * ModelParams[2]);
                 P.InitialSol = &B;
+                *P.r = *y - *X * B;
                 result = CDL012(*X, *y, P).Fit();
                 B = result.B;
                 objective = result.Objective;
