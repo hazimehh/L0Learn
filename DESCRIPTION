@@ -1,7 +1,7 @@
 Package: L0Learn
 Type: Package
 Title: Fast Algorithms for Best Subset Selection
-Version: 1.0.3
+Version: 1.0.4
 Date: 2018-09-08
 Author: Hussein Hazimeh, Rahul Mazumder
 Maintainer: Hussein Hazimeh <hazimeh@mit.edu>

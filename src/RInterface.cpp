@@ -8,7 +8,7 @@ Rcpp::List L0LearnFit(const arma::mat& X, const arma::vec& y, const std::string 
                       const double Lambda2Max, const double Lambda2Min, const bool PartialSort,
                       const unsigned int MaxIters, const double Tol, const bool ActiveSet,
                       const unsigned int ActiveSetNum, const unsigned int MaxNumSwaps,
-                      const double ScaleDownFactor, unsigned int ScreenSize, const bool LambdaU, const std::vector< std::vector<double> > Lambdas, const unsigned int ExcludeFirstK)
+                      const double ScaleDownFactor, unsigned int ScreenSize, const bool LambdaU, const std::vector< std::vector<double> > Lambdas, const unsigned int ExcludeFirstK, const bool Intercept)
 {
     auto p = X.n_cols;
     GridParams PG;
@@ -23,6 +23,7 @@ Rcpp::List L0LearnFit(const arma::mat& X, const arma::vec& y, const std::string 
     PG.LambdaU = LambdaU;
     PG.LambdasGrid = Lambdas;
     PG.Lambdas = Lambdas[0]; // to handle the case of L0 (i.e., Grid1D)
+    PG.intercept = Intercept;
     Params P;
     P.MaxIters = MaxIters;
     P.Tol = Tol;

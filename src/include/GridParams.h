@@ -21,6 +21,7 @@ struct GridParams
     double ytXmax;
     std::vector<double> * Xtr;
     double ScaleDownFactor = 0.8;
+    bool intercept;
 };
 
 #endif

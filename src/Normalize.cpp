@@ -1,13 +1,14 @@
 #include <Normalize.h>
 
 // scale, meanX, meany
-std::tuple<arma::vec, arma::vec, double>  Normalize(const arma::mat& X, const arma::vec& y, arma::mat & X_normalized, arma::vec & y_normalized, bool Normalizey = false)
+std::tuple<arma::vec, arma::vec, double>  Normalize(const arma::mat& X, const arma::vec& y, arma::mat & X_normalized, arma::vec & y_normalized, bool Normalizey = false, bool intercept = true)
 {
     unsigned int n = X.n_rows;
-    // unsigned int p = X.n_cols;
+    unsigned int p = X.n_cols;
 
-    arma::rowvec meanX = arma::mean(X, 0);
-
+    arma::rowvec meanX;
+    if (intercept){meanX = arma::mean(X, 0);}
+    else{meanX = arma::zeros<arma::rowvec>(p);}
     X_normalized = X.each_row() - meanX;
     arma::rowvec scaleX = std::sqrt(n) * arma::stddev(X_normalized, 1, 0); // contains the l2norm of every col
     scaleX.replace(0, -1);
@@ -18,20 +19,18 @@ std::tuple<arma::vec, arma::vec, double>  Normalize(const arma::mat& X, const ar
     double meany = 0;
     if (Normalizey)
     {
-        meany = arma::mean(y);
+        if (intercept){meany = arma::mean(y);}
         y_normalized = y - meany;
         double scaley = arma::as_scalar(std::sqrt(n) * arma::stddev(y_normalized, 1, 0)); // contains the l2norm of y
         y_normalized = y_normalized / scaley;
         BetaMultiplier = scaley / (scaleX.t()); // transpose scale to get a col vec
         // Multiplying the learned Beta by BetaMultiplier gives the optimal Beta on the original scale
     }
-
     else
     {
         y_normalized = y;
         BetaMultiplier = 1 / (scaleX.t()); // transpose scale to get a col vec
     }
-
     return std::make_tuple(BetaMultiplier, meanX.t(), meany);
 }
 
