@@ -42,6 +42,27 @@ L0Learn.cvfit <- function(x,y, loss="SquaredError", penalty="L0", algorithm="CD"
 	settings[[1]] = intercept # Settings only contains intercept for now. Might include additional elements later.
 	names(settings) <- c("intercept")
 
+	# Find potential support sizes exceeding maxSuppSize and remove them (this is due to
+	# the C++ core whose last solution can exceed maxSuppSize
+	for (i in 1:length(M$SuppSize)){
+			last = length(M$SuppSize[[i]])
+			if (M$SuppSize[[i]][last] > maxSuppSize){
+					if (last == 1){
+							print("Warning! Only 1 element in path with support size > maxSuppSize.")
+							print("Try increasing maxSuppSize to resolve the issue.")
+					}
+					else{
+							M$SuppSize[[i]] = M$SuppSize[[i]][-last]
+							M$Converged[[i]] = M$Converged[[i]][-last]
+							M$lambda[[i]] = M$lambda[[i]][-last]
+							M$a0[[i]] = M$a0[[i]][-last]
+							M$beta[[i]] = M$beta[[i]][,-last]
+							M$CVMeans[[i]] = M$CVMeans[[i]][-last]
+							M$CVSDs[[i]] = M$CVSDs[[i]][-last]
+					}
+			}
+	}
+
 	fit <- list(beta = M$beta, lambda=lapply(M$lambda,signif, digits=6), a0=M$a0, converged = M$Converged, suppSize= M$SuppSize, gamma=M$gamma, penalty=penalty, loss=loss, settings=settings)
 	if (is.null(colnames(x))){
 			varnames <- 1:dim(x)[2]
