@@ -9,7 +9,8 @@ L0Learn.cvfit(x, y, loss = "SquaredError", penalty = "L0",
   gammaMax = 10, gammaMin = 1e-04, partialSort = TRUE, maxIters = 200,
   tol = 1e-06, activeSet = TRUE, activeSetNum = 3, maxSwaps = 100,
   scaleDownFactor = 0.8, screenSize = 1000, autoLambda = TRUE,
-  lambdaGrid = list(0), nFolds = 10, seed = 1, excludeFirstK = 0)
+  lambdaGrid = list(0), nFolds = 10, seed = 1, excludeFirstK = 0,
+  intercept = TRUE)
 }
 \arguments{
 \item{x}{The data matrix.}
@@ -72,6 +73,8 @@ if TRUE, the values of Lambda are automatically selected based on the data.}
 
 \item{excludeFirstK}{This parameter takes non-negative integers. The first excludeFirstK features in x will be excluded from variable selection,
 i.e., the first excludeFirstK variables will not be included in the L0-norm penalty (they will still be included in the L1 or L2 norm penalties.).}
+
+\item{intercept}{If FALSE, no intercept term is included in the model.}
 }
 \value{
 An S3 object of type "L0LearnCV" describing the regularization path. The object has the following members.

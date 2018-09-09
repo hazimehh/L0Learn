@@ -8,7 +8,7 @@
 Grid::Grid(const arma::mat& X, const arma::vec& y, const GridParams& PGi)
 {
     PG = PGi;
-    std::tie(BetaMultiplier, meanX, meany) = Normalize(X, y, Xscaled, yscaled, !PG.P.Specs.Classification); // Don't normalize y
+    std::tie(BetaMultiplier, meanX, meany) = Normalize(X, y, Xscaled, yscaled, !PG.P.Specs.Classification, PG.intercept);
 }
 
 void Grid::Fit()
