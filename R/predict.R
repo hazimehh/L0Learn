@@ -9,6 +9,10 @@
 #' @param gamma The value of gamma to use for prediction. A summary of the gammas in the regularization
 #' path can be obtained using \code{print(fit)}.
 #' @method predict L0Learn
+#' @details
+#' If both lambda and gamma are not supplied, then a matrix of predictions
+#' for all the solutions in the regularization path is returned. If lambda is
+#' supplied but gamma is not, a default value of gamma = 0 is assumed.
 #' @examples
 #' # Generate synthetic data for this example
 #' data <- GenSynthetic(n=500,p=1000,k=10,seed=1)
@@ -20,9 +24,11 @@
 #' print(fit)
 #' # Apply the fitted model with lambda=0.0361829 and gamma=0.0001 on X to predict the response
 #' predict(fit, newx = X, lambda=0.0361829, gamma=0.0001)
+#' # Apply the fitted model on X to predict the response for all the solutions in the path
+#' predict(fit, newx = X)
 #'
 #' @export
-predict.L0Learn <- function(object,newx,lambda,gamma=0, ...)
+predict.L0Learn <- function(object,newx,lambda=NULL,gamma=NULL, ...)
 {
 		beta = coef.L0Learn(object, lambda, gamma)
 		if (object$settings$intercept){
@@ -42,7 +48,7 @@ predict.L0Learn <- function(object,newx,lambda,gamma=0, ...)
 #' @rdname predict.L0Learn
 #' @method predict L0LearnCV
 #' @export
-predict.L0LearnCV <- function(object,newx,lambda,gamma=0, ...)
+predict.L0LearnCV <- function(object,newx,lambda=NULL,gamma=NULL, ...)
 {
     predict.L0Learn(object$fit,newx,lambda,gamma, ...)
 }
