@@ -208,7 +208,7 @@ print(fit)
 Note that the $\lambda$ values above are the desired values. For L0L2 and L0L1 penalties, the same can be done where the lambdaGrid parameter should be assigned a list of size `nGamma`.
 
 ## Advanced Options
-For more advanced options supported by `L0Learn`, please refer to the [Reference Manual](https://cran.r-project.org/web/packages/L0Learn/L0Learn.pdf), which contains a detailed description of the API.
+For API details and more advanced options supported by `L0Learn`, please refer to the Reference Manual, which is available in the downloads section of [L0Learn's CRAN page](https://CRAN.R-project.org/package=L0Learn).
 
 # References
 Hussein Hazimeh and Rahul Mazumder. (2018).
