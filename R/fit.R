@@ -2,7 +2,6 @@
 #' @useDynLib L0Learn
 #' @importFrom Rcpp evalCpp
 #' @importFrom methods as
-#' @importFrom graphics arrows plot
 #' @import Matrix
 
 #' @title Fit an L0-regularized model
