@@ -5,9 +5,9 @@
 \alias{coef.L0LearnCV}
 \title{Extract Solutions}
 \usage{
-\method{coef}{L0Learn}(object, lambda, gamma = 0, ...)
+\method{coef}{L0Learn}(object, lambda = NULL, gamma = NULL, ...)
 
-\method{coef}{L0LearnCV}(object, lambda, gamma = 0, ...)
+\method{coef}{L0LearnCV}(object, lambda = NULL, gamma = NULL, ...)
 }
 \arguments{
 \item{object}{The output of L0Learn.fit or L0Learn.cvfit}
@@ -19,7 +19,12 @@
 \item{...}{ignore}
 }
 \description{
-Extracts a specific solution in the regularization path
+Extracts a specific solution in the regularization path.
+}
+\details{
+If both lambda and gamma are not supplied, then a matrix of coefficients
+for all the solutions in the regularization path is returned. If lambda is
+supplied but gamma is not, a default value of gamma = 0 is assumed.
 }
 \examples{
 # Generate synthetic data for this example
@@ -32,5 +37,7 @@ fit <- L0Learn.fit(X, y, penalty="L0L2", maxSuppSize=50, nGamma=10, gammaMin=0.0
 print(fit)
 # Extract the coefficients of the solution at lambda = 0.0361829 and gamma = 0.0001
 coef(fit, lambda=0.0361829, gamma=0.0001)
+# Extract the coefficients of all the solutions in the path
+coef(fit)
 
 }

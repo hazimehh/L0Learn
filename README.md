@@ -14,7 +14,12 @@ The optimization is done using coordinate descent and local combinatorial search
 The toolkit is implemented in C++11 and can often run faster than popular sparse learning toolkits (see our experiments in the paper above). We also provide an easy-to-use R interface; see the section below for installation and usage of the R package.
 
 ## R Package Installation and Usage
-L0Learn 1.0.2 is now available on CRAN. For installation instructions and a tutorial, please refer to [L0Learn's Vignette](http://www.mit.edu/~hazimeh/L0Learn-vignette.html). For a detailed description of the API, check the [Reference Manual](https://cran.r-project.org/web/packages/L0Learn/L0Learn.pdf).
+The latest version of L0Learn (v1.0.6) can be installed directly from Github using
+```
+library(devtools)
+install_github("hazimehh/L0Learn")
+```
+L0Learn v1.0.2 is also available on CRAN. For a tutorial, please refer to [L0Learn's Vignette](http://www.mit.edu/~hazimeh/L0Learn-vignette.html). For a detailed description of the API, check the [Reference Manual](https://cran.r-project.org/web/packages/L0Learn/L0Learn.pdf).
 
 For users who have been using L0Learn before July 1, 2018, please check this [Wiki page](https://github.com/hazimehh/L0Learn/wiki/Note-for-previous-users) for more information on the changes introduced in the new CRAN version.
 

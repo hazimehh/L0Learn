@@ -5,9 +5,9 @@
 \alias{predict.L0LearnCV}
 \title{Predict Response}
 \usage{
-\method{predict}{L0Learn}(object, newx, lambda, gamma = 0, ...)
+\method{predict}{L0Learn}(object, newx, lambda = NULL, gamma = NULL, ...)
 
-\method{predict}{L0LearnCV}(object, newx, lambda, gamma = 0, ...)
+\method{predict}{L0LearnCV}(object, newx, lambda = NULL, gamma = NULL, ...)
 }
 \arguments{
 \item{object}{The output of L0Learn.fit or L0Learn.cvfit}
@@ -25,6 +25,11 @@ path can be obtained using \code{print(fit)}.}
 \description{
 Predicts the response for a given sample
 }
+\details{
+If both lambda and gamma are not supplied, then a matrix of predictions
+for all the solutions in the regularization path is returned. If lambda is
+supplied but gamma is not, a default value of gamma = 0 is assumed.
+}
 \examples{
 # Generate synthetic data for this example
 data <- GenSynthetic(n=500,p=1000,k=10,seed=1)
@@ -36,5 +41,7 @@ fit <- L0Learn.fit(X,y, penalty="L0L2", maxSuppSize=50, nGamma=10, gammaMin=0.00
 print(fit)
 # Apply the fitted model with lambda=0.0361829 and gamma=0.0001 on X to predict the response
 predict(fit, newx = X, lambda=0.0361829, gamma=0.0001)
+# Apply the fitted model on X to predict the response for all the solutions in the path
+predict(fit, newx = X)
 
 }
