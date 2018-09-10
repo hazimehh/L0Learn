@@ -1,2 +1,2 @@
 #!/bin/sh
-rm -f config.* src/Makevars
+rm -f config.* src/Makevars src/*.o
