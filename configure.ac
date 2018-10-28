@@ -9,7 +9,7 @@
 AC_PREREQ(2.61)
 
 ## Process this file with autoconf to produce a configure script.
-AC_INIT([L0Learn], 1.0.7)
+AC_INIT([L0Learn], 1.0.8)
 
 ## Set R_HOME, respecting an environment variable if one is set 
 : ${R_HOME=$(R RHOME)}
