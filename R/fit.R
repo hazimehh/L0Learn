@@ -109,7 +109,7 @@ L0Learn.fit <- function(x,y, loss="SquaredError", penalty="L0", algorithm="CD", 
 							M$Converged[[i]] = M$Converged[[i]][-last]
 							M$lambda[[i]] = M$lambda[[i]][-last]
 							M$a0[[i]] = M$a0[[i]][-last]
-							M$beta[[i]] = M$beta[[i]][,-last]
+							M$beta[[i]] = as(M$beta[[i]][,-last], "sparseMatrix") # conversion to sparseMatrix is necessary to handle the case of a single column
 					}
 			}
 	}
