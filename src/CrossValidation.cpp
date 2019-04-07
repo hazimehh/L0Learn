@@ -153,7 +153,7 @@ Rcpp::List L0LearnCV(const arma::mat& X, const arma::vec& y, const std::string L
         PG.LambdaU = true;
         PG.XtrAvailable = false; // reset XtrAvailable since its changed upon every call
         PG.LambdasGrid = G.Lambda0;
-        PG.NnzStopNum = p; // remove any constraints on the supp size when fitting over the cv folds
+        PG.NnzStopNum = p+1; // remove any constraints on the supp size when fitting over the cv folds // +1 is imp to avoid =p edge case
         if (PG.P.Specs.L0 == true){PG.Lambdas = PG.LambdasGrid[0];}
         Grid Gtraining(Xtraining, ytraining, PG);
         Gtraining.Fit();
