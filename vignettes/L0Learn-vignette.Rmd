@@ -125,7 +125,7 @@ We can make predictions using a specific solution in the grid using the function
 predict(fit, newx=X, lambda=0.0325142, gamma=0)
 ```
 We can also visualize the regularization path by plotting the coefficients of the estimated B versus the support size (i.e., the number of non-zeros) using the `plot(fit,gamma)` method as follows:
-```{r, fig.height = 4.2, fig.width = 7, out.width="80%", dpi=300}
+```{r, fig.height = 4.7, fig.width = 7, out.width="90%", dpi=300}
 plot(fit, gamma=0)
 ```
 
@@ -165,7 +165,7 @@ Note that the object `cvfit` has a member `fit` (accessed using `cvfit$fit`) whi
 lapply(cvfit$cvMeans, min)
 ```
 The above output indicates that the 4th value of gamma achieves the lowest CV error (`=0.9899542`). We can plot the CV errors against the support size for the 4th value of gamma, i.e., `gamma = cvfit$fit$gamma[4]`, using:
-```{r, fig.height = 4, fig.width = 7, out.width="80%", dpi=300}
+```{r, fig.height = 4.7, fig.width = 7, out.width="90%", dpi=300}
 plot(cvfit, gamma=cvfit$fit$gamma[4])
 ```
 
@@ -188,7 +188,7 @@ In certain applications, it is desirable to always include some of the variables
 fit <- L0Learn.fit(X, y, penalty="L0", maxSuppSize=20, excludeFirstK=3)
 ```
 Plotting the regularization path:
-```{r, fig.height = 4.2, fig.width = 7, out.width="80%", dpi=300}
+```{r, fig.height = 4.7, fig.width = 7, out.width="90%", dpi=300}
 plot(fit, gamma=0)
 ```
 

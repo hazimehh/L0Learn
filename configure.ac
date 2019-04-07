@@ -9,12 +9,12 @@
 AC_PREREQ(2.61)
 
 ## Process this file with autoconf to produce a configure script.
-AC_INIT([L0Learn], 1.0.8)
+AC_INIT([L0Learn], 1.0.9)
 
-## Set R_HOME, respecting an environment variable if one is set 
+## Set R_HOME, respecting an environment variable if one is set
 : ${R_HOME=$(R RHOME)}
 if test -z "${R_HOME}"; then
-    AC_MSG_ERROR([Could not determine R_HOME.])   
+    AC_MSG_ERROR([Could not determine R_HOME.])
 fi
 ## Use R to set CXX and CXXFLAGS
 CXX=$(${R_HOME}/bin/R CMD config CXX)
@@ -37,9 +37,9 @@ if test "${GXX}" = yes; then
         1.*|2.*|3.*|4.0.*|4.1.*|4.2.*|4.3.*|4.4.*|4.5.*|4.6.*|4.7.0|4.7.1)
              AC_MSG_RESULT([no])
              AC_MSG_WARN([Only g++ version 4.7.2 or greater can be used with L0Learn.])
-             AC_MSG_ERROR([Please use a different compiler.])   
+             AC_MSG_ERROR([Please use a different compiler.])
         ;;
-        4.7.*|4.8.*|4.9.*|5.0*|5.1*|5.2*|5.3*)        
+        4.7.*|4.8.*|4.9.*|5.0*|5.1*|5.2*|5.3*)
              AC_MSG_RESULT([yes, but without OpenMP as version ${gxx_version}])
              ## we know this one is bad
              can_use_openmp="no"
@@ -113,7 +113,7 @@ if test x"${can_use_openmp}" == x"yes"; then
     if test x"${hasOpenMP}" == x""; then
         AC_MSG_RESULT([missing])
         arma_have_openmp="#define ARMA_DONT_USE_OPENMP 1"
-    else   
+    else
         AC_MSG_RESULT([found and suitable])
         arma_have_openmp="#define ARMA_USE_OPENMP 1"
         openmp_flag='$(SHLIB_OPENMP_CXXFLAGS)'
