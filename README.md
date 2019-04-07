@@ -25,7 +25,7 @@ install.packages("L0Learn")
 ```
 For a tutorial, please refer to [L0Learn's Vignette](http://www.mit.edu/~hazimeh/L0Learn-vignette.html). For a detailed description of the API, check the [Reference Manual](https://cran.r-project.org/web/packages/L0Learn/L0Learn.pdf).
 
-For users who have been using L0Learn before July 1, 2018, please check this [Wiki page](https://github.com/hazimehh/L0Learn/wiki/Note-for-previous-users) for more information on the changes introduced in the new CRAN version.
+L0Learn's changelog can be accessed from [here](https://github.com/hazimehh/L0Learn/blob/master/chagelog). For users who have been using L0Learn before July 1, 2018, please check this [Wiki page](https://github.com/hazimehh/L0Learn/wiki/Note-for-previous-users) for more information on the changes introduced in the new CRAN version.
 
 ## Citing L0Learn
 If you find L0Learn useful in your research, please consider citing the following paper:
