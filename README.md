@@ -1,6 +1,9 @@
-# L0Learn: Fast Best Subset Selection [![Build Status](https://travis-ci.org/hazimehh/L0Learn.svg?branch=master)](https://travis-ci.org/hazimehh/L0Learn) [![](https://cranlogs.r-pkg.org/badges/grand-total/L0Learn)](https://cran.rstudio.com/web/packages/L0Learn/index.html)
-
+# L0Learn: Fast Best Subset Selection [![Build Status](https://travis-ci.org/hazimehh/L0Learn.svg?branch=master)](https://travis-ci.org/hazimehh/L0Learn) 
 ### Hussein Hazimeh and Rahul Mazumder 
+### Massachusetts Institute of Technology
+
+Downloads from Rstudio: [![](https://cranlogs.r-pkg.org/badges/grand-total/L0Learn)](https://cran.rstudio.com/web/packages/L0Learn/index.html)
+
 
 
 ## Introduction
