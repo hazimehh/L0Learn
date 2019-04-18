@@ -35,7 +35,7 @@ FitResult CDL012Logistic::Fit()
 
         // Update the intercept
         double b0old = b0;
-        double partial_b0 = - arma::sum( *y * *Weights / (1 + ExpyXB) );
+        double partial_b0 = - arma::sum( *y % *Weights / (1 + ExpyXB) );
         b0 -= partial_b0 / (n * LipschitzConst); // intercept is not regularized // *n since colums of all ones (i.e., column is not normalized)
         ExpyXB %= arma::exp( (b0 - b0old) * *y);
         std::cout<<"Intercept. "<<Objective(r,B)<<std::endl;
@@ -46,7 +46,7 @@ FitResult CDL012Logistic::Fit()
 
             // Calculate Partial_i
             double Biold = B[i];
-            double partial_i = - arma::sum( *Weights * (Xy->unsafe_col(i)) / (1 + ExpyXB) ) + twolambda2 * Biold;
+            double partial_i = - arma::sum( *Weights % (Xy->unsafe_col(i)) / (1 + ExpyXB) ) + twolambda2 * Biold;
             (*Xtr)[i] = std::abs(partial_i); // abs value of grad
 
             double x = Biold - partial_i / qp2lamda2;
@@ -113,7 +113,7 @@ inline double CDL012Logistic::Objective(arma::vec & r, arma::sp_mat & B)   // hi
 {
     auto l2norm = arma::norm(B, 2);
     // arma::sum(arma::log(1 + 1 / ExpyXB)) is the negative log-likelihood
-    return arma::sum(*Weights * arma::log(1 + 1 / ExpyXB)) + ModelParams[0] * B.n_nonzero + ModelParams[1] * arma::norm(B, 1) + ModelParams[2] * l2norm * l2norm;
+    return arma::sum(*Weights % arma::log(1 + 1 / ExpyXB)) + ModelParams[0] * B.n_nonzero + ModelParams[1] * arma::norm(B, 1) + ModelParams[2] * l2norm * l2norm;
 }
 
 
