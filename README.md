@@ -1,4 +1,4 @@
-# L0Learn: Fast Best Subset Selection
+# L0Learn: Fast Best Subset Selection [![Build Status](https://travis-ci.org/hazimehh/L0Learn.svg?branch=master)](https://travis-ci.org/hazimehh/L0Learn) 
 ### Hussein Hazimeh and Rahul Mazumder 
 ### Massachusetts Institute of Technology
 
