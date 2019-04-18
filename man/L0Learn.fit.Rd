@@ -4,12 +4,13 @@
 \alias{L0Learn.fit}
 \title{Fit an L0-regularized model}
 \usage{
-L0Learn.fit(x, y, loss = "SquaredError", penalty = "L0", algorithm = "CD",
-  maxSuppSize = 100, nLambda = 100, nGamma = 10, gammaMax = 10,
-  gammaMin = 1e-04, partialSort = TRUE, maxIters = 200, tol = 1e-06,
-  activeSet = TRUE, activeSetNum = 3, maxSwaps = 100,
-  scaleDownFactor = 0.8, screenSize = 1000, autoLambda = TRUE,
-  lambdaGrid = list(0), excludeFirstK = 0, intercept = TRUE)
+L0Learn.fit(x, y, loss = "SquaredError", penalty = "L0",
+  algorithm = "CD", maxSuppSize = 100, nLambda = 100, nGamma = 10,
+  gammaMax = 10, gammaMin = 1e-04, partialSort = TRUE,
+  maxIters = 200, tol = 1e-06, activeSet = TRUE, activeSetNum = 3,
+  maxSwaps = 100, scaleDownFactor = 0.8, screenSize = 1000,
+  autoLambda = TRUE, lambdaGrid = list(0), excludeFirstK = 0,
+  intercept = TRUE, weights = rep(1, length(y)))
 }
 \arguments{
 \item{x}{The data matrix.}
@@ -70,6 +71,8 @@ if TRUE, the values of Lambda are automatically selected based on the data.}
 i.e., the first excludeFirstK variables will not be included in the L0-norm penalty (they will still be included in the L1 or L2 norm penalties.).}
 
 \item{intercept}{If FALSE, no intercept term is included in the model.}
+
+\item{weights}{A vector of weights used for weighted likelihood/regression. weight[i] is associated with the ith sample.}
 }
 \value{
 An S3 object of type "L0Learn" describing the regularization path. The object has the following members.

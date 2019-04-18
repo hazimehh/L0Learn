@@ -8,7 +8,7 @@ Rcpp::List L0LearnFit(const arma::mat& X, const arma::vec& y, const std::string 
                       const double Lambda2Max, const double Lambda2Min, const bool PartialSort,
                       const unsigned int MaxIters, const double Tol, const bool ActiveSet,
                       const unsigned int ActiveSetNum, const unsigned int MaxNumSwaps,
-                      const double ScaleDownFactor, unsigned int ScreenSize, const bool LambdaU, const std::vector< std::vector<double> > Lambdas, const unsigned int ExcludeFirstK, const bool Intercept)
+                      const double ScaleDownFactor, unsigned int ScreenSize, const bool LambdaU, const std::vector< std::vector<double> > Lambdas, const unsigned int ExcludeFirstK, const bool Intercept, const arma::vec& Weights)
 {
     auto p = X.n_cols;
     GridParams PG;
@@ -32,6 +32,7 @@ Rcpp::List L0LearnFit(const arma::mat& X, const arma::vec& y, const std::string 
     P.MaxNumSwaps = MaxNumSwaps;
     P.ScreenSize = ScreenSize;
     P.NoSelectK = ExcludeFirstK;
+    P.Weights = &Weights; // handle destructor later
     PG.P = P;
 
     if (Loss == "SquaredError") {PG.P.Specs.SquaredError = true;}

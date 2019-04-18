@@ -29,6 +29,7 @@ struct Params
     unsigned int ScreenSize = 1000;
     arma::vec * r;
     arma::mat * Xy; // used for classification.
+    const arma::vec * Weights; // for local likelihood
     unsigned int NoSelectK = 0;
 };
 

@@ -19,6 +19,7 @@ class CDL012Logistic : public CD
         arma::mat * Xy;
         unsigned int Iter;
         unsigned int NoSelectK;
+        const arma::vec * Weights;
     public:
         CDL012Logistic(const arma::mat& Xi, const arma::vec& yi, const Params& P);
 
