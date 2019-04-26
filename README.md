@@ -4,6 +4,8 @@
 
 Downloads from Rstudio: [![](https://cranlogs.r-pkg.org/badges/grand-total/L0Learn)](https://cran.rstudio.com/web/packages/L0Learn/index.html)
 
+## This branch imposes non-negativity constraints on all the coefficients.
+
 
 
 ## Introduction
@@ -17,14 +19,10 @@ The optimization is done using coordinate descent and local combinatorial search
 The toolkit is implemented in C++11 and can often run faster than popular sparse learning toolkits (see our experiments in the paper above). We also provide an easy-to-use R interface; see the section below for installation and usage of the R package.
 
 ## R Package Installation and Usage
-The latest version of L0Learn (v1.1.0) can be installed from CRAN:
-```{R}
-install.packages("L0Learn", repos = "http://cran.rstudio.com")
-```
-Alternatively, L0Learn can also be installed from Github:
+This (non-negativity) branch can be installed from Github as follows:
 ```{R}
 library(devtools)
-install_github("hazimehh/L0Learn")
+install_github("hazimehh/L0Learn", ref="nng")
 ```
 
 For a tutorial, please refer to [L0Learn's Vignette](https://cran.r-project.org/web/packages/L0Learn/vignettes/L0Learn-vignette.html). For a detailed description of the API, check the [Reference Manual](https://cran.r-project.org/web/packages/L0Learn/L0Learn.pdf).
