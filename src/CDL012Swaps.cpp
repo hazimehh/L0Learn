@@ -39,13 +39,13 @@ FitResult CDL012Swaps::Fit()
             unsigned int maxindex;
             for(unsigned int j = NoSelectK; j < p; ++j) // Can be made much faster..
             {
-                if (std::fabs(riX[j]) > maxcorr && B[j] == 0)
+                if (riX[j] > maxcorr && B[j] == 0) // ignore vars with riX[j] < - maxcorr
                 {
                     maxcorr = std::fabs(riX[j]);
                     maxindex = j;
                 }
             }
-
+            // only var j with positive maxcorr can satisfy the following (neg. ones are ignored)
             if(maxcorr > (1 + 2 * ModelParams[2])*std::fabs(B[i]) + ModelParams[1] )
             {
                 B[i] = 0;
