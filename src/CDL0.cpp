@@ -32,7 +32,7 @@ FitResult CDL0::Fit()
             (*Xtr)[i] = std::abs(cor); // do abs here instead from when sorting
             double Bi = B[i]; // B[i] is costly
             double x = cor + Bi;
-            if (x >= thr || x <= -thr || i < NoSelectK) 	// often false so body is not costly
+            if (x >= thr || (i < NoSelectK && x>0)  ) 	// set vars with x<=thr to zero
             {
                 r += X->unsafe_col(i) * (Bi - x);
                 B[i] = x;
@@ -116,7 +116,7 @@ bool CDL0::CWMinCheck()
         double absx = std::abs(x);
         (*Xtr)[i] = absx; // do abs here instead from when sorting
         // B[i] = 0 in this case!
-        if (absx >= thr) 	// often false so body is not costly
+        if (x >= thr) 	// ignore vars with x <= - thr
         {
             r -= X->unsafe_col(i) * x;
             B[i] = x;
