@@ -39,7 +39,7 @@ FitResult CDL012::Fit()
             double x = cor + Bi; // x is beta_tilde_i
             double z = (std::abs(x) - lambda1) / Onep2lamda2;
 
-            if (z*std::sign(x) >= thr || (i < NoSelectK && z*std::sign(x)>0) ) 	// ignore vars with z*std::sign(x) <= thr
+            if (z*std::copysign(1.0, x) >= thr || (i < NoSelectK && z*std::copysign(1.0, x)>0) ) 	// ignore vars with z*std::sign(x) <= thr
             {
                 B[i] = std::copysign(z, x);
 
@@ -124,7 +124,7 @@ bool CDL012::CWMinCheck()
         (*Xtr)[i] = absx; // do abs here instead from when sorting
         double z = (absx - lambda1) / Onep2lamda2;
 
-        if (z*std::sign(x) >= thr) 	// ignore vars with z*std::sign(x) <= -thr
+        if (z*std::copysign(1.0, x) >= thr) 	// ignore vars with z*std::sign(x) <= -thr
         {
             B[i] = std::copysign(z, x);
             r -= X->unsafe_col(i) * B[i];
