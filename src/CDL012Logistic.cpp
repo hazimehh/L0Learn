@@ -29,7 +29,7 @@ FitResult CDL012Logistic::Fit()
 
     for (unsigned int t = 0; t < MaxIters; ++t)
     {
-        std::cout<<"CDL012 Logistic: "<< t << " " << objective << " Gamma= "<<NewtonStepSize <<std::endl;
+        //std::cout<<"CDL012 Logistic: "<< t << " " << objective << " Gamma= "<<NewtonStepSize <<std::endl;
         double Oldobjective = objective;
         Bprev = B;
 
@@ -38,7 +38,7 @@ FitResult CDL012Logistic::Fit()
         double partial_b0 = - arma::sum( *y % *Weights / (1 + ExpyXB) );
         b0 -= partial_b0 / (n * LipschitzConst); // intercept is not regularized // *n since colums of all ones (i.e., column is not normalized)
         ExpyXB %= arma::exp( (b0 - b0old) * *y);
-        std::cout<<"Intercept. "<<Objective(r,B)<<std::endl;
+        //std::cout<<"Intercept. "<<Objective(r,B)<<std::endl;
 
 
         for (auto& i : Order)
@@ -89,7 +89,7 @@ FitResult CDL012Logistic::Fit()
 
             else
             {
-                std::cout<<"Converged in "<<t+1<<" iterations."<<std::endl;
+                //std::cout<<"Converged in "<<t+1<<" iterations."<<std::endl;
                 break;
             }
 
