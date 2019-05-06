@@ -16,19 +16,23 @@ CDL012Logistic::CDL012Logistic(const arma::mat& Xi, const arma::vec& yi, const P
     ExpyXB = arma::exp(*y % (*X * B + b0)); // Maintained throughout the algorithm
     Xtr = P.Xtr; Iter = P.Iter; result.ModelParams = P.ModelParams; Xy = P.Xy;
     NoSelectK = P.NoSelectK;
+    Range1p.resize(p);
+    std::iota(std::begin(Range1p), std::end(Range1p), 0);
+    ScreenSize = P.ScreenSize;
 }
 
-FitResult CDL012Logistic::Fit()
+FitResult CDL012Logistic::Fit() // always uses active sets
 {
     // arma::mat Xy = X->each_col() % *y; // later
 
-    bool SecondPass = false;
-    double NewtonStepSize = 1.0; //Newton's update step size.
-    objective = Objective(r, B); ////////
+    objective = Objective(r, B);
+
+    std::vector<unsigned int> FullOrder = Order; // never used in LR
+    Order.resize(std::min((int) (B.n_nonzero + ScreenSize + NoSelectK), (int)(p)));
 
     for (unsigned int t = 0; t < MaxIters; ++t)
     {
-        //std::cout<<"CDL012 Logistic: "<< t << " " << objective << " Gamma= "<<NewtonStepSize <<std::endl;
+        //std::cout<<"CDL012 Logistic: "<< t << " " << objective<<std::endl;
         double Oldobjective = objective;
         Bprev = B;
 
@@ -39,123 +43,42 @@ FitResult CDL012Logistic::Fit()
         ExpyXB %= arma::exp( (b0 - b0old) * *y);
         //std::cout<<"Intercept. "<<Objective(r,B)<<std::endl;
 
-        if(!Stabilized || SecondPass)
+
+        for (auto& i : Order)
         {
-            for (auto& i : Order)
+
+            // Calculate Partial_i
+            double Biold = B[i];
+            double partial_i = - arma::sum( (Xy->unsafe_col(i)) / (1 + ExpyXB) ) + twolambda2 * Biold;
+            (*Xtr)[i] = std::abs(partial_i); // abs value of grad
+
+            double x = Biold - partial_i / qp2lamda2;
+            double z = std::abs(x) - lambda1ol;
+
+
+            if (z >= thr || (i < NoSelectK && z>0) ) 	// often false so body is not costly
             {
+                double Bnew = std::copysign(z, x);
+                B[i] = Bnew;
+                ExpyXB %= arma::exp( (Bnew - Biold) *  Xy->unsafe_col(i));
+                //std::cout<<"In. "<<Objective(r,B)<<std::endl;
+            }
 
-                // Calculate Partial_i
-                double Biold = B[i];
-                double partial_i = - arma::sum( (Xy->unsafe_col(i)) / (1 + ExpyXB) ) + twolambda2 * Biold;
-                (*Xtr)[i] = std::abs(partial_i); // abs value of grad
-
-                double x = Biold - partial_i / qp2lamda2;
-                double z = std::abs(x) - lambda1ol;
-
-
-                if (z >= thr || (i < NoSelectK && z>0) ) 	// often false so body is not costly
-                {
-                    double Bnew = std::copysign(z, x);
-                    B[i] = Bnew;
-                    ExpyXB %= arma::exp( (Bnew - Biold) *  Xy->unsafe_col(i));
-                    //std::cout<<"In. "<<Objective(r,B)<<std::endl;
-                }
-
-                else if (Biold != 0)   // do nothing if x=0 and B[i] = 0
-                {
-                    ExpyXB %= arma::exp( - Biold * Xy->unsafe_col(i));
-                    B[i] = 0;
-                    //std::cout<<"Out. "<<Objective(r,B)<<std::endl;
-                    //}
-
-                    //else{
-                    //	std::cout<<"ELSE: "<<B[i]<<std::endl;
-                    //}
-                }
+            else if (Biold != 0)   // do nothing if x=0 and B[i] = 0
+            {
+                ExpyXB %= arma::exp( - Biold * Xy->unsafe_col(i));
+                B[i] = 0;
             }
         }
 
-        else
-        {
-            for (auto& i : Order)
-            {
-                //std::cout<<"In Stabilization!!!"<<std::endl;
+        SupportStabilized();
 
-                // Calculate Partial_i
-                double Biold = B[i];
-                double partial_i = - arma::sum( (Xy->unsafe_col(i)) / (1 + ExpyXB) ) + twolambda2 * Biold;
-                double partial2_i = arma::sum( (X->unsafe_col(i) % X->unsafe_col(i) % ExpyXB) / ( (1 + ExpyXB) % (1 + ExpyXB) ) ) + twolambda2;
-                (*Xtr)[i] = std::abs(partial_i); // abs value of grad
-                //std::cout<<partial2_i<<std::endl;
-                double x;
-                double TruncatedNewtonStep = NewtonStepSize / partial2_i;
-                if (TruncatedNewtonStep > 1 / qp2lamda2) // if truncated step is larger use it
-                {
-                    x = Biold - NewtonStepSize * partial_i / partial2_i;
-                }
-                else
-                {
-                    x = Biold - partial_i / qp2lamda2;
-                }
-
-                double z = std::abs(x) - lambda1ol;
-
-
-                if (z >= thr) 	// often false so body is not costly
-                {
-                    double Bnew = std::copysign(z, x);
-                    B[i] = Bnew;
-                    ExpyXB %= arma::exp( (Bnew - Biold) *  Xy->unsafe_col(i));
-                    //std::cout<<"In. "<<Objective(r,B)<<std::endl;
-                }
-
-                else if (Biold != 0)   // do nothing if x=0 and B[i] = 0
-                {
-                    ExpyXB %= arma::exp( - Biold * Xy->unsafe_col(i));
-                    B[i] = 0;
-                    //std::cout<<"Out. "<<Objective(r,B)<<std::endl;
-                }
-
-                //else{
-                //	std::cout<<"ELSE: "<<B[i]<<std::endl;
-                //}
-            }
-
-        }
-
-
-
-        //B.print();
+        // only way to terminate is by (i) converging on active set and (ii) CWMinCheck
         if (Converged())
         {
-            if (Stabilized == true && !SecondPass)
-            {
-                Order = OldOrder; // Recycle over all coordinates to make sure the achieved point is a CW-min.
-                //SecondPass = true; // a 2nd pass will be performed
-            }
-
-            else
-            {
-                //std::cout<<"Converged in "<<t+1<<" iterations."<<std::endl;
-                break;
-            }
-
+            if (CWMinCheck()) {break;}
         }
 
-        // New objective is obtained after this point
-        if (objective > Oldobjective)
-        {
-            // Reduce step size if the obj increases at some pt.
-            NewtonStepSize /= 2.0;
-
-            // Reset B and objective
-            B = Bprev;
-            objective = Oldobjective;
-
-        }
-
-
-        if (ActiveSet) {SupportStabilized();}
 
     }
 
@@ -175,6 +98,49 @@ inline double CDL012Logistic::Objective(arma::vec & r, arma::sp_mat & B)   // hi
     // arma::sum(arma::log(1 + 1 / ExpyXB)) is the negative log-likelihood
     return arma::sum(arma::log(1 + 1 / ExpyXB)) + ModelParams[0] * B.n_nonzero + ModelParams[1] * arma::norm(B, 1) + ModelParams[2] * l2norm * l2norm;
 }
+
+
+bool CDL012Logistic::CWMinCheck()
+// Checks for violations outside Supp and updates Order in case of violations
+{
+    //std::cout<<"#################"<<std::endl;
+    //std::cout<<"In CWMinCheck!!!"<<std::endl;
+    // Get the Sc = FullOrder - Order
+    std::vector<unsigned int> S;
+    for(arma::sp_mat::const_iterator it = B.begin(); it != B.end(); ++it) {S.push_back(it.row());}
+
+    std::vector<unsigned int> Sc;
+    set_difference(
+        Range1p.begin(),
+        Range1p.end(),
+        S.begin(),
+        S.end(),
+        back_inserter(Sc));
+
+    bool Cwmin = true;
+
+    for (auto& i : Sc)
+    {
+        // Calculate Partial_i
+        double partial_i = - arma::sum( (Xy->unsafe_col(i)) / (1 + ExpyXB) );
+        (*Xtr)[i] = std::abs(partial_i); // abs value of grad
+        double x = - partial_i / qp2lamda2;
+        double z = std::abs(x) - lambda1ol;
+        if (z > thr) 	// often false so body is not costly
+        {
+            double Bnew = std::copysign(z, x);
+            B[i] = Bnew;
+            ExpyXB %= arma::exp( Bnew *  Xy->unsafe_col(i));
+            Cwmin = false;
+            Order.push_back(i);
+            //std::cout<<"Found Violation !!!"<<std::endl;
+        }
+    }
+    //std::cout<<"#################"<<std::endl;
+    return Cwmin;
+}
+
+
 
 
 /*
