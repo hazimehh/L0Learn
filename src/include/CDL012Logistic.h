@@ -19,12 +19,16 @@ class CDL012Logistic : public CD
         arma::mat * Xy;
         unsigned int Iter;
         unsigned int NoSelectK;
+        unsigned int ScreenSize;
+        std::vector<unsigned int> Range1p;
     public:
         CDL012Logistic(const arma::mat& Xi, const arma::vec& yi, const Params& P);
 
         FitResult Fit() final;
 
         inline double Objective(arma::vec & r, arma::sp_mat & B) final;
+
+        bool CWMinCheck();
 
 };
 

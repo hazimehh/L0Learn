@@ -22,6 +22,7 @@ Grid2D::Grid2D(const arma::mat& Xi, const arma::vec& yi, const GridParams& PGi)
 Grid2D::~Grid2D(){
     delete Xtr;
     if (PG.P.Specs.Logistic){delete PG.P.Xy;}
+    if (PG.P.Specs.SquaredHinge){delete PG.P.Xy;}
 }
 
 std::vector< std::vector<std::unique_ptr<FitResult> > > Grid2D::Fit()
@@ -39,6 +40,9 @@ std::vector< std::vector<std::unique_ptr<FitResult> > > Grid2D::Fit()
     else if (PG.P.Specs.SquaredHinge)
     {
         Xtrarma = 2 * arma::abs(y->t() * *X).t(); // = gradient of loss function at zero
+        arma::mat Xy =  X->each_col() % *y;
+        PG.P.Xy = new arma::mat;
+        *PG.P.Xy = Xy;
     }
 
     else

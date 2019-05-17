@@ -6,11 +6,11 @@
 \usage{
 L0Learn.cvfit(x, y, loss = "SquaredError", penalty = "L0",
   algorithm = "CD", maxSuppSize = 100, nLambda = 100, nGamma = 10,
-  gammaMax = 10, gammaMin = 1e-04, partialSort = TRUE, maxIters = 200,
-  tol = 1e-06, activeSet = TRUE, activeSetNum = 3, maxSwaps = 100,
-  scaleDownFactor = 0.8, screenSize = 1000, autoLambda = TRUE,
-  lambdaGrid = list(0), nFolds = 10, seed = 1, excludeFirstK = 0,
-  intercept = TRUE)
+  gammaMax = 10, gammaMin = 1e-04, partialSort = TRUE,
+  maxIters = 200, tol = 1e-06, activeSet = TRUE, activeSetNum = 3,
+  maxSwaps = 100, scaleDownFactor = 0.8, screenSize = 1000,
+  autoLambda = TRUE, lambdaGrid = list(0), nFolds = 10, seed = 1,
+  excludeFirstK = 0, intercept = TRUE)
 }
 \arguments{
 \item{x}{The data matrix.}

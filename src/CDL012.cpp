@@ -124,10 +124,11 @@ bool CDL012::CWMinCheck()
         (*Xtr)[i] = absx; // do abs here instead from when sorting
         double z = (absx - lambda1) / Onep2lamda2;
 
-        if (z >= thr) 	// often false so body is not costly
+        if (z > thr) 	// often false so body is not costly
         {
             B[i] = std::copysign(z, x);
             r -= X->unsafe_col(i) * B[i];
+            Cwmin = false;
         }
     }
     return Cwmin;
