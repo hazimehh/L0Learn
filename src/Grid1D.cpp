@@ -297,7 +297,8 @@ std::vector<std::unique_ptr<FitResult>> Grid1D::Fit()
                 //result->B.t().print();
                 P.InitialSol = &(G.back()->B);
                 P.b0 = G.back()->intercept;
-                *P.r = G.back()->r;
+                // P.r is automatically updated by the previous call to CD
+                //*P.r = G.back()->r;
             }
 
             //std::cout<<"Lambda0, Lambda1, Lambda2: "<<P.ModelParams[0]<<", "<<P.ModelParams[1]<<", "<<P.ModelParams[2]<<std::endl;
