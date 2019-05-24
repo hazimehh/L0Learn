@@ -273,6 +273,8 @@ std::vector<std::unique_ptr<FitResult>> Grid1D::Fit()
                         Spold.push_back(itold.row());
                     }
 
+                    delete prevresult;
+
                     std::vector<unsigned int> Spnew;
                     arma::sp_mat::const_iterator itnew;
                     for(itnew = result->B.begin(); itnew != result->B.end(); ++itnew)
