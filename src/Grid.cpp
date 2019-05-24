@@ -90,15 +90,10 @@ void Grid::Fit()
 }
 
 
-// Grid::~Grid()
-// {
-//   std::cout << "Destroyed!!!" << std::endl;
-//   Lambda0.clear();
-//   NnzCount.clear();
-//   Solutions.clear();
-//   Intercepts.clear();
-//   Converged.clear();
-// }
+Grid::~Grid()
+{
+   std::cout << "Destroyed!!!" << std::endl;
+}
 
 /*
 // Bypass for R interface

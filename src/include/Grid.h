@@ -26,6 +26,7 @@ class Grid
         std::vector< std::vector<bool> > Converged;
 
         Grid(const arma::mat& X, const arma::vec& y, const GridParams& PG);
+        ~Grid();
 
         void Fit();
 
