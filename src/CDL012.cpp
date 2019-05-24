@@ -90,7 +90,7 @@ FitResult CDL012::Fit()
 
     result.Objective = objective;
     result.B = B;
-    result.Model = this;
+    //result.Model = this;
     *(result.r) = r; // change to pointer later
     result.IterNum = CurrentIters;
     return result;

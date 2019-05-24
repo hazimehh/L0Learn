@@ -80,7 +80,25 @@ void Grid::Fit()
 
     }
 
+    // debugging: delete the smart pointers
+    // for (unsigned int i=0; i<G.size(); ++i)
+    // {
+    //   G[i].clear();
+    // }
+    // G.clear();
+
 }
+
+
+// Grid::~Grid()
+// {
+//   std::cout << "Destroyed!!!" << std::endl;
+//   Lambda0.clear();
+//   NnzCount.clear();
+//   Solutions.clear();
+//   Intercepts.clear();
+//   Converged.clear();
+// }
 
 /*
 // Bypass for R interface
