@@ -296,7 +296,7 @@ std::vector<std::unique_ptr<FitResult>> Grid1D::Fit()
                 //result->B.t().print();
                 P.InitialSol = &(G.back()->B);
                 P.b0 = G.back()->intercept;
-                // P.r is automatically updated by the previous call to CD
+                // Udate: After 1.1.0, P.r is automatically updated by the previous call to CD
                 //*P.r = G.back()->r;
             }
 

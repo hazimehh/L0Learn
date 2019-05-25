@@ -154,10 +154,14 @@ FitResult CDL012LogisticSwaps::Fit()
 
         }
 
-        if(!foundbetter) {result.Model = this; return result;}
+        if(!foundbetter)
+        {
+          //result.Model = this;
+          return result;
+        }
     }
 
-    result.Model = this;
+    //result.Model = this;
     return result;
 }
 
