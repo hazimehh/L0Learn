@@ -35,6 +35,8 @@ class CD
 
         CD(const arma::mat& Xi, const arma::vec& yi, const Params& P);
 
+        virtual ~CD(){}
+
         virtual double Objective(arma::vec & r, arma::sp_mat & B) = 0;
 
         virtual FitResult Fit() = 0;

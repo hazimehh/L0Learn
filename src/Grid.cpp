@@ -79,60 +79,57 @@ void Grid::Fit()
         }
 
     }
-
-    // debugging: delete the smart pointers
-    // for (unsigned int i=0; i<G.size(); ++i)
-    // {
-    //   G[i].clear();
-    // }
-    // G.clear();
-
-}
-
-
-Grid::~Grid()
-{
-   std::cout << "Destroyed!!!" << std::endl;
 }
 
 /*
 // Bypass for R interface
 int main(){
-	std::cout<<"Enter Method"<<std::endl;
-	std::string method;
-	std::cin>>method;
 	arma::mat X;
-	X.load("X_training.csv");
-
+	X.load("/Users/hh/Desktop/Research/L0Learn/src/X_training.csv");
 	arma::vec y;
-	y.load("y_training.csv");
+	y.load("/Users/hh/Desktop/Research/L0Learn/src/y_training.csv");
 
-	GridParams PG;
-	PG.Lambda2Max = 0.001;
-	PG.Lambda2Min = 0.001;
-	PG.Type = method; //Classification
-	PG.P.Tol = 1e-4;
-	PG.P.ActiveSetNum = 2;
-	PG.G_nrows = 1;
-	PG.G_ncols = 100;
-	PG.NnzStopNum = 200;
-	PG.P.ScreenSize = 100;
+  std::string Penalty = "L0";
+  std::string Loss = "SquaredError";
+  std::string Algorithm = "CD";
 
-	auto start = std::chrono::steady_clock::now();
+  auto p = X.n_cols;
+  GridParams PG;
+  PG.NnzStopNum = 100;
+  PG.G_ncols = 100;
+  PG.G_nrows = 1;
+  PG.Lambda2Max = 0.001;
+  PG.Lambda2Min = 0.001;
+  PG.LambdaMinFactor = 0.001; //
+  PG.PartialSort = true;
+  PG.ScaleDownFactor = 0.8;
+  PG.LambdaU = false;
+  PG.intercept = false;
+  Params P;
+  P.MaxIters = 200;
+  P.Tol = 1e-6;
+  P.ActiveSet = true;
+  P.ActiveSetNum = 3;
+  P.MaxNumSwaps = 100;
+  P.ScreenSize = 1000;
+  P.NoSelectK = 0;
+  PG.P = P;
 
-	auto g = Grid(X,y, PG);
-	g.Fit();
+  if (Loss == "SquaredError") {PG.P.Specs.SquaredError = true;}
+  else if (Loss == "Logistic") {PG.P.Specs.Logistic = true; PG.P.Specs.Classification = true;}
+  else if (Loss == "SquaredHinge") {PG.P.Specs.SquaredHinge = true; PG.P.Specs.Classification = true;}
 
-	auto end = std::chrono::steady_clock::now();
+  if (Algorithm == "CD") {PG.P.Specs.CD = true;}
+  else if (Algorithm == "CDPSI") {PG.P.Specs.PSI = true;}
 
-	auto diff = end-start;
+  if (Penalty == "L0") { PG.P.Specs.L0 = true;}
+  else if (Penalty == "L0L2") { PG.P.Specs.L0L2 = true;}
+  else if (Penalty == "L0L1") { PG.P.Specs.L0L1 = true;}
 
-	std::cout << std::chrono::duration <double, std::milli> (diff).count() << " ms" << std::endl;
-
-	//for(auto &sol:g.Solutions){sol.print();}
-
+  Grid G(X, y, PG);
+  G.Fit();
 
 	return 0;
+  */
 
 }
-*/
