@@ -6,3 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [1.1.0] - 2019-04-07
 ### Fixed
 - A bug in cvfit when supp size becomes equal to p.
+
+## [1.1.1] - 2019-05-24
+### Fixed
+- Memory handling, especially for problems with very large n. Thanks to Will Nicholson for reporting the issue.
