@@ -16,6 +16,7 @@ class CDL012 : public CD
         unsigned int NoSelectK;
     public:
         CDL012(const arma::mat& Xi, const arma::vec& yi, const Params& P);
+        //~CDL012(){}
 
         FitResult Fit() final;
 

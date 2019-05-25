@@ -23,7 +23,7 @@ class CDL012Logistic : public CD
         std::vector<unsigned int> Range1p;
     public:
         CDL012Logistic(const arma::mat& Xi, const arma::vec& yi, const Params& P);
-
+        //~CDL012Logistic(){}
         FitResult Fit() final;
 
         inline double Objective(arma::vec & r, arma::sp_mat & B) final;

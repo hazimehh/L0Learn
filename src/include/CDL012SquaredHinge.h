@@ -23,7 +23,7 @@ class CDL012SquaredHinge : public CD
 
     public:
         CDL012SquaredHinge(const arma::mat& Xi, const arma::vec& yi, const Params& P);
-
+        //~CDL012SquaredHinge(){}
         //inline double Derivativei(unsigned int i);
 
         //inline double Derivativeb();

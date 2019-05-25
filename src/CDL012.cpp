@@ -6,6 +6,7 @@ CDL012::CDL012(const arma::mat& Xi, const arma::vec& yi, const Params& P) : CD(X
     thr = std::sqrt((2 * ModelParams[0]) / (1 + 2 * ModelParams[2]));
     Onep2lamda2 = 1 + 2 * ModelParams[2]; lambda1 = ModelParams[1]; Xtr = P.Xtr; Iter = P.Iter; result.ModelParams = P.ModelParams; ScreenSize = P.ScreenSize; r = *P.r;
     Range1p.resize(p); std::iota(std::begin(Range1p), std::end(Range1p), 0); NoSelectK = P.NoSelectK;
+    result.r = P.r;
 }
 
 FitResult CDL012::Fit()
@@ -89,8 +90,8 @@ FitResult CDL012::Fit()
 
     result.Objective = objective;
     result.B = B;
-    result.Model = this;
-    result.r = r; // change to pointer later
+    //result.Model = this;
+    *(result.r) = r; // change to pointer later
     result.IterNum = CurrentIters;
     return result;
 }

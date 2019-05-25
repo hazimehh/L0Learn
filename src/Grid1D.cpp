@@ -257,9 +257,9 @@ std::vector<std::unique_ptr<FitResult>> Grid1D::Fit()
             {
 
                 auto Model = make_CD(*X, *y, P);
-                //FitResult * result = new FitResult; // Later: Double check memory leaks..
                 std::unique_ptr<FitResult> result(new FitResult);
                 *result = Model->Fit();
+                delete Model;
 
                 //if (i>=1 && arma::norm(result->B-(G.back())->B,"inf")/arma::norm((G.back())->B,"inf") < 0.05){scaledown = true;} // got same solution
 
@@ -288,7 +288,6 @@ std::vector<std::unique_ptr<FitResult>> Grid1D::Fit()
 
                     if (samesupp) {scaledown = true;} // got same solution
                 }
-
                 //else {scaledown = false;}
                 G.push_back(std::move(result));
                 //std::cout<<"### ### ###"<<std::endl;
@@ -297,8 +296,11 @@ std::vector<std::unique_ptr<FitResult>> Grid1D::Fit()
                 //result->B.t().print();
                 P.InitialSol = &(G.back()->B);
                 P.b0 = G.back()->intercept;
-                *P.r = G.back()->r;
+                // Udate: After 1.1.0, P.r is automatically updated by the previous call to CD
+                //*P.r = G.back()->r;
             }
+
+            delete prevresult;
 
             //std::cout<<"Lambda0, Lambda1, Lambda2: "<<P.ModelParams[0]<<", "<<P.ModelParams[1]<<", "<<P.ModelParams[2]<<std::endl;
 

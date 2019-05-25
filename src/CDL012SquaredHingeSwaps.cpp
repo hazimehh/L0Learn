@@ -140,12 +140,16 @@ FitResult CDL012SquaredHingeSwaps::Fit()
 
         }
 
-        if(!foundbetter) {result.Model = this; return result;}
+        if(!foundbetter)
+        {
+          //result.Model = this;
+          return result;
+         }
     }
 
 
     //std::cout<<"Did not achieve CW Swap min" << std::endl;
-    result.Model = this;
+    //result.Model = this;
     return result;
 }
 
