@@ -9,7 +9,7 @@
 #' @details
 #' If both lambda and gamma are not supplied, then a matrix of coefficients
 #' for all the solutions in the regularization path is returned. If lambda is
-#' supplied but gamma is not, a default value of gamma = 0 is assumed.
+#' supplied but gamma is not, the smallest value of gamma is used.
 #' @examples
 #' # Generate synthetic data for this example
 #' data <- GenSynthetic(n=500,p=1000,k=10,seed=1)
@@ -34,8 +34,8 @@ coef.L0Learn <- function(object,lambda=NULL,gamma=NULL, ...){
 				}
 		}
 		else{
-				if (is.null(gamma)){ # if lambda is present but gamma is not, by default assume gamma = 0
-						gamma = 0
+				if (is.null(gamma)){ # if lambda is present but gamma is not, use smallest value of gamma
+						gamma = object$gamma[1]
 				}
 				diffGamma = abs(object$gamma-gamma)
 				gammaindex = which(diffGamma==min(diffGamma))

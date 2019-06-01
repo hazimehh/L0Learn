@@ -40,7 +40,17 @@ L0Learn.cvfit <- function(x,y, loss="SquaredError", penalty="L0", algorithm="CD"
 			if (dim(table(y)) != 2){
 					stop("Only binary classification is supported. Make sure y has only 2 unique values.")
 			}
-			y = factor(y,labels=c(-1,1))
+			y = factor(y,labels=c(-1,1)) # returns a vector of strings
+			y = as.numeric(levels(y))[y]
+
+			if (penalty == "L0"){
+					# Pure L0 is not supported for classification
+					# Below we add a small L2 component.
+					penalty = "L0L2"
+					nGamma = 1
+					gammaMax = 1e-7
+					gammaMin = 1e-7
+			}
 	}
 
 	M <- .Call('_L0Learn_L0LearnCV', PACKAGE = 'L0Learn', x, y, loss, penalty, algorithm, maxSuppSize, nLambda, nGamma, gammaMax, gammaMin, partialSort, maxIters, tol, activeSet, activeSetNum, maxSwaps, scaleDownFactor, screenSize, !autoLambda, lambdaGrid, nFolds, seed, excludeFirstK, intercept)

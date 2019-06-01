@@ -12,7 +12,7 @@
 #' @details
 #' If both lambda and gamma are not supplied, then a matrix of predictions
 #' for all the solutions in the regularization path is returned. If lambda is
-#' supplied but gamma is not, a default value of gamma = 0 is assumed.
+#' supplied but gamma is not, the smallest value of gamma is used.
 #' @examples
 #' # Generate synthetic data for this example
 #' data <- GenSynthetic(n=500,p=1000,k=10,seed=1)

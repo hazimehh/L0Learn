@@ -93,7 +93,17 @@ L0Learn.fit <- function(x,y, loss="SquaredError", penalty="L0", algorithm="CD", 
 			if (dim(table(y)) != 2){
 					stop("Only binary classification is supported. Make sure y has only 2 unique values.")
 			}
-			y = factor(y,labels=c(-1,1))
+			y = factor(y,labels=c(-1,1)) # returns a vector of strings
+			y = as.numeric(levels(y))[y]
+
+			if (penalty == "L0"){
+					# Pure L0 is not supported for classification
+					# Below we add a small L2 component.
+					penalty = "L0L2"
+					nGamma = 1
+					gammaMax = 1e-7
+					gammaMin = 1e-7
+			}
 	}
 
 	# The C++ function uses LambdaU = 1 for user-specified grid. In R, we use autoLambda0 = 0 for user-specified grid (thus the negation when passing the parameter to the function below)
