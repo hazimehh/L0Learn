@@ -33,7 +33,6 @@ FitResult CDL012Logistic::Fit() // always uses active sets
     for (unsigned int t = 0; t < MaxIters; ++t)
     {
         //std::cout<<"CDL012 Logistic: "<< t << " " << objective<<std::endl;
-        double Oldobjective = objective;
         Bprev = B;
 
         // Update the intercept

@@ -174,9 +174,17 @@ Rcpp::List L0LearnCV(const arma::mat& X, const arma::vec& y, const std::string L
                     arma::sp_mat B = Gtraining.Solutions[i][k];
                     double b0 = Gtraining.Intercepts[i][k];
                     arma::vec ExpyXB = arma::exp(yvalidation % (Xvalidation * B + b0));
-                    CVError[i](k,j) = arma::sum(arma::log(1 + 1 / ExpyXB));
+                    CVError[i](k,j) = arma::sum(arma::log(1 + 1 / ExpyXB)) / yvalidation.n_rows;
                     //std::cout<<"i, j, k"<<i<<" "<<j<<" "<<k<<" CVError[i](k,j): "<<CVError[i](k,j)<<std::endl;
                     //CVError[i].print();
+                }
+                else if (PG.P.Specs.SquaredHinge)
+                {
+                    arma::sp_mat B = Gtraining.Solutions[i][k];
+                    double b0 = Gtraining.Intercepts[i][k];
+                    arma::vec onemyxb = 1 - yvalidation % (Xvalidation * B + b0);
+                    arma::uvec indices = arma::find(onemyxb > 0);
+                    CVError[i](k,j) = arma::sum(onemyxb.elem(indices) % onemyxb.elem(indices)) / yvalidation.n_rows;
                 }
 
             }

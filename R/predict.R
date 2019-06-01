@@ -39,8 +39,11 @@ predict.L0Learn <- function(object,newx,lambda=NULL,gamma=NULL, ...)
 				x = newx
 		}
 		prediction = x%*%beta
-		if (object$loss == "Logistic" || object$loss == "SquaredHinge"){
-				prediction = sign(prediction)
+		#if (object$loss == "Logistic" || object$loss == "SquaredHinge"){
+		#		prediction = sign(prediction)
+		#}
+		if (object$loss == "Logistic"){
+				prediction = 1/(1+exp(-prediction))
 		}
 		prediction
 }

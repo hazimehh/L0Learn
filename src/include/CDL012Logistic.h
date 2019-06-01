@@ -15,7 +15,6 @@ class CDL012Logistic : public CD
         double b0;
         arma::vec ExpyXB;
         std::vector<double> * Xtr;
-        arma::vec * Xty;
         arma::mat * Xy;
         unsigned int Iter;
         unsigned int NoSelectK;
