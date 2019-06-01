@@ -20,6 +20,7 @@ class CDL012SquaredHinge : public CD
         arma::mat * Xy;
         unsigned int ScreenSize;
         std::vector<unsigned int> Range1p;
+        bool intercept;
 
     public:
         CDL012SquaredHinge(const arma::mat& Xi, const arma::vec& yi, const Params& P);

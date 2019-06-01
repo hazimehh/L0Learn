@@ -12,13 +12,14 @@ CDL012Logistic::CDL012Logistic(const arma::mat& Xi, const arma::vec& yi, const P
     thr = std::sqrt((2 * ModelParams[0]) / qp2lamda2);
     lambda1 = ModelParams[1];
     lambda1ol = lambda1 / qp2lamda2;
-    b0 = P.b0; // Initialize from previous later....!
+    b0 = P.b0;
     ExpyXB = arma::exp(*y % (*X * B + b0)); // Maintained throughout the algorithm
     Xtr = P.Xtr; Iter = P.Iter; result.ModelParams = P.ModelParams; Xy = P.Xy;
     NoSelectK = P.NoSelectK;
     Range1p.resize(p);
     std::iota(std::begin(Range1p), std::end(Range1p), 0);
     ScreenSize = P.ScreenSize;
+    intercept = P.intercept;
 }
 
 FitResult CDL012Logistic::Fit() // always uses active sets
@@ -36,10 +37,13 @@ FitResult CDL012Logistic::Fit() // always uses active sets
         Bprev = B;
 
         // Update the intercept
-        double b0old = b0;
-        double partial_b0 = - arma::sum( *y / (1 + ExpyXB) );
-        b0 -= partial_b0 / (n * LipschitzConst); // intercept is not regularized
-        ExpyXB %= arma::exp( (b0 - b0old) * *y);
+        if (intercept){
+          double b0old = b0;
+          double partial_b0 = - arma::sum( *y / (1 + ExpyXB) );
+          b0 -= partial_b0 / (n * LipschitzConst); // intercept is not regularized
+          ExpyXB %= arma::exp( (b0 - b0old) * *y);
+      }
+
         //std::cout<<"Intercept. "<<Objective(r,B)<<std::endl;
 
 

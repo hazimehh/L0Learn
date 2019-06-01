@@ -11,7 +11,7 @@ CDL012SquaredHinge::CDL012SquaredHinge(const arma::mat& Xi, const arma::vec& yi,
     thr = std::sqrt((2 * ModelParams[0]) / qp2lamda2);
     lambda1 = ModelParams[1];
     lambda1ol = lambda1 / qp2lamda2;
-    b0 = P.b0; // Initialize from previous later....!
+    b0 = P.b0;
     Xtr = P.Xtr; Iter = P.Iter; result.ModelParams = P.ModelParams;
     onemyxb = 1 - *y % (*X * B + b0); // can be passed from prev solution, but definitely not a bottleneck now
     NoSelectK = P.NoSelectK;
@@ -19,6 +19,7 @@ CDL012SquaredHinge::CDL012SquaredHinge(const arma::mat& Xi, const arma::vec& yi,
     Range1p.resize(p);
     std::iota(std::begin(Range1p), std::end(Range1p), 0);
     ScreenSize = P.ScreenSize;
+    intercept = P.intercept;
 }
 
 /*
@@ -58,20 +59,18 @@ FitResult CDL012SquaredHinge::Fit()
 
     for (unsigned int t = 0; t < MaxIters; ++t)
     {
-
-
         //std::cout<<"CDL012 Squared Hinge: "<< t << " " << objective <<std::endl;
         Bprev = B;
 
         // Update the intercept
-        double b0old = b0;
-        double partial_b0 = arma::sum(2 * onemyxb.elem(indices) % (- y->elem(indices) ) );
-        b0 -= partial_b0 / (n * LipschitzConst); // intercept is not regularized
-        onemyxb += *y * (b0old - b0);
-        indices = arma::find(onemyxb > 0);
-        //std::cout<<"Intercept: "<<b0<<" Obj: "<<Objective(r,B)<<std::endl;
-
-
+        if (intercept){
+          double b0old = b0;
+          double partial_b0 = arma::sum(2 * onemyxb.elem(indices) % (- y->elem(indices) ) );
+          b0 -= partial_b0 / (n * LipschitzConst); // intercept is not regularized
+          onemyxb += *y * (b0old - b0);
+          indices = arma::find(onemyxb > 0);
+          //std::cout<<"Intercept: "<<b0<<" Obj: "<<Objective(r,B)<<std::endl;
+        }
 
         for (auto& i : Order)
         {

@@ -30,6 +30,7 @@ struct Params
     arma::vec * r;
     arma::mat * Xy; // used for classification.
     unsigned int NoSelectK = 0;
+    bool intercept;
 };
 
 #endif

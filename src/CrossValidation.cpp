@@ -34,6 +34,7 @@ Rcpp::List L0LearnCV(const arma::mat& X, const arma::vec& y, const std::string L
     P.MaxNumSwaps = MaxNumSwaps;
     P.ScreenSize = ScreenSize;
     P.NoSelectK = ExcludeFirstK;
+    P.intercept = Intercept;
     PG.P = P;
 
     if (Loss == "SquaredError") {PG.P.Specs.SquaredError = true;}

@@ -31,18 +31,45 @@ std::vector< std::vector<std::unique_ptr<FitResult> > > Grid2D::Fit()
     arma::vec Xtrarma;
     if (PG.P.Specs.Logistic)
     {
-        Xtrarma = 0.5 * arma::abs(y->t() * *X).t(); // = gradient of logistic loss at zero
-        arma::mat Xy =  X->each_col() % *y;
-        PG.P.Xy = new arma::mat;
-        *PG.P.Xy = Xy;
+      auto n = X->n_rows;
+      double b0 = 0;
+      arma::vec ExpyXB =  arma::ones<arma::vec>(n);
+      if (PG.intercept){
+        for (unsigned int t = 0; t < 50; ++t){
+          double partial_b0 = - arma::sum( *y / (1 + ExpyXB) );
+          b0 -= partial_b0 / (n * 0.25); // intercept is not regularized
+          ExpyXB = arma::exp(b0 * *y);
+        }
+      }
+      PG.P.b0 = b0;
+      Xtrarma = arma::abs(- arma::trans(*y /(1+ExpyXB)) * *X).t(); // = gradient of logistic loss at zero
+      //Xtrarma = 0.5 * arma::abs(y->t() * *X).t(); // = gradient of logistic loss at zero
+
+      arma::mat Xy =  X->each_col() % *y;
+      PG.P.Xy = new arma::mat;
+      *PG.P.Xy = Xy;
     }
 
     else if (PG.P.Specs.SquaredHinge)
     {
-        Xtrarma = 2 * arma::abs(y->t() * *X).t(); // = gradient of loss function at zero
-        arma::mat Xy =  X->each_col() % *y;
-        PG.P.Xy = new arma::mat;
-        *PG.P.Xy = Xy;
+      auto n = X->n_rows;
+      double b0 = 0;
+      arma::vec onemyxb =  arma::ones<arma::vec>(n);
+      arma::uvec indices = arma::find(onemyxb > 0);
+      if (PG.intercept){
+        for (unsigned int t = 0; t < 50; ++t){
+          double partial_b0 = arma::sum(2 * onemyxb.elem(indices) % (- y->elem(indices) ) );
+          b0 -= partial_b0 / (n * 2); // intercept is not regularized
+          onemyxb = 1 - (*y * b0);
+          indices = arma::find(onemyxb > 0);
+        }
+      }
+      PG.P.b0 = b0;
+      Xtrarma = 2 * arma::abs(arma::trans(y->elem(indices) % onemyxb.elem(indices))* X->rows(indices)).t(); // = gradient of loss function at zero
+      //Xtrarma = 2 * arma::abs(y->t() * *X).t(); // = gradient of loss function at zero
+      arma::mat Xy =  X->each_col() % *y;
+      PG.P.Xy = new arma::mat;
+      *PG.P.Xy = Xy;
     }
 
     else

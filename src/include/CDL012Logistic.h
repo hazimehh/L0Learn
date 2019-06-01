@@ -20,6 +20,7 @@ class CDL012Logistic : public CD
         unsigned int NoSelectK;
         unsigned int ScreenSize;
         std::vector<unsigned int> Range1p;
+        bool intercept;
     public:
         CDL012Logistic(const arma::mat& Xi, const arma::vec& yi, const Params& P);
         //~CDL012Logistic(){}
