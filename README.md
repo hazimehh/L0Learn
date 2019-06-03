@@ -1,4 +1,7 @@
 # L0Learn: Fast Best Subset Selection [![Build Status](https://travis-ci.org/hazimehh/L0Learn.svg?branch=master)](https://travis-ci.org/hazimehh/L0Learn) 
+
+# This is version 1.2: adds support for classification (will be added to CRAN soon).
+
 ### Hussein Hazimeh and Rahul Mazumder 
 ### Massachusetts Institute of Technology
 
@@ -17,10 +20,10 @@ The optimization is done using coordinate descent and local combinatorial search
 The toolkit is implemented in C++11 and can often run faster than popular sparse learning toolkits (see our experiments in the paper above). We also provide an easy-to-use R interface; see the section below for installation and usage of the R package.
 
 ## R Package Installation and Usage
-The latest version of L0Learn (v1.1.1) can be installed from Github:
+This version of L0Learn (v1.2.0) can be installed from Github:
 ```{R}
 library(devtools)
-install_github("hazimehh/L0Learn")
+install_github("hazimehh/L0Learn",ref="v1.2")
 ```
 
 The previous version (v1.1.0) can be installed from CRAN:
