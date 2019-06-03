@@ -89,6 +89,16 @@ L0Learn.fit <- function(x,y, loss="SquaredError", penalty="L0", algorithm="CD", 
 						tol=1e-6, activeSet=TRUE, activeSetNum=3, maxSwaps=100, scaleDownFactor=0.8, screenSize=1000, autoLambda = TRUE, lambdaGrid = list(0), excludeFirstK=0, intercept = TRUE)
 {
 
+	# Some sanity checks for the inputs
+	if ( !(loss %in% c("SquaredError","Logistic","SquaredHinge")) ){
+			stop("The specified loss function is not supported.")
+	}
+	if ( !(penalty %in% c("L0","L0L2","L0L1")) ){
+			stop("The specified penalty is not supported.")
+	}
+	if ( !(algorithm %in% c("CD","CDPSI")) ){
+			stop("The specified algorithm is not supported.")
+	}
 	if (loss=="Logistic" | loss=="SquaredHinge"){
 			if (dim(table(y)) != 2){
 					stop("Only binary classification is supported. Make sure y has only 2 unique values.")

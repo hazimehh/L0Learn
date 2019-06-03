@@ -34,8 +34,17 @@ L0Learn.cvfit <- function(x,y, loss="SquaredError", penalty="L0", algorithm="CD"
 						tol=1e-6, activeSet=TRUE, activeSetNum=3, maxSwaps=100, scaleDownFactor=0.8, screenSize=1000, autoLambda = TRUE, lambdaGrid = list(0), nFolds=10, seed=1, excludeFirstK=0, intercept=TRUE)
 {
 	set.seed(seed)
-	# The C++ function uses LambdaU = 1 for user-specified grid. In R, we use AutoLambda0 = 0 for user-specified grid (thus the negation when passing the parameter to the function below)
 
+	# Some sanity checks for the inputs
+	if ( !(loss %in% c("SquaredError","Logistic","SquaredHinge")) ){
+			stop("The specified loss function is not supported.")
+	}
+	if ( !(penalty %in% c("L0","L0L2","L0L1")) ){
+			stop("The specified penalty is not supported.")
+	}
+	if ( !(algorithm %in% c("CD","CDPSI")) ){
+			stop("The specified algorithm is not supported.")
+	}
 	if (loss=="Logistic" | loss=="SquaredHinge"){
 			if (dim(table(y)) != 2){
 					stop("Only binary classification is supported. Make sure y has only 2 unique values.")
@@ -53,6 +62,7 @@ L0Learn.cvfit <- function(x,y, loss="SquaredError", penalty="L0", algorithm="CD"
 			}
 	}
 
+	# The C++ function uses LambdaU = 1 for user-specified grid. In R, we use AutoLambda0 = 0 for user-specified grid (thus the negation when passing the parameter to the function below)
 	M <- .Call('_L0Learn_L0LearnCV', PACKAGE = 'L0Learn', x, y, loss, penalty, algorithm, maxSuppSize, nLambda, nGamma, gammaMax, gammaMin, partialSort, maxIters, tol, activeSet, activeSetNum, maxSwaps, scaleDownFactor, screenSize, !autoLambda, lambdaGrid, nFolds, seed, excludeFirstK, intercept)
 
 	settings = list()
