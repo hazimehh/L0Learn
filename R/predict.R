@@ -1,6 +1,6 @@
 #' @title Predict Response
 #'
-#' @description Predicts the response for a given sample
+#' @description Predicts the response for a given sample.
 #' @param object The output of L0Learn.fit or L0Learn.cvfit
 #' @param ... ignore
 #' @param newx A matrix on which predictions are made. The matrix should have p columns.
@@ -12,7 +12,8 @@
 #' @details
 #' If both lambda and gamma are not supplied, then a matrix of predictions
 #' for all the solutions in the regularization path is returned. If lambda is
-#' supplied but gamma is not, the smallest value of gamma is used.
+#' supplied but gamma is not, the smallest value of gamma is used. In case of
+#' of logistic regression, probability values are returned.
 #' @examples
 #' # Generate synthetic data for this example
 #' data <- GenSynthetic(n=500,p=1000,k=10,seed=1)

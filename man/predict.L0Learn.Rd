@@ -25,12 +25,13 @@ path can be obtained using \code{print(fit)}.}
 \item{...}{ignore}
 }
 \description{
-Predicts the response for a given sample
+Predicts the response for a given sample.
 }
 \details{
 If both lambda and gamma are not supplied, then a matrix of predictions
 for all the solutions in the regularization path is returned. If lambda is
-supplied but gamma is not, a default value of gamma = 0 is assumed.
+supplied but gamma is not, the smallest value of gamma is used. In case of
+of logistic regression, probability values are returned.
 }
 \examples{
 # Generate synthetic data for this example

@@ -15,9 +15,9 @@ L0Learn.cvfit(x, y, loss = "SquaredError", penalty = "L0",
 \arguments{
 \item{x}{The data matrix.}
 
-\item{y}{The response vector.}
+\item{y}{The response vector. For classification, we only support binary vectors.}
 
-\item{loss}{The loss function to be minimized. Currently we support the choice "SquaredError".}
+\item{loss}{The loss function. Currently we support the choices "SquaredError" (for regression), "Logistic" (for logistic regression), and "SquaredHinge" (for smooth SVM).}
 
 \item{penalty}{The type of regularization. This can take either one of the following choices:
 "L0", "L0L2", and "L0L1".}
@@ -56,16 +56,18 @@ for details). Otherwise, full sorting is used.}
 
 \item{maxSwaps}{The maximum number of swaps used by CDPSI for each grid point.}
 
-\item{scaleDownFactor}{This parameter decides how close the selected Lambda values are. The choice should be between
+\item{scaleDownFactor}{This parameter decides how close the selected Lambda values are. The choice should be
 strictly between 0 and 1 (i.e., 0 and 1 are not allowed). Larger values lead to closer lambdas and typically to smaller
 gaps between the support sizes. For details, see our paper - Section 5 on Adaptive Selection of Tuning Parameters).}
 
 \item{screenSize}{The number of coordinates to cycle over when performing initial correlation screening.}
 
-\item{autoLambda}{If FALSE, the user specifier a grid of Lambda values through the lambdaGrid parameter. Otherwise,
+\item{autoLambda}{If FALSE, the user specifies a grid of Lambda values through the lambdaGrid parameter. Otherwise,
 if TRUE, the values of Lambda are automatically selected based on the data.}
 
-\item{lambdaGrid}{A vector of Lambda values to use in computing the regularization path. This is ignored unless autoLambda = FALSE.}
+\item{lambdaGrid}{A grid of Lambda values to use in computing the regularization path. This is ignored unless autoLambda = FALSE.
+LambdaGrid should be a list, where the ith element (corresponding to the ith gamma) should be a decreasing sequence of lambda values
+which are used by the algorithm when fitting for the ith value of gamma (see the vignette for details).}
 
 \item{nFolds}{The number of folds for cross-validation.}
 
@@ -92,7 +94,7 @@ data <- GenSynthetic(n=500,p=1000,k=10,seed=1)
 X = data$X
 y = data$y
 
-# Perform 5-fold cross-validation on an L0L2 Model with 5 values of
+# Perform 5-fold cross-validation on an L0L2 regression model with 5 values of
 # Gamma ranging from 0.0001 to 10
 fit <- L0Learn.cvfit(X, y, nFolds=5, seed=1, penalty="L0L2", maxSuppSize=20, nGamma=5,
 gammaMin=0.0001, gammaMax = 10)
