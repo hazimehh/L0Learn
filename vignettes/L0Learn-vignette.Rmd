@@ -25,9 +25,7 @@ vignette: >
 ---
 
 ```{r setup, include = FALSE}
-knitr::opts_chunk$set(
-  comment = "#>"
-)
+knitr::opts_chunk$set(comment = "#>", warning=FALSE, message=FALSE)
 ```
 ```{r echo = FALSE}
 # Thanks to Yihui Xie for providing this code
@@ -56,7 +54,7 @@ knit_hooks$set(output = function(x, options) {
 
 
 # Introduction
-`L0Learn` is a fast toolkit for L0-regularized learning (regression and classification). L0 regularization selects the best subset of features and can outperform commonly used feature selection methods (e.g., Lasso and MCP) under many sparse learning regimes. The toolkit can (approximately) solve the following three problems
+`L0Learn` is a fast toolkit for L0-regularized learning. L0 regularization selects the best subset of features and can outperform commonly used feature selection methods (e.g., L1 and MCP) under many sparse learning regimes. The toolkit can (approximately) solve the following three problems
 $$
 \min_{\beta_0, \beta} \sum_{i=1}^{n} \ell(y_i, \beta_0+ \langle x_i, \beta \rangle) + \lambda ||\beta||_0 \quad \quad (L0) 
 $$
@@ -67,11 +65,11 @@ $$
 $$
 \min_{\beta_0, \beta} \sum_{i=1}^{n} \ell(y_i, \beta_0+ \langle x_i, \beta \rangle) + \lambda ||\beta||_0 + \gamma||\beta||_2^2  \quad (L0L2)
 $$
-where $\beta_0$ is the intercept, $\beta$ is the vector of coefficients, and $||\beta||_0$ denotes the L0 norm of $\beta$, i.e., the number of non-zeros in $\beta$. Above, $\ell$ is the loss function--we currently support the following loss function:
+where $\ell$ is the loss function, $\beta_0$ is the intercept, $\beta$ is the vector of coefficients, and $||\beta||_0$ denotes the L0 norm of $\beta$, i.e., the number of non-zeros in $\beta$. We support both regression and classification using either one of the following loss functions:
 
 * Squared error loss
-* Logistic loss (leads to logistic regression)
-* Squared hinge loss (leads to a smoothed version of SVM).
+* Logistic loss (logistic regression)
+* Squared hinge loss (smoothed version of SVM).
 
 The parameter $\lambda$ controls the strength of the L0 regularization (larger $\lambda$ leads to less non-zeros). The parameter $\gamma$ controls the strength of the shrinkage component (which is the L1 norm in case of L0L1 or squared L2 norm in case of L0L2); adding a shrinkage term to L0 can be very effective in avoiding overfitting and typically leads to better predictive models. The fitting is done over a grid of $\lambda$ and $\gamma$ values to generate a regularization path. 
 
@@ -103,7 +101,7 @@ e = rnorm(500)
 y = X%*%B + e
 ```
 We will use L0Learn to estimate B from the data (y,X). First we load L0Learn:
-```{r}
+```{r, results="hide"}
 library(L0Learn)
 ```
 We will start by fitting a simple L0 model and then proceed to the case of L0L2 and L0L1.
@@ -189,7 +187,7 @@ coef(cvfit, lambda=optimalLambda, gamma=cvfit$fit$gamma[4])
 The optimal solution (above) selected by cross-validation correctly recovers the support of the true vector of coefficients used to generated the model.
 
 ## Fitting Classification Models
-All the commands and plots we have seen in the case of regression extend to classification. We currently support logistic regression (using the parameter `loss = "Logistic"`) and smoothed version of SVM (using the parameter `loss="SquaredHinge"`). To give some examples, we first generate a synthetic classification dataset (similar to the one we generated in the case of regression):
+All the commands and plots we have seen in the case of regression extend to classification. We currently support logistic regression (using the parameter `loss = "Logistic"`) and a smoothed version of SVM (using the parameter `loss="SquaredHinge"`). To give some examples, we first generate a synthetic classification dataset (similar to the one we generated in the case of regression):
 ```{r}
 set.seed(1) # fix the seed to get a reproducible result
 X = matrix(rnorm(500*1000),nrow=500,ncol=1000)
@@ -210,16 +208,16 @@ The above indicates that the 10 non-zeros in the estimated model match those we 
 ```{r output.lines=15}
 predict(fit, newx=X, lambda=8.69435, gamma=1e-7)
 ```
-Each row in the above is the probability that corresponding sample belongs to class $1$. Cross-validation and other models (i.e., L0L2 and L0L1) can be similarly fit by specifying `loss = "Logistic"`.
+Each row in the above is the probability that the corresponding sample belongs to class $1$. Other models (i.e., L0L2 and L0L1) can be similarly fit by specifying `loss = "Logistic"`.
 
-Finally, we note that L0Learn also supports a smoothed version of SVM by using squared hinge loss (i.e., `loss = "SquaredHinge"`). The only difference from logistic regression is that the `predict` function returns $\beta_0 + \langle x, \beta \rangle$ (where $x$ is the testing sample), instead of returning probabilities. The latter predictions can be assigned to the appropriate classes by using a thresholding function (e.g., the sign function).
+Finally, we note that L0Learn also supports a smoothed version of SVM by using squared hinge loss (`loss = "SquaredHinge"`). The only difference from logistic regression is that the `predict` function returns $\beta_0 + \langle x, \beta \rangle$ (where $x$ is the testing sample), instead of returning probabilities. The latter predictions can be assigned to the appropriate classes by using a thresholding function (e.g., the sign function).
 
 
 ## Advanced Options
 ### Selection on Subset of Variables
 In certain applications, it is desirable to always include some of the variables in the model and perform variable selection on others. `L0Learn` supports this option through the `excludeFirstK` parameter. Specifically, setting `excludeFirstK = K` (where K is a non-negative integer) instructs `L0Learn` to exclude the first K variables in the data matrix `X` from the L0-norm penalty (those K variables will still be penalized using the L2 or L1 norm penalties.). For example, below we fit an `L0` model and exclude the first 3 variables from selection by setting `excludeFirstK = 3`:
 ```{r}
-fit <- L0Learn.fit(X, y, penalty="L0", maxSuppSize=20, excludeFirstK=3)
+fit <- L0Learn.fit(X, y, penalty="L0", maxSuppSize=10, excludeFirstK=3)
 ```
 Plotting the regularization path:
 ```{r, fig.height = 4.7, fig.width = 7, out.width="90%", dpi=300}
