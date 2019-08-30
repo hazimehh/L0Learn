@@ -38,16 +38,12 @@ L0Learn's changelog can be accessed from [here](https://github.com/hazimehh/L0Le
 ## Citing L0Learn
 If you find L0Learn useful in your research, please consider citing the following paper:
 ```
-@ARTICLE{2018arXiv180301454H,
-   author = {{Hazimeh}, H. and {Mazumder}, R.},
-   title = "{Fast Best Subset Selection: Coordinate Descent and Local Combinatorial Optimization Algorithms}",
-   journal = {ArXiv e-prints},
-   archivePrefix = "arXiv",
-   eprint = {1803.01454},
-   primaryClass = "stat.CO",
+@article{hazimeh_mazumder_2019,
+   title={Fast Best Subset Selection: Coordinate Descent and Local Combinatorial Optimization Algorithms},
+   author={Hazimeh, Hussein and Mazumder, Rahul},
+   journal={Operations Research},
+   url={https://arxiv.org/abs/1803.01454},
    keywords = {Statistics - Computation, Mathematics - Optimization and Control, Statistics - Machine Learning},
-   year = 2018,
-   month = mar,
-   adsurl = {http://adsabs.harvard.edu/abs/2018arXiv180301454H},
+   year={2019}
 }
 ```
