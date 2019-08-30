@@ -22,7 +22,7 @@ L0Learn.fit(x, y, loss = "SquaredError", penalty = "L0",
 \item{penalty}{The type of regularization. This can take either one of the following choices:
 "L0", "L0L2", and "L0L1".}
 
-\item{algorithm}{The type of algorithm used to minimize the objective function. Currently "CD" and "CDPSI"
+\item{algorithm}{The type of algorithm used to minimize the objective function. Currently "CD" and "CDPSI" are
 are supported. "CD" is a variant of cyclic coordinate descent and runs very fast. "CDPSI" performs
 local combinatorial search on top of CD and typically achieves higher quality solutions (at the expense
 of increased running time).}

@@ -26,6 +26,6 @@ The toolkit has the following six main methods:
 }
 }
 \references{
-Hazimeh and Mazumder (2018). Fast Best Subset Selection: Coordinate Descent and Local Combinatorial
-Optimization Algorithms, \url{https://arxiv.org/abs/1803.01454}.
+Hazimeh and Mazumder. Fast Best Subset Selection: Coordinate Descent and Local Combinatorial
+Optimization Algorithms. Operations Research (2019). \url{https://arxiv.org/abs/1803.01454}.
 }
