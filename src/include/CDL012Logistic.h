@@ -15,12 +15,12 @@ class CDL012Logistic : public CD
         double b0;
         arma::vec ExpyXB;
         std::vector<double> * Xtr;
-        arma::vec * Xty;
         arma::mat * Xy;
         unsigned int Iter;
         unsigned int NoSelectK;
         unsigned int ScreenSize;
         std::vector<unsigned int> Range1p;
+        bool intercept;
     public:
         CDL012Logistic(const arma::mat& Xi, const arma::vec& yi, const Params& P);
         //~CDL012Logistic(){}

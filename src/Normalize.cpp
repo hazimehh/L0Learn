@@ -21,7 +21,11 @@ std::tuple<arma::vec, arma::vec, double>  Normalize(const arma::mat& X, const ar
     {
         if (intercept){meany = arma::mean(y);}
         y_normalized = y - meany;
-        double scaley = arma::as_scalar(std::sqrt(n) * arma::stddev(y_normalized, 1, 0)); // contains the l2norm of y
+
+        auto stddev = arma::as_scalar(arma::stddev(y_normalized, 1, 0));
+        double scaley = 1;
+        // below stddev != 0 ensures we properly handle cases where y is constant
+        if (stddev != 0){scaley = std::sqrt(n) * stddev;} // contains the l2norm of y
         y_normalized = y_normalized / scaley;
         BetaMultiplier = scaley / (scaleX.t()); // transpose scale to get a col vec
         // Multiplying the learned Beta by BetaMultiplier gives the optimal Beta on the original scale

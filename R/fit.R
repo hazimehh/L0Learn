@@ -9,8 +9,8 @@
 #' @description Computes the regularization path for the specified loss function and
 #' penalty function (which can be a combination of the L0, L1, and L2 norms).
 #' @param x The data matrix.
-#' @param y The response vector.
-#' @param loss The loss function to be minimized. Currently we support the choice "SquaredError".
+#' @param y The response vector. For classification, we only support binary vectors.
+#' @param loss The loss function. Currently we support the choices "SquaredError" (for regression), "Logistic" (for logistic regression), and "SquaredHinge" (for smooth SVM).
 #' @param penalty The type of regularization. This can take either one of the following choices:
 #' "L0", "L0L2", and "L0L1".
 #' @param algorithm The type of algorithm used to minimize the objective function. Currently "CD" and "CDPSI" are
@@ -35,13 +35,15 @@
 #' @param activeSet If TRUE, performs active set updates.
 #' @param activeSetNum The number of consecutive times a support should appear before declaring support stabilization.
 #' @param maxSwaps The maximum number of swaps used by CDPSI for each grid point.
-#' @param scaleDownFactor This parameter decides how close the selected Lambda values are. The choice should be between
+#' @param scaleDownFactor This parameter decides how close the selected Lambda values are. The choice should be
 #' strictly between 0 and 1 (i.e., 0 and 1 are not allowed). Larger values lead to closer lambdas and typically to smaller
 #' gaps between the support sizes. For details, see our paper - Section 5 on Adaptive Selection of Tuning Parameters).
 #' @param screenSize The number of coordinates to cycle over when performing initial correlation screening.
-#' @param autoLambda If FALSE, the user specifier a grid of Lambda values through the lambdaGrid parameter. Otherwise,
+#' @param autoLambda If FALSE, the user specifies a grid of Lambda values through the lambdaGrid parameter. Otherwise,
 #' if TRUE, the values of Lambda are automatically selected based on the data.
-#' @param lambdaGrid A vector of Lambda values to use in computing the regularization path. This is ignored unless autoLambda = FALSE.
+#' @param lambdaGrid A grid of Lambda values to use in computing the regularization path. This is ignored unless autoLambda = FALSE.
+#' LambdaGrid should be a list, where the ith element (corresponding to the ith gamma) should be a decreasing sequence of lambda values
+#' which are used by the algorithm when fitting for the ith value of gamma (see the vignette for details).
 #' @param excludeFirstK This parameter takes non-negative integers. The first excludeFirstK features in x will be excluded from variable selection,
 #' i.e., the first excludeFirstK variables will not be included in the L0-norm penalty (they will still be included in the L1 or L2 norm penalties.).
 #' @param intercept If FALSE, no intercept term is included in the model.
@@ -63,7 +65,7 @@
 #' X = data$X
 #' y = data$y
 #'
-#' # Fit an L0 Model with a maximum of 50 non-zeros using coordinate descent
+#' # Fit an L0 regression model with a maximum of 50 non-zeros using coordinate descent (CD)
 #' fit1 <- L0Learn.fit(X, y, penalty="L0", maxSuppSize=50)
 #' print(fit1)
 #' # Extract the coefficients at lambda = 0.0325142
@@ -71,11 +73,11 @@
 #' # Apply the fitted model on X to predict the response
 #' predict(fit1, newx = X, lambda=0.0325142)
 #'
-#' # Fit an L0 Model with a maximum of 50 non-zeros using coordinate descent and local search
+#' # Fit an L0 regression model with a maximum of 50 non-zeros using CD and local search
 #' fit2 <- L0Learn.fit(X, y, penalty="L0", algorithm="CDPSI", maxSuppSize=50)
 #' print(fit2)
 #'
-#' # Fit an L0L2 Model with 10 values of Gamma ranging from 0.0001 to 10, using coordinate descent
+#' # Fit an L0L2 regression model with 10 values of Gamma ranging from 0.0001 to 10, using CD
 #' fit3 <- L0Learn.fit(X, y, penalty="L0L2", maxSuppSize=50, nGamma=10, gammaMin=0.0001, gammaMax = 10)
 #' print(fit3)
 #' # Extract the coefficients at lambda = 0.0361829 and gamma = 0.0001
@@ -83,11 +85,45 @@
 #' # Apply the fitted model on X to predict the response
 #' predict(fit3, newx = X, lambda=0.0361829, gamma=0.0001)
 #'
+#' # Fit an L0 logistic regression model
+#' # First, convert the response to binary
+#' y = sign(y)
+#' fit4 <- L0Learn.fit(X, y, loss="Logistic", maxSuppSize=20)
+#' print(fit4)
+#'
 #' @export
 L0Learn.fit <- function(x,y, loss="SquaredError", penalty="L0", algorithm="CD", maxSuppSize=100, nLambda=100, nGamma=10,
 						gammaMax=10, gammaMin=0.0001, partialSort = TRUE, maxIters=200,
 						tol=1e-6, activeSet=TRUE, activeSetNum=3, maxSwaps=100, scaleDownFactor=0.8, screenSize=1000, autoLambda = TRUE, lambdaGrid = list(0), excludeFirstK=0, intercept = TRUE)
 {
+
+	# Some sanity checks for the inputs
+	if ( !(loss %in% c("SquaredError","Logistic","SquaredHinge")) ){
+			stop("The specified loss function is not supported.")
+	}
+	if ( !(penalty %in% c("L0","L0L2","L0L1")) ){
+			stop("The specified penalty is not supported.")
+	}
+	if ( !(algorithm %in% c("CD","CDPSI")) ){
+			stop("The specified algorithm is not supported.")
+	}
+	if (loss=="Logistic" | loss=="SquaredHinge"){
+			if (dim(table(y)) != 2){
+					stop("Only binary classification is supported. Make sure y has only 2 unique values.")
+			}
+			y = factor(y,labels=c(-1,1)) # returns a vector of strings
+			y = as.numeric(levels(y))[y]
+
+			if (penalty == "L0"){
+					# Pure L0 is not supported for classification
+					# Below we add a small L2 component.
+					penalty = "L0L2"
+					nGamma = 1
+					gammaMax = 1e-7
+					gammaMin = 1e-7
+			}
+	}
+
 	# The C++ function uses LambdaU = 1 for user-specified grid. In R, we use autoLambda0 = 0 for user-specified grid (thus the negation when passing the parameter to the function below)
 	M <- .Call('_L0Learn_L0LearnFit', PACKAGE = 'L0Learn', x, y, loss, penalty, algorithm, maxSuppSize, nLambda, nGamma, gammaMax, gammaMin, partialSort, maxIters, tol, activeSet, activeSetNum, maxSwaps, scaleDownFactor, screenSize, !autoLambda, lambdaGrid, excludeFirstK, intercept)
 

@@ -16,7 +16,7 @@
 #' X = data$X
 #' y = data$y
 #'
-#' # Perform 5-fold cross-validation on an L0L2 Model with 5 values of
+#' # Perform 5-fold cross-validation on an L0L2 regression model with 5 values of
 #' # Gamma ranging from 0.0001 to 10
 #' fit <- L0Learn.cvfit(X, y, nFolds=5, seed=1, penalty="L0L2", maxSuppSize=20, nGamma=5,
 #' gammaMin=0.0001, gammaMax = 10)
@@ -34,8 +34,35 @@ L0Learn.cvfit <- function(x,y, loss="SquaredError", penalty="L0", algorithm="CD"
 						tol=1e-6, activeSet=TRUE, activeSetNum=3, maxSwaps=100, scaleDownFactor=0.8, screenSize=1000, autoLambda = TRUE, lambdaGrid = list(0), nFolds=10, seed=1, excludeFirstK=0, intercept=TRUE)
 {
 	set.seed(seed)
-	# The C++ function uses LambdaU = 1 for user-specified grid. In R, we use AutoLambda0 = 0 for user-specified grid (thus the negation when passing the parameter to the function below)
 
+	# Some sanity checks for the inputs
+	if ( !(loss %in% c("SquaredError","Logistic","SquaredHinge")) ){
+			stop("The specified loss function is not supported.")
+	}
+	if ( !(penalty %in% c("L0","L0L2","L0L1")) ){
+			stop("The specified penalty is not supported.")
+	}
+	if ( !(algorithm %in% c("CD","CDPSI")) ){
+			stop("The specified algorithm is not supported.")
+	}
+	if (loss=="Logistic" | loss=="SquaredHinge"){
+			if (dim(table(y)) != 2){
+					stop("Only binary classification is supported. Make sure y has only 2 unique values.")
+			}
+			y = factor(y,labels=c(-1,1)) # returns a vector of strings
+			y = as.numeric(levels(y))[y]
+
+			if (penalty == "L0"){
+					# Pure L0 is not supported for classification
+					# Below we add a small L2 component.
+					penalty = "L0L2"
+					nGamma = 1
+					gammaMax = 1e-7
+					gammaMin = 1e-7
+			}
+	}
+
+	# The C++ function uses LambdaU = 1 for user-specified grid. In R, we use AutoLambda0 = 0 for user-specified grid (thus the negation when passing the parameter to the function below)
 	M <- .Call('_L0Learn_L0LearnCV', PACKAGE = 'L0Learn', x, y, loss, penalty, algorithm, maxSuppSize, nLambda, nGamma, gammaMax, gammaMin, partialSort, maxIters, tol, activeSet, activeSetNum, maxSwaps, scaleDownFactor, screenSize, !autoLambda, lambdaGrid, nFolds, seed, excludeFirstK, intercept)
 
 	settings = list()

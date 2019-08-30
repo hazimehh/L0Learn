@@ -10,3 +10,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [1.1.1] - 2019-05-24
 ### Fixed
 - Memory handling, especially for problems with very large n. Thanks to Will Nicholson for reporting the issue.
+
+## [1.2.0] - 2019-08-30
+### Added
+- Support for Classification (Logistic Regression and Smoothed SVM).
+### Fixed
+- An edge case when y is constant and intercept=FALSE. Thanks to Nick Koning for reporting this.
