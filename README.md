@@ -1,7 +1,5 @@
 # L0Learn: Fast Best Subset Selection [![Build Status](https://travis-ci.org/hazimehh/L0Learn.svg?branch=master)](https://travis-ci.org/hazimehh/L0Learn) 
 
-# This is version 1.2: adds support for classification (will be added to CRAN soon).
-
 ### Hussein Hazimeh and Rahul Mazumder 
 ### Massachusetts Institute of Technology
 
@@ -12,7 +10,7 @@ Downloads from Rstudio: [![](https://cranlogs.r-pkg.org/badges/grand-total/L0Lea
 ## Introduction
 L0Learn is a highly efficient framework for solving L0-regularized regression (and soon classification) problems. It can (approximately) solve the following three problems, where the squared error loss is penalized by combinations of the L0, L1, and L2 norms:
 
-<img src="https://github.com/hazimehh/L0Learn/blob/master/misc/regeqs.png" width = 450>
+<img src="https://github.com/hazimehh/L0Learn/blob/master/misc/eqs.png" width = 450>
 
 
 The optimization is done using coordinate descent and local combinatorial search over a grid of regularization parameter(s) values. Many computational tricks and heuristics are used to speed up the algorithms and improve the solution quality. These heuristics include warm starts, active set convergence, correlation screening, greedy cycling order, and efficient methods for updating the residuals through exploiting sparsity and problem dimensions. Moreover, we employed a new computationally efficient method for dynamically selecting the regularization parameter λ in the path. We describe the details of the algorithms in our paper: *Fast Best Subset Selection: Coordinate Descent and Local Combinatorial Optimization Algorithms* ([arXiv link](https://arxiv.org/abs/1803.01454)). 
