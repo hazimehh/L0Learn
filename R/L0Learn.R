@@ -21,6 +21,6 @@
 #' \item{\code{\link[=predict.L0Learn]{predict}}: }{Predicts response using a solution in the path.}
 #' \item{\code{\link[=plot.L0Learn]{plot}}: }{Plots the regularization path or cross-validation error.}
 #' }
-#' @references Hazimeh and Mazumder (2018). Fast Best Subset Selection: Coordinate Descent and Local Combinatorial
-#' Optimization Algorithms, \url{https://arxiv.org/abs/1803.01454}.
+#' @references Hazimeh and Mazumder. Fast Best Subset Selection: Coordinate Descent and Local Combinatorial
+#' Optimization Algorithms. Operations Research (2019). \url{https://arxiv.org/abs/1803.01454}.
 NULL
