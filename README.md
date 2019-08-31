@@ -23,7 +23,7 @@ library(devtools)
 install_github("hazimehh/L0Learn",ref="v1.2")
 ```
 
-The previous version (v1.1.0) can be installed from CRAN:
+Alternatively, it can be installed from CRAN:
 ```{R}
 install.packages("L0Learn", repos = "http://cran.rstudio.com")
 ```
