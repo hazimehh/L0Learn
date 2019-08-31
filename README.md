@@ -20,7 +20,7 @@ The toolkit is implemented in C++11 and can often run faster than popular sparse
 The latest version of L0Learn (v1.2.0) can be installed from Github:
 ```{R}
 library(devtools)
-install_github("hazimehh/L0Learn",ref="v1.2")
+install_github("hazimehh/L0Learn")
 ```
 
 Alternatively, it can be installed from CRAN:
