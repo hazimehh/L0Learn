@@ -27,7 +27,7 @@ Alternatively, it can be installed from CRAN as follows:
 ```{R}
 install.packages("L0Learn", repos = "http://cran.rstudio.com")
 ```
-L0Learn's changelog can be accessed from [here](https://github.com/hazimehh/L0Learn/blob/master/chagelog).
+L0Learn's changelog can be accessed from [here](https://github.com/hazimehh/L0Learn/blob/master/ChangeLog).
 
 ##  Usage
 For a tutorial, please refer to [L0Learn's Vignette](https://cran.r-project.org/web/packages/L0Learn/vignettes/L0Learn-vignette.html). For a detailed description of the API, check the [Reference Manual](https://cran.r-project.org/web/packages/L0Learn/L0Learn.pdf).
