@@ -16,31 +16,39 @@ We support both regression (using squared error loss) and classification (using 
 
 The toolkit is implemented in C++11 and can often run faster than popular sparse learning toolkits (see our experiments in the paper above). We also provide an easy-to-use R interface; see the section below for installation and usage of the R package.
 
-## R Package Installation and Usage
+## R Package Installation
 The latest version of L0Learn (v1.2.0) can be installed from Github:
 ```{R}
 library(devtools)
 install_github("hazimehh/L0Learn")
 ```
 
-Alternatively, it can be installed from CRAN:
+Alternatively, it can be installed from CRAN as follows:
 ```{R}
 install.packages("L0Learn", repos = "http://cran.rstudio.com")
 ```
+L0Learn's changelog can be accessed from [here](https://github.com/hazimehh/L0Learn/blob/master/chagelog).
 
+##  Usage
 For a tutorial, please refer to [L0Learn's Vignette](https://cran.r-project.org/web/packages/L0Learn/vignettes/L0Learn-vignette.html). For a detailed description of the API, check the [Reference Manual](https://cran.r-project.org/web/packages/L0Learn/L0Learn.pdf).
 
-L0Learn's changelog can be accessed from [here](https://github.com/hazimehh/L0Learn/blob/master/chagelog). For users who have been using L0Learn before July 1, 2018, please check this [Wiki page](https://github.com/hazimehh/L0Learn/wiki/Note-for-previous-users) for more information on the changes introduced in the new CRAN version.
+## FAQ
+#### Which penalty to use?
+Pure L0 regularization can overfit when the signal strength in the data is relatively low. Adding L2 regularization can alleviate this problem and lead to competitive models (see the experiments in our paper). Thus, in practice, we strongly  recommend using the L0L2 penalty. Ideally, the parameter gamma (for L2 regularization) should be tuned over a sufficiently large interval, and this can be performed using L0Learn's built-in [cross-validation method](https://cran.r-project.org/web/packages/L0Learn/vignettes/L0Learn-vignette.html#higher-quality_solutions_using_local_search).
+
+#### Which algorithm to use?
+By default, L0Learn uses a coordinate descent-based algorithm, which achieves competitive run times compared to popular sparse learning toolkits. This can work well for many applications. We also offer a local search algorithm which is guarantteed to return higher quality solutions, at the expense of an increase in the run time. We recommend using the local search algorithm if your problem has highly correlated features or the number of samples is much smaller than the number of features---see the [local search section of the Vignette](https://cran.r-project.org/web/packages/L0Learn/vignettes/L0Learn-vignette.html#higher-quality_solutions_using_local_search) for how to use this algorithm. 
+
 
 ## Citing L0Learn
 If you find L0Learn useful in your research, please consider citing the following paper:
 ```
-@article{hazimeh_mazumder_2019,
+@article{hazimeh_mazumder_2020,
    title={Fast Best Subset Selection: Coordinate Descent and Local Combinatorial Optimization Algorithms},
    author={Hazimeh, Hussein and Mazumder, Rahul},
    journal={Operations Research},
    url={https://arxiv.org/abs/1803.01454},
    keywords = {Statistics - Computation, Mathematics - Optimization and Control, Statistics - Machine Learning},
-   year={2019}
+   year={2020}
 }
 ```
