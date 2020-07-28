@@ -1,7 +1,5 @@
 #include "CDL012SquaredHingeSwaps.h"
-#include "CDL012SquaredHinge.h"
 
-#include "Normalize.h" // Remove later
 
 CDL012SquaredHingeSwaps::CDL012SquaredHingeSwaps(const arma::mat& Xi, const arma::vec& yi, const Params& Pi) : CD(Xi, yi, Pi)
 {

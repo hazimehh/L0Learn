@@ -2,6 +2,9 @@
 #define CDL012SquredHingeSwaps_H
 #include "CD.h"
 #include "FitResult.h"
+#include "CDL012SquaredHinge.h"
+#include "Normalize.h" // Remove later
+
 
 class CDL012SquaredHingeSwaps : public CD
 {
