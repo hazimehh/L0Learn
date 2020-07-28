@@ -1,9 +1,13 @@
 #ifndef GRID1D_H
 #define GRID1D_H
 #include <memory>
+#include <algorithm>
+#include <map>
 #include "Params.h"
 #include "GridParams.h"
 #include "FitResult.h"
+#include "MakeCD.h"
+
 
 class Grid1D
 {

@@ -1,7 +1,5 @@
 #include "Grid1D.h"
-#include "MakeCD.h"
-#include <algorithm>
-#include <map>
+
 
 Grid1D::Grid1D(const arma::mat& Xi, const arma::vec& yi, const GridParams& PG)
 {
