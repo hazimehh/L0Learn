@@ -1,5 +1,5 @@
 #include "Grid2D.h"
-#include "Grid1D.h"
+
 
 Grid2D::Grid2D(const arma::mat& Xi, const arma::vec& yi, const GridParams& PGi)
 {

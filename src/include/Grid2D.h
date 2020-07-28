@@ -3,6 +3,7 @@
 #include <memory>
 #include "GridParams.h"
 #include "FitResult.h"
+#include "Grid1D.h"
 
 class Grid2D
 {
