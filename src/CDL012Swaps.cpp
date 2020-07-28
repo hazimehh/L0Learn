@@ -1,5 +1,4 @@
 #include "CDL012Swaps.h"
-#include "CDL012.h"
 
 CDL012Swaps::CDL012Swaps(const arma::mat& Xi, const arma::vec& yi, const Params& Pi) : CD(Xi, yi, Pi) {MaxNumSwaps = Pi.MaxNumSwaps; P = Pi; NoSelectK=P.NoSelectK;}
 

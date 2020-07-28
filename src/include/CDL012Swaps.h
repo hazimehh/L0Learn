@@ -1,6 +1,7 @@
 #ifndef CDL012SWAPS_H
 #define CDL012SWAPS_H
 #include "CD.h"
+#include "CDL012.h"
 
 class CDL012Swaps : public CD   // Calls CDL012 irrespective of P.ModelType
 {
