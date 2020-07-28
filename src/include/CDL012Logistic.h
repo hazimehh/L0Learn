@@ -2,6 +2,8 @@
 #define CDL012Logistic_H
 #include "CD.h"
 #include "FitResult.h"
+#include "Normalize.h" // Remove later
+#include "Grid.h" // Remove later
 
 class CDL012Logistic : public CD
 {

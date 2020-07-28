@@ -1,8 +1,5 @@
 #include "CDL012Logistic.h"
 
-#include "Normalize.h" // Remove later
-#include "Grid.h" // Remove later
-
 
 CDL012Logistic::CDL012Logistic(const arma::mat& Xi, const arma::vec& yi, const Params& P) : CD(Xi, yi, P)
 {
