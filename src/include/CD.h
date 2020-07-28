@@ -1,6 +1,7 @@
 #ifndef CD_H
 #define CD_H
 //#include <armadillo>
+#include <algorithm>
 #include "RcppArmadillo.h"
 #include "FitResult.h"
 #include "Params.h"

@@ -1,5 +1,4 @@
 #include "CD.h"
-#include <algorithm>
 
 CD::CD(const arma::mat& Xi, const arma::vec& yi, const Params& P) :
     ModelParams{P.ModelParams}, CyclingOrder{P.CyclingOrder}, MaxIters{P.MaxIters},
