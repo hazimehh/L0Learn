@@ -1,7 +1,11 @@
 #ifndef CDL012LogisticSwaps_H
 #define CDL012LogisticSwaps_H
+#include <chrono>
 #include "CD.h"
 #include "FitResult.h"
+#include "CDL012Logistic.h"
+
+#include "Normalize.h" // Remove later
 
 class CDL012LogisticSwaps : public CD
 {
