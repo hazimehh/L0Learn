@@ -1,8 +1,12 @@
 #ifndef GRID_H
 #define GRID_H
 #include <set>
+#include <memory>
 #include "GridParams.h"
 #include "FitResult.h"
+#include "Grid1D.h"
+#include "Grid2D.h"
+#include "Normalize.h"
 
 
 class Grid

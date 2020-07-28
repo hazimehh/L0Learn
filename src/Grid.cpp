@@ -1,8 +1,5 @@
 #include "Grid.h"
-#include "Grid1D.h"
-#include "Grid2D.h"
-#include "Normalize.h"
-#include <memory>
+
 
 // Assumes PG.P.Specs have been already set
 Grid::Grid(const arma::mat& X, const arma::vec& y, const GridParams& PGi)
