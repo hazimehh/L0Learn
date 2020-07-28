@@ -1,5 +1,6 @@
 #ifndef CDL012Logistic_H
 #define CDL012Logistic_H
+#include "RcppArmadillo.h"
 #include "CD.h"
 #include "FitResult.h"
 #include "Normalize.h" // Remove later

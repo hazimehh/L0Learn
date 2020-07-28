@@ -1,5 +1,6 @@
 #ifndef CDL012SquredHingeSwaps_H
 #define CDL012SquredHingeSwaps_H
+#include "RcppArmadillo.h"
 #include "CD.h"
 #include "FitResult.h"
 #include "CDL012SquaredHinge.h"

@@ -1,5 +1,6 @@
 #ifndef CDL012_H
 #define CDL012_H
+#include "RcppArmadillo.h"
 #include "CD.h"
 #include "FitResult.h"
 

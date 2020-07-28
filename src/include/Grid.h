@@ -2,6 +2,7 @@
 #define GRID_H
 #include <set>
 #include <memory>
+#include "RcppArmadillo.h"
 #include "GridParams.h"
 #include "FitResult.h"
 #include "Grid1D.h"

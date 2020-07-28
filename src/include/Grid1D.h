@@ -3,6 +3,7 @@
 #include <memory>
 #include <algorithm>
 #include <map>
+#include "RcppArmadillo.h"
 #include "Params.h"
 #include "GridParams.h"
 #include "FitResult.h"

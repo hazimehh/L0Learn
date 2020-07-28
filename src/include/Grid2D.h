@@ -1,6 +1,7 @@
 #ifndef GRID2D_H
 #define GRID2D_H
 #include <memory>
+#include "RcppArmadillo.h"
 #include "GridParams.h"
 #include "FitResult.h"
 #include "Grid1D.h"

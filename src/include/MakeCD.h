@@ -1,5 +1,6 @@
 #ifndef MAKECD_H
 #define MAKECD_H
+#include "RcppArmadillo.h"
 #include "Params.h"
 #include "CD.h"
 #include "CDL0.h"

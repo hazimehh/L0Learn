@@ -1,5 +1,6 @@
 #ifndef CDL0_H
 #define CDL0_H
+#include "RcppArmadillo.h"
 #include "CD.h"
 #include "FitResult.h" // REMOVE: may need to include params??
 

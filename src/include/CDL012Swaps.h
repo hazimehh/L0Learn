@@ -1,5 +1,6 @@
 #ifndef CDL012SWAPS_H
 #define CDL012SWAPS_H
+#include "RcppArmadillo.h"
 #include "CD.h"
 #include "CDL012.h"
 
