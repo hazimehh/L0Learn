@@ -29,19 +29,22 @@ FitResult CDL0::Fit()
 
         for (auto& i : Order)
         {
-            double cor = arma::dot(r, X->unsafe_col(i));
+            double cor = matrix_column_dot(*X, i, r);
+            // double cor = arma::dot(r, X->unsafe_col(i));
             (*Xtr)[i] = std::abs(cor); // do abs here instead from when sorting
             double Bi = B[i]; // B[i] is costly
             double x = cor + Bi;
             if (x >= thr || x <= -thr || i < NoSelectK) 	// often false so body is not costly
             {
-                r += X->unsafe_col(i) * (Bi - x);
+                r += matrix_column_mult(*X, i, Bi - x);
+                // r += X->unsafe_col(i) * (Bi - x);
                 B[i] = x;
             }
 
             else if (Bi != 0)   // do nothing if x=0 and B[i] = 0
             {
-                r += X->unsafe_col(i) * Bi;
+                r += matrix_column_mult(*X, i, Bi);
+                // r += X->unsafe_col(i) * Bi;
                 B[i] = 0;
             }
         }
@@ -113,13 +116,15 @@ bool CDL0::CWMinCheck()
     bool Cwmin = true;
     for (auto& i : Sc)
     {
-        double x = arma::dot(r, X->unsafe_col(i));
+        double x = matrix_column_dot(*X, i, r);
+        // double x = arma::dot(r, X->unsafe_col(i));
         double absx = std::abs(x);
         (*Xtr)[i] = absx; // do abs here instead from when sorting
         // B[i] = 0 in this case!
         if (absx >= thr) 	// often false so body is not costly
         {
-            r -= X->unsafe_col(i) * x;
+            r -= matrix_column_mult(*X, i, x);
+            // r -= X->unsafe_col(i) * x;
             B[i] = x;
             Cwmin = false;
         }

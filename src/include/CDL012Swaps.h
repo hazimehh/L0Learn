@@ -3,6 +3,7 @@
 #include "RcppArmadillo.h"
 #include "CD.h"
 #include "CDL012.h"
+#include "utils.h"
 
 class CDL012Swaps : public CD   // Calls CDL012 irrespective of P.ModelType
 {

@@ -49,7 +49,7 @@ FitResult CDL012Logistic::Fit() // always uses active sets
 
             // Calculate Partial_i
             double Biold = B[i];
-            double partial_i = - arma::sum( (Xy->unsafe_col(i)) / (1 + ExpyXB) ) + twolambda2 * Biold;
+            double partial_i = - arma::sum( matrix_column_get(*Xy, i) / (1 + ExpyXB) ) + twolambda2 * Biold;
             (*Xtr)[i] = std::abs(partial_i); // abs value of grad
 
             double x = Biold - partial_i / qp2lamda2;
@@ -60,13 +60,13 @@ FitResult CDL012Logistic::Fit() // always uses active sets
             {
                 double Bnew = std::copysign(z, x);
                 B[i] = Bnew;
-                ExpyXB %= arma::exp( (Bnew - Biold) *  Xy->unsafe_col(i));
+                ExpyXB %= arma::exp( (Bnew - Biold) * matrix_column_get(*Xy, i));
                 //std::cout<<"In. "<<Objective(r,B)<<std::endl;
             }
 
             else if (Biold != 0)   // do nothing if x=0 and B[i] = 0
             {
-                ExpyXB %= arma::exp( - Biold * Xy->unsafe_col(i));
+                ExpyXB %= arma::exp( - Biold * matrix_column_get(*Xy, i));
                 B[i] = 0;
             }
         }
@@ -122,7 +122,7 @@ bool CDL012Logistic::CWMinCheck()
     for (auto& i : Sc)
     {
         // Calculate Partial_i
-        double partial_i = - arma::sum( (Xy->unsafe_col(i)) / (1 + ExpyXB) );
+        double partial_i = - arma::sum( matrix_column_get(*Xy, i) / (1 + ExpyXB) );
         (*Xtr)[i] = std::abs(partial_i); // abs value of grad
         double x = - partial_i / qp2lamda2;
         double z = std::abs(x) - lambda1ol;
@@ -130,7 +130,7 @@ bool CDL012Logistic::CWMinCheck()
         {
             double Bnew = std::copysign(z, x);
             B[i] = Bnew;
-            ExpyXB %= arma::exp( Bnew *  Xy->unsafe_col(i));
+            ExpyXB %= arma::exp( Bnew * matrix_column_get(*Xy, i));
             Cwmin = false;
             Order.push_back(i);
             //std::cout<<"Found Violation !!!"<<std::endl;

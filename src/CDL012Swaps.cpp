@@ -32,7 +32,7 @@ FitResult CDL012Swaps::Fit()
         {
 
 
-            arma::rowvec riX = (r + B[i] * X->unsafe_col(i)).t() * *X; // expensive computation ## call the new function here, inlined? ##
+            arma::rowvec riX = (r + B[i] * matrix_column_get(*X, i)).t() * *X; // expensive computation ## call the new function here, inlined? ##
 
             double maxcorr = -1;
             unsigned int maxindex;

@@ -5,6 +5,7 @@
 #include "FitResult.h"
 #include "Normalize.h" // Remove later
 #include "Grid.h" // Remove later
+#include "utils.h"
 
 class CDL012Logistic : public CD
 {

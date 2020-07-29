@@ -5,6 +5,7 @@
 #include "FitResult.h"
 #include "CDL012SquaredHinge.h"
 #include "Normalize.h" // Remove later
+#include "utils.h"
 
 
 class CDL012SquaredHingeSwaps : public CD

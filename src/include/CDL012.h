@@ -3,6 +3,7 @@
 #include "RcppArmadillo.h"
 #include "CD.h"
 #include "FitResult.h"
+#include "utils.h"
 
 class CDL012 : public CD
 {

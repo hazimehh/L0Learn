@@ -32,7 +32,8 @@ FitResult CDL012::Fit()
 
         for (auto& i : Order)
         {
-            double cor = arma::dot(r, X->unsafe_col(i));
+            double cor = matrix_column_dot(*X, i, r);
+            // double cor = arma::dot(r, X->unsafe_col(i));
 
             (*Xtr)[i] = std::abs(cor); // do abs here instead from when sorting
 
@@ -44,12 +45,14 @@ FitResult CDL012::Fit()
             {
                 B[i] = std::copysign(z, x);
 
-                r = r + X->unsafe_col(i) * (Bi - B[i]);
+                r = r + matrix_column_mult(*X, i, Bi - B[i]);
+                // r = r + X->unsafe_col(i) * (Bi - B[i]);
             }
 
             else if (Bi != 0)   // do nothing if x=0 and B[i] = 0
             {
-                r = r + X->unsafe_col(i) * Bi;
+                r = r + matrix_column_mult(*X, i, Bi);
+                // r = r + X->unsafe_col(i) * Bi;
                 B[i] = 0;
             }
         }
@@ -120,7 +123,8 @@ bool CDL012::CWMinCheck()
     bool Cwmin = true;
     for (auto& i : Sc)
     {
-        double x = arma::dot(r, X->unsafe_col(i));
+        double x = matrix_column_dot(*X, i, r);
+        // double x = arma::dot(r, X->unsafe_col(i));
         double absx = std::abs(x);
         (*Xtr)[i] = absx; // do abs here instead from when sorting
         double z = (absx - lambda1) / Onep2lamda2;
@@ -128,7 +132,8 @@ bool CDL012::CWMinCheck()
         if (z > thr) 	// often false so body is not costly
         {
             B[i] = std::copysign(z, x);
-            r -= X->unsafe_col(i) * B[i];
+            r -= matrix_column_mult(*X, i, B[i]);
+            // r -= X->unsafe_col(i) * B[i];
             Cwmin = false;
         }
     }

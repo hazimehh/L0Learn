@@ -51,7 +51,7 @@ FitResult CDL012LogisticSwaps::Fit()
         {
 
             // Remove j
-            arma::vec ExpyXBnoj = ExpyXB % arma::exp( - B[j] *  Xy->unsafe_col(j));
+            arma::vec ExpyXBnoj = ExpyXB % arma::exp( - B[j] * matrix_column_get(*Xy, j));
 
             //auto start1 = std::chrono::high_resolution_clock::now();
             ///
@@ -89,8 +89,8 @@ FitResult CDL012LogisticSwaps::Fit()
 
                     while(!Converged && innerindex < 20  && ObjTemp >= Fmin) // ObjTemp >= Fmin
                     {
-                        ExpyXBnoji %= arma::exp( (Binew - Biold) *  Xy->unsafe_col(i));
-                        partial_i = - arma::sum( (Xy->unsafe_col(i)) / (1 + ExpyXBnoji) ) + twolambda2 * Binew;
+                        ExpyXBnoji %= arma::exp( (Binew - Biold) *  matrix_column_get(*Xy, i));
+                        partial_i = - arma::sum( matrix_column_get(*Xy, i) / (1 + ExpyXBnoji) ) + twolambda2 * Binew;
 
                         if (std::abs((Binew - Biold)/Biold) < 0.0001){
                           Converged = true;

@@ -6,6 +6,7 @@
 #include "FitResult.h"
 #include "CDL012Logistic.h"
 #include "Normalize.h" // Remove later
+#include "utils.h"
 
 class CDL012LogisticSwaps : public CD
 {

@@ -77,7 +77,7 @@ FitResult CDL012SquaredHinge::Fit()
             // Calculate Partial_i
             double Biold = B[i];
 
-            double partial_i = arma::sum(2 * onemyxb.elem(indices) % (- Xy->unsafe_col(i).elem(indices))  ) + twolambda2 * Biold;
+            double partial_i = arma::sum(2 * onemyxb.elem(indices) % (- matrix_column_get(*Xy, i).elem(indices))  ) + twolambda2 * Biold;
 
             (*Xtr)[i] = std::abs(partial_i); // abs value of grad
 
@@ -91,7 +91,7 @@ FitResult CDL012SquaredHinge::Fit()
                 double Bnew = std::copysign(z, x);
                 B[i] = Bnew;
                 //onemyxb += (Biold - Bnew) * *y % X->unsafe_col(i);
-                onemyxb += (Biold - Bnew) * Xy->unsafe_col(i);
+                onemyxb += (Biold - Bnew) * matrix_column_get(*Xy, i);
                 indices = arma::find(onemyxb > 0);
 
                 //std::cout<<"In. "<<Objective(r,B)<<std::endl;
@@ -101,7 +101,7 @@ FitResult CDL012SquaredHinge::Fit()
             {
                 B[i] = 0;
                 //onemyxb += (Biold) * *y % X->unsafe_col(i);
-                onemyxb += (Biold) * Xy->unsafe_col(i);
+                onemyxb += (Biold) * matrix_column_get(*Xy, i);
                 indices = arma::find(onemyxb > 0);
 
             }
@@ -162,7 +162,7 @@ bool CDL012SquaredHinge::CWMinCheck()
     for (auto& i : Sc)
     {
 
-        double partial_i = arma::sum(2 * onemyxb.elem(indices) % (- Xy->unsafe_col(i).elem(indices)));
+        double partial_i = arma::sum(2 * onemyxb.elem(indices) % (- matrix_column_get(*Xy, i).elem(indices)));
 
         (*Xtr)[i] = std::abs(partial_i); // abs value of grad
 
@@ -173,7 +173,7 @@ bool CDL012SquaredHinge::CWMinCheck()
         {
             double Bnew = std::copysign(z, x);
             B[i] = Bnew;
-            onemyxb +=  - Bnew * Xy->unsafe_col(i);
+            onemyxb +=  - Bnew * matrix_column_get(*Xy, i);
             indices = arma::find(onemyxb > 0);
             Cwmin = false;
             Order.push_back(i);

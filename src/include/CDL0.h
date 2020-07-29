@@ -3,6 +3,7 @@
 #include "RcppArmadillo.h"
 #include "CD.h"
 #include "FitResult.h" // REMOVE: may need to include params??
+#include "utils.h"
 
 class CDL0 : public CD
 {

@@ -52,7 +52,7 @@ FitResult CDL012SquaredHingeSwaps::Fit()
 
             // Remove j
             //arma::vec ExpyXBnoj = ExpyXB % arma::exp( - B[j] *  *y % X->unsafe_col(j));
-            arma::vec onemyxbnoj = onemyxb + B[j] * *y % X->unsafe_col(j);
+            arma::vec onemyxbnoj = onemyxb + B[j] * *y % matrix_column_get(*X, j);
             arma::uvec indices = arma::find(onemyxbnoj > 0);
 
 
@@ -65,7 +65,7 @@ FitResult CDL012SquaredHingeSwaps::Fit()
                     double Binew;
 
 
-                    double partial_i = arma::sum(2 * onemyxbnoj.elem(indices) % (- y->elem(indices) % X->unsafe_col(i).elem(indices)));
+                    double partial_i = arma::sum(2 * onemyxbnoj.elem(indices) % (- y->elem(indices) % matrix_column_get(*X, i).elem(indices)));
 
                     bool Converged = false;
                     if (std::abs(partial_i) >= lambda1 + stl0Lc )
@@ -85,10 +85,10 @@ FitResult CDL012SquaredHingeSwaps::Fit()
                             double z = std::abs(x) - lambda1ol;
 
                             Binew = std::copysign(z, x); // no need to check if >= sqrt(2lambda_0/Lc)
-                            onemyxbnoji += (Biold - Binew) * *y % X->unsafe_col(i);
+                            onemyxbnoji += (Biold - Binew) * *y % matrix_column_get(*X, i);
 
                             arma::uvec indicesi = arma::find(onemyxbnoji > 0);
-                            partial_i = arma::sum(2 * onemyxbnoji.elem(indicesi) % (- y->elem(indicesi) % X->unsafe_col(i).elem(indicesi)));
+                            partial_i = arma::sum(2 * onemyxbnoji.elem(indicesi) % (- y->elem(indicesi) % matrix_column_get(*X, i).elem(indicesi)));
 
                             if (std::abs((Binew - Biold) / Biold) < 0.0001) {Converged = true;}
 
