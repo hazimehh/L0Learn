@@ -38,14 +38,6 @@ class CDL012Logistic : public CD<T>
 };
 
 template <typename T>
-inline double CDL012Logistic<T>::Objective(arma::vec & r, arma::sp_mat & B)   // hint inline
-{
-    auto l2norm = arma::norm(B, 2);
-    // arma::sum(arma::log(1 + 1 / ExpyXB)) is the negative log-likelihood
-    return arma::sum(arma::log(1 + 1 / ExpyXB)) + this->ModelParams[0] * B.n_nonzero + this->ModelParams[1] * arma::norm(B, 1) + this->ModelParams[2] * l2norm * l2norm;
-}
-
-template <typename T>
 CDL012Logistic<T>::CDL012Logistic(const T& Xi, const arma::vec& yi, const Params<T>& P) : CD<T>(Xi, yi, P)
 {
     //LipschitzConst = 0.25; // for logistic loss function only
@@ -64,6 +56,14 @@ CDL012Logistic<T>::CDL012Logistic(const T& Xi, const arma::vec& yi, const Params
     std::iota(std::begin(Range1p), std::end(Range1p), 0);
     ScreenSize = P.ScreenSize;
     intercept = P.intercept;
+}
+
+template <typename T>
+inline double CDL012Logistic<T>::Objective(arma::vec & r, arma::sp_mat & B)   // hint inline
+{
+    auto l2norm = arma::norm(B, 2);
+    // arma::sum(arma::log(1 + 1 / ExpyXB)) is the negative log-likelihood
+    return arma::sum(arma::log(1 + 1 / ExpyXB)) + this->ModelParams[0] * B.n_nonzero + this->ModelParams[1] * arma::norm(B, 1) + this->ModelParams[2] * l2norm * l2norm;
 }
 
 template <typename T>

@@ -22,7 +22,7 @@ class CDL012SquaredHinge : public CD<T>
         unsigned int Iter;
         arma::vec onemyxb;
         unsigned int NoSelectK;
-        arma::mat * Xy;
+        T * Xy;
         unsigned int ScreenSize;
         std::vector<unsigned int> Range1p;
         bool intercept;

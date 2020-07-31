@@ -1,7 +1,5 @@
-#include "RcppArmadillo.h"
-#include "Grid.h"
+#include "Rface.h" // somehow "RInterace.h" does not work"
 // [[Rcpp::depends(RcppArmadillo)]]
-// [[Rcpp::plugins(cpp11)]]
 
 template <typename T>
 Rcpp::List _L0LearnFit(const T& X, const arma::vec& y, const std::string Loss, const std::string Penalty,

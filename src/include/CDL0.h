@@ -169,4 +169,5 @@ inline double CDL0<T>::Objective(arma::vec & r, arma::sp_mat & B)   // hint inli
 {
     return 0.5 * arma::dot(r, r) + this->ModelParams[0] * B.n_nonzero;
 }
+
 #endif

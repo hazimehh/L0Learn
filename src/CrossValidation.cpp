@@ -1,5 +1,4 @@
-#include "RcppArmadillo.h"
-#include "Grid.h"
+#include "CrossValidation.h"
 // [[Rcpp::depends(RcppArmadillo)]]
 
 
@@ -145,11 +144,11 @@ Rcpp::List _L0LearnCV(const T& X, const arma::vec& y, const std::string Loss, co
     		trainingindicesarma = indices.elem(trainingindicestemp);
 
 
-        arma::mat Xtraining = X.rows(trainingindicesarma);
+        T Xtraining = matrix_rows_get(X, trainingindicesarma);
 
         arma::mat ytraining = y.elem(trainingindicesarma);
 
-        arma::mat Xvalidation = X.rows(validationindicesarma);
+        T Xvalidation = matrix_rows_get(X, validationindicesarma);
 
         arma::mat yvalidation = y.elem(validationindicesarma);
 
@@ -258,15 +257,18 @@ Rcpp::List L0LearnCV(const SEXP& X, const arma::vec& y, const std::string Loss, 
 
   if (Rf_isS4(X) && Rf_inherits(X, "dgCMatrix"))
   {
+    if (Intercept){
+      Rcpp::stop("No intercept supported for Sparse Matricies");
+    }
     Rcpp::stop("No support for dgCMatrix Matricies yet.");
-    // arma::sp_mat m = Rcpp::as<arma::sp_mat>(X);
-    // return _L0LearnCV(m, y, Loss, Penalty,
-    //                   Algorithm, NnzStopNum, G_ncols, G_nrows,
-    //                   Lambda2Max, Lambda2Min, PartialSort,
-    //                   MaxIters, Tol, ActiveSet,
-    //                   ActiveSetNum, MaxNumSwaps,
-    //                   ScaleDownFactor, ScreenSize, LambdaU, Lambdas,
-    //                   nfolds, seed, ExcludeFirstK,Intercept);
+    arma::sp_mat m = Rcpp::as<arma::sp_mat>(X);
+    return _L0LearnCV(m, y, Loss, Penalty,
+                      Algorithm, NnzStopNum, G_ncols, G_nrows,
+                      Lambda2Max, Lambda2Min, PartialSort,
+                      MaxIters, Tol, ActiveSet,
+                      ActiveSetNum, MaxNumSwaps,
+                      ScaleDownFactor, ScreenSize, LambdaU, Lambdas,
+                      nfolds, seed, ExcludeFirstK,Intercept);
   }
   else if (Rf_isS4(X) && Rf_inherits(X, "dgeMatrix"))
   {
@@ -281,6 +283,6 @@ Rcpp::List L0LearnCV(const SEXP& X, const arma::vec& y, const std::string Loss, 
                       MaxIters, Tol, ActiveSet,
                       ActiveSetNum, MaxNumSwaps,
                       ScaleDownFactor, ScreenSize, LambdaU, Lambdas,
-                      nfolds, seed, ExcludeFirstK,Intercept);
+                      nfolds, seed, ExcludeFirstK, Intercept);
   }
 }

@@ -37,7 +37,7 @@ arma::sp_mat inline matrix_rows_get(const arma::sp_mat &mat, const T1 vector_of_
 
 template <typename T1>
 arma::mat inline matrix_vector_schur_product(const arma::mat &mat, const T1 &y){
-    return mat.each_col() % y;
+    return mat.each_col() % *y;
 }
 
 template <typename T1>
@@ -45,17 +45,18 @@ arma::sp_mat inline matrix_vector_schur_product(const arma::sp_mat &mat, const T
     arma::sp_mat Xy = arma::sp_mat(mat);
     arma::sp_mat::iterator begin = Xy.begin();
     arma::sp_mat::iterator end = Xy.end();
+    
+    auto yp = (*y);
     for (; begin != end; ++begin){
-        *begin = (*begin)  * (y)(begin.row());
+        int row = begin.row();
+        *begin = (*begin)  * yp(row);
     }
     return Xy;
 }
 
-template <typename T1>
 std::tuple<arma::sp_mat, arma::vec> matrix_normailize(const arma::sp_mat &mat,
                                                       arma::sp_mat &mat_norm){
     unsigned int p = mat.n_cols;
-    mat_norm = arma::sp_mat(mat); // creates a copy of the data.
     arma::rowvec scaleX = arma::zeros<arma::rowvec>(p); // will contain the l2norm of every col
     
     for (int col = 0; col < p; col++ ){
@@ -73,9 +74,8 @@ std::tuple<arma::sp_mat, arma::vec> matrix_normailize(const arma::sp_mat &mat,
     return std::make_tuple(mat_norm, scaleX);
 }
 
-template <typename T1>
 std::tuple<arma::mat, arma::vec> matrix_normailize(const arma::mat &mat,
-                                                      arma::mat &mat_norm){
+                                                   arma::mat &mat_norm){
     unsigned int n = mat.n_rows;
     arma::rowvec scaleX = std::sqrt(n) * arma::stddev(mat_norm, 1, 0); // contains the l2norm of every col
     scaleX.replace(0, -1);
@@ -84,6 +84,58 @@ std::tuple<arma::mat, arma::vec> matrix_normailize(const arma::mat &mat,
         mat_norm.replace(arma::datum::nan, 0); // can handle numerical instabilities.
     } 
     return std::make_tuple(mat_norm, scaleX);
+}
+
+std::tuple<arma::mat, arma::rowvec> matrix_center(const arma::mat& X,
+                                                  arma::mat& X_normalized,
+                                                  bool intercept){
+    unsigned int p = X.n_cols;
+    arma::rowvec meanX;
+    if (intercept){
+        meanX = arma::mean(X, 0);
+        X_normalized = X.each_row() - meanX;
+    }
+    else{
+        meanX = arma::zeros<arma::rowvec>(p);
+        X_normalized = arma::mat(X);
+    }
+    return std::make_tuple(X_normalized, meanX);
+}
+
+std::tuple<arma::sp_mat, arma::rowvec> matrix_center(const arma::sp_mat& X,
+                                                     arma::sp_mat& X_normalized,
+                                                     bool intercept){
+    unsigned int p = X.n_cols;
+    arma::rowvec meanX = arma::zeros<arma::rowvec>(p);
+    X_normalized = arma::sp_mat(X);
+    return std::make_tuple(X_normalized, meanX);
+}
+
+template <typename T1>
+arma::sp_mat inline matrix_vector_divide(const arma::sp_mat& mat, const T1 &u){
+    arma::sp_mat divided_mat = arma::sp_mat(mat);
+    
+    //auto up = (*u);
+    arma::sp_mat::iterator begin = divided_mat.begin();
+    arma::sp_mat::iterator end = divided_mat.end();
+    for ( ; begin != end; ++begin){
+        *begin = (*begin) / u(begin.row());
+    }
+    return divided_mat;
+}
+
+template <typename T1>
+arma::mat inline matrix_vector_divide(const arma::mat& mat, const T1 &u){
+    return mat.each_col() / u;
+}
+
+arma::rowvec inline matrix_column_sums(const arma::mat& mat){
+    return arma::sum(mat, 0);
+    
+}
+
+arma::rowvec inline matrix_column_sums(const arma::sp_mat& mat){
+    return arma::rowvec(arma::sum(mat, 0));
 }
 
 

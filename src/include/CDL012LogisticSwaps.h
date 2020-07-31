@@ -22,7 +22,7 @@ class CDL012LogisticSwaps : public CD<T>
         double stl0Lc;
         arma::vec ExpyXB;
         std::vector<double> * Xtr;
-        arma::mat * Xy;
+        T * Xy;
         unsigned int Iter;
 
         unsigned int MaxNumSwaps;
@@ -98,7 +98,10 @@ FitResult<T> CDL012LogisticSwaps<T>::Fit()
             
             //auto start1 = std::chrono::high_resolution_clock::now();
             ///
-            arma::rowvec gradient = - arma::sum( Xy->each_col() / (1 + ExpyXBnoj) , 0); // + twolambda2 * Biold // sum column-wise
+            //arma::rowvec gradient = - arma::sum( Xy->each_col() / (1 + ExpyXBnoj) , 0); // + twolambda2 * Biold // sum column-wise
+            arma::rowvec temp_gradient = 1 + ExpyXBnoj;
+            T divided_matrix = matrix_vector_divide(*Xy, temp_gradient);
+            arma::rowvec gradient = - matrix_column_sums(divided_matrix);
             arma::uvec indices = arma::sort_index(arma::abs(gradient),"descend");
             bool foundbetteri = false;
             ///

@@ -29,10 +29,6 @@ class CDL012 : public CD<T>
 
 };
 
-template class CDL012<arma::mat>;
-template class CDL012<arma::sp_mat>;
-
-// .cpp
 template <typename T>
 CDL012<T>::CDL012(const T& Xi, const arma::vec& yi, const Params<T>& P) : CD<T>(Xi, yi, P)
 {
