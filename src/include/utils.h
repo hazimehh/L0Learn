@@ -54,7 +54,7 @@ arma::sp_mat inline matrix_vector_schur_product(const arma::sp_mat &mat, const T
     return Xy;
 }
 
-std::tuple<arma::sp_mat, arma::vec> matrix_normailize(const arma::sp_mat &mat,
+std::tuple<arma::sp_mat, arma::rowvec> matrix_normailize(const arma::sp_mat &mat,
                                                       arma::sp_mat &mat_norm){
     unsigned int p = mat.n_cols;
     arma::rowvec scaleX = arma::zeros<arma::rowvec>(p); // will contain the l2norm of every col
@@ -74,7 +74,7 @@ std::tuple<arma::sp_mat, arma::vec> matrix_normailize(const arma::sp_mat &mat,
     return std::make_tuple(mat_norm, scaleX);
 }
 
-std::tuple<arma::mat, arma::vec> matrix_normailize(const arma::mat &mat,
+std::tuple<arma::mat, arma::rowvec> matrix_normailize(const arma::mat &mat,
                                                    arma::mat &mat_norm){
     unsigned int n = mat.n_rows;
     arma::rowvec scaleX = std::sqrt(n) * arma::stddev(mat_norm, 1, 0); // contains the l2norm of every col
