@@ -1,13 +1,16 @@
 #ifndef FITRESULT_H
 #define FITRESULT_H
+#include "RcppArmadillo.h"
 
+template <typename T>
 class CD;
 
+template <typename T>
 struct FitResult
 {
     double Objective;
     arma::sp_mat B;
-    CD * Model;
+    CD<T> * Model;
     unsigned int IterNum;
     arma::vec * r;
     std::vector<double> ModelParams;

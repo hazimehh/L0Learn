@@ -7,6 +7,7 @@
 #include "Params.h"
 
 
+template<typename T> 
 class CD
 {
     protected:
@@ -18,10 +19,10 @@ class CD
         arma::vec r; //vector of residuals
         std::vector<unsigned int> Order; // Cycling order
         std::vector<unsigned int> OldOrder; // Cycling order to be used after support stabilization + convergence.
-        FitResult result;
+        FitResult<T> result;
 
     public:
-        const arma::mat * X;
+        const T * X;
         const arma::vec * y;
         std::vector<double> ModelParams;
 
@@ -34,21 +35,23 @@ class CD
         bool Stabilized = false;
 
 
-        CD(const arma::mat& Xi, const arma::vec& yi, const Params& P);
+        CD(const T& Xi, const arma::vec& yi, const Params<T>& P);
 
         virtual ~CD(){}
 
         virtual double Objective(arma::vec & r, arma::sp_mat & B) = 0;
 
-        virtual FitResult Fit() = 0;
+        virtual FitResult<T> Fit() = 0;
 
         bool Converged();
 
         void SupportStabilized();
 
-        static CD * make_CD(const arma::mat& Xi, const arma::vec& yi, const Params& P);
-
+        static CD * make_CD(const T& Xi, const arma::vec& yi, const Params<T>& P);
 
 };
+
+template class CD<arma::mat>;
+template class CD<arma::sp_mat>;
 
 #endif

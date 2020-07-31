@@ -12,6 +12,7 @@ Description: Highly optimized toolkit for approximately solving L0-regularized l
 URL: https://arxiv.org/abs/1803.01454
 License: MIT + file LICENSE
 Depends: R (>= 3.3.0)
+SystemRequirements: C++11
 Imports: Rcpp (>= 0.12.13), Matrix, methods, ggplot2, reshape2
 LinkingTo: Rcpp, RcppArmadillo
 RoxygenNote: 6.1.1

@@ -3,9 +3,10 @@
 #include "RcppArmadillo.h"
 #include "Params.h"
 
+template <typename T>
 struct GridParams
 {
-    Params P;
+    Params<T> P;
     unsigned int G_ncols = 100;
     unsigned int G_nrows = 10;
     bool LambdaU = false;

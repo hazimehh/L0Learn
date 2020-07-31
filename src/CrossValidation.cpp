@@ -2,8 +2,9 @@
 #include "Grid.h"
 // [[Rcpp::depends(RcppArmadillo)]]
 
-// [[Rcpp::export]]
-Rcpp::List L0LearnCV(const arma::mat& X, const arma::vec& y, const std::string Loss, const std::string Penalty,
+
+template <typename T>
+Rcpp::List _L0LearnCV(const T& X, const arma::vec& y, const std::string Loss, const std::string Penalty,
                       const std::string Algorithm, const unsigned int NnzStopNum, const unsigned int G_ncols, const unsigned int G_nrows,
                       const double Lambda2Max, const double Lambda2Min, const bool PartialSort,
                       const unsigned int MaxIters, const double Tol, const bool ActiveSet,
@@ -13,7 +14,7 @@ Rcpp::List L0LearnCV(const arma::mat& X, const arma::vec& y, const std::string L
 {
     auto p = X.n_cols;
     auto n = X.n_rows;
-    GridParams PG;
+    GridParams<T> PG;
     PG.NnzStopNum = NnzStopNum;
     PG.G_ncols = G_ncols;
     PG.G_nrows = G_nrows;
@@ -26,7 +27,7 @@ Rcpp::List L0LearnCV(const arma::mat& X, const arma::vec& y, const std::string L
     PG.LambdasGrid = Lambdas;
     PG.Lambdas = Lambdas[0]; // to handle the case of L0 (i.e., Grid1D)
     PG.intercept = Intercept;
-    Params P;
+    Params<T> P;
     P.MaxIters = MaxIters;
     P.Tol = Tol;
     P.ActiveSet = ActiveSet;
@@ -50,7 +51,7 @@ Rcpp::List L0LearnCV(const arma::mat& X, const arma::vec& y, const std::string L
     //case "L1": PG.P.Specs.L1 = true;
     //case "L1Relaxed": PG.P.Specs.L1Relaxed = true;
 
-    Grid G(X, y, PG);
+    Grid<T> G(X, y, PG);
     G.Fit();
 
     std::string FirstParameter = "lambda";
@@ -104,6 +105,7 @@ Rcpp::List L0LearnCV(const arma::mat& X, const arma::vec& y, const std::string L
 
 
     arma::uvec a = arma::linspace<arma::uvec>(0, X.n_rows-1, X.n_rows);
+  	
   	arma::uvec indices = arma::shuffle(a);
 
     int samplesperfold = std::ceil(n/double(nfolds));
@@ -156,7 +158,7 @@ Rcpp::List L0LearnCV(const arma::mat& X, const arma::vec& y, const std::string L
         PG.LambdasGrid = G.Lambda0;
         PG.NnzStopNum = p+1; // remove any constraints on the supp size when fitting over the cv folds // +1 is imp to avoid =p edge case
         if (PG.P.Specs.L0 == true){PG.Lambdas = PG.LambdasGrid[0];}
-        Grid Gtraining(Xtraining, ytraining, PG);
+        Grid<T> Gtraining(Xtraining, ytraining, PG);
         Gtraining.Fit();
 
         for (unsigned int i=0; i<Ngamma; ++i)
@@ -243,4 +245,42 @@ Rcpp::List L0LearnCV(const arma::mat& X, const arma::vec& y, const std::string L
                               Rcpp::Named("CVMeans") = CVMeans,
                               Rcpp::Named("CVSDs") = CVSDs );
 
+}
+
+// [[Rcpp::export]]
+Rcpp::List L0LearnCV(const SEXP& X, const arma::vec& y, const std::string Loss, const std::string Penalty,
+                     const std::string Algorithm, const unsigned int NnzStopNum, const unsigned int G_ncols, const unsigned int G_nrows,
+                     const double Lambda2Max, const double Lambda2Min, const bool PartialSort,
+                     const unsigned int MaxIters, const double Tol, const bool ActiveSet,
+                     const unsigned int ActiveSetNum, const unsigned int MaxNumSwaps,
+                     const double ScaleDownFactor, unsigned int ScreenSize, const bool LambdaU, const std::vector< std::vector<double> > Lambdas,
+                     const unsigned int nfolds, const double seed, const unsigned int ExcludeFirstK, const bool Intercept){
+
+  if (Rf_isS4(X) && Rf_inherits(X, "dgCMatrix"))
+  {
+    Rcpp::stop("No support for dgCMatrix Matricies yet.");
+    // arma::sp_mat m = Rcpp::as<arma::sp_mat>(X);
+    // return _L0LearnCV(m, y, Loss, Penalty,
+    //                   Algorithm, NnzStopNum, G_ncols, G_nrows,
+    //                   Lambda2Max, Lambda2Min, PartialSort,
+    //                   MaxIters, Tol, ActiveSet,
+    //                   ActiveSetNum, MaxNumSwaps,
+    //                   ScaleDownFactor, ScreenSize, LambdaU, Lambdas,
+    //                   nfolds, seed, ExcludeFirstK,Intercept);
+  }
+  else if (Rf_isS4(X) && Rf_inherits(X, "dgeMatrix"))
+  {
+    Rcpp::stop("Only supports Dense and dgCMatrix Matricies");
+  }
+  else
+  {
+    arma::mat m = Rcpp::as<arma::mat>(X);
+    return _L0LearnCV(m, y, Loss, Penalty,
+                      Algorithm, NnzStopNum, G_ncols, G_nrows,
+                      Lambda2Max, Lambda2Min, PartialSort,
+                      MaxIters, Tol, ActiveSet,
+                      ActiveSetNum, MaxNumSwaps,
+                      ScaleDownFactor, ScreenSize, LambdaU, Lambdas,
+                      nfolds, seed, ExcludeFirstK,Intercept);
+  }
 }

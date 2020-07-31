@@ -12,6 +12,7 @@
 #include "CDL012SquaredHingeSwaps.h"
 //class CD;
 
-CD * make_CD(const arma::mat& Xi, const arma::vec& yi, const Params& P);
+template <typename T>
+CD<T> * make_CD(const T& Xi, const arma::vec& yi, const Params<T>& P);
 
 #endif 

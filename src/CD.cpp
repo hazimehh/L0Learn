@@ -1,6 +1,7 @@
 #include "CD.h"
 
-CD::CD(const arma::mat& Xi, const arma::vec& yi, const Params& P) :
+template <typename T>
+CD<T>::CD(const T& Xi, const arma::vec& yi, const Params<T>& P) :
     ModelParams{P.ModelParams}, CyclingOrder{P.CyclingOrder}, MaxIters{P.MaxIters},
     Tol{P.Tol}, ActiveSet{P.ActiveSet}, ActiveSetNum{P.ActiveSetNum}
 {
@@ -50,8 +51,8 @@ CD::CD(const arma::mat& Xi, const arma::vec& yi, const Params& P) :
     CurrentIters = 0;
 }
 
-
-bool CD::Converged()
+template <typename T>
+bool CD<T>::Converged()
 {
     CurrentIters += 1; // keeps track of the number of calls to Converged
     double objectiveold = objective;
@@ -62,8 +63,8 @@ bool CD::Converged()
     { return false; }
 }
 
-
-void CD::SupportStabilized()
+template <typename T>
+void CD<T>::SupportStabilized()
 {
 
     bool SameSupp = true;

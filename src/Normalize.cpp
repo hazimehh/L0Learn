@@ -1,7 +1,12 @@
 #include <Normalize.h>
 
 // scale, meanX, meany
-std::tuple<arma::vec, arma::vec, double>  Normalize(const arma::mat& X, const arma::vec& y, arma::mat & X_normalized, arma::vec & y_normalized, bool Normalizey = false, bool intercept = true)
+std::tuple<arma::vec, arma::vec, double>  Normalize(const arma::mat& X, 
+                                                    const arma::vec& y, 
+                                                    arma::mat & X_normalized, 
+                                                    arma::vec & y_normalized, 
+                                                    bool Normalizey = false, 
+                                                    bool intercept = true)
 {
     unsigned int n = X.n_rows;
     unsigned int p = X.n_cols;
@@ -22,6 +27,62 @@ std::tuple<arma::vec, arma::vec, double>  Normalize(const arma::mat& X, const ar
         if (intercept){meany = arma::mean(y);}
         y_normalized = y - meany;
 
+        auto stddev = arma::as_scalar(arma::stddev(y_normalized, 1, 0));
+        double scaley = 1;
+        // below stddev != 0 ensures we properly handle cases where y is constant
+        if (stddev != 0){scaley = std::sqrt(n) * stddev;} // contains the l2norm of y
+        y_normalized = y_normalized / scaley;
+        BetaMultiplier = scaley / (scaleX.t()); // transpose scale to get a col vec
+        // Multiplying the learned Beta by BetaMultiplier gives the optimal Beta on the original scale
+    }
+    else
+    {
+        y_normalized = y;
+        BetaMultiplier = 1 / (scaleX.t()); // transpose scale to get a col vec
+    }
+    return std::make_tuple(BetaMultiplier, meanX.t(), meany);
+}
+
+std::tuple<arma::vec, arma::vec, double>  Normalize(const arma::sp_mat& X, 
+                                                    const arma::vec& y, 
+                                                    arma::sp_mat& X_normalized, 
+                                                    arma::vec & y_normalized, 
+                                                    bool Normalizey = false, 
+                                                    bool intercept = true)
+{
+    unsigned int n = X.n_rows;
+    unsigned int p = X.n_cols;
+    
+    arma::rowvec meanX;
+    if (intercept){
+        meanX = arma::mean(X, 0);
+    }
+    else{
+        meanX = arma::zeros<arma::rowvec>(p);
+    }
+    X_normalized = arma::sp_mat(X); // creates a copy of the data.
+    arma::rowvec scaleX = arma::zeros<arma::rowvec>(p); // will contain the l2norm of every col
+    
+    for (int col = 0; col < p; col++ ){
+        double l2norm = arma::norm(X.col(col), 2);
+        scaleX(col) = l2norm;
+        
+        arma::sp_mat::col_iterator begin = X_normalized.begin_col(col);
+        arma::sp_mat::col_iterator end = X_normalized.end_col(col);
+        for (; begin != end; ++begin){
+            (*begin) = (*begin)/l2norm;
+        }
+
+    }
+    if (X_normalized.has_nan()){X_normalized.replace(arma::datum::nan, 0); } // can handle numerical instabilities.
+    
+    arma::vec BetaMultiplier;
+    double meany = 0;
+    if (Normalizey)
+    {
+        if (intercept){meany = arma::mean(y);}
+        y_normalized = y - meany;
+        
         auto stddev = arma::as_scalar(arma::stddev(y_normalized, 1, 0));
         double scaley = 1;
         // below stddev != 0 ensures we properly handle cases where y is constant
