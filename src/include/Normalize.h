@@ -5,6 +5,15 @@
 #include "RcppArmadillo.h"
 #include "utils.h"
 
+std::tuple<arma::sp_mat, double> DeNormalize(arma::sp_mat & B_scaled, 
+                                             arma::vec & BetaMultiplier, 
+                                             arma::vec & meanX, double meany)
+{
+    arma::sp_mat B_unscaled = B_scaled % BetaMultiplier;
+    double intercept = meany - arma::dot(B_unscaled, meanX);
+    return std::make_tuple(B_unscaled, intercept);
+}
+
 template <typename T>
 std::tuple<arma::vec, arma::vec, double>  Normalize(const T& X, 
                                                     const arma::vec& y, 
@@ -14,12 +23,12 @@ std::tuple<arma::vec, arma::vec, double>  Normalize(const T& X,
                                                     bool intercept = true)
 {
     unsigned int n = X.n_rows;
-    unsigned int p = X.n_cols;
+    // unsigned int p = X.n_cols;
     
     auto martrix_center_return = matrix_center(X, X_normalized, intercept);
     X_normalized = std::get<0>(martrix_center_return);
     arma::rowvec meanX = std::get<1>(martrix_center_return);
-    
+
     auto matrix_normailize_return = matrix_normailize(X, X_normalized);
     X_normalized = std::get<0>(matrix_normailize_return);
     arma::rowvec scaleX = std::get<1>(matrix_normailize_return);
