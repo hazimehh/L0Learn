@@ -33,6 +33,7 @@ arma::sp_mat inline matrix_rows_get(const arma::sp_mat &mat, const T1 vector_of_
             row_mat(i, begin.col()) = *begin;
         }
     }
+    return row_mat;
 }
 
 template <typename T1>
