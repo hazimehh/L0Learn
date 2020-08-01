@@ -1,4 +1,5 @@
-#include "Rface.h" // somehow "RInterace.h" does not work"
+#include "Interface.h" 
+// somehow "RInterface.h" does not work on my computer
 // [[Rcpp::depends(RcppArmadillo)]]
 
 // [[Rcpp::export]]

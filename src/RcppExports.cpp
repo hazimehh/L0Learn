@@ -7,13 +7,13 @@
 using namespace Rcpp;
 
 // L0LearnFit
-Rcpp::List L0LearnFit(const SEXP& X, const SEXP& y, const std::string Loss, const std::string Penalty, const std::string Algorithm, const unsigned int NnzStopNum, const unsigned int G_ncols, const unsigned int G_nrows, const double Lambda2Max, const double Lambda2Min, const bool PartialSort, const unsigned int MaxIters, const double Tol, const bool ActiveSet, const unsigned int ActiveSetNum, const unsigned int MaxNumSwaps, const double ScaleDownFactor, unsigned int ScreenSize, const bool LambdaU, const std::vector< std::vector<double> > Lambdas, const unsigned int ExcludeFirstK, const bool Intercept);
+Rcpp::List L0LearnFit(const SEXP& X, const arma::vec& y, const std::string Loss, const std::string Penalty, const std::string Algorithm, const unsigned int NnzStopNum, const unsigned int G_ncols, const unsigned int G_nrows, const double Lambda2Max, const double Lambda2Min, const bool PartialSort, const unsigned int MaxIters, const double Tol, const bool ActiveSet, const unsigned int ActiveSetNum, const unsigned int MaxNumSwaps, const double ScaleDownFactor, unsigned int ScreenSize, const bool LambdaU, const std::vector< std::vector<double> > Lambdas, const unsigned int ExcludeFirstK, const bool Intercept);
 RcppExport SEXP _L0Learn_L0LearnFit(SEXP XSEXP, SEXP ySEXP, SEXP LossSEXP, SEXP PenaltySEXP, SEXP AlgorithmSEXP, SEXP NnzStopNumSEXP, SEXP G_ncolsSEXP, SEXP G_nrowsSEXP, SEXP Lambda2MaxSEXP, SEXP Lambda2MinSEXP, SEXP PartialSortSEXP, SEXP MaxItersSEXP, SEXP TolSEXP, SEXP ActiveSetSEXP, SEXP ActiveSetNumSEXP, SEXP MaxNumSwapsSEXP, SEXP ScaleDownFactorSEXP, SEXP ScreenSizeSEXP, SEXP LambdaUSEXP, SEXP LambdasSEXP, SEXP ExcludeFirstKSEXP, SEXP InterceptSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const SEXP& >::type X(XSEXP);
-    Rcpp::traits::input_parameter< const SEXP& >::type y(ySEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type y(ySEXP);
     Rcpp::traits::input_parameter< const std::string >::type Loss(LossSEXP);
     Rcpp::traits::input_parameter< const std::string >::type Penalty(PenaltySEXP);
     Rcpp::traits::input_parameter< const std::string >::type Algorithm(AlgorithmSEXP);
