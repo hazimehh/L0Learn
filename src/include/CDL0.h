@@ -7,8 +7,7 @@
 
 
 template <typename T>
-class CDL0: public CD<T>
-{
+class CDL0: public CD<T> {
     private:
         double thr;
         std::vector<double> * Xtr;
@@ -42,79 +41,65 @@ CDL0<T>::CDL0(const T& Xi, const arma::vec& yi, const Params<T>& P) : CD<T>(Xi, 
 }
 
 template <typename T>
-FitResult<T> CDL0<T>::Fit()
-{
+FitResult<T> CDL0<T>::Fit() {
     
     //bool SecondPass = false;
     double objective = Objective(this->r, this->B);
     
     std::vector<unsigned int> FullOrder = this->Order;
     bool FirstRestrictedPass = true;
-    if (this->ActiveSet)
-    {
+    
+    if (this->ActiveSet) {
         this->Order.resize(std::min((int) (this->B.n_nonzero + ScreenSize + NoSelectK), (int)(this->p))); // std::min(1000,Order.size())
     }
     
     bool ActiveSetInitial = this->ActiveSet;
     
-    for (unsigned int t = 0; t < this->MaxIters; ++t)
-    {
+    for (unsigned int t = 0; t < this->MaxIters; ++t) {
         this->Bprev = this->B;
         
-        for (auto& i : this->Order)
-        {
+        for (auto& i : this->Order) {
             double cor = matrix_column_dot(*(this->X), i, this->r);
-            // double cor = arma::dot(r, X->unsafe_col(i));
             (*Xtr)[i] = std::abs(cor); // do abs here instead from when sorting
             double Bi = this->B[i]; // B[i] is costly
             double x = cor + Bi;
-            if (x >= thr || x <= -thr || i < NoSelectK) 	// often false so body is not costly
-            {
-                this->r += matrix_column_mult(*(this->X), i, Bi - x);
-                // r += X->unsafe_col(i) * (Bi - x);
-                this->B[i] = x;
-            }
             
-            else if (Bi != 0)   // do nothing if x=0 and B[i] = 0
-            {
+            if (x >= thr || x <= -thr || i < NoSelectK) {	// often false so body is not costly
+                this->r += matrix_column_mult(*(this->X), i, Bi - x);
+                this->B[i] = x;
+            } else if (Bi != 0) {  // do nothing if x=0 and B[i] = 0
                 this->r += matrix_column_mult(*(this->X), i, Bi);
-                // r += X->unsafe_col(i) * Bi;
                 this->B[i] = 0;
             }
         }
         
-        if (this->Converged())
-        {
-            if(FirstRestrictedPass && ActiveSetInitial)
-            {
-                if (CWMinCheck()) {break;}
+        if (this->Converged()) {
+            if(FirstRestrictedPass && ActiveSetInitial) {
+                if (CWMinCheck()) {
+                    break;
+                }
                 FirstRestrictedPass = false;
                 this->Stabilized = false;
                 this->ActiveSet = true;
                 this->Order = FullOrder;
-                
-            }
-            
-            else
-            {
-                if (this->Stabilized == true && ActiveSetInitial)  // && !SecondPass
-                {
-                    if (CWMinCheck()) {break;}
+            } else {
+                if (this->Stabilized == true && ActiveSetInitial) { // && !SecondPass
+                    if (CWMinCheck()) {
+                        break;
+                    }
                     this->Order = this->OldOrder; // Recycle over all coordinates to make sure the achieved point is a CW-min.
                     //SecondPass = true; // a 2nd pass will be performed
                     this->Stabilized = false;
                     this->ActiveSet = true;
-                }
-                
-                else
-                {
+                } else {
                     break;
                 }
             }
-            
         }
         
-        if (this->ActiveSet) {this->SupportStabilized();}
+        if (this->ActiveSet) {
+            this->SupportStabilized();
+        }
         
     }
     
@@ -128,8 +113,7 @@ FitResult<T> CDL0<T>::Fit()
 }
 
 template <typename T>
-bool CDL0<T>::CWMinCheck()
-{
+bool CDL0<T>::CWMinCheck() {
     // Get the Sc = FullOrder - Order
     std::vector<unsigned int> S;
     for(arma::sp_mat::const_iterator it = this->B.begin(); it != this->B.end(); ++it) {
@@ -145,17 +129,15 @@ bool CDL0<T>::CWMinCheck()
         back_inserter(Sc));
     
     bool Cwmin = true;
-    for (auto& i : Sc)
-    {
+    for (auto& i : Sc) {
+        
         double x = matrix_column_dot(*(this->X), i, this->r);
-        // double x = arma::dot(r, X->unsafe_col(i));
         double absx = std::abs(x);
         (*Xtr)[i] = absx; // do abs here instead from when sorting
+        
         // B[i] = 0 in this case!
-        if (absx >= thr) 	// often false so body is not costly
-        {
+        if (absx >= thr) {	// often false so body is not costly
             this->r -= matrix_column_mult(*(this->X), i, x);
-            // r -= X->unsafe_col(i) * x;
             this->B[i] = x;
             Cwmin = false;
         }

@@ -1,9 +1,7 @@
 #ifndef MODEL_H
 #define MODEL_H
 
-
-struct Model
-{
+struct Model {
 
     bool SquaredError = false;
     bool Logistic = false;
