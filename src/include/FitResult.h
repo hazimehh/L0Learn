@@ -2,12 +2,11 @@
 #define FITRESULT_H
 #include "RcppArmadillo.h"
 
-template <typename T>
+template <typename T> // Forward Reference to prevent circular dependencies
 class CD;
 
 template <typename T>
-struct FitResult
-{
+struct FitResult {
     double Objective;
     arma::sp_mat B;
     CD<T> * Model;

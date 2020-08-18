@@ -8,16 +8,18 @@
 #' @param p Number of features
 #' @param k Number of non-zeros in true vector of coefficients
 #' @param seed The seed used for randomly generating the data
+#' @param rho The threshold for setting values to 0.  if |X(i, j)| > rho => X(i, j) <- 0
 #' @return A list containing the data matrix X and the response vector y.
 #' @examples
 #' data <- GenSynthetic(n=500,p=1000,k=10,seed=1)
 #' X = data$X
 #' y = data$y
 #' @export
-GenSynthetic <- function(n, p, k, seed)
+GenSynthetic <- function(n, p, k, seed, rho = 0)
 {
     set.seed(seed) # fix the seed to get a reproducible result
     X = matrix(rnorm(n*p),nrow=n,ncol=p)
+    X[abs(X) < rho] <- 0.
     B = c(rep(1,k),rep(0,p-k))
     e = rnorm(n)
     y = X%*%B + e

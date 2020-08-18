@@ -35,6 +35,7 @@ class Grid2D
 template <typename T>
 Grid2D<T>::Grid2D(const T& Xi, const arma::vec& yi, const GridParams<T>& PGi)
 {
+    // Rcpp::Rcout << "Grid2D Constrcotr Start \n";
     // automatically selects lambda_0 (but assumes other lambdas are given in PG.P.ModelParams)
     X = &Xi;
     y = &yi;
@@ -48,6 +49,7 @@ Grid2D<T>::Grid2D(const T& Xi, const arma::vec& yi, const GridParams<T>& PGi)
     LambdaMinFactor = PG.LambdaMinFactor;
     
     P = PG.P;
+    // Rcpp::Rcout << "Grid2D Constructor End \n";
 }
 
 template <typename T>
@@ -60,7 +62,7 @@ Grid2D<T>::~Grid2D(){
 template <typename T>
 std::vector< std::vector<std::unique_ptr<FitResult<T>> > > Grid2D<T>::Fit()
 {
-    
+    // Rcpp::Rcout << "Grid2D Fit Start \n";
     arma::vec Xtrarma;
     if (PG.P.Specs.Logistic)
     {

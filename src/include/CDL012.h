@@ -6,8 +6,7 @@
 #include "utils.h"
 
 template <typename T>
-class CDL012 : public CD<T>
-{
+class CDL012 : public CD<T> {
     private:
         double thr;
         double Onep2lamda2;
@@ -30,8 +29,7 @@ class CDL012 : public CD<T>
 };
 
 template <typename T>
-CDL012<T>::CDL012(const T& Xi, const arma::vec& yi, const Params<T>& P) : CD<T>(Xi, yi, P)
-{
+CDL012<T>::CDL012(const T& Xi, const arma::vec& yi, const Params<T>& P) : CD<T>(Xi, yi, P) {
     thr = std::sqrt((2 * this->ModelParams[0]) / (1 + 2 * this->ModelParams[2]));
     Onep2lamda2 = 1 + 2 * this->ModelParams[2]; 
     lambda1 = this->ModelParams[1]; 
@@ -47,31 +45,25 @@ CDL012<T>::CDL012(const T& Xi, const arma::vec& yi, const Params<T>& P) : CD<T>(
 }
 
 template <typename T>
-FitResult<T> CDL012<T>::Fit()
-{
+FitResult<T> CDL012<T>::Fit() {
     
     // bool SecondPass = false;
-    
+    // Rcpp::Rcout << "FitResult<T> CDL012<T>::Fit()" << this->B << "\n";
     double objective = Objective(this->r, this->B);
     
     std::vector<unsigned int> FullOrder = this->Order;
     bool FirstRestrictedPass = true;
-    if (this->ActiveSet)
-    {
+    if (this->ActiveSet) {
         this->Order.resize(std::min((int) (this->B.n_nonzero + ScreenSize + NoSelectK), (int)(this->p))); // std::min(1000,Order.size())
     }
     
     bool ActiveSetInitial = this->ActiveSet;
     
-    
-    for (unsigned int t = 0; t < this->MaxIters; ++t)
-    {
+    for (unsigned int t = 0; t < this->MaxIters; ++t) {
         this->Bprev = this->B;
         
-        for (auto& i : this->Order)
-        {
+        for (auto& i : this->Order) {
             double cor = matrix_column_dot(*(this->X), i, this->r);
-            // double cor = arma::dot(r, X->unsafe_col(i));
             
             (*Xtr)[i] = std::abs(cor); // do abs here instead from when sorting
             
@@ -79,54 +71,42 @@ FitResult<T> CDL012<T>::Fit()
             double x = cor + Bi; // x is beta_tilde_i
             double z = (std::abs(x) - lambda1) / Onep2lamda2;
             
-            if (z >= thr || (i < NoSelectK && z>0) ) 	// often false so body is not costly
-            {
+            if (z >= thr || (i < NoSelectK && z>0)) { 	// often false so body is not costly
                 this->B[i] = std::copysign(z, x);
-                
                 this->r = this->r + matrix_column_mult(*(this->X), i, Bi - this->B[i]);
-                // r = r + X->unsafe_col(i) * (Bi - B[i]);
-            }
-            
-            else if (Bi != 0)   // do nothing if x=0 and B[i] = 0
-            {
+            } else if (Bi != 0) {   // do nothing if x=0 and B[i] = 0
                 this->r = this->r + matrix_column_mult(*(this->X), i, Bi);
-                // r = r + X->unsafe_col(i) * Bi;
                 this->B[i] = 0;
             }
         }
         
         //B.print();
-        if (this->Converged())
-        {
-            if(FirstRestrictedPass && ActiveSetInitial)
-            {
-                if (CWMinCheck()) {break;}
+        if (this->Converged()) {
+            if(FirstRestrictedPass && ActiveSetInitial) {
+                if (CWMinCheck()) {
+                    break;
+                }
                 FirstRestrictedPass = false;
                 this->Order = FullOrder;
                 this->Stabilized = false;
                 this->ActiveSet = true;
-            }
-            
-            else
-            {
-                if (this->Stabilized == true && ActiveSetInitial)  // && !SecondPass
-                {
-                    if (CWMinCheck()) {break;}
+            } else {
+                if (this->Stabilized == true && ActiveSetInitial) { // && !SecondPass
+                    if (CWMinCheck()) {
+                        break;
+                    }
                     this->Order = this->OldOrder; // Recycle over all coordinates to make sure the achieved point is a CW-min.
                     //SecondPass = true; // a 2nd pass will be performed
                     this->Stabilized = false;
                     this->ActiveSet = true;
-                }
-                
-                else
-                {
+                } else {
                     break;
                 }
             }
-            
         }
-        if (this->ActiveSet) {this->SupportStabilized();}
-        
+        if (this->ActiveSet) {
+            this->SupportStabilized();
+        }
     }
     
     this->result.Objective = objective;
@@ -138,11 +118,12 @@ FitResult<T> CDL012<T>::Fit()
 }
 
 template <typename T>
-bool CDL012<T>::CWMinCheck()
-{
+bool CDL012<T>::CWMinCheck(){
     // Get the Sc = FullOrder - Order
     std::vector<unsigned int> S;
-    for(arma::sp_mat::const_iterator it = this->B.begin(); it != this->B.end(); ++it) {S.push_back(it.row());}
+    for(arma::sp_mat::const_iterator it = this->B.begin(); it != this->B.end(); ++it) {
+        S.push_back(it.row());
+    }
     
     std::vector<unsigned int> Sc;
     set_difference(
@@ -153,16 +134,13 @@ bool CDL012<T>::CWMinCheck()
         back_inserter(Sc));
     
     bool Cwmin = true;
-    for (auto& i : Sc)
-    {
+    for (auto& i : Sc) {
         double x = matrix_column_dot(*(this->X), i, this->r);
-        // double x = arma::dot(r, X->unsafe_col(i));
         double absx = std::abs(x);
         (*Xtr)[i] = absx; // do abs here instead from when sorting
         double z = (absx - lambda1) / Onep2lamda2;
         
-        if (z > thr) 	// often false so body is not costly
-        {
+        if (z > thr) { 	// often false so body is not costly
             this->B[i] = std::copysign(z, x);
             this->r -= matrix_column_mult(*(this->X), i, this->B[i]);
             // r -= X->unsafe_col(i) * B[i];
@@ -175,8 +153,7 @@ bool CDL012<T>::CWMinCheck()
 
 
 template <typename T>
-inline double CDL012<T>::Objective(arma::vec & r, arma::sp_mat & B)   // hint inline
-{
+inline double CDL012<T>::Objective(arma::vec & r, arma::sp_mat & B) {   // hint inline
     auto l2norm = arma::norm(B, 2);
     return 0.5 * arma::dot(r, r) + this->ModelParams[0] * B.n_nonzero + this->ModelParams[1] * arma::norm(B, 1) + this->ModelParams[2] * l2norm * l2norm;
 }

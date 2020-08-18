@@ -1,13 +1,11 @@
 #ifndef PARAMS_H
 #define PARAMS_H
 #include <map>
-//#include <armadillo>
 #include "RcppArmadillo.h"
 #include "Model.h"
 
 template <typename T>
-struct Params
-{
+struct Params {
 
     Model Specs;
     //std::string ModelType = "L0";
@@ -33,8 +31,5 @@ struct Params
     unsigned int NoSelectK = 0;
     bool intercept;
 };
-
-template struct Params<arma::mat>;
-template struct Params<arma::sp_mat>;
 
 #endif

@@ -8,8 +8,7 @@
 
 
 template<typename T> 
-class CD
-{
+class CD {
     protected:
         unsigned int n, p;
         arma::sp_mat B;
@@ -54,21 +53,16 @@ class CD
 template <typename T>
 CD<T>::CD(const T& Xi, const arma::vec& yi, const Params<T>& P) :
     ModelParams{P.ModelParams}, CyclingOrder{P.CyclingOrder}, MaxIters{P.MaxIters},
-    Tol{P.Tol}, ActiveSet{P.ActiveSet}, ActiveSetNum{P.ActiveSetNum}
-    {
+    Tol{P.Tol}, ActiveSet{P.ActiveSet}, ActiveSetNum{P.ActiveSetNum} {
         X = &Xi;
         y = &yi;
         
         n = X->n_rows;
         p = X->n_cols;
         
-        if (P.Init == 'u')
-        {
+        if (P.Init == 'u') {
             B = *(P.InitialSol);
-        }
-        
-        else if (P.Init == 'r')
-        {
+        } else if (P.Init == 'r') {
             arma::urowvec row_indices = arma::randi<arma::urowvec>(P.RandomStartSize, arma::distr_param(0, p - 1));
             row_indices = arma::unique(row_indices);
             auto rsize = row_indices.n_cols;
@@ -80,20 +74,13 @@ CD<T>::CD(const T& Xi, const arma::vec& yi, const Params<T>& P) :
             arma::vec values = arma::randu<arma::vec>(rsize) * 2 - 1; // uniform(-1,1)
             
             B = arma::sp_mat(false, indices, values, p, 1, false, false);
-        }
-        
-        else
-        {
+        } else {
             B = arma::sp_mat(p, 1);
         }
         
-        if (CyclingOrder == 'u')
-        {
+        if (CyclingOrder == 'u') {
             Order = P.Uorder;
-        }
-        
-        else if (CyclingOrder == 'c')
-        {
+        } else if (CyclingOrder == 'c') {
             std::vector<unsigned int> cyclic(p);
             std::iota(std::begin(cyclic), std::end(cyclic), 0);
             Order = cyclic;
@@ -102,49 +89,45 @@ CD<T>::CD(const T& Xi, const arma::vec& yi, const Params<T>& P) :
         CurrentIters = 0;
     }
 
+
 template <typename T>
-bool CD<T>::Converged()
-{
+bool CD<T>::Converged() {
     CurrentIters += 1; // keeps track of the number of calls to Converged
     double objectiveold = objective;
     objective = this->Objective(r, B);
-    if (std::abs(objectiveold - objective) / objectiveold <= Tol) // handles obj <=0 for non-descent methods
-    { return true; }
-    else
-    { return false; }
+    if (std::abs(objectiveold - objective) / objectiveold <= Tol) {// handles obj <=0 for non-descent methods
+        return true; 
+    } else { 
+        return false; 
+    }
 }
 
 template <typename T>
-void CD<T>::SupportStabilized()
-{
+void CD<T>::SupportStabilized() {
     
     bool SameSupp = true;
     
-    if (Bprev.n_nonzero != B.n_nonzero) {SameSupp = false;}
-    else   // same number of nnz and Supp is sorted
-    {
+    if (Bprev.n_nonzero != B.n_nonzero) {
+        SameSupp = false;
+    } else {  // same number of nnz and Supp is sorted
         arma::sp_mat::const_iterator i1;
         arma::sp_mat::const_iterator i2;
-        for(i1 = B.begin(), i2 = Bprev.begin(); i1 != B.end(); ++i1, ++i2)
-        {
-            if(i1.row() != i2.row())
-            {
+        for(i1 = B.begin(), i2 = Bprev.begin(); i1 != B.end(); ++i1, ++i2) {
+            if (i1.row() != i2.row()) {
                 SameSupp = false;
                 break;
             }
         }
     }
     
-    if (SameSupp)
-    {
+    if (SameSupp) {
         SameSuppCounter += 1;
-        if (SameSuppCounter == ActiveSetNum - 1)
-        {
+        
+        if (SameSuppCounter == ActiveSetNum - 1) {
             std::vector<unsigned int> NewOrder(B.n_nonzero);
             
             arma::sp_mat::const_iterator i;
-            for(i = B.begin(); i != B.end(); ++i)
-            {
+            for(i = B.begin(); i != B.end(); ++i) {
                 NewOrder.push_back(i.row());
             }
             
@@ -158,9 +141,9 @@ void CD<T>::SupportStabilized()
             
         }
         
+    } else {
+        SameSuppCounter = 0;
     }
-    
-    else {SameSuppCounter = 0;}
     
 }
 
