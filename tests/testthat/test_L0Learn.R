@@ -26,9 +26,13 @@ check_similar_fit_solution <- function(x, y, tolerance=0.05){
     
 }
 
-tmp <-  L0Learn::GenSynthetic(100, 1000, k=10, seed=1, rho=2.1)
+tmp <-  L0Learn::GenSynthetic(n=500, p=1000, k=10, seed=1, rho=2)
 X <- tmp[[1]]
 y <- tmp[[2]]
+
+if (sum(apply(X, 2, sd) == 0)) {
+  stop("X needs to have non-zero std for each column")
+}
 
 X_sparse <- as(X, "dgCMatrix")
 
@@ -42,30 +46,33 @@ test_that('L0Learn Accepts Proper Matricies', {
 })
 
 
-test_that("L0Learn fit and cvfit are deterministic", {
-    for (f in c(L0Learn.cvfit, L0Learn.fit)){
-        set.seed(1)
-        x1 <- f(X, y)
-        set.seed(1)
-        x2 <- f(X, y)
-        expect_equal(x1, x2)
-    }
-    for (f in c(L0Learn.cvfit, L0Learn.fit)){
-        set.seed(1)
-        x1 <-f(X_sparse, y, intercept = FALSE)
-        set.seed(1)
-        x2 <- f(X_sparse, y, intercept = FALSE)
-        expect_equal(x1, x2, tolerance=1e-5)
-    }
-})
-
-
-test_that("L0Learn fit and cvfit find same solution for different matrix representation", {
+test_that("L0Learn fit and cvfit are deterministic for Dense", {
     for (f in c(L0Learn.cvfit, L0Learn.fit)){
         set.seed(1)
         x1 <- f(X, y, intercept = FALSE)
         set.seed(1)
-        x2 <- f(X_sparse, y, intercept = FALSE)
+        x2 <- f(X, y, intercept = FALSE)
+        expect_equal(x1, x2, tolerance=1e-5)
+    }
+})
+
+test_that("L0Learn fit and cvfit are deterministic for Sparse", {
+  for (f in c(L0Learn.cvfit, L0Learn.fit)){
+    set.seed(1)
+    x1 <-f(X_sparse, y, intercept = FALSE)
+    set.seed(1)
+    x2 <- f(X_sparse, y, intercept = FALSE)
+    expect_equal(x1, x2, tolerance=1e-5)
+  }
+})
+
+
+test_that("L0Learn fit and cvfit find same solution for different matrix representations", {
+    for (f in c(L0Learn.fit)){
+        set.seed(1)
+        x1 <- f(X, y, intercept = FALSE, maxSuppSize = 10)
+        set.seed(1)
+        x2 <- f(X_sparse, y, intercept = FALSE, maxSuppSize = 10)
         expect_equal(x1, x2, tolerance=1e-5)
         #check_similar_fit_solution(x1, x2)
     }
