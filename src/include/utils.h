@@ -1,10 +1,7 @@
-//
-// Created by Tim Nonet on 7/27/20.
-//
 #ifndef L0LEARN_UTILS_H
 #define L0LEARN_UTILS_H
+#include <vector>
 #include "RcppArmadillo.h"
-
 
 template <typename T1>
 arma::vec inline matrix_column_get(const arma::mat &mat, T1 col){
@@ -47,7 +44,7 @@ arma::mat inline matrix_vector_schur_product(const arma::mat &mat, const T1 &y){
 
 template <typename T1>
 arma::sp_mat inline matrix_vector_schur_product(const arma::sp_mat &mat, const T1 &y){
-
+    
     arma::sp_mat Xy = arma::sp_mat(mat);
     arma::sp_mat::iterator begin = Xy.begin();
     arma::sp_mat::iterator end = Xy.end();
@@ -58,65 +55,6 @@ arma::sp_mat inline matrix_vector_schur_product(const arma::sp_mat &mat, const T
         *begin = (*begin)  * yp(row);
     }
     return Xy;
-}
-
-std::tuple<arma::sp_mat, arma::rowvec> matrix_normailize(const arma::sp_mat &mat,
-                                                         arma::sp_mat &mat_norm){
-    auto p = mat.n_cols;
-    arma::rowvec scaleX = arma::zeros<arma::rowvec>(p); // will contain the l2norm of every col
-    
-    for (auto col = 0; col < p; col++){
-        double l2norm = arma::norm(mat.col(col), 2);
-        scaleX(col) = l2norm;
-        
-        arma::sp_mat::col_iterator begin = mat_norm.begin_col(col);
-        arma::sp_mat::col_iterator end = mat_norm.end_col(col);
-        for (; begin != end; ++begin)
-            (*begin) = (*begin)/l2norm;
-        
-    }
-    
-    if (mat_norm.has_nan())
-        mat_norm.replace(arma::datum::nan, 0);  // can handle numerical instabilities.
-    
-    return std::make_tuple(mat_norm, scaleX);
-}
-
-std::tuple<arma::mat, arma::rowvec> matrix_normailize(const arma::mat &mat, arma::mat &mat_norm){
-    auto n = mat.n_rows;
-    arma::rowvec scaleX = std::sqrt(n) * arma::stddev(mat_norm, 1, 0); // contains the l2norm of every col
-    scaleX.replace(0, -1);
-    mat_norm.each_row() /= scaleX;
-    
-    if (mat_norm.has_nan()) 
-        mat_norm.replace(arma::datum::nan, 0); // can handle numerical instabilities.
-    
-    return std::make_tuple(mat_norm, scaleX);
-}
-
-std::tuple<arma::mat, arma::rowvec> matrix_center(const arma::mat& X,
-                                                  arma::mat& X_normalized,
-                                                  bool intercept){
-    auto p = X.n_cols;
-    arma::rowvec meanX;
-    if (intercept){
-        meanX = arma::mean(X, 0);
-        X_normalized = X.each_row() - meanX;
-    } else {
-        meanX = arma::zeros<arma::rowvec>(p);
-        X_normalized = arma::mat(X);
-    }
-    
-    return std::make_tuple(X_normalized, meanX);
-}
-
-std::tuple<arma::sp_mat, arma::rowvec> matrix_center(const arma::sp_mat& X,
-                                                     arma::sp_mat& X_normalized,
-                                                     bool intercept){
-    auto p = X.n_cols;
-    arma::rowvec meanX = arma::zeros<arma::rowvec>(p);
-    X_normalized = arma::sp_mat(X);
-    return std::make_tuple(X_normalized, meanX);
 }
 
 template <typename T1>
@@ -145,7 +83,6 @@ arma::rowvec inline matrix_column_sums(const arma::sp_mat& mat){
     return arma::rowvec(arma::sum(mat, 0));
 }
 
-
 template <typename T1, typename T2>
 double inline matrix_column_dot(const arma::mat &mat, T1 col, const T2 &u){
     // Rcpp::Rcout << "matrix_column_dot Starts\n"
@@ -169,5 +106,15 @@ template <typename T1, typename T2>
 arma::vec inline matrix_column_mult(const arma::sp_mat &mat, T1 col, const T2 &u){
     return matrix_column_get(mat, col)*u;
 }
+
+arma::rowvec matrix_normalize(const arma::sp_mat &mat,arma::sp_mat &mat_norm);
+
+arma::rowvec matrix_normalize(const arma::mat &mat, arma::mat &mat_norm);
+
+std::tuple<arma::mat, arma::rowvec> matrix_center(const arma::mat& X,
+                                                  bool intercept);
+
+std::tuple<arma::sp_mat, arma::rowvec> matrix_center(const arma::sp_mat& X,
+                                                     bool intercept);
 
 #endif //L0LEARN_UTILS_H

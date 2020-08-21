@@ -41,8 +41,8 @@ class Grid {
 template <typename T>
 Grid<T>::Grid(const T& X, const arma::vec& y, const GridParams<T>& PGi) {
     PG = PGi;
-    std::tie(BetaMultiplier, meanX, meany) = Normalize(X, y, Xscaled, yscaled,
-             !PG.P.Specs.Classification, PG.intercept);
+    std::tie(Xscaled,BetaMultiplier, meanX, meany) = Normalize(X, 
+             y, yscaled,!PG.P.Specs.Classification, PG.intercept);
 }
 
 template <typename T>

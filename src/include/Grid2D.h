@@ -55,8 +55,10 @@ Grid2D<T>::Grid2D(const T& Xi, const arma::vec& yi, const GridParams<T>& PGi)
 template <typename T>
 Grid2D<T>::~Grid2D(){
     delete Xtr;
-    if (PG.P.Specs.Logistic){delete PG.P.Xy;}
-    if (PG.P.Specs.SquaredHinge){delete PG.P.Xy;}
+    if (PG.P.Specs.Logistic)
+        delete PG.P.Xy;
+    if (PG.P.Specs.SquaredHinge)
+        delete PG.P.Xy;
 }
 
 template <typename T>
@@ -69,8 +71,8 @@ std::vector< std::vector<std::unique_ptr<FitResult<T>> > > Grid2D<T>::Fit()
         auto n = X->n_rows;
         double b0 = 0;
         arma::vec ExpyXB =  arma::ones<arma::vec>(n);
-        if (PG.intercept){
-            for (unsigned int t = 0; t < 50; ++t){
+        if (PG.intercept) {
+            for (unsigned int t = 0; t < 50; ++t) {
                 double partial_b0 = - arma::sum( *y / (1 + ExpyXB) );
                 b0 -= partial_b0 / (n * 0.25); // intercept is not regularized
                 ExpyXB = arma::exp(b0 * *y);
@@ -118,17 +120,16 @@ std::vector< std::vector<std::unique_ptr<FitResult<T>> > > Grid2D<T>::Fit()
     double ytXmax = arma::max(Xtrarma);
     
     unsigned int index;
-    if (PG.P.Specs.L0L1)
-    {
+    if (PG.P.Specs.L0L1) {
         index = 1;
-        if(G_nrows != 1)
-        {
+        if(G_nrows != 1) {
             Lambda2Max = ytXmax;
             Lambda2Min = Lambda2Max * LambdaMinFactor;
         }
         
+    } else if (PG.P.Specs.L0L2) {
+        index = 2;
     }
-    else if (PG.P.Specs.L0L2) {index = 2;}
     
     arma::vec Lambdas2 = arma::logspace(std::log10(Lambda2Min), std::log10(Lambda2Max), G_nrows);
     Lambdas2 = arma::flipud(Lambdas2);
@@ -140,8 +141,7 @@ std::vector< std::vector<std::unique_ptr<FitResult<T>> > > Grid2D<T>::Fit()
     
     PG.XtrAvailable = true;
     
-    for(unsigned int i=0; i<Lambdas2.size();++i) //auto &l : Lambdas2
-    {
+    for(unsigned int i=0; i<Lambdas2.size();++i) { //auto &l : Lambdas2
         *Xtr = Xtrvec;
         
         PG.Xtr = Xtr;

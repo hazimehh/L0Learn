@@ -72,10 +72,246 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// R_matrix_column_get_dense
+arma::vec R_matrix_column_get_dense(const arma::mat& mat, int col);
+RcppExport SEXP _L0Learn_R_matrix_column_get_dense(SEXP matSEXP, SEXP colSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::mat& >::type mat(matSEXP);
+    Rcpp::traits::input_parameter< int >::type col(colSEXP);
+    rcpp_result_gen = Rcpp::wrap(R_matrix_column_get_dense(mat, col));
+    return rcpp_result_gen;
+END_RCPP
+}
+// R_matrix_column_get_sparse
+arma::vec R_matrix_column_get_sparse(const arma::sp_mat& mat, int col);
+RcppExport SEXP _L0Learn_R_matrix_column_get_sparse(SEXP matSEXP, SEXP colSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::sp_mat& >::type mat(matSEXP);
+    Rcpp::traits::input_parameter< int >::type col(colSEXP);
+    rcpp_result_gen = Rcpp::wrap(R_matrix_column_get_sparse(mat, col));
+    return rcpp_result_gen;
+END_RCPP
+}
+// R_matrix_rows_get_dense
+arma::mat R_matrix_rows_get_dense(const arma::mat& mat, const arma::ucolvec rows);
+RcppExport SEXP _L0Learn_R_matrix_rows_get_dense(SEXP matSEXP, SEXP rowsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::mat& >::type mat(matSEXP);
+    Rcpp::traits::input_parameter< const arma::ucolvec >::type rows(rowsSEXP);
+    rcpp_result_gen = Rcpp::wrap(R_matrix_rows_get_dense(mat, rows));
+    return rcpp_result_gen;
+END_RCPP
+}
+// R_matrix_rows_get_sparse
+arma::sp_mat R_matrix_rows_get_sparse(const arma::sp_mat& mat, const arma::ucolvec rows);
+RcppExport SEXP _L0Learn_R_matrix_rows_get_sparse(SEXP matSEXP, SEXP rowsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::sp_mat& >::type mat(matSEXP);
+    Rcpp::traits::input_parameter< const arma::ucolvec >::type rows(rowsSEXP);
+    rcpp_result_gen = Rcpp::wrap(R_matrix_rows_get_sparse(mat, rows));
+    return rcpp_result_gen;
+END_RCPP
+}
+// R_matrix_vector_schur_product_dense
+arma::mat R_matrix_vector_schur_product_dense(const arma::mat& mat, const arma::vec& u);
+RcppExport SEXP _L0Learn_R_matrix_vector_schur_product_dense(SEXP matSEXP, SEXP uSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::mat& >::type mat(matSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type u(uSEXP);
+    rcpp_result_gen = Rcpp::wrap(R_matrix_vector_schur_product_dense(mat, u));
+    return rcpp_result_gen;
+END_RCPP
+}
+// R_matrix_vector_schur_product_sparse
+arma::sp_mat R_matrix_vector_schur_product_sparse(const arma::sp_mat& mat, const arma::vec& u);
+RcppExport SEXP _L0Learn_R_matrix_vector_schur_product_sparse(SEXP matSEXP, SEXP uSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::sp_mat& >::type mat(matSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type u(uSEXP);
+    rcpp_result_gen = Rcpp::wrap(R_matrix_vector_schur_product_sparse(mat, u));
+    return rcpp_result_gen;
+END_RCPP
+}
+// R_matrix_vector_divide_dense
+arma::mat R_matrix_vector_divide_dense(const arma::mat& mat, const arma::vec& u);
+RcppExport SEXP _L0Learn_R_matrix_vector_divide_dense(SEXP matSEXP, SEXP uSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::mat& >::type mat(matSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type u(uSEXP);
+    rcpp_result_gen = Rcpp::wrap(R_matrix_vector_divide_dense(mat, u));
+    return rcpp_result_gen;
+END_RCPP
+}
+// R_matrix_vector_divide_sparse
+arma::sp_mat R_matrix_vector_divide_sparse(const arma::sp_mat& mat, const arma::vec& u);
+RcppExport SEXP _L0Learn_R_matrix_vector_divide_sparse(SEXP matSEXP, SEXP uSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::sp_mat& >::type mat(matSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type u(uSEXP);
+    rcpp_result_gen = Rcpp::wrap(R_matrix_vector_divide_sparse(mat, u));
+    return rcpp_result_gen;
+END_RCPP
+}
+// R_matrix_column_sums_dense
+arma::rowvec R_matrix_column_sums_dense(const arma::mat& mat);
+RcppExport SEXP _L0Learn_R_matrix_column_sums_dense(SEXP matSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::mat& >::type mat(matSEXP);
+    rcpp_result_gen = Rcpp::wrap(R_matrix_column_sums_dense(mat));
+    return rcpp_result_gen;
+END_RCPP
+}
+// R_matrix_column_sums_sparse
+arma::rowvec R_matrix_column_sums_sparse(const arma::sp_mat& mat);
+RcppExport SEXP _L0Learn_R_matrix_column_sums_sparse(SEXP matSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::sp_mat& >::type mat(matSEXP);
+    rcpp_result_gen = Rcpp::wrap(R_matrix_column_sums_sparse(mat));
+    return rcpp_result_gen;
+END_RCPP
+}
+// R_matrix_column_dot_dense
+double R_matrix_column_dot_dense(const arma::mat& mat, int col, const arma::vec u);
+RcppExport SEXP _L0Learn_R_matrix_column_dot_dense(SEXP matSEXP, SEXP colSEXP, SEXP uSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::mat& >::type mat(matSEXP);
+    Rcpp::traits::input_parameter< int >::type col(colSEXP);
+    Rcpp::traits::input_parameter< const arma::vec >::type u(uSEXP);
+    rcpp_result_gen = Rcpp::wrap(R_matrix_column_dot_dense(mat, col, u));
+    return rcpp_result_gen;
+END_RCPP
+}
+// R_matrix_column_dot_sparse
+double R_matrix_column_dot_sparse(const arma::sp_mat& mat, int col, const arma::vec u);
+RcppExport SEXP _L0Learn_R_matrix_column_dot_sparse(SEXP matSEXP, SEXP colSEXP, SEXP uSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::sp_mat& >::type mat(matSEXP);
+    Rcpp::traits::input_parameter< int >::type col(colSEXP);
+    Rcpp::traits::input_parameter< const arma::vec >::type u(uSEXP);
+    rcpp_result_gen = Rcpp::wrap(R_matrix_column_dot_sparse(mat, col, u));
+    return rcpp_result_gen;
+END_RCPP
+}
+// R_matrix_column_mult_dense
+arma::vec R_matrix_column_mult_dense(const arma::mat& mat, int col, double u);
+RcppExport SEXP _L0Learn_R_matrix_column_mult_dense(SEXP matSEXP, SEXP colSEXP, SEXP uSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::mat& >::type mat(matSEXP);
+    Rcpp::traits::input_parameter< int >::type col(colSEXP);
+    Rcpp::traits::input_parameter< double >::type u(uSEXP);
+    rcpp_result_gen = Rcpp::wrap(R_matrix_column_mult_dense(mat, col, u));
+    return rcpp_result_gen;
+END_RCPP
+}
+// R_matrix_column_mult_sparse
+arma::vec R_matrix_column_mult_sparse(const arma::sp_mat& mat, int col, double u);
+RcppExport SEXP _L0Learn_R_matrix_column_mult_sparse(SEXP matSEXP, SEXP colSEXP, SEXP uSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::sp_mat& >::type mat(matSEXP);
+    Rcpp::traits::input_parameter< int >::type col(colSEXP);
+    Rcpp::traits::input_parameter< double >::type u(uSEXP);
+    rcpp_result_gen = Rcpp::wrap(R_matrix_column_mult_sparse(mat, col, u));
+    return rcpp_result_gen;
+END_RCPP
+}
+// R_matrix_normalize_dense
+Rcpp::List R_matrix_normalize_dense(arma::mat mat, arma::mat mat_norm);
+RcppExport SEXP _L0Learn_R_matrix_normalize_dense(SEXP matSEXP, SEXP mat_normSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type mat(matSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type mat_norm(mat_normSEXP);
+    rcpp_result_gen = Rcpp::wrap(R_matrix_normalize_dense(mat, mat_norm));
+    return rcpp_result_gen;
+END_RCPP
+}
+// R_matrix_normalize_sparse
+Rcpp::List R_matrix_normalize_sparse(arma::sp_mat mat, arma::sp_mat mat_norm);
+RcppExport SEXP _L0Learn_R_matrix_normalize_sparse(SEXP matSEXP, SEXP mat_normSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::sp_mat >::type mat(matSEXP);
+    Rcpp::traits::input_parameter< arma::sp_mat >::type mat_norm(mat_normSEXP);
+    rcpp_result_gen = Rcpp::wrap(R_matrix_normalize_sparse(mat, mat_norm));
+    return rcpp_result_gen;
+END_RCPP
+}
+// R_matrix_center_dense
+Rcpp::List R_matrix_center_dense(arma::mat mat, bool intercept);
+RcppExport SEXP _L0Learn_R_matrix_center_dense(SEXP matSEXP, SEXP interceptSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type mat(matSEXP);
+    Rcpp::traits::input_parameter< bool >::type intercept(interceptSEXP);
+    rcpp_result_gen = Rcpp::wrap(R_matrix_center_dense(mat, intercept));
+    return rcpp_result_gen;
+END_RCPP
+}
+// R_matrix_center_sparse
+Rcpp::List R_matrix_center_sparse(arma::sp_mat mat, bool intercept);
+RcppExport SEXP _L0Learn_R_matrix_center_sparse(SEXP matSEXP, SEXP interceptSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::sp_mat >::type mat(matSEXP);
+    Rcpp::traits::input_parameter< bool >::type intercept(interceptSEXP);
+    rcpp_result_gen = Rcpp::wrap(R_matrix_center_sparse(mat, intercept));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_L0Learn_L0LearnFit", (DL_FUNC) &_L0Learn_L0LearnFit, 22},
     {"_L0Learn_L0LearnCV", (DL_FUNC) &_L0Learn_L0LearnCV, 24},
+    {"_L0Learn_R_matrix_column_get_dense", (DL_FUNC) &_L0Learn_R_matrix_column_get_dense, 2},
+    {"_L0Learn_R_matrix_column_get_sparse", (DL_FUNC) &_L0Learn_R_matrix_column_get_sparse, 2},
+    {"_L0Learn_R_matrix_rows_get_dense", (DL_FUNC) &_L0Learn_R_matrix_rows_get_dense, 2},
+    {"_L0Learn_R_matrix_rows_get_sparse", (DL_FUNC) &_L0Learn_R_matrix_rows_get_sparse, 2},
+    {"_L0Learn_R_matrix_vector_schur_product_dense", (DL_FUNC) &_L0Learn_R_matrix_vector_schur_product_dense, 2},
+    {"_L0Learn_R_matrix_vector_schur_product_sparse", (DL_FUNC) &_L0Learn_R_matrix_vector_schur_product_sparse, 2},
+    {"_L0Learn_R_matrix_vector_divide_dense", (DL_FUNC) &_L0Learn_R_matrix_vector_divide_dense, 2},
+    {"_L0Learn_R_matrix_vector_divide_sparse", (DL_FUNC) &_L0Learn_R_matrix_vector_divide_sparse, 2},
+    {"_L0Learn_R_matrix_column_sums_dense", (DL_FUNC) &_L0Learn_R_matrix_column_sums_dense, 1},
+    {"_L0Learn_R_matrix_column_sums_sparse", (DL_FUNC) &_L0Learn_R_matrix_column_sums_sparse, 1},
+    {"_L0Learn_R_matrix_column_dot_dense", (DL_FUNC) &_L0Learn_R_matrix_column_dot_dense, 3},
+    {"_L0Learn_R_matrix_column_dot_sparse", (DL_FUNC) &_L0Learn_R_matrix_column_dot_sparse, 3},
+    {"_L0Learn_R_matrix_column_mult_dense", (DL_FUNC) &_L0Learn_R_matrix_column_mult_dense, 3},
+    {"_L0Learn_R_matrix_column_mult_sparse", (DL_FUNC) &_L0Learn_R_matrix_column_mult_sparse, 3},
+    {"_L0Learn_R_matrix_normalize_dense", (DL_FUNC) &_L0Learn_R_matrix_normalize_dense, 2},
+    {"_L0Learn_R_matrix_normalize_sparse", (DL_FUNC) &_L0Learn_R_matrix_normalize_sparse, 2},
+    {"_L0Learn_R_matrix_center_dense", (DL_FUNC) &_L0Learn_R_matrix_center_dense, 2},
+    {"_L0Learn_R_matrix_center_sparse", (DL_FUNC) &_L0Learn_R_matrix_center_sparse, 2},
     {NULL, NULL, 0}
 };
 

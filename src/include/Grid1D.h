@@ -77,7 +77,10 @@ Grid1D<T>::Grid1D(const T& Xi, const arma::vec& yi, const GridParams<T>& PG) {
     Refine = PG.Refine;
     PartialSort = PG.PartialSort;
     XtrAvailable = PG.XtrAvailable;
-    if (XtrAvailable) {ytXmax2d = PG.ytXmax; Xtr = PG.Xtr;}
+    if (XtrAvailable) {
+        ytXmax2d = PG.ytXmax;
+        Xtr = PG.Xtr;
+    }
 }
 
 template <typename T>
