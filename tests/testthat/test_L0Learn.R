@@ -1,43 +1,9 @@
 library("Matrix")
 library("testthat")
 library("L0Learn")
+source("utils.R")
 
-check_similar_fit_solution <- function(x, y, tolerance=1e-5, cv_tolerance=1e-3){
-    for (s in c("p", "n", "varnames", "settings", "loss", "penalty", "gamma")){
-        expect_identical(x[[s]], y[[s]])
-    }
-    
-    # This is not an ideal test. Somehow, even though I set the seed before each
-    # test there is a difference in solution size. Indictating a bug in the Rcpp
-    # code.
-    
-    num_s = min(x[["beta"]][[1]]@Dim[[2]],
-                y[["beta"]][[1]]@Dim[[2]])
-    
-    for (s in c("lambda", "a0", "converged", "suppSize")){
-        expect_equal(x[[s]][[1]][1:num_s],
-                     y[[s]][[1]][1:num_s],
-                     tolerance=tolerance)
-    }
-    
-    expect_equal(as.matrix(x[["beta"]][[1]])[, 1:num_s],
-                 as.matrix(y[["beta"]][[1]])[, 1:num_s],
-                 tolerance=tolerance)
-    
-}
-
-expect_equal_cv <- function(x, y, tolerance=1e-5, cv_tolerance=1e-3) {
-  for (i in seq_along(x)){
-    if (startsWith(names(x)[i], 'cv')){
-      expect_equal(x[i], y[i], tolerance=cv_tolerance)
-    } else {
-      expect_equal(x[i], y[i], tolerance=tolerance)
-    }
-  }
-}
-
-
-tmp <-  L0Learn::GenSynthetic(n=500, p=1000, k=10, seed=1, rho=2)
+tmp <-  L0Learn::GenSynthetic(n=100, p=1000, k=10, seed=1, rho=2)
 X <- tmp[[1]]
 y <- tmp[[2]]
 tol = 1e-4

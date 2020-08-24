@@ -10,7 +10,7 @@
 
 
 inline void to_arma_error() {
-    Rcpp::stop("L0Learn.fit only supports sparse matricies (dgCMatrix), 2D arrays, and Dense Matricies (dgeMatrix)");
+    Rcpp::stop("L0Learn.fit only supports sparse matricies (dgCMatrix), 2D arrays (Dense Matricies)");
 }
 
 template <typename T>
