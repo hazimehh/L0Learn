@@ -102,8 +102,7 @@ FitResult<T> CDL012SquaredHinge<T>::Fit() {
             
             
             if (z >= thr || (i < NoSelectK && z>0)) { 	// often false so body is not costly
-                //std::cout<<"z: "<<z<<" thr: "<<thr<<" Biold"<<Biold<<std::endl;
-                double Bnew = std::copysign(z, x);
+                double Bnew = clamp(std::copysign(z, x), this->Lows[i], this->Highs[i]);
                 this->B[i] = Bnew;
                 onemyxb += (Biold - Bnew) * matrix_column_get(*(this->Xy), i);
                 indices = arma::find(onemyxb > 0);

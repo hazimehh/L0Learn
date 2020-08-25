@@ -1,1 +1,7 @@
 inst/doc
+.Rproj.user
+*.o
+*.so
+*.tmp
+*.csv
+*.dat

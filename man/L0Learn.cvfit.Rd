@@ -4,13 +4,34 @@
 \alias{L0Learn.cvfit}
 \title{Cross Validation}
 \usage{
-L0Learn.cvfit(x, y, loss = "SquaredError", penalty = "L0",
-  algorithm = "CD", maxSuppSize = 100, nLambda = 100, nGamma = 10,
-  gammaMax = 10, gammaMin = 1e-04, partialSort = TRUE,
-  maxIters = 200, tol = 1e-06, activeSet = TRUE, activeSetNum = 3,
-  maxSwaps = 100, scaleDownFactor = 0.8, screenSize = 1000,
-  autoLambda = TRUE, lambdaGrid = list(0), nFolds = 10, seed = 1,
-  excludeFirstK = 0, intercept = TRUE)
+L0Learn.cvfit(
+  x,
+  y,
+  loss = "SquaredError",
+  penalty = "L0",
+  algorithm = "CD",
+  maxSuppSize = 100,
+  nLambda = 100,
+  nGamma = 10,
+  gammaMax = 10,
+  gammaMin = 1e-04,
+  partialSort = TRUE,
+  maxIters = 200,
+  tol = 1e-06,
+  activeSet = TRUE,
+  activeSetNum = 3,
+  maxSwaps = 100,
+  scaleDownFactor = 0.8,
+  screenSize = 1000,
+  autoLambda = TRUE,
+  lambdaGrid = list(0),
+  nFolds = 10,
+  seed = 1,
+  excludeFirstK = 0,
+  intercept = TRUE,
+  low = -Inf,
+  high = Inf
+)
 }
 \arguments{
 \item{x}{The data matrix.}
@@ -77,6 +98,10 @@ which are used by the algorithm when fitting for the ith value of gamma (see the
 i.e., the first excludeFirstK variables will not be included in the L0-norm penalty (they will still be included in the L1 or L2 norm penalties.).}
 
 \item{intercept}{If FALSE, no intercept term is included in the model.}
+
+\item{low}{Lower bound for coefficients. All coefficient clipped at 'low'}
+
+\item{high}{Upper bound for coefficients. All coefficients clipped at 'high'}
 }
 \value{
 An S3 object of type "L0LearnCV" describing the regularization path. The object has the following members.

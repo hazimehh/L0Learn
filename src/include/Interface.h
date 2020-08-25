@@ -13,6 +13,13 @@ inline void to_arma_error() {
     Rcpp::stop("L0Learn.fit only supports sparse matricies (dgCMatrix), 2D arrays (Dense Matricies)");
 }
 
+inline void bounds_chcek(const double Low, const double High){
+    double a = std::numeric_limits<double>::infinity();
+    if (!((-a <= Low) && (Low < High) && (High <= a))){
+        Rcpp::stop("Bounds must be -inf <= Low < High <= inf");
+    }
+}
+
 template <typename T>
 void sparse_intercept_check(T m, bool Intercept);
 
@@ -23,7 +30,7 @@ Rcpp::List _L0LearnFit(const T& X, const arma::vec& y, const std::string Loss, c
                        const bool PartialSort, const unsigned int MaxIters, const double Tol, const bool ActiveSet,
                        const unsigned int ActiveSetNum, const unsigned int MaxNumSwaps, const double ScaleDownFactor,
                        unsigned int ScreenSize, const bool LambdaU, const std::vector< std::vector<double> > Lambdas,
-                       const unsigned int ExcludeFirstK, const bool Intercept);
+                       const unsigned int ExcludeFirstK, const bool Intercept, const double Low, const double High);
 
 template <typename T>
 Rcpp::List _L0LearnCV(const T& X, const arma::vec& y, const std::string Loss, const std::string Penalty,
@@ -32,6 +39,6 @@ Rcpp::List _L0LearnCV(const T& X, const arma::vec& y, const std::string Loss, co
                       const unsigned int MaxIters, const double Tol, const bool ActiveSet, const unsigned int ActiveSetNum,
                       const unsigned int MaxNumSwaps, const double ScaleDownFactor, unsigned int ScreenSize, const bool LambdaU,
                       const std::vector< std::vector<double> > Lambdas, const unsigned int nfolds, const double seed,
-                      const unsigned int ExcludeFirstK, const bool Intercept);
+                      const unsigned int ExcludeFirstK, const bool Intercept, const double Low, const double High);
 
 #endif // RINTERFACE_H

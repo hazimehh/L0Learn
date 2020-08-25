@@ -29,6 +29,8 @@ class CD {
         unsigned int MaxIters;
         unsigned int CurrentIters; // current number of iterations - maintained by Converged()
         double Tol;
+        arma::vec Lows;
+        arma::vec Highs;
         bool ActiveSet;
         unsigned int ActiveSetNum;
         bool Stabilized = false;
@@ -75,7 +77,7 @@ CD<T>::CD(const T& Xi, const arma::vec& yi, const Params<T>& P) :
             
             B = arma::sp_mat(false, indices, values, p, 1, false, false);
         } else {
-            B = arma::sp_mat(p, 1);
+            B = arma::sp_mat(p, 1); // Initialized to zeros
         }
         
         if (CyclingOrder == 'u') {
@@ -85,6 +87,9 @@ CD<T>::CD(const T& Xi, const arma::vec& yi, const Params<T>& P) :
             std::iota(std::begin(cyclic), std::end(cyclic), 0);
             Order = cyclic;
         }
+        
+        this->Lows = P.Lows;
+        this->Highs = P.Highs;
         
         CurrentIters = 0;
     }

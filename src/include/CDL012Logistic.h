@@ -99,7 +99,7 @@ FitResult<T> CDL012Logistic<T>::Fit() { // always uses active sets
             
             
             if (z >= thr || (i < NoSelectK && z>0)) {	// often false so body is not costly
-                double Bnew = std::copysign(z, x);
+                double Bnew = clamp(std::copysign(z, x), this->Lows[i], this->Highs[i]);
                 this->B[i] = Bnew;
                 ExpyXB %= arma::exp( (Bnew - Biold) * matrix_column_get(*(this->Xy), i));
                 //std::cout<<"In. "<<Objective(r,B)<<std::endl;

@@ -30,6 +30,10 @@ struct Params {
     T * Xy; // used for classification.
     unsigned int NoSelectK = 0;
     bool intercept;
+    double Low;
+    double High;
+    arma::vec Lows;
+    arma::vec Highs;
 };
 
 #endif

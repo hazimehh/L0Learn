@@ -41,8 +41,18 @@ class Grid {
 template <typename T>
 Grid<T>::Grid(const T& X, const arma::vec& y, const GridParams<T>& PGi) {
     PG = PGi;
-    std::tie(Xscaled,BetaMultiplier, meanX, meany) = Normalize(X, 
+    std::tie(Xscaled, BetaMultiplier, meanX, meany) = Normalize(X, 
              y, yscaled,!PG.P.Specs.Classification, PG.intercept);
+    
+    // Must rescale bounds by BetaMultiplier inorder for final result to conform to bounds
+    // Rcpp::Rcout << "Making bounds \n";
+    // Rcpp::Rcout << "arma::rowvec(" << X.n_cols << ", " << PG.P.Low << ") \n";
+    PG.P.Lows = arma::vec(X.n_cols).fill(PG.P.Low);
+    PG.P.Highs = arma::vec(X.n_cols).fill(PG.P.High);
+    // Rcpp::Rcout << "Bounds Divide \n";
+    PG.P.Lows /= BetaMultiplier;
+    PG.P.Highs /= BetaMultiplier;
+    // Rcpp::Rcout << "Bounds made \n";
 }
 
 template <typename T>
@@ -50,21 +60,20 @@ void Grid<T>::Fit() {
     
     std::vector< std::vector<std::unique_ptr<FitResult<T>> > > G;
     if (PG.P.Specs.L0) {
-        // Rcpp::Rcout << "Grid1D Fit\n";
         G.push_back(std::move(Grid1D<T>(Xscaled, yscaled, PG).Fit()));
         Lambda12.push_back(0);
     } else {
-        // Rcpp::Rcout << "Grid2D Fit\n";
         G = std::move(Grid2D<T>(Xscaled, yscaled, PG).Fit());
     }
+    
+    // TODO: Scale InitialSol to be within bounds
+    // B = arma::clamp(B, Low, High); 
     
     Lambda0 = std::vector< std::vector<double> >(G.size());
     NnzCount = std::vector< std::vector<unsigned int> >(G.size());
     Solutions = std::vector< std::vector<arma::sp_mat> >(G.size());
     Intercepts = std::vector< std::vector<double> >(G.size());
     Converged = std::vector< std::vector<bool> >(G.size());
-    
-    // Rcpp::Rcout << "Grid Loop Starts\n";
     
     //for (auto &g : G)
     for (unsigned int i=0; i<G.size(); ++i) {

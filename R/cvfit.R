@@ -29,9 +29,13 @@
 #' predict(fit, newx = X, lambda=0.0361829, gamma=0.0001)
 #'
 #' @export
-L0Learn.cvfit <- function(x,y, loss="SquaredError", penalty="L0", algorithm="CD", maxSuppSize=100, nLambda=100, nGamma=10,
-						gammaMax=10, gammaMin=0.0001, partialSort = TRUE, maxIters=200,
-						tol=1e-6, activeSet=TRUE, activeSetNum=3, maxSwaps=100, scaleDownFactor=0.8, screenSize=1000, autoLambda = TRUE, lambdaGrid = list(0), nFolds=10, seed=1, excludeFirstK=0, intercept=TRUE)
+L0Learn.cvfit <- function(x,y, loss="SquaredError", penalty="L0", algorithm="CD", 
+                          maxSuppSize=100, nLambda=100, nGamma=10, gammaMax=10, 
+                          gammaMin=0.0001, partialSort = TRUE, maxIters=200,
+                          tol=1e-6, activeSet=TRUE, activeSetNum=3, maxSwaps=100, 
+                          scaleDownFactor=0.8, screenSize=1000, autoLambda = TRUE, 
+                          lambdaGrid = list(0), nFolds=10, seed=1, excludeFirstK=0, 
+                          intercept=TRUE, low=-Inf, high=Inf)
 {
 	set.seed(seed)
 
@@ -63,7 +67,7 @@ L0Learn.cvfit <- function(x,y, loss="SquaredError", penalty="L0", algorithm="CD"
 	}
 
 	# The C++ function uses LambdaU = 1 for user-specified grid. In R, we use AutoLambda0 = 0 for user-specified grid (thus the negation when passing the parameter to the function below)
-	M <- .Call('_L0Learn_L0LearnCV', PACKAGE = 'L0Learn', x, y, loss, penalty, algorithm, maxSuppSize, nLambda, nGamma, gammaMax, gammaMin, partialSort, maxIters, tol, activeSet, activeSetNum, maxSwaps, scaleDownFactor, screenSize, !autoLambda, lambdaGrid, nFolds, seed, excludeFirstK, intercept)
+	M <- .Call('_L0Learn_L0LearnCV', PACKAGE = 'L0Learn', x, y, loss, penalty, algorithm, maxSuppSize, nLambda, nGamma, gammaMax, gammaMin, partialSort, maxIters, tol, activeSet, activeSetNum, maxSwaps, scaleDownFactor, screenSize, !autoLambda, lambdaGrid, nFolds, seed, excludeFirstK, intercept, low, high)
 
 	settings = list()
 	settings[[1]] = intercept # Settings only contains intercept for now. Might include additional elements later.

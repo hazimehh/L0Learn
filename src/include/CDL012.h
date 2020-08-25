@@ -72,12 +72,12 @@ FitResult<T> CDL012<T>::Fit() {
             double z = (std::abs(x) - lambda1) / Onep2lamda2;
             
             if (z >= thr || (i < NoSelectK && z>0)) { 	// often false so body is not costly
-                this->B[i] = std::copysign(z, x);
-                this->r = this->r + matrix_column_mult(*(this->X), i, Bi - this->B[i]);
-            } else if (Bi != 0) {   // do nothing if x=0 and B[i] = 0
-                this->r = this->r + matrix_column_mult(*(this->X), i, Bi);
+                this->B[i] = clamp(std::copysign(z, x), this->Lows[i], this->Highs[i]);
+                this->r += matrix_column_mult(*(this->X), i, Bi - this->B[i]);
+            } else if (Bi != 0) {  
+                this->r += matrix_column_mult(*(this->X), i, Bi);
                 this->B[i] = 0;
-            }
+            } // do nothing if x=0 and B[i] = 0
         }
         
         //B.print();

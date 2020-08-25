@@ -65,12 +65,12 @@ FitResult<T> CDL0<T>::Fit() {
             double x = cor + Bi;
             
             if (x >= thr || x <= -thr || i < NoSelectK) {	// often false so body is not costly
-                this->r += matrix_column_mult(*(this->X), i, Bi - x);
-                this->B[i] = x;
-            } else if (Bi != 0) {  // do nothing if x=0 and B[i] = 0
+                this->r += matrix_column_mult(*(this->X), i, -cor);
+                this->B[i] = clamp(x, this->Lows[i], this->Highs[i]);
+            } else if (Bi != 0) { 
                 this->r += matrix_column_mult(*(this->X), i, Bi);
                 this->B[i] = 0;
-            }
+            } // do nothing if x == 0 and B[i] == 0
         }
         
         if (this->Converged()) {

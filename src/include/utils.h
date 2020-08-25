@@ -3,6 +3,17 @@
 #include <vector>
 #include "RcppArmadillo.h"
 
+
+template <typename T>
+inline T clamp(T x, T low, T high) {
+    // Compiler should remove branches
+    if (x < low) 
+        x = low;
+    if (x > high) 
+        x = high;
+    return x;
+}
+
 template <typename T1>
 arma::vec inline matrix_column_get(const arma::mat &mat, T1 col){
     return mat.unsafe_col(col);
