@@ -13,13 +13,6 @@ inline void to_arma_error() {
     Rcpp::stop("L0Learn.fit only supports sparse matricies (dgCMatrix), 2D arrays (Dense Matricies)");
 }
 
-inline void bounds_chcek(const double Low, const double High){
-    double a = std::numeric_limits<double>::infinity();
-    if (!((-a <= Low) && (Low < High) && (High <= a))){
-        Rcpp::stop("Bounds must be -inf <= Low < High <= inf");
-    }
-}
-
 template <typename T>
 void sparse_intercept_check(T m, bool Intercept);
 

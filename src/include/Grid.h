@@ -45,14 +45,8 @@ Grid<T>::Grid(const T& X, const arma::vec& y, const GridParams<T>& PGi) {
              y, yscaled,!PG.P.Specs.Classification, PG.intercept);
     
     // Must rescale bounds by BetaMultiplier inorder for final result to conform to bounds
-    // Rcpp::Rcout << "Making bounds \n";
-    // Rcpp::Rcout << "arma::rowvec(" << X.n_cols << ", " << PG.P.Low << ") \n";
-    PG.P.Lows = arma::vec(X.n_cols).fill(PG.P.Low);
-    PG.P.Highs = arma::vec(X.n_cols).fill(PG.P.High);
-    // Rcpp::Rcout << "Bounds Divide \n";
     PG.P.Lows /= BetaMultiplier;
     PG.P.Highs /= BetaMultiplier;
-    // Rcpp::Rcout << "Bounds made \n";
 }
 
 template <typename T>
