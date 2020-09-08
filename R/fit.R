@@ -94,7 +94,7 @@
 #' print(fit4)
 #'
 #' @export
-L0Learn.fit <- function(x,y, loss="SquaredError", penalty="L0", algorithm="CD", 
+L0Learn.fit <- function(x, y, loss="SquaredError", penalty="L0", algorithm="CD", 
                         maxSuppSize=100, nLambda=100, nGamma=10, gammaMax=10,
                         gammaMin=0.0001, partialSort = TRUE, maxIters=200,
 						tol=1e-6, activeSet=TRUE, activeSetNum=3, maxSwaps=100,

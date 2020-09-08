@@ -60,9 +60,6 @@ void Grid<T>::Fit() {
         G = std::move(Grid2D<T>(Xscaled, yscaled, PG).Fit());
     }
     
-    // TODO: Scale InitialSol to be within bounds
-    // B = arma::clamp(B, Low, High); 
-    
     Lambda0 = std::vector< std::vector<double> >(G.size());
     NnzCount = std::vector< std::vector<unsigned int> >(G.size());
     Solutions = std::vector< std::vector<arma::sp_mat> >(G.size());

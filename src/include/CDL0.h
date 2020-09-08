@@ -43,6 +43,8 @@ CDL0<T>::CDL0(const T& Xi, const arma::vec& yi, const Params<T>& P) : CD<T>(Xi, 
 template <typename T>
 FitResult<T> CDL0<T>::Fit() {
     
+    this->B = clamp_by_vector(this->B, this->Lows, this->Highs);
+    
     //bool SecondPass = false;
     double objective = Objective(this->r, this->B);
     

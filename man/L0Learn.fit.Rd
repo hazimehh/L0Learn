@@ -27,8 +27,8 @@ L0Learn.fit(
   lambdaGrid = list(0),
   excludeFirstK = 0,
   intercept = TRUE,
-  low = -Inf,
-  high = Inf
+  lows = -Inf,
+  highs = Inf
 )
 }
 \arguments{
@@ -93,9 +93,9 @@ i.e., the first excludeFirstK variables will not be included in the L0-norm pena
 
 \item{intercept}{If FALSE, no intercept term is included in the model.}
 
-\item{low}{Lower bound for coefficients. All coefficient clipped at 'low'}
+\item{lows}{Lower bounds for coefficients. Either a scalar for all coefficients to have the same bound or a vector of size p (number of columns of X) where lows[i] is the lower bound for coefficient i.}
 
-\item{high}{Upper bound for coefficients. All coefficients clipped at 'high'}
+\item{highs}{Upper bounds for coefficients. Either a scalar for all coefficients to have the same bound or a vector of size p (number of columns of X) where highs[i] is the upper bound for coefficient i.}
 }
 \value{
 An S3 object of type "L0Learn" describing the regularization path. The object has the following members.

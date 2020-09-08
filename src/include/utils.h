@@ -128,4 +128,6 @@ std::tuple<arma::mat, arma::rowvec> matrix_center(const arma::mat& X,
 std::tuple<arma::sp_mat, arma::rowvec> matrix_center(const arma::sp_mat& X,
                                                      bool intercept);
 
+arma::sp_mat clamp_by_vector(arma::sp_mat, const arma::vec, const arma::vec);
+
 #endif //L0LEARN_UTILS_H

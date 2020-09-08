@@ -66,6 +66,8 @@ CDL012SquaredHinge<T>::CDL012SquaredHinge(const T& Xi, const arma::vec& yi, cons
 template <typename T>
 FitResult<T> CDL012SquaredHinge<T>::Fit() {
     
+    this->B = clamp_by_vector(this->B, this->Lows, this->Highs);
+    
     arma::uvec indices = arma::find(onemyxb > 0); // maintained throughout
     
     double objective = Objective(this->r, this->B);

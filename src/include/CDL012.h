@@ -47,8 +47,8 @@ CDL012<T>::CDL012(const T& Xi, const arma::vec& yi, const Params<T>& P) : CD<T>(
 template <typename T>
 FitResult<T> CDL012<T>::Fit() {
     
-    // bool SecondPass = false;
-    // Rcpp::Rcout << "FitResult<T> CDL012<T>::Fit()" << this->B << "\n";
+    this->B = clamp_by_vector(this->B, this->Lows, this->Highs);
+    
     double objective = Objective(this->r, this->B);
     
     std::vector<unsigned int> FullOrder = this->Order;
@@ -91,7 +91,7 @@ FitResult<T> CDL012<T>::Fit() {
                 this->Stabilized = false;
                 this->ActiveSet = true;
             } else {
-                if (this->Stabilized == true && ActiveSetInitial) { // && !SecondPass
+                if (this->Stabilized && ActiveSetInitial) { // && !SecondPass
                     if (CWMinCheck()) {
                         break;
                     }
