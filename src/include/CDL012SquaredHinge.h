@@ -18,18 +18,18 @@ class CDL012SquaredHinge : public CD<T> {
         double lambda1ol;
         double b0;
         std::vector<double> * Xtr;
-        unsigned int Iter;
+        std::size_t Iter;
         arma::vec onemyxb;
-        unsigned int NoSelectK;
+        std::size_t NoSelectK;
         T * Xy;
-        unsigned int ScreenSize;
-        std::vector<unsigned int> Range1p;
+        std::size_t ScreenSize;
+        std::vector<std::size_t> Range1p;
         bool intercept;
 
     public:
         CDL012SquaredHinge(const T& Xi, const arma::vec& yi, const Params<T>& P);
         //~CDL012SquaredHinge(){}
-        //inline double Derivativei(unsigned int i);
+        //inline double Derivativei(std::size_t i);
 
         //inline double Derivativeb();
 
@@ -73,7 +73,7 @@ FitResult<T> CDL012SquaredHinge<T>::Fit() {
     double objective = Objective(this->r, this->B);
     
     
-    std::vector<unsigned int> FullOrder = this->Order; // never used in LR
+    std::vector<std::size_t> FullOrder = this->Order; // never used in LR
     this->Order.resize(std::min((int) (this->B.n_nonzero + ScreenSize + NoSelectK), (int)(this->p)));
     
     
@@ -149,11 +149,11 @@ inline double CDL012SquaredHinge<T>::Objective(arma::vec & r, arma::sp_mat & B) 
 
 template <typename T>
 bool CDL012SquaredHinge<T>::CWMinCheck(){
-    std::vector<unsigned int> S;
+    std::vector<std::size_t> S;
     for(arma::sp_mat::const_iterator it = this->B.begin(); it != this->B.end(); ++it)
         S.push_back(it.row());
     
-    std::vector<unsigned int> Sc;
+    std::vector<std::size_t> Sc;
     set_difference(
         Range1p.begin(),
         Range1p.end(),

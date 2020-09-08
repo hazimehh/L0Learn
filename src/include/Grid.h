@@ -24,7 +24,7 @@ class Grid {
 
         std::vector< std::vector<double> > Lambda0;
         std::vector<double> Lambda12;
-        std::vector< std::vector<unsigned int> > NnzCount;
+        std::vector< std::vector<std::size_t> > NnzCount;
         std::vector< std::vector<arma::sp_mat> > Solutions;
         std::vector< std::vector<double> >Intercepts;
         std::vector< std::vector<bool> > Converged;
@@ -61,13 +61,13 @@ void Grid<T>::Fit() {
     }
     
     Lambda0 = std::vector< std::vector<double> >(G.size());
-    NnzCount = std::vector< std::vector<unsigned int> >(G.size());
+    NnzCount = std::vector< std::vector<std::size_t> >(G.size());
     Solutions = std::vector< std::vector<arma::sp_mat> >(G.size());
     Intercepts = std::vector< std::vector<double> >(G.size());
     Converged = std::vector< std::vector<bool> >(G.size());
     
     //for (auto &g : G)
-    for (unsigned int i=0; i<G.size(); ++i) {
+    for (std::size_t i=0; i<G.size(); ++i) {
         if (PG.P.Specs.L0L1){ 
             Lambda12.push_back(G[i][0]->ModelParams[1]); 
         } else if (PG.P.Specs.L0L2) { 

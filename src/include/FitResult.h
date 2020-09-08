@@ -10,7 +10,7 @@ struct FitResult {
     double Objective;
     arma::sp_mat B;
     CD<T> * Model;
-    unsigned int IterNum;
+    std::size_t IterNum;
     arma::vec * r;
     std::vector<double> ModelParams;
     double intercept = 0; // used by classification models

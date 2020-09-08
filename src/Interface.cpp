@@ -10,12 +10,12 @@ void sparse_intercept_check(T m, bool Intercept){
 
 template <typename T>
 GridParams<T> makeGridParams(const std::string Loss, const std::string Penalty,
-                             const std::string Algorithm, const unsigned int NnzStopNum, const unsigned int G_ncols,
-                             const unsigned int G_nrows, const double Lambda2Max, const double Lambda2Min,
-                             const bool PartialSort, const unsigned int MaxIters, const double Tol, const bool ActiveSet,
-                             const unsigned int ActiveSetNum, const unsigned int MaxNumSwaps, const double ScaleDownFactor,
-                             unsigned int ScreenSize, const bool LambdaU, const std::vector< std::vector<double> > Lambdas,
-                             const unsigned int ExcludeFirstK, const bool Intercept, const arma::vec &Lows, const arma::vec &Highs){
+                             const std::string Algorithm, const std::size_t NnzStopNum, const std::size_t G_ncols,
+                             const std::size_t G_nrows, const double Lambda2Max, const double Lambda2Min,
+                             const bool PartialSort, const std::size_t MaxIters, const double Tol, const bool ActiveSet,
+                             const std::size_t ActiveSetNum, const std::size_t MaxNumSwaps, const double ScaleDownFactor,
+                             std::size_t ScreenSize, const bool LambdaU, const std::vector< std::vector<double> > Lambdas,
+                             const std::size_t ExcludeFirstK, const bool Intercept, const arma::vec &Lows, const arma::vec &Highs){ 
   GridParams<T> PG;
   PG.NnzStopNum = NnzStopNum;
   PG.G_ncols = G_ncols;
@@ -74,12 +74,12 @@ GridParams<T> makeGridParams(const std::string Loss, const std::string Penalty,
 //   
 //   arma::field<arma::sp_mat> Bs(G.Lambda12.size());
 //   
-//   for (unsigned int i=0; i<G.Lambda12.size(); ++i) {
+//   for (std::size_t i=0; i<G.Lambda12.size(); ++i) {
 //     // create the px(reg path size) sparse sparseMatrix
 //     auto n = G.Solutions[i].size();
 //     Rcpp::Rcout << "arma::sp_mat B(p, G.Solutions[i].size()): size(" << p << ", " << n << ") \n";
 //     arma::sp_mat B(p, G.Solutions[i].size());
-//     for (unsigned int j=0; j<G.Solutions[i].size(); ++j)
+//     for (std::size_t j=0; j<G.Solutions[i].size(); ++j)
 //       B.col(j) = G.Solutions[i][j];
 //     
 //     // append the sparse matrix
@@ -92,12 +92,12 @@ GridParams<T> makeGridParams(const std::string Loss, const std::string Penalty,
 
 template <typename T>
 Rcpp::List _L0LearnFit(const T& X, const arma::vec& y, const std::string Loss, const std::string Penalty,
-                       const std::string Algorithm, const unsigned int NnzStopNum, const unsigned int G_ncols,
-                       const unsigned int G_nrows, const double Lambda2Max, const double Lambda2Min,
-                       const bool PartialSort, const unsigned int MaxIters, const double Tol, const bool ActiveSet,
-                       const unsigned int ActiveSetNum, const unsigned int MaxNumSwaps, const double ScaleDownFactor,
-                       unsigned int ScreenSize, const bool LambdaU, const std::vector< std::vector<double> > Lambdas,
-                       const unsigned int ExcludeFirstK, const bool Intercept, const arma::vec &Lows, const arma::vec &Highs){
+                       const std::string Algorithm, const std::size_t NnzStopNum, const std::size_t G_ncols,
+                       const std::size_t G_nrows, const double Lambda2Max, const double Lambda2Min,
+                       const bool PartialSort, const std::size_t MaxIters, const double Tol, const bool ActiveSet,
+                       const std::size_t ActiveSetNum, const std::size_t MaxNumSwaps, const double ScaleDownFactor,
+                       std::size_t ScreenSize, const bool LambdaU, const std::vector< std::vector<double> > Lambdas,
+                       const std::size_t ExcludeFirstK, const bool Intercept, const arma::vec &Lows, const arma::vec &Highs){
   
   sparse_intercept_check(X, Intercept);
   
@@ -117,7 +117,8 @@ Rcpp::List _L0LearnFit(const T& X, const arma::vec& y, const std::string Loss, c
   auto p = X.n_cols;
   arma::field<arma::sp_mat> Bs(G.Lambda12.size());
   
-  for (unsigned int i=0; i<G.Lambda12.size(); ++i) {
+  auto p = X.n_cols;
+  for (std::size_t i=0; i<G.Lambda12.size(); ++i) {
     // create the px(reg path size) sparse sparseMatrix
     arma::sp_mat B(p,G.Solutions[i].size());
     for (unsigned int j=0; j<G.Solutions[i].size(); ++j) {
@@ -149,11 +150,11 @@ Rcpp::List _L0LearnCV(const T& X, const arma::vec& y, const std::string Loss, co
                       const unsigned int ExcludeFirstK, const bool Intercept, const arma::vec &Lows, const arma::vec &Highs){
   
   sparse_intercept_check(X, Intercept);
-
+  
   GridParams<T> PG = makeGridParams<T>(Loss, Penalty, Algorithm, NnzStopNum, G_ncols, G_nrows, 
-                      Lambda2Max, Lambda2Min, PartialSort, MaxIters, Tol, ActiveSet,
-                      ActiveSetNum, MaxNumSwaps, ScaleDownFactor, ScreenSize,
-                      LambdaU, Lambdas, ExcludeFirstK, Intercept, Lows, Highs);
+                                       Lambda2Max, Lambda2Min, PartialSort, MaxIters, Tol, ActiveSet,
+                                       ActiveSetNum, MaxNumSwaps, ScaleDownFactor, ScreenSize,
+                                       LambdaU, Lambdas, ExcludeFirstK, Intercept, Lows, Highs);
   
   Grid<T> G(X, y, PG);
   G.Fit();
@@ -167,10 +168,10 @@ Rcpp::List _L0LearnCV(const T& X, const arma::vec& y, const std::string Loss, co
   auto n = X.n_rows;
   arma::field<arma::sp_mat> Bs(G.Lambda12.size());
   
-  for (unsigned int i=0; i<G.Lambda12.size(); ++i) {
+  for (std::size_t i=0; i<G.Lambda12.size(); ++i) {
     // create the px(reg path size) sparse sparseMatrix
-    arma::sp_mat B(p,G.Solutions[i].size());
-    for (unsigned int j=0; j<G.Solutions[i].size(); ++j) {
+    arma::sp_mat B(p, G.Solutions[i].size());
+    for (std::size_t j=0; j<G.Solutions[i].size(); ++j)
       B.col(j) = G.Solutions[i][j];
     }
     
@@ -186,12 +187,12 @@ Rcpp::List _L0LearnCV(const T& X, const arma::vec& y, const std::string Loss, co
   //Solutions = std::vector< std::vector<arma::sp_mat> >(G.size());
   //Intercepts = std::vector< std::vector<double> >(G.size());
   
-  unsigned int Ngamma = G.Lambda12.size();
+  std::size_t Ngamma = G.Lambda12.size();
   
   //std::vector< arma::mat > CVError (G.Solutions.size());
   arma::field< arma::mat > CVError (G.Solutions.size());
   
-  for (unsigned int i=0; i<G.Solutions.size(); ++i) 
+  for (std::size_t i=0; i<G.Solutions.size(); ++i) 
     CVError[i] = arma::mat(G.Lambda0[i].size(),nfolds, arma::fill::zeros);
   
   arma::uvec a = arma::linspace<arma::uvec>(0, X.n_rows-1, X.n_rows);
@@ -201,12 +202,12 @@ Rcpp::List _L0LearnCV(const T& X, const arma::vec& y, const std::string Loss, co
   int samplesperfold = std::ceil(n/double(nfolds));
   int samplesinlastfold = samplesperfold - (samplesperfold*nfolds - n);
   
-  std::vector<unsigned int> fullindices(X.n_rows);
+  std::vector<std::size_t> fullindices(X.n_rows);
   std::iota(fullindices.begin(), fullindices.end(), 0);
   
   
-  for (unsigned int j=0; j<nfolds;++j) {
-    std::vector<unsigned int> validationindices;
+  for (std::size_t j=0; j<nfolds;++j) {
+    std::vector<std::size_t> validationindices;
     if (j < nfolds-1)
       validationindices.resize(samplesperfold);
     else
@@ -214,7 +215,7 @@ Rcpp::List _L0LearnCV(const T& X, const arma::vec& y, const std::string Loss, co
     
     std::iota(validationindices.begin(), validationindices.end(), samplesperfold*j);
     
-    std::vector<unsigned int> trainingindices;
+    std::vector<std::size_t> trainingindices;
     
     std::set_difference(fullindices.begin(), fullindices.end(), validationindices.begin(), validationindices.end(),
                         std::inserter(trainingindices, trainingindices.begin()));
@@ -252,9 +253,9 @@ Rcpp::List _L0LearnCV(const T& X, const arma::vec& y, const std::string Loss, co
     Grid<T> Gtraining(Xtraining, ytraining, PG);
     Gtraining.Fit();
     
-    for (unsigned int i=0; i<Ngamma; ++i) { 
+    for (std::size_t i=0; i<Ngamma; ++i) { 
       // i indexes the gamma parameter
-      for (unsigned int k=0; k<Gtraining.Lambda0[i].size(); ++k){ 
+      for (std::size_t k=0; k<Gtraining.Lambda0[i].size(); ++k){ 
         // k indexes the solutions for a specific gamma
         
         if (PG.P.Specs.SquaredError) {
@@ -281,8 +282,8 @@ Rcpp::List _L0LearnCV(const T& X, const arma::vec& y, const std::string Loss, co
   
   arma::field<arma::vec> CVMeans(Ngamma);
   arma::field<arma::vec> CVSDs(Ngamma);
-  
-  for (unsigned int i=0; i<Ngamma; ++i) {
+
+  for (std::size_t i=0; i<Ngamma; ++i) {
     CVMeans[i] = arma::mean(CVError[i],1);
     CVSDs[i] = arma::stddev(CVError[i],0,1);
   }
@@ -302,13 +303,13 @@ Rcpp::List _L0LearnCV(const T& X, const arma::vec& y, const std::string Loss, co
 
 // [[Rcpp::export]]
 Rcpp::List L0LearnFit(const SEXP& X, const arma::vec& y, const std::string Loss, const std::string Penalty,
-                      const std::string Algorithm, const unsigned int NnzStopNum, const unsigned int G_ncols,
-                      const unsigned int G_nrows, const double Lambda2Max, const double Lambda2Min,
-                      const bool PartialSort, const unsigned int MaxIters, const double Tol, const bool ActiveSet,
-                      const unsigned int ActiveSetNum, const unsigned int MaxNumSwaps,
-                      const double ScaleDownFactor, unsigned int ScreenSize, const bool LambdaU,
+                      const std::string Algorithm, const std::size_t NnzStopNum, const std::size_t G_ncols,
+                      const std::size_t G_nrows, const double Lambda2Max, const double Lambda2Min,
+                      const bool PartialSort, const std::size_t MaxIters, const double Tol, const bool ActiveSet,
+                      const std::size_t ActiveSetNum, const std::size_t MaxNumSwaps,
+                      const double ScaleDownFactor, std::size_t ScreenSize, const bool LambdaU,
                       const std::vector< std::vector<double> > Lambdas,
-                      const unsigned int ExcludeFirstK, const bool Intercept,
+                      const std::size_t ExcludeFirstK, const bool Intercept,
                       const arma::vec &Lows, const arma::vec &Highs) {
   
   
@@ -330,12 +331,12 @@ Rcpp::List L0LearnFit(const SEXP& X, const arma::vec& y, const std::string Loss,
 
 // [[Rcpp::export]]
 Rcpp::List L0LearnCV(const SEXP& X, const arma::vec& y, const std::string Loss, const std::string Penalty,
-                     const std::string Algorithm, const unsigned int NnzStopNum, const unsigned int G_ncols,
-                     const unsigned int G_nrows, const double Lambda2Max, const double Lambda2Min,
-                     const bool PartialSort, const unsigned int MaxIters, const double Tol, const bool ActiveSet,
-                     const unsigned int ActiveSetNum, const unsigned int MaxNumSwaps, const double ScaleDownFactor,
-                     unsigned int ScreenSize, const bool LambdaU, const std::vector< std::vector<double> > Lambdas,
-                     const unsigned int nfolds, const double seed, const unsigned int ExcludeFirstK,
+                     const std::string Algorithm, const std::size_t NnzStopNum, const std::size_t G_ncols,
+                     const std::size_t G_nrows, const double Lambda2Max, const double Lambda2Min,
+                     const bool PartialSort, const std::size_t MaxIters, const double Tol, const bool ActiveSet,
+                     const std::size_t ActiveSetNum, const std::size_t MaxNumSwaps, const double ScaleDownFactor,
+                     std::size_t ScreenSize, const bool LambdaU, const std::vector< std::vector<double> > Lambdas,
+                     const std::size_t nfolds, const double seed, const std::size_t ExcludeFirstK,
                      const bool Intercept, const arma::vec &Lows, const arma::vec &Highs){
   
   if (Rf_isS4(X) && Rf_inherits(X, "dgCMatrix")){

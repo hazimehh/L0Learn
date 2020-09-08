@@ -20,10 +20,10 @@ class CDL012Logistic : public CD<T> {
         arma::vec ExpyXB;
         std::vector<double> * Xtr;
         T * Xy;
-        unsigned int Iter;
-        unsigned int NoSelectK;
-        unsigned int ScreenSize;
-        std::vector<unsigned int> Range1p;
+        std::size_t Iter;
+        std::size_t NoSelectK;
+        std::size_t ScreenSize;
+        std::vector<std::size_t> Range1p;
         bool intercept;
     public:
         CDL012Logistic(const T& Xi, const arma::vec& yi, const Params<T>& P);
@@ -71,10 +71,10 @@ FitResult<T> CDL012Logistic<T>::Fit() { // always uses active sets
     
     double objective = Objective(this->r, this->B);
     
-    std::vector<unsigned int> FullOrder = this->Order; // never used in LR
+    std::vector<std::size_t> FullOrder = this->Order; // never used in LR
     this->Order.resize(std::min((int) (this->B.n_nonzero + ScreenSize + NoSelectK), (int)(this->p)));
     
-    for (unsigned int t = 0; t < this->MaxIters; ++t) {
+    for (std::size_t t = 0; t < this->MaxIters; ++t) {
         //std::cout<<"CDL012 Logistic: "<< t << " " << objective<<std::endl;
         this->Bprev = this->B;
         
@@ -139,12 +139,12 @@ bool CDL012Logistic<T>::CWMinCheck() {
     //std::cout<<"#################"<<std::endl;
     //std::cout<<"In CWMinCheck!!!"<<std::endl;
     // Get the Sc = FullOrder - Order
-    std::vector<unsigned int> S;
+    std::vector<std::size_t> S;
     
     for (arma::sp_mat::const_iterator it = this->B.begin(); it != this->B.end(); ++it)
         S.push_back(it.row());
     
-    std::vector<unsigned int> Sc;
+    std::vector<std::size_t> Sc;
     set_difference(
         Range1p.begin(),
         Range1p.end(),

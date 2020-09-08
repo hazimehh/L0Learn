@@ -19,21 +19,21 @@ inline void to_arma_error() {
 // 
 // template <typename T>
 // Rcpp::List _L0LearnFit(const T& X, const arma::vec& y, const std::string Loss, const std::string Penalty,
-//                        const std::string Algorithm, const unsigned int NnzStopNum, const unsigned int G_ncols,
-//                        const unsigned int G_nrows, const double Lambda2Max, const double Lambda2Min,
-//                        const bool PartialSort, const unsigned int MaxIters, const double Tol, const bool ActiveSet,
-//                        const unsigned int ActiveSetNum, const unsigned int MaxNumSwaps, const double ScaleDownFactor,
-//                        unsigned int ScreenSize, const bool LambdaU, const std::vector< std::vector<double> > Lambdas,
-//                        const unsigned int ExcludeFirstK, const bool Intercept, const arma::vec &Lows, const arma::vec &Highs);
+//                        const std::string Algorithm, const std::size_t NnzStopNum, const std::size_t G_ncols,
+//                        const std::size_t G_nrows, const double Lambda2Max, const double Lambda2Min,
+//                        const bool PartialSort, const std::size_t MaxIters, const double Tol, const bool ActiveSet,
+//                        const std::size_t ActiveSetNum, const std::size_t MaxNumSwaps, const double ScaleDownFactor,
+//                        std::size_t ScreenSize, const bool LambdaU, const std::vector< std::vector<double> > Lambdas,
+//                        const std::size_t ExcludeFirstK, const bool Intercept, const arma::vec &Lows, const arma::vec &Highs);
 // 
 // template <typename T>
 // Rcpp::List _L0LearnCV(const T& X, const arma::vec& y, const std::string Loss, const std::string Penalty,
-//                       const std::string Algorithm, const unsigned int NnzStopNum, const unsigned int G_ncols,
-//                       const unsigned int G_nrows, const double Lambda2Max, const double Lambda2Min,
-//                       const bool PartialSort, const unsigned int MaxIters, const double Tol, const bool ActiveSet,
-//                       const unsigned int ActiveSetNum, const unsigned int MaxNumSwaps, const double ScaleDownFactor,
-//                       unsigned int ScreenSize, const bool LambdaU, const std::vector< std::vector<double> > Lambdas,
-//                       const unsigned int nfolds, const double seed, const unsigned int ExcludeFirstK,
+//                       const std::string Algorithm, const std::size_t NnzStopNum, const std::size_t G_ncols,
+//                       const std::size_t G_nrows, const double Lambda2Max, const double Lambda2Min,
+//                       const bool PartialSort, const std::size_t MaxIters, const double Tol, const bool ActiveSet,
+//                       const std::size_t ActiveSetNum, const std::size_t MaxNumSwaps, const double ScaleDownFactor,
+//                       std::size_t ScreenSize, const bool LambdaU, const std::vector< std::vector<double> > Lambdas,
+//                       const std::size_t nfolds, const double seed, const std::size_t ExcludeFirstK,
 //                       const bool Intercept, const arma::vec &Lows, const arma::vec &Highs);
 
 #endif // RINTERFACE_H

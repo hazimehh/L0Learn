@@ -11,10 +11,10 @@ class CDL0: public CD<T> {
     private:
         double thr;
         std::vector<double> * Xtr;
-        unsigned int Iter;
-        unsigned int ScreenSize;
-        std::vector<unsigned int> Range1p;
-        unsigned int NoSelectK;
+        std::size_t Iter;
+        std::size_t ScreenSize;
+        std::vector<std::size_t> Range1p;
+        std::size_t NoSelectK;
     public:
         CDL0(const T& Xi, const arma::vec& yi, const Params<T>& P);
         //~CDL0(){}
@@ -48,7 +48,7 @@ FitResult<T> CDL0<T>::Fit() {
     //bool SecondPass = false;
     double objective = Objective(this->r, this->B);
     
-    std::vector<unsigned int> FullOrder = this->Order;
+    std::vector<std::size_t> FullOrder = this->Order;
     bool FirstRestrictedPass = true;
     
     if (this->ActiveSet) {
@@ -57,7 +57,7 @@ FitResult<T> CDL0<T>::Fit() {
     
     bool ActiveSetInitial = this->ActiveSet;
     
-    for (unsigned int t = 0; t < this->MaxIters; ++t) {
+    for (std::size_t t = 0; t < this->MaxIters; ++t) {
         this->Bprev = this->B;
         
         for (auto& i : this->Order) {
@@ -117,12 +117,12 @@ FitResult<T> CDL0<T>::Fit() {
 template <typename T>
 bool CDL0<T>::CWMinCheck() {
     // Get the Sc = FullOrder - Order
-    std::vector<unsigned int> S;
+    std::vector<std::size_t> S;
     for(arma::sp_mat::const_iterator it = this->B.begin(); it != this->B.end(); ++it) {
         S.push_back(it.row());
     }
     
-    std::vector<unsigned int> Sc;
+    std::vector<std::size_t> Sc;
     set_difference(
         Range1p.begin(),
         Range1p.end(),

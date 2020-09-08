@@ -8,9 +8,9 @@
 template <typename T>
 class CDL012Swaps : public CD<T> {  // Calls CDL012 irrespective of P.ModelType 
     private:
-        unsigned int MaxNumSwaps;
+        std::size_t MaxNumSwaps;
         Params<T> P;
-        unsigned int NoSelectK;
+        std::size_t NoSelectK;
     public:
         CDL012Swaps(const T& Xi, const arma::vec& yi, const Params<T>& Pi);
 
@@ -36,12 +36,12 @@ FitResult<T> CDL012Swaps<T>::Fit() {
     P.Init = 'u';
     
     bool foundbetter = false;
-    for (unsigned int t = 0; t < this->MaxNumSwaps; ++t) {
+    for (std::size_t t = 0; t < this->MaxNumSwaps; ++t) {
         //std::cout<<"1Swaps Iteration: "<<t<<". "<<"Obj: "<<objective<<std::endl;
         //B.print();
         arma::sp_mat::const_iterator start = this->B.begin();
         arma::sp_mat::const_iterator end   = this->B.end();
-        std::vector<unsigned int> NnzIndices;
+        std::vector<std::size_t> NnzIndices;
         for(arma::sp_mat::const_iterator it = start; it != end; ++it) {
             if (it.row() >= NoSelectK){
                 NnzIndices.push_back(it.row());
@@ -57,8 +57,8 @@ FitResult<T> CDL012Swaps<T>::Fit() {
             arma::rowvec riX = (r + this->B[i] * matrix_column_get(*(this->X), i)).t() * *(this->X); // expensive computation ## call the new function here, inlined? ##
             
             double maxcorr = -1;
-            unsigned int maxindex;
-            for(unsigned int j = NoSelectK; j < this->p; ++j) {// Can be made much faster..
+            std::size_t maxindex;
+            for(std::size_t j = NoSelectK; j < this->p; ++j) {// Can be made much faster..
                 if (std::fabs(riX[j]) > maxcorr && this->B[j] == 0) {
                     maxcorr = std::fabs(riX[j]);
                     maxindex = j;

@@ -22,11 +22,11 @@ class CDL012LogisticSwaps : public CD<T> {
         arma::vec ExpyXB;
         std::vector<double> * Xtr;
         T * Xy;
-        unsigned int Iter;
+        std::size_t Iter;
 
-        unsigned int MaxNumSwaps;
+        std::size_t MaxNumSwaps;
         Params<T> P;
-        unsigned int NoSelectK;
+        std::size_t NoSelectK;
 
     public:
         CDL012LogisticSwaps(const T& Xi, const arma::vec& yi, const Params<T>& P);
@@ -62,19 +62,19 @@ FitResult<T> CDL012LogisticSwaps<T>::Fit() {
     
     double objective = result.Objective;
     double Fmin = objective;
-    unsigned int maxindex;
+    std::size_t maxindex;
     double Bmaxindex;
     
     P.Init = 'u';
     
     bool foundbetter;
     
-    for (unsigned int t = 0; t < MaxNumSwaps; ++t) {
+    for (std::size_t t = 0; t < MaxNumSwaps; ++t) {
         //std::cout<<"1Swaps Iteration: "<<t<<". "<<"Obj: "<<objective<<std::endl;
         //B.print();
         arma::sp_mat::const_iterator start = this->B.begin();
         arma::sp_mat::const_iterator end   = this->B.end();
-        std::vector<unsigned int> NnzIndices;
+        std::vector<std::size_t> NnzIndices;
         for(arma::sp_mat::const_iterator it = start; it != end; ++it) {
             if (it.row() >= NoSelectK) {
                 NnzIndices.push_back(it.row());
@@ -104,8 +104,8 @@ FitResult<T> CDL012LogisticSwaps<T>::Fit() {
             
             //auto start2 = std::chrono::high_resolution_clock::now();
             // Later: make sure this scans at least 100 coordinates from outside supp (now it does not)
-            for(unsigned int ll = 0; ll < std::min(100, (int) this->p); ++ll) {
-                unsigned int i = indices(ll);
+            for(std::size_t ll = 0; ll < std::min(100, (int) this->p); ++ll) {
+                std::size_t i = indices(ll);
                 
                 if(this->B[i] == 0 && i >= NoSelectK) {
                     arma::vec ExpyXBnoji = ExpyXBnoj;
@@ -119,7 +119,7 @@ FitResult<T> CDL012LogisticSwaps<T>::Fit() {
                     arma::sp_mat Btemp = this->B;
                     Btemp[j] = 0;
                     double ObjTemp = Objective(ExpyXBnoji, Btemp);
-                    unsigned int innerindex = 0;
+                    std::size_t innerindex = 0;
                     
                     double x = Biold - partial_i/qp2lamda2;
                     double z = std::abs(x) - lambda1ol;
