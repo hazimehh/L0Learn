@@ -75,6 +75,7 @@ FitResult<T> CDL012Swaps<T>::Fit() {
                 this->B = result.B;
                 objective = result.Objective;
                 foundbetter = true;
+                // Rcpp::Rcout << "Swapped Columns " << i << " = 0 and " << maxindex << " non zero" << "\n";
                 break;
                 
             }

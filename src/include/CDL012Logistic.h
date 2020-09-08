@@ -16,7 +16,7 @@ class CDL012Logistic : public CD<T> {
         double qp2lamda2;
         double lambda1;
         double lambda1ol;
-        double b0;
+        double b0 = 0;
         arma::vec ExpyXB;
         std::vector<double> * Xtr;
         T * Xy;
@@ -66,6 +66,8 @@ inline double CDL012Logistic<T>::Objective(arma::vec & r, arma::sp_mat & B) {  /
 template <typename T>
 FitResult<T> CDL012Logistic<T>::Fit() { // always uses active sets
     // arma::mat Xy = X->each_col() % *y; // later
+    
+    this->B = clamp_by_vector(this->B, this->Lows, this->Highs);
     
     double objective = Objective(this->r, this->B);
     
