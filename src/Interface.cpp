@@ -117,7 +117,6 @@ Rcpp::List _L0LearnFit(const T& X, const arma::vec& y, const std::string Loss, c
   auto p = X.n_cols;
   arma::field<arma::sp_mat> Bs(G.Lambda12.size());
   
-  auto p = X.n_cols;
   for (std::size_t i=0; i<G.Lambda12.size(); ++i) {
     // create the px(reg path size) sparse sparseMatrix
     arma::sp_mat B(p,G.Solutions[i].size());
@@ -173,7 +172,6 @@ Rcpp::List _L0LearnCV(const T& X, const arma::vec& y, const std::string Loss, co
     arma::sp_mat B(p, G.Solutions[i].size());
     for (std::size_t j=0; j<G.Solutions[i].size(); ++j)
       B.col(j) = G.Solutions[i][j];
-    }
     
     // append the sparse matrix
     Bs[i] = B;
@@ -192,7 +190,7 @@ Rcpp::List _L0LearnCV(const T& X, const arma::vec& y, const std::string Loss, co
   //std::vector< arma::mat > CVError (G.Solutions.size());
   arma::field< arma::mat > CVError (G.Solutions.size());
   
-  for (std::size_t i=0; i<G.Solutions.size(); ++i) 
+  for (std::size_t i=0; i<G.Solutions.size(); ++i)
     CVError[i] = arma::mat(G.Lambda0[i].size(),nfolds, arma::fill::zeros);
   
   arma::uvec a = arma::linspace<arma::uvec>(0, X.n_rows-1, X.n_rows);
