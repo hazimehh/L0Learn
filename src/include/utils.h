@@ -31,7 +31,7 @@ arma::mat inline matrix_rows_get(const arma::mat &mat, const T1 vector_of_row_in
 
 template <typename T1>
 arma::sp_mat inline matrix_rows_get(const arma::sp_mat &mat, const T1 vector_of_row_indices){
-    // Option for CV for random splitting or contigous splitting.
+    // Option for CV for random splitting or contiguous splitting.
     // 1 - N without permutations splitting at floor(N/n_folds)
     arma::sp_mat row_mat = arma::sp_mat(vector_of_row_indices.n_elem, mat.n_cols);
     
@@ -96,15 +96,11 @@ arma::rowvec inline matrix_column_sums(const arma::sp_mat& mat){
 
 template <typename T1, typename T2>
 double inline matrix_column_dot(const arma::mat &mat, T1 col, const T2 &u){
-    // Rcpp::Rcout << "matrix_column_dot Starts\n"
-    // Rcpp::Rcout << "(" << mat.n_rows << "," << mat.n_cols << ") x (" << u.n_elem << ") \n";;
     return arma::dot(matrix_column_get(mat, col), u);
 }
 
 template <typename T1, typename T2>
 double inline matrix_column_dot(const arma::sp_mat &mat, T1 col, const T2 &u){
-    // Rcpp::Rcout << "matrix_column_dot Starts\n";
-    // Rcpp::Rcout << "(" << mat.n_rows << "," << mat.n_cols << ") x (" << u.n_elem << ") \n";
     return arma::dot(matrix_column_get(mat, col), u);
 }
 

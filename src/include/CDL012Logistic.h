@@ -97,11 +97,12 @@ FitResult<T> CDL012Logistic<T>::Fit() { // always uses active sets
             (*Xtr)[i] = std::abs(partial_i); // abs value of grad
             
             double x = Biold - partial_i / qp2lamda2;
-            double z = std::abs(x) - lambda1ol;
+            double z = clamp(std::copysign(std::abs(x) - lambda1ol, x),
+                             this->Lows[i], this->Highs[i]);
             
             
-            if (z >= thr || (i < NoSelectK && z>0)) {	// often false so body is not costly
-                double Bnew = clamp(std::copysign(z, x), this->Lows[i], this->Highs[i]);
+            if (z >= thr || z <= -thr || (i < NoSelectK)) {	// often false so body is not costly
+                double Bnew = z;
                 this->B[i] = Bnew;
                 ExpyXB %= arma::exp( (Bnew - Biold) * matrix_column_get(*(this->Xy), i));
                 //std::cout<<"In. "<<Objective(r,B)<<std::endl;
@@ -159,9 +160,12 @@ bool CDL012Logistic<T>::CWMinCheck() {
         double partial_i = - arma::sum( matrix_column_get(*(this->Xy), i) / (1 + ExpyXB) );
         (*Xtr)[i] = std::abs(partial_i); // abs value of grad
         double x = - partial_i / qp2lamda2;
-        double z = std::abs(x) - lambda1ol;
-        if (z > thr) {	// often false so body is not costly
-            double Bnew = std::copysign(z, x);
+        double z = clamp(std::copysign(std::abs(x) - lambda1ol, x),
+                         this->Lows[i], this->Highs[i]);
+        
+        
+        if (z >= thr || z <= -thr) {	// often false so body is not costly
+            double Bnew = z;
             this->B[i] = Bnew;
             ExpyXB %= arma::exp( Bnew * matrix_column_get(*(this->Xy), i));
             Cwmin = false;

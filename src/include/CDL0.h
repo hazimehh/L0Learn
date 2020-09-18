@@ -62,14 +62,17 @@ FitResult<T> CDL0<T>::Fit() {
         
         for (auto& i : this->Order) {
             double cor = matrix_column_dot(*(this->X), i, this->r);
-            (*Xtr)[i] = std::abs(cor); // do abs here instead from when sorting
-            double Bi = this->B[i]; // B[i] is costly
-            double x = cor + Bi;
             
-            if (x >= thr || x <= -thr || i < NoSelectK) {	// often false so body is not costly
-                this->r += matrix_column_mult(*(this->X), i, -cor);
-                this->B[i] = clamp(x, this->Lows[i], this->Highs[i]);
-            } else if (Bi != 0) { 
+            (*Xtr)[i] = std::abs(cor); // do abs here instead from when sorting
+            
+            double Bi = this->B[i]; // B[i] is costly
+            
+            double x = clamp(cor + Bi, this->Lows[i], this->Highs[i]); // x is beta_tilde_i
+
+            if (x >= thr || x <= -thr || (i < NoSelectK)) { 	// often false so body is not costly
+                this->B[i] = x;
+                this->r += matrix_column_mult(*(this->X), i, Bi - this->B[i]);
+            } else if (Bi != 0) {  
                 this->r += matrix_column_mult(*(this->X), i, Bi);
                 this->B[i] = 0;
             } // do nothing if x == 0 and B[i] == 0
@@ -133,12 +136,11 @@ bool CDL0<T>::CWMinCheck() {
     bool Cwmin = true;
     for (auto& i : Sc) {
         
-        double x = matrix_column_dot(*(this->X), i, this->r);
-        double absx = std::abs(x);
-        (*Xtr)[i] = absx; // do abs here instead from when sorting
+        double x = clamp(matrix_column_dot(*(this->X), i, this->r),
+                         this->Lows[i], this->Highs[i]);
         
         // B[i] = 0 in this case!
-        if (absx >= thr) {	// often false so body is not costly
+        if (x >= thr || x <= -thr) {	// often false so body is not costly
             this->r -= matrix_column_mult(*(this->X), i, x);
             this->B[i] = x;
             Cwmin = false;

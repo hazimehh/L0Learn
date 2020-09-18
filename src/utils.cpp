@@ -66,14 +66,17 @@ arma::rowvec matrix_normalize(const arma::sp_mat &mat, arma::sp_mat &mat_norm){
     arma::rowvec scaleX = arma::zeros<arma::rowvec>(p); // will contain the l2norm of every col
     
     for (auto col = 0; col < p; col++){
-        double l2norm = arma::norm(mat.col(col), 2);
+        double l2norm = arma::norm(matrix_column_get(mat, col), 2);
         scaleX(col) = l2norm;
-        
+    }
+    
+    scaleX.replace(0, -1);
+    
+    for (auto col = 0; col < p; col++){
         arma::sp_mat::col_iterator begin = mat_norm.begin_col(col);
         arma::sp_mat::col_iterator end = mat_norm.end_col(col);
         for (; begin != end; ++begin)
-            (*begin) = (*begin)/l2norm;
-        
+            (*begin) = (*begin)/scaleX(col);
     }
     
     if (mat_norm.has_nan())
@@ -106,6 +109,7 @@ std::tuple<arma::mat, arma::rowvec> matrix_center(const arma::mat& X, bool inter
     auto p = X.n_cols;
     arma::rowvec meanX;
     arma::mat X_normalized;
+    
     if (intercept){
         meanX = arma::mean(X, 0);
         X_normalized = X.each_row() - meanX;

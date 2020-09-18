@@ -323,6 +323,7 @@ Rcpp::List L0LearnFit(const SEXP& X, const arma::vec& y, const std::string Loss,
                        Lambdas, ExcludeFirstK, Intercept, Lows, Highs);
   } else {
     to_arma_error();
+    return Rcpp::List::create();
   }
 }
   
@@ -358,5 +359,6 @@ Rcpp::List L0LearnCV(const SEXP& X, const arma::vec& y, const std::string Loss, 
                       nfolds, seed, ExcludeFirstK, Intercept, Lows, Highs);
   } else {
     to_arma_error();
+    return Rcpp::List::create();
   }
 }

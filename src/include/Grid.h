@@ -52,7 +52,7 @@ Grid<T>::Grid(const T& X, const arma::vec& y, const GridParams<T>& PGi) {
 template <typename T>
 void Grid<T>::Fit() {
     
-    std::vector< std::vector<std::unique_ptr<FitResult<T>> > > G;
+    std::vector<std::vector<std::unique_ptr<FitResult<T>>>> G;
     if (PG.P.Specs.L0) {
         G.push_back(std::move(Grid1D<T>(Xscaled, yscaled, PG).Fit()));
         Lambda12.push_back(0);
@@ -67,13 +67,16 @@ void Grid<T>::Fit() {
     Converged = std::vector< std::vector<bool> >(G.size());
     
     //for (auto &g : G)
+    // Rcpp::Rcout << "Starting G iteration \n";
     for (std::size_t i=0; i<G.size(); ++i) {
+        // Rcpp::Rcout << "Lambda12 " << G[i][0]->ModelParams[1] << ", " << G[i][0]->ModelParams[2] <<  "\n";
         if (PG.P.Specs.L0L1){ 
             Lambda12.push_back(G[i][0]->ModelParams[1]); 
         } else if (PG.P.Specs.L0L2) { 
             Lambda12.push_back(G[i][0]->ModelParams[2]); 
         }
         
+        // Rcpp::Rcout << "Size of G[" << i << "] = " << G[i].size() << " \n";
         for (auto &g : G[i]) {
             
             Lambda0[i].push_back(g->ModelParams[0]);

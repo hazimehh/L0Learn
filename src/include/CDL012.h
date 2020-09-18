@@ -69,10 +69,11 @@ FitResult<T> CDL012<T>::Fit() {
             
             double Bi = this->B[i]; // B[i] is costly
             double x = cor + Bi; // x is beta_tilde_i
-            double z = (std::abs(x) - lambda1) / Onep2lamda2;
+            double z = clamp(std::copysign((std::abs(x) - lambda1) / Onep2lamda2, x),
+                             this->Lows[i], this->Highs[i]);
             
-            if (z >= thr || (i < NoSelectK && z>0)) { 	// often false so body is not costly
-                this->B[i] = clamp(std::copysign(z, x), this->Lows[i], this->Highs[i]);
+            if (z >= thr || z <= -thr || (i < NoSelectK)) { 	// often false so body is not costly
+                this->B[i] = z;
                 this->r += matrix_column_mult(*(this->X), i, Bi - this->B[i]);
             } else if (Bi != 0) {  
                 this->r += matrix_column_mult(*(this->X), i, Bi);
@@ -138,12 +139,12 @@ bool CDL012<T>::CWMinCheck(){
         double x = matrix_column_dot(*(this->X), i, this->r);
         double absx = std::abs(x);
         (*Xtr)[i] = absx; // do abs here instead from when sorting
-        double z = (absx - lambda1) / Onep2lamda2;
+        double z = clamp(std::copysign((absx - lambda1) / Onep2lamda2, x),
+                         this->Lows[i], this->Highs[i]);
         
-        if (z > thr) { 	// often false so body is not costly
-            this->B[i] = std::copysign(z, x);
+        if (z >= thr || z <= -thr) { 	// often false so body is not costly
+            this->B[i] = z;
             this->r -= matrix_column_mult(*(this->X), i, this->B[i]);
-            // r -= X->unsafe_col(i) * B[i];
             Cwmin = false;
         }
     }

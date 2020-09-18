@@ -24,12 +24,12 @@ library("L0Learn")
 #     
 # }
 
-expect_equal_cv <- function(x, y, cv_tolerance=1e-6) {
+expect_equal_cv <- function(x, y, cv_tolerance=1e-6, info=NULL) {
     for (i in seq_along(x)){
         if (startsWith(names(x)[i], 'cv')){
-            expect_equal(x[i], y[i], tolerance=cv_tolerance)
+            expect_equal(x[i], y[i], tolerance=cv_tolerance, info=info)
         } else {
-            expect_equal(x[i], y[i])
+            expect_equal(x[i], y[i], info=info)
         }
     }
 }

@@ -68,10 +68,10 @@ FitResult<T> CDL012LogisticSwaps<T>::Fit() {
     P.Init = 'u';
     
     bool foundbetter;
+    bool foundbetter_i;
     
     for (std::size_t t = 0; t < MaxNumSwaps; ++t) {
-        //std::cout<<"1Swaps Iteration: "<<t<<". "<<"Obj: "<<objective<<std::endl;
-        //B.print();
+        
         arma::sp_mat::const_iterator start = this->B.begin();
         arma::sp_mat::const_iterator end   = this->B.end();
         std::vector<std::size_t> NnzIndices;
@@ -92,11 +92,11 @@ FitResult<T> CDL012LogisticSwaps<T>::Fit() {
             //auto start1 = std::chrono::high_resolution_clock::now();
             ///
             //arma::rowvec gradient = - arma::sum( Xy->each_col() / (1 + ExpyXBnoj) , 0); // + twolambda2 * Biold // sum column-wise
-            arma::rowvec temp_gradient = 1 + ExpyXBnoj;
+            arma::vec temp_gradient = 1 + ExpyXBnoj;
             T divided_matrix = matrix_vector_divide(*Xy, temp_gradient);
             arma::rowvec gradient = - matrix_column_sums(divided_matrix);
-            arma::uvec indices = arma::sort_index(arma::abs(gradient),"descend");
-            bool foundbetteri = false;
+            arma::uvec indices = arma::sort_index(arma::abs(gradient), "descend");
+            foundbetter_i = false;
             ///
             //auto end1 = std::chrono::high_resolution_clock::now();
             //std::cout<<"grad computation:  "<<std::chrono::duration_cast<std::chrono::milliseconds>(end1-start1).count() << " ms " << std::endl;
@@ -123,7 +123,7 @@ FitResult<T> CDL012LogisticSwaps<T>::Fit() {
                     
                     double x = Biold - partial_i/qp2lamda2;
                     double z = std::abs(x) - lambda1ol;
-                    Binew = std::copysign(z, x); // no need to check if >= sqrt(2lambda_0/Lc)
+                    Binew = clamp(std::copysign(z, x), this->Lows[i], this->Highs[i]); // no need to check if >= sqrt(2lambda_0/Lc)
                     
                     while(!converged && innerindex < 20  && ObjTemp >= Fmin) { // ObjTemp >= Fmin
                         ExpyXBnoji %= arma::exp( (Binew - Biold) *  matrix_column_get(*Xy, i));
@@ -137,7 +137,7 @@ FitResult<T> CDL012LogisticSwaps<T>::Fit() {
                         Biold = Binew;
                         x = Biold - partial_i/qp2lamda2;
                         z = std::abs(x) - lambda1ol;
-                        Binew = std::copysign(z, x); // no need to check if >= sqrt(2lambda_0/Lc)
+                        Binew = clamp(std::copysign(z, x), this->Lows[i], this->Highs[i]); // no need to check if >= sqrt(2lambda_0/Lc)
                         innerindex += 1;
                     }
                     
@@ -149,7 +149,7 @@ FitResult<T> CDL012LogisticSwaps<T>::Fit() {
                         Fmin = ObjTemp;
                         maxindex = i;
                         Bmaxindex = Binew;
-                        foundbetteri = true;
+                        foundbetter_i = true;
                     }
                     
                     // Can be made much faster (later)
@@ -157,7 +157,7 @@ FitResult<T> CDL012LogisticSwaps<T>::Fit() {
                     
                 }
                 
-                if (foundbetteri) {
+                if (foundbetter_i) {
                     this->B[j] = 0;
                     this->B[maxindex] = Bmaxindex;
                     P.InitialSol = &(this->B);
@@ -181,7 +181,7 @@ FitResult<T> CDL012LogisticSwaps<T>::Fit() {
         }
         
         if(!foundbetter) {
-            //result.Model = this;
+            // Early exit to prevent looping
             return result;
         }
     }
