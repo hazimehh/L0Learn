@@ -57,4 +57,5 @@ year = {2020},
 doi = {10.1287/opre.2019.1919},
 URL = {https://doi.org/10.1287/opre.2019.1919},
 eprint = {https://doi.org/10.1287/opre.2019.1919}
+}
 ```
