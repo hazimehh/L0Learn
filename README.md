@@ -46,10 +46,15 @@ While for many challenging statistical instances L0Learn leads to optimal soluti
 ## Citing L0Learn
 If you find L0Learn useful in your research, please consider citing the following paper:
 ```
-@article{hazimeh2018fast,
-  title={Fast best subset selection: Coordinate descent and local combinatorial optimization algorithms},
-  author={Hazimeh, Hussein and Mazumder, Rahul},
-  journal={arXiv preprint arXiv:1803.01454},
-  year={2018}
-}
+@article{doi:10.1287/opre.2019.1919,
+author = {Hazimeh, Hussein and Mazumder, Rahul},
+title = {Fast Best Subset Selection: Coordinate Descent and Local Combinatorial Optimization Algorithms},
+journal = {Operations Research},
+volume = {68},
+number = {5},
+pages = {1517-1537},
+year = {2020},
+doi = {10.1287/opre.2019.1919},
+URL = {https://doi.org/10.1287/opre.2019.1919},
+eprint = {https://doi.org/10.1287/opre.2019.1919}
 ```
