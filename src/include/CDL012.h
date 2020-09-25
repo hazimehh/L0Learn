@@ -81,7 +81,7 @@ FitResult<T> CDL012<T>::Fit() {
             
             if (i < NoSelectK){
                 this->B[i] = Bi_wb;
-            } else if (Bi_nb < thr){
+            } else if (std::abs(Bi_nb) < thr){
                 // Maximum value of Bi to small to pass L0 threshold => set to 0;
                 this->B[i] = 0;
             } else {
@@ -100,6 +100,7 @@ FitResult<T> CDL012<T>::Fit() {
             
             // B changed from Bi to this->B[i], therefore update residual by change.
             this->r += matrix_column_mult(*(this->X), i, Bi - this->B[i]);
+        }
             
         //B.print();
         if (this->Converged()) {
@@ -156,16 +157,24 @@ bool CDL012<T>::CWMinCheck(){
     
     bool Cwmin = true;
     for (auto& i : Sc) {
+        // B[i] == 0 for all i in Sc
+    
         double x = matrix_column_dot(*(this->X), i, this->r);
-        double absx = std::abs(x);
-        (*Xtr)[i] = absx; // do abs here instead from when sorting
-        double z = clamp(std::copysign((absx - lambda1) / Onep2lamda2, x),
-                         this->Lows[i], this->Highs[i]);
+        double Bi_nb = std::copysign((std::abs(x) - lambda1) / Onep2lamda2, x); // Bi with No Bounds (nb);
+        double Bi_wb = clamp(Bi_nb, this->Lows[i], this->Highs[i]);  // Bi With Bounds (wb)
         
-        if (z >= thr || z <= -thr) { 	// often false so body is not costly
-            this->B[i] = z;
-            this->r -= matrix_column_mult(*(this->X), i, this->B[i]);
-            Cwmin = false;
+        if (std::abs(Bi_nb) >= thr) {
+            // We know Bi_nb >= sqrt(thr)
+            double delta = std::sqrt(std::pow(std::abs(Bi_wb) - lambda1, 2)  - 2*this->ModelParams[0]*Onep2lamda2);
+            delta /= Onep2lamda2;
+            
+            if ((Bi_nb - delta <= Bi_wb) && (Bi_wb <= Bi_nb + delta)){
+                // Bi_wb exists in [Bi_nb - delta, Bi_nb+delta]
+                // Therefore accept Bi_wb
+                this->B[i] = Bi_wb;
+                this->r -= matrix_column_mult(*(this->X), i, Bi_wb);
+                Cwmin = false;
+            }
         }
     }
     return Cwmin;

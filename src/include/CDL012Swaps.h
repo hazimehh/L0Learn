@@ -1,5 +1,6 @@
 #ifndef CDL012SWAPS_H
 #define CDL012SWAPS_H
+#include <map>
 #include "RcppArmadillo.h"
 #include "CD.h"
 #include "CDL012.h"
@@ -32,7 +33,6 @@ FitResult<T> CDL012Swaps<T>::Fit() {
     auto result = CDL012<T>(*(this->X), *(this->y), P).Fit(); // result will be maintained till the end
     this->B = result.B;
     double objective = result.Objective;
-    double old_Bi;
     P.Init = 'u';
     
     bool foundbetter = false;
@@ -64,9 +64,9 @@ FitResult<T> CDL012Swaps<T>::Fit() {
                 // TODO: Account for bounds when determining best swap
                 // Loops through each column and finds the column with the highest correlation to residuals
                 // In non-constrained cases, the highest correlation will always be the best option
-                // However, if bounds restrict the value of B, it is possible that swapping column 'i'
+                // However, if bounds restrict the value of B[j], it is possible that swapping column 'i'
                 // and column 'j' might be rejected as B[j], when constrained, is not able to take a value
-                // with sufficient magnitude.
+                // with sufficient magnitude to utilie the correleation.
                 // Therefore, we must ensure that 'j' was not already rejected.
                 if (std::fabs(riX[j]) > maxcorr && this->B[j] == 0) {
                     maxcorr = std::fabs(riX[j]);
@@ -76,21 +76,27 @@ FitResult<T> CDL012Swaps<T>::Fit() {
             
             // Check if the correlation is sufficiently large to make up for regularization
             if(maxcorr > (1 + 2 * this->ModelParams[2])*std::fabs(this->B[i]) + this->ModelParams[1]) {
+                Rcpp::Rcout << t << ": Proposing Swap " << i << " => NNZ and " << maxindex << " => 0 \n";
                 // Proposed new Swap
                 // Value (without considering bounds are solvable in closed form)
                 // Must be clamped to bounds
                 
-                old_Bi = this->B[i];
+                T old_B = T(this->B); // Copy B if swap needs to be "undone"
+                // arma::vec old_r = P.r;
                 this->B[i] = 0;
-                this->B[maxindex] = clamp((riX[maxindex]  - std::copysign(this->ModelParams[1],riX[maxindex])) 
-                                              / (1 + 2 * this->ModelParams[2]),
-                                              this->P.Lows[maxindex], this->P.Highs[maxindex]);
+                
+                // Bi with No Bounds (nb);
+                double Bi_nb = (riX[maxindex]  - std::copysign(this->ModelParams[1],riX[maxindex])) / (1 + 2 * this->ModelParams[2]);
+                double Bi_wb = clamp(Bi_nb, this->Lows[maxindex], this->Highs[maxindex]);  // Bi With Bounds (wb)
+                this->B[maxindex] = Bi_wb;
                 
                 // Change initial solution to Swapped value to seed standard CD algorithm.
                 P.InitialSol = &(this->B);
                 *P.r = *(this->y) - *(this->X) * (this->B);
                 result = CDL012<T>(*(this->X), *(this->y), P).Fit();
                 
+                Rcpp::Rcout << "Swap Objective  " <<  result.Objective << " \n";
+                Rcpp::Rcout << "Old Objective  " <<  objective << " \n";
                 if (result.Objective <= objective){
                     // Accept Swap
                     this->B = result.B;
@@ -99,9 +105,8 @@ FitResult<T> CDL012Swaps<T>::Fit() {
                     break;
                 } else {
                     // Reject Swap
-                    this->B[i] = old_Bi;
-                    this->B[maxindex] = 0;
-                    *P.r = *(this->y) - *(this->X) * (this->B);
+                    this->B = old_B;
+                    //*P.r = old_r;
                 }
             }
         }

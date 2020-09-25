@@ -77,7 +77,7 @@ FitResult<T> CDL0<T>::Fit() {
             
             if (i < NoSelectK){
                 this->B[i] = Bi_wb;
-            } else if (Bi_nb < thr){
+            } else if (std::fabs(Bi_nb) < thr){
                 // Maximum value of Bi to small to pass L0 threshold => set to 0;
                 this->B[i] = 0;
             } else {
@@ -154,16 +154,24 @@ bool CDL0<T>::CWMinCheck() {
     
     bool Cwmin = true;
     for (auto& i : Sc) {
+        // B[i] == 0 for all i in Sc
         
-        double x = clamp(matrix_column_dot(*(this->X), i, this->r),
-                         this->Lows[i], this->Highs[i]);
-        
-        // B[i] = 0 in this case!
-        if (x >= thr || x <= -thr) {	// often false so body is not costly
-            this->r -= matrix_column_mult(*(this->X), i, x);
-            this->B[i] = x;
-            Cwmin = false;
+        double Bi_nb = matrix_column_dot(*(this->X), i, this->r);
+        double Bi_wb = clamp(Bi_nb, this->Lows[i], this->Highs[i]);
+            
+        if (std::abs(Bi_nb) >= thr) {
+            // We know Bi_nb >= sqrt(thr)
+            double delta = std::sqrt(Bi_wb*Bi_wb - thr*thr);
+            
+            if ((Bi_nb - delta <= Bi_wb) && (Bi_wb <= Bi_nb + delta)){
+                // Bi_wb exists in [Bi_nb - delta, Bi_nb+delta]
+                // Therefore accept Bi_wb
+                this->B[i] = Bi_wb;
+                this->r -= matrix_column_mult(*(this->X), i, Bi_wb);
+                Cwmin = false;
+            }
         }
+        
     }
     return Cwmin;
     

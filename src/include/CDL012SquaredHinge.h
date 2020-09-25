@@ -99,23 +99,32 @@ FitResult<T> CDL012SquaredHinge<T>::Fit() {
             
             (*Xtr)[i] = std::abs(partial_i); // abs value of grad
             
+            // Ideal value of Bi_new assuming no L0, L1, L2 or bounds.
             double x = Biold - partial_i / qp2lamda2;
-            double z = clamp(std::copysign(std::abs(x) - lambda1ol, x),
-                             this->Lows[i], this->Highs[i]);
+            double Bi_nb = std::copysign(std::abs(x) - lambda1/qp2lamda2, x); // Bi with No Bounds (nb)
+            double Bi_wb = clamp(Bi_nb, this->Lows[i], this->Highs[i]);  // Bi With Bounds (wb)
+            double delta;
             
-            
-            if (z >= thr || z <= -thr || (i < NoSelectK )) { 	// often false so body is not costly
-                double Bnew = z;
-                this->B[i] = Bnew;
-                onemyxb += (Biold - Bnew) * matrix_column_get(*(this->Xy), i);
-                indices = arma::find(onemyxb > 0);
-                
-                //std::cout<<"In. "<<Objective(r,B)<<std::endl;
-            } else if (Biold != 0) { // do nothing if x=0 and B[i] = 0
+            if (i < NoSelectK){
+                this->B[i] = Bi_wb;
+            } else if (Bi_nb < thr){
+                // Maximum value of Bi to small to pass L0 threshold => set to 0;
                 this->B[i] = 0;
-                onemyxb += (Biold) * matrix_column_get(*(this->Xy), i);
-                indices = arma::find(onemyxb > 0);
+            } else {
+                // We know Bi_nb >= thr)
+                delta = std::sqrt(std::pow(std::abs(Bi_wb) - lambda1/qp2lamda2, 2) - 2*this->ModelParams[0]*qp2lamda2);
+                if ((Bi_nb - delta <= Bi_wb) && (Bi_wb <= Bi_nb + delta)){
+                    // Bi_wb exists in [Bi_nb - delta, Bi_nb+delta]
+                    // Therefore accept Bi_wb
+                    this->B[i] = Bi_wb;
+                } else {
+                    this->B[i] = 0;
+                }
             }
+            
+            onemyxb += (Biold - this->B[i]) * matrix_column_get(*(this->Xy), i);
+            indices = arma::find(onemyxb > 0);
+            
         }
         
         this->SupportStabilized();

@@ -119,17 +119,15 @@ FitResult<T> CDL012Logistic<T>::Fit() { // always uses active sets
             
             // B changed from Bi to this->B[i], therefore update residual by change.
             ExpyXB %= arma::exp( (this->B[i] - Biold) * matrix_column_get(*(this->Xy), i));
-            }
         }
         
         this->SupportStabilized();
         
         // only way to terminate is by (i) converging on active set and (ii) CWMinCheck
-        if (this->Converged()) {
-            if (CWMinCheck()) {
-                break;
-            }
+        if (this->Converged() && CWMinCheck()) {
+            break;
         }
+
         
         
     }
