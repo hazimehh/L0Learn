@@ -68,7 +68,6 @@ FitResult<T> CDL0<T>::Fit() {
             double Bi = this->B[i]; // old Bi to adjust residuals if Bi updates
             double Bi_nb = cor + Bi; // Bi with No Bounds (nb);
             double Bi_wb = clamp(Bi_nb, this->Lows[i], this->Highs[i]);  // Bi With Bounds (wb)
-            double delta;
             
             /* 2 Cases:
              *     1. Set Bi to 0
@@ -82,7 +81,7 @@ FitResult<T> CDL0<T>::Fit() {
                 this->B[i] = 0;
             } else {
                 // We know Bi_nb >= sqrt(thr)
-                delta = std::sqrt(Bi_wb*Bi_wb - thr*thr);
+                double delta = std::sqrt(Bi_nb*Bi_nb - thr*thr);
                
                 if ((Bi_nb - delta <= Bi_wb) && (Bi_wb <= Bi_nb + delta)){
                     // Bi_wb exists in [Bi_nb - delta, Bi_nb+delta]

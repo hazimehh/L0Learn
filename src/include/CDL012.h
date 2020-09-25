@@ -72,7 +72,6 @@ FitResult<T> CDL012<T>::Fit() {
             double x = cor + Bi;
             double Bi_nb = std::copysign((std::abs(x) - lambda1) / Onep2lamda2, x); // Bi with No Bounds (nb);
             double Bi_wb = clamp(Bi_nb, this->Lows[i], this->Highs[i]);  // Bi With Bounds (wb)
-            double delta;
             
             /* 2 Cases:
              *     1. Set Bi to 0
@@ -86,7 +85,7 @@ FitResult<T> CDL012<T>::Fit() {
                 this->B[i] = 0;
             } else {
                 // We know Bi_nb >= thr)
-                delta = std::sqrt(std::pow(std::abs(Bi_wb) - lambda1, 2)  - 2*this->ModelParams[0]*Onep2lamda2);
+                double delta = std::sqrt(std::pow(std::abs(x) - lambda1, 2) - 2*this->ModelParams[0]*Onep2lamda2);
                 delta /= Onep2lamda2;
                 
                 if ((Bi_nb - delta <= Bi_wb) && (Bi_wb <= Bi_nb + delta)){
@@ -165,7 +164,7 @@ bool CDL012<T>::CWMinCheck(){
         
         if (std::abs(Bi_nb) >= thr) {
             // We know Bi_nb >= sqrt(thr)
-            double delta = std::sqrt(std::pow(std::abs(Bi_wb) - lambda1, 2)  - 2*this->ModelParams[0]*Onep2lamda2);
+            double delta = std::sqrt(std::pow(std::abs(x) - lambda1, 2)  - 2*this->ModelParams[0]*Onep2lamda2);
             delta /= Onep2lamda2;
             
             if ((Bi_nb - delta <= Bi_wb) && (Bi_wb <= Bi_nb + delta)){

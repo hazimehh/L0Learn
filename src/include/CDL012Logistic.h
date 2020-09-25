@@ -98,7 +98,6 @@ FitResult<T> CDL012Logistic<T>::Fit() { // always uses active sets
             // Bi with No Bounds (nb); accounting for L1, L2 penalties
             double Bi_nb = std::copysign(std::abs(x) - lambda1/qp2lamda2, x);
             double Bi_wb = clamp(Bi_nb, this->Lows[i], this->Highs[i]);  // Bi With Bounds (wb)
-            double delta;
             
             if (i < NoSelectK){
                 this->B[i] = Bi_wb;
@@ -107,7 +106,7 @@ FitResult<T> CDL012Logistic<T>::Fit() { // always uses active sets
                 this->B[i] = 0;
             } else {
                 // We know Bi_nb >= thr)
-                delta = std::sqrt(std::pow(std::abs(Bi_wb) - lambda1/qp2lamda2, 2) - 2*this->ModelParams[0]*qp2lamda2);
+                double delta = std::sqrt(std::pow(std::abs(x) - lambda1/qp2lamda2, 2) - 2*this->ModelParams[0]*qp2lamda2);
                 if ((Bi_nb - delta <= Bi_wb) && (Bi_wb <= Bi_nb + delta)){
                     // Bi_wb exists in [Bi_nb - delta, Bi_nb+delta]
                     // Therefore accept Bi_wb
@@ -167,21 +166,27 @@ bool CDL012Logistic<T>::CWMinCheck() {
         // Calculate Partial_i
         double partial_i = - arma::sum( matrix_column_get(*(this->Xy), i) / (1 + ExpyXB) );
         (*Xtr)[i] = std::abs(partial_i); // abs value of grad
+        
+        // B[i] == 0 for all i in Sc.
         double x = - partial_i / qp2lamda2;
-        double z = clamp(std::copysign(std::abs(x) - lambda1ol, x),
-                         this->Lows[i], this->Highs[i]);
+        double Bi_nb = std::copysign(std::abs(x) - lambda1/qp2lamda2, x);
+        double Bi_wb = clamp(Bi_nb, this->Lows[i], this->Highs[i]);  // Bi With Bounds (wb)
+        double delta;
         
-        
-        if (z >= thr || z <= -thr) {	// often false so body is not costly
-            double Bnew = z;
-            this->B[i] = Bnew;
-            ExpyXB %= arma::exp( Bnew * matrix_column_get(*(this->Xy), i));
-            Cwmin = false;
-            this->Order.push_back(i);
-            //std::cout<<"Found Violation !!!"<<std::endl;
+        if (std::abs(Bi_nb) >= thr) {
+            // We know Bi_nb >= sqrt(thr)
+            double delta = std::sqrt(std::pow(std::abs(x) - lambda1/qp2lamda2, 2) - 2*this->ModelParams[0]*qp2lamda2);
+            
+            if ((Bi_nb - delta <= Bi_wb) && (Bi_wb <= Bi_nb + delta)){
+                // Bi_wb exists in [Bi_nb - delta, Bi_nb+delta]
+                // Therefore accept Bi_wb
+                this->B[i] = Bi_wb;
+                this->Order.push_back(i);
+                ExpyXB %= arma::exp( Bi_wb * matrix_column_get(*(this->Xy), i));
+                Cwmin = false;
+            }
         }
     }
-    //std::cout<<"#################"<<std::endl;
     return Cwmin;
 }
 
