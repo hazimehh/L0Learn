@@ -65,17 +65,36 @@ FitResult<T> CDL0<T>::Fit() {
             
             (*Xtr)[i] = std::abs(cor); // do abs here instead from when sorting
             
-            double Bi = this->B[i]; // B[i] is costly
+            double Bi = this->B[i]; // old Bi to adjust residuals if Bi updates
+            double Bi_nb = cor + Bi; // Bi with No Bounds (nb);
+            double Bi_wb = clamp(Bi_nb, this->Lows[i], this->Highs[i]);  // Bi With Bounds (wb)
+            double delta;
             
-            double x = clamp(cor + Bi, this->Lows[i], this->Highs[i]); // x is beta_tilde_i
-
-            if (x >= thr || x <= -thr || (i < NoSelectK)) { 	// often false so body is not costly
-                this->B[i] = x;
-                this->r += matrix_column_mult(*(this->X), i, Bi - this->B[i]);
-            } else if (Bi != 0) {  
-                this->r += matrix_column_mult(*(this->X), i, Bi);
+            /* 2 Cases:
+             *     1. Set Bi to 0
+             *     2. Set Bi to NNZ
+             */
+            
+            if (i < NoSelectK){
+                this->B[i] = Bi_wb;
+            } else if (Bi_nb < thr){
+                // Maximum value of Bi to small to pass L0 threshold => set to 0;
                 this->B[i] = 0;
-            } // do nothing if x == 0 and B[i] == 0
+            } else {
+                // We know Bi_nb >= sqrt(thr)
+                delta = std::sqrt(Bi_wb*Bi_wb - thr*thr);
+               
+                if ((Bi_nb - delta <= Bi_wb) && (Bi_wb <= Bi_nb + delta)){
+                    // Bi_wb exists in [Bi_nb - delta, Bi_nb+delta]
+                    // Therefore accept Bi_wb
+                    this->B[i] = Bi_wb;
+                } else {
+                    this->B[i] = 0;
+                }
+            }
+            
+            // B changed from Bi to this->B[i], therefore update residual by change.
+            this->r += matrix_column_mult(*(this->X), i, Bi - this->B[i]);
         }
         
         if (this->Converged()) {

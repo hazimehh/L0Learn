@@ -75,19 +75,15 @@ FitResult<T> CDL012Logistic<T>::Fit() { // always uses active sets
     this->Order.resize(std::min((int) (this->B.n_nonzero + ScreenSize + NoSelectK), (int)(this->p)));
     
     for (std::size_t t = 0; t < this->MaxIters; ++t) {
-        //std::cout<<"CDL012 Logistic: "<< t << " " << objective<<std::endl;
         this->Bprev = this->B;
         
         // Update the intercept
         if (intercept){
             double b0old = b0;
             double partial_b0 = - arma::sum( *(this->y) / (1 + ExpyXB) );
-            b0 -= partial_b0 / (this->n * LipschitzConst); // intercept is not regularized
+            b0 -= partial_b0 / (this->n * LipschitzConst); // intercept is not regularized or bounded 
             ExpyXB %= arma::exp( (b0 - b0old) * *(this->y));
         }
-        
-        //std::cout<<"Intercept. "<<Objective(r,B)<<std::endl;
-        
         
         for (auto& i : this->Order) {
             
@@ -96,19 +92,33 @@ FitResult<T> CDL012Logistic<T>::Fit() { // always uses active sets
             double partial_i = - arma::sum( matrix_column_get(*(this->Xy), i) / (1 + ExpyXB) ) + twolambda2 * Biold;
             (*Xtr)[i] = std::abs(partial_i); // abs value of grad
             
-            double x = Biold - partial_i / qp2lamda2;
-            double z = clamp(std::copysign(std::abs(x) - lambda1ol, x),
-                             this->Lows[i], this->Highs[i]);
+            // Ideal value of Bi_new assuming no L0, L1, L2 or bounds.
+            double x = Biold - partial_i / qp2lamda2; 
             
+            // Bi with No Bounds (nb); accounting for L1, L2 penalties
+            double Bi_nb = std::copysign(std::abs(x) - lambda1/qp2lamda2, x);
+            double Bi_wb = clamp(Bi_nb, this->Lows[i], this->Highs[i]);  // Bi With Bounds (wb)
+            double delta;
             
-            if (z >= thr || z <= -thr || (i < NoSelectK)) {	// often false so body is not costly
-                double Bnew = z;
-                this->B[i] = Bnew;
-                ExpyXB %= arma::exp( (Bnew - Biold) * matrix_column_get(*(this->Xy), i));
-                //std::cout<<"In. "<<Objective(r,B)<<std::endl;
-            } else if (Biold != 0) {  // do nothing if x=0 and B[i] = 0
-                ExpyXB %= arma::exp( - Biold * matrix_column_get(*(this->Xy), i));
+            if (i < NoSelectK){
+                this->B[i] = Bi_wb;
+            } else if (Bi_nb < thr){
+                // Maximum value of Bi to small to pass L0 threshold => set to 0;
                 this->B[i] = 0;
+            } else {
+                // We know Bi_nb >= thr)
+                delta = std::sqrt(std::pow(std::abs(Bi_wb) - lambda1/qp2lamda2, 2) - 2*this->ModelParams[0]*qp2lamda2);
+                if ((Bi_nb - delta <= Bi_wb) && (Bi_wb <= Bi_nb + delta)){
+                    // Bi_wb exists in [Bi_nb - delta, Bi_nb+delta]
+                    // Therefore accept Bi_wb
+                    this->B[i] = Bi_wb;
+                } else {
+                    this->B[i] = 0;
+                }
+            }
+            
+            // B changed from Bi to this->B[i], therefore update residual by change.
+            ExpyXB %= arma::exp( (this->B[i] - Biold) * matrix_column_get(*(this->Xy), i));
             }
         }
         

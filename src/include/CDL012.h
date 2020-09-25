@@ -30,8 +30,8 @@ class CDL012 : public CD<T> {
 
 template <typename T>
 CDL012<T>::CDL012(const T& Xi, const arma::vec& yi, const Params<T>& P) : CD<T>(Xi, yi, P) {
-    thr = std::sqrt((2 * this->ModelParams[0]) / (1 + 2 * this->ModelParams[2]));
     Onep2lamda2 = 1 + 2 * this->ModelParams[2]; 
+    thr = std::sqrt((2 * this->ModelParams[0]) / Onep2lamda2);
     lambda1 = this->ModelParams[1]; 
     Xtr = P.Xtr; 
     Iter = P.Iter; 
@@ -67,20 +67,40 @@ FitResult<T> CDL012<T>::Fit() {
             
             (*Xtr)[i] = std::abs(cor); // do abs here instead from when sorting
             
-            double Bi = this->B[i]; // B[i] is costly
-            double x = cor + Bi; // x is beta_tilde_i
-            double z = clamp(std::copysign((std::abs(x) - lambda1) / Onep2lamda2, x),
-                             this->Lows[i], this->Highs[i]);
             
-            if (z >= thr || z <= -thr || (i < NoSelectK)) { 	// often false so body is not costly
-                this->B[i] = z;
-                this->r += matrix_column_mult(*(this->X), i, Bi - this->B[i]);
-            } else if (Bi != 0) {  
-                this->r += matrix_column_mult(*(this->X), i, Bi);
+            double Bi = this->B[i]; // old Bi to adjust residuals if Bi updates
+            double x = cor + Bi;
+            double Bi_nb = std::copysign((std::abs(x) - lambda1) / Onep2lamda2, x); // Bi with No Bounds (nb);
+            double Bi_wb = clamp(Bi_nb, this->Lows[i], this->Highs[i]);  // Bi With Bounds (wb)
+            double delta;
+            
+            /* 2 Cases:
+             *     1. Set Bi to 0
+             *     2. Set Bi to NNZ
+             */
+            
+            if (i < NoSelectK){
+                this->B[i] = Bi_wb;
+            } else if (Bi_nb < thr){
+                // Maximum value of Bi to small to pass L0 threshold => set to 0;
                 this->B[i] = 0;
-            } // do nothing if x=0 and B[i] = 0
-        }
-        
+            } else {
+                // We know Bi_nb >= thr)
+                delta = std::sqrt(std::pow(std::abs(Bi_wb) - lambda1, 2)  - 2*this->ModelParams[0]*Onep2lamda2);
+                delta /= Onep2lamda2;
+                
+                if ((Bi_nb - delta <= Bi_wb) && (Bi_wb <= Bi_nb + delta)){
+                    // Bi_wb exists in [Bi_nb - delta, Bi_nb+delta]
+                    // Therefore accept Bi_wb
+                    this->B[i] = Bi_wb;
+                } else {
+                    this->B[i] = 0;
+                }
+            }
+            
+            // B changed from Bi to this->B[i], therefore update residual by change.
+            this->r += matrix_column_mult(*(this->X), i, Bi - this->B[i]);
+            
         //B.print();
         if (this->Converged()) {
             if(FirstRestrictedPass && ActiveSetInitial) {

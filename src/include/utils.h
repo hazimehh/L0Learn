@@ -6,7 +6,7 @@
 
 template <typename T>
 inline T clamp(T x, T low, T high) {
-    // Compiler should remove branches
+    // -O3 Compiler should remove branches
     if (x < low) 
         x = low;
     if (x > high) 
