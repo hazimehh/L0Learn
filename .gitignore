@@ -1,1 +1,7 @@
 inst/doc
+.Rproj*
+.DS_Store
+*.o
+*.so
+tests/box_test/.hypothesis/*
+tests/box_test/.ipynb_checkpoints/*
