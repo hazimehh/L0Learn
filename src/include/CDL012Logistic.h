@@ -19,9 +19,9 @@ class CDL012Logistic : public CD<T> {
         arma::vec ExpyXB;
         std::vector<double> * Xtr;
         T * Xy;
-        unsigned int Iter;
-        unsigned int NoSelectK;
-        unsigned int ScreenSize;
+        std::size_t Iter;
+        std::size_t NoSelectK;
+        std::size_t ScreenSize;
         std::vector<std::size_t> Range1p;
 
     public:
