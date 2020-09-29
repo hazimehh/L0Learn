@@ -3,7 +3,7 @@ library("testthat")
 library("L0Learn")
 source("utils.R")
 
-tmp <-  L0Learn::GenSynthetic(n=100, p=1000, k=10, seed=1, rho=1.2)
+tmp <-  L0Learn::GenSynthetic(n=100, p=1000, k=10, seed=1, rho=1.5)
 X <- tmp[[1]]
 y <- tmp[[2]]
 tol = 1e-4
@@ -26,31 +26,33 @@ test_that('L0Learn Accepts Proper Matricies', {
 
 test_that("L0Learn fit and cvfit are deterministic for Dense", {
     for (f in c(L0Learn.cvfit, L0Learn.fit)){
+      for (p in c("L0", "L0L2", "L0L1")){
         set.seed(1)
-        x1 <- f(X, y, intercept = FALSE)
+        x1 <- f(X, y, penalty=p, intercept = FALSE)
         set.seed(1)
-        x2 <- f(X, y, intercept = FALSE)
-        expect_equal_cv(x1, x2)
+        x2 <- f(X, y, penalty=p, intercept = FALSE)
+        expect_equal(x1, x2) 
+      }
     }
 })
 
 test_that("L0Learn fit and cvfit are deterministic for Sparse", {
-  for (f in c(L0Learn.cvfit, L0Learn.fit)){
-    set.seed(1)
-    x1 <-f(X_sparse, y, intercept = FALSE)
-    set.seed(1)
-    x2 <- f(X_sparse, y, intercept = FALSE)
-    expect_equal_cv(x1, x2)
-  }
+    for (f in c(L0Learn.cvfit, L0Learn.fit)){
+        set.seed(1)
+        x1 <-f(X_sparse, y, intercept = FALSE)
+        set.seed(1)
+        x2 <- f(X_sparse, y, intercept = FALSE)
+        expect_equal(x1, x2)
+    }
 })
 
 
 test_that("L0Learn fit and cvfit find same solution for different matrix representations", {
     for (f in c(L0Learn.fit, L0Learn.cvfit)){
         set.seed(1)
-        x1 <- f(X, y, intercept = FALSE, maxSuppSize = 10)
+        x1 <- f(X, y, intercept = FALSE)
         set.seed(1)
-        x2 <- f(X_sparse, y, intercept = FALSE, maxSuppSize = 10)
+        x2 <- f(X_sparse, y, intercept = FALSE)
         expect_equal_cv(x1, x2)
     }
 })
@@ -68,7 +70,7 @@ test_that("L0Learn fit and cvfit fail with Sparse Matricies and Intercepts", {
 })
 
 
-test_that("L0Learn.Fit runs for all penalty for Sparse and Dense Matrices", {
+test_that("L0Learn runs for all penalty for Sparse and Dense Matrices", {
     for (p in c("L0", "L0L2", "L0L1")){
       for (f in c(L0Learn.cvfit, L0Learn.fit)){
         set.seed(1)

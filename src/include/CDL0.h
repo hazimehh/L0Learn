@@ -11,10 +11,10 @@ class CDL0: public CD<T> {
     private:
         double thr;
         std::vector<double> * Xtr;
-        unsigned int Iter;
-        unsigned int ScreenSize;
-        std::vector<unsigned int> Range1p;
-        unsigned int NoSelectK;
+        std::size_t Iter;
+        std::size_t ScreenSize;
+        std::vector<std::size_t> Range1p;
+        std::size_t NoSelectK;
     public:
         CDL0(const T& Xi, const arma::vec& yi, const Params<T>& P);
         //~CDL0(){}
@@ -43,10 +43,12 @@ CDL0<T>::CDL0(const T& Xi, const arma::vec& yi, const Params<T>& P) : CD<T>(Xi, 
 template <typename T>
 FitResult<T> CDL0<T>::Fit() {
     
+    this->B = clamp_by_vector(this->B, this->Lows, this->Highs);
+    
     //bool SecondPass = false;
     double objective = Objective(this->r, this->B);
     
-    std::vector<unsigned int> FullOrder = this->Order;
+    std::vector<std::size_t> FullOrder = this->Order;
     bool FirstRestrictedPass = true;
     
     if (this->ActiveSet) {
@@ -55,7 +57,7 @@ FitResult<T> CDL0<T>::Fit() {
     
     bool ActiveSetInitial = this->ActiveSet;
     
-    for (unsigned int t = 0; t < this->MaxIters; ++t) {
+    for (std::size_t t = 0; t < this->MaxIters; ++t) {
         this->Bprev = this->B;
         
         if (this->isSparse && this->intercept){
@@ -66,18 +68,40 @@ FitResult<T> CDL0<T>::Fit() {
         
         for (auto& i : this->Order) {
             double cor = matrix_column_dot(*(this->X), i, this->r);
-            (*Xtr)[i] = std::abs(cor); // do abs here instead from when sorting
-            double Bi = this->B[i]; // B[i] is costly
-            double x = cor + Bi;
             
-            if (x >= thr || x <= -thr || i < NoSelectK) {	// often false so body is not costly
-                this->r += matrix_column_mult(*(this->X), i, Bi - x);
-                this->B[i] = x;
-            } else if (Bi != 0) {  // do nothing if x=0 and B[i] = 0
-                this->r += matrix_column_mult(*(this->X), i, Bi);
+            (*Xtr)[i] = std::abs(cor); // do abs here instead from when sorting
+            
+            double Bi = this->B[i]; // old Bi to adjust residuals if Bi updates
+            double Bi_nb = cor + Bi; // Bi with No Bounds (nb);
+            double Bi_wb = clamp(Bi_nb, this->Lows[i], this->Highs[i]);  // Bi With Bounds (wb)
+            
+            /* 2 Cases:
+             *     1. Set Bi to 0
+             *     2. Set Bi to NNZ
+             */
+            
+            if (i < NoSelectK){
+                this->B[i] = Bi_wb;
+            } else if (std::fabs(Bi_nb) < thr){
+                // Maximum value of Bi to small to pass L0 threshold => set to 0;
                 this->B[i] = 0;
+            } else {
+                // We know Bi_nb >= sqrt(thr)
+                double delta = std::sqrt(Bi_nb*Bi_nb - thr*thr);
+               
+                if ((Bi_nb - delta <= Bi_wb) && (Bi_wb <= Bi_nb + delta)){
+                    // Bi_wb exists in [Bi_nb - delta, Bi_nb+delta]
+                    // Therefore accept Bi_wb
+                    this->B[i] = Bi_wb;
+                } else {
+                    this->B[i] = 0;
+                }
             }
             
+
+            // B changed from Bi to this->B[i], therefore update residual by change.
+            this->r += matrix_column_mult(*(this->X), i, Bi - this->B[i]);
+
         }
         
         if (this->Converged()) {
@@ -128,12 +152,12 @@ FitResult<T> CDL0<T>::Fit() {
 template <typename T>
 bool CDL0<T>::CWMinCheck() {
     // Get the Sc = FullOrder - Order
-    std::vector<unsigned int> S;
+    std::vector<std::size_t> S;
     for(arma::sp_mat::const_iterator it = this->B.begin(); it != this->B.end(); ++it) {
         S.push_back(it.row());
     }
     
-    std::vector<unsigned int> Sc;
+    std::vector<std::size_t> Sc;
     set_difference(
         Range1p.begin(),
         Range1p.end(),
@@ -143,17 +167,24 @@ bool CDL0<T>::CWMinCheck() {
     
     bool Cwmin = true;
     for (auto& i : Sc) {
+        // B[i] == 0 for all i in Sc
         
-        double x = matrix_column_dot(*(this->X), i, this->r);
-        double absx = std::abs(x);
-        (*Xtr)[i] = absx; // do abs here instead from when sorting
-        
-        // B[i] = 0 in this case!
-        if (absx >= thr) {	// often false so body is not costly
-            this->r -= matrix_column_mult(*(this->X), i, x);
-            this->B[i] = x;
-            Cwmin = false;
+        double Bi_nb = matrix_column_dot(*(this->X), i, this->r);
+        double Bi_wb = clamp(Bi_nb, this->Lows[i], this->Highs[i]);
+            
+        if (std::abs(Bi_nb) >= thr) {
+            // We know Bi_nb >= sqrt(thr)
+            double delta = std::sqrt(Bi_wb*Bi_wb - thr*thr);
+            
+            if ((Bi_nb - delta <= Bi_wb) && (Bi_wb <= Bi_nb + delta)){
+                // Bi_wb exists in [Bi_nb - delta, Bi_nb+delta]
+                // Therefore accept Bi_wb
+                this->B[i] = Bi_wb;
+                this->r -= matrix_column_mult(*(this->X), i, Bi_wb);
+                Cwmin = false;
+            }
         }
+        
     }
     return Cwmin;
     

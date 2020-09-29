@@ -11,12 +11,12 @@ template<typename T>
 class Grid2D
 {
     private:
-        unsigned int G_nrows;
-        unsigned int G_ncols;
+        std::size_t G_nrows;
+        std::size_t G_ncols;
         GridParams<T> PG;
         const T * X;
         const arma::vec * y;
-        unsigned int p;
+        std::size_t p;
         std::vector<std::vector<std::unique_ptr<FitResult<T>>>> G; // each inner vector corresponds to a single lambda_1/lambda_2
         double Lambda2Max;
         double Lambda2Min;
@@ -72,7 +72,7 @@ std::vector< std::vector<std::unique_ptr<FitResult<T>> > > Grid2D<T>::Fit()
         double b0 = 0;
         arma::vec ExpyXB =  arma::ones<arma::vec>(n);
         if (PG.intercept) {
-            for (unsigned int t = 0; t < 50; ++t) {
+            for (std::size_t t = 0; t < 50; ++t) {
                 double partial_b0 = - arma::sum( *y / (1 + ExpyXB) );
                 b0 -= partial_b0 / (n * 0.25); // intercept is not regularized
                 ExpyXB = arma::exp(b0 * *y);
@@ -95,7 +95,7 @@ std::vector< std::vector<std::unique_ptr<FitResult<T>> > > Grid2D<T>::Fit()
         arma::vec onemyxb =  arma::ones<arma::vec>(n);
         arma::uvec indices = arma::find(onemyxb > 0);
         if (PG.intercept){
-            for (unsigned int t = 0; t < 50; ++t){
+            for (std::size_t t = 0; t < 50; ++t){
                 double partial_b0 = arma::sum(2 * onemyxb.elem(indices) % (- y->elem(indices) ) );
                 b0 -= partial_b0 / (n * 2); // intercept is not regularized
                 onemyxb = 1 - (*y * b0);
@@ -119,7 +119,7 @@ std::vector< std::vector<std::unique_ptr<FitResult<T>> > > Grid2D<T>::Fit()
     
     double ytXmax = arma::max(Xtrarma);
     
-    unsigned int index;
+    std::size_t index;
     if (PG.P.Specs.L0L1) {
         index = 1;
         if(G_nrows != 1) {
@@ -141,7 +141,7 @@ std::vector< std::vector<std::unique_ptr<FitResult<T>> > > Grid2D<T>::Fit()
     
     PG.XtrAvailable = true;
     
-    for(unsigned int i=0; i<Lambdas2.size();++i) { //auto &l : Lambdas2
+    for(std::size_t i=0; i<Lambdas2.size();++i) { //auto &l : Lambdas2
         *Xtr = Xtrvec;
         
         PG.Xtr = Xtr;

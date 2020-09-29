@@ -10,14 +10,14 @@
 template<typename T> 
 class CD {
     protected:
-        unsigned int n, p;
+        std::size_t n, p;
         arma::sp_mat B;
         arma::sp_mat Bprev;
-        unsigned int SameSuppCounter = 0;
+        std::size_t SameSuppCounter = 0;
         double objective;
         arma::vec r; //vector of residuals
-        std::vector<unsigned int> Order; // Cycling order
-        std::vector<unsigned int> OldOrder; // Cycling order to be used after support stabilization + convergence.
+        std::vector<std::size_t> Order; // Cycling order
+        std::vector<std::size_t> OldOrder; // Cycling order to be used after support stabilization + convergence.
         FitResult<T> result;
         
         /* Intercept and b0 are used for:
@@ -36,11 +36,13 @@ class CD {
         std::vector<double> ModelParams;
 
         char CyclingOrder;
-        unsigned int MaxIters;
-        unsigned int CurrentIters; // current number of iterations - maintained by Converged()
+        std::size_t MaxIters;
+        std::size_t CurrentIters; // current number of iterations - maintained by Converged()
         double Tol;
+        arma::vec Lows;
+        arma::vec Highs;
         bool ActiveSet;
-        unsigned int ActiveSetNum;
+        std::size_t ActiveSetNum;
         bool Stabilized = false;
 
 
@@ -90,16 +92,19 @@ CD<T>::CD(const T& Xi, const arma::vec& yi, const Params<T>& P) :
             
             B = arma::sp_mat(false, indices, values, p, 1, false, false);
         } else {
-            B = arma::sp_mat(p, 1);
+            B = arma::sp_mat(p, 1); // Initialized to zeros
         }
         
         if (CyclingOrder == 'u') {
             Order = P.Uorder;
         } else if (CyclingOrder == 'c') {
-            std::vector<unsigned int> cyclic(p);
+            std::vector<std::size_t> cyclic(p);
             std::iota(std::begin(cyclic), std::end(cyclic), 0);
             Order = cyclic;
         }
+        
+        this->Lows = P.Lows;
+        this->Highs = P.Highs;
         
         CurrentIters = 0;
     }
@@ -139,14 +144,14 @@ void CD<T>::SupportStabilized() {
         SameSuppCounter += 1;
         
         if (SameSuppCounter == ActiveSetNum - 1) {
-            std::vector<unsigned int> NewOrder(B.n_nonzero);
+            std::vector<std::size_t> NewOrder(B.n_nonzero);
             
             arma::sp_mat::const_iterator i;
             for(i = B.begin(); i != B.end(); ++i) {
                 NewOrder.push_back(i.row());
             }
             
-            std::sort(NewOrder.begin(), NewOrder.end(), [this](unsigned int i, unsigned int j) {return Order[i] <  Order[j] ;});
+            std::sort(NewOrder.begin(), NewOrder.end(), [this](std::size_t i, std::size_t j) {return Order[i] <  Order[j] ;});
             
             OldOrder = Order;
             Order = NewOrder;

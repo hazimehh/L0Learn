@@ -7,10 +7,10 @@ template <typename T>
 struct GridParams
 {
     Params<T> P;
-    unsigned int G_ncols = 100;
-    unsigned int G_nrows = 10;
+    std::size_t G_ncols = 100;
+    std::size_t G_nrows = 10;
     bool LambdaU = false;
-    unsigned int NnzStopNum = 200;
+    std::size_t NnzStopNum = 200;
     double LambdaMinFactor = 0.01;
     arma::vec Lambdas;
     std::vector< std::vector<double> > LambdasGrid;

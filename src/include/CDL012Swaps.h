@@ -1,16 +1,17 @@
 #ifndef CDL012SWAPS_H
 #define CDL012SWAPS_H
+#include <map>
 #include "RcppArmadillo.h"
 #include "CD.h"
 #include "CDL012.h"
 #include "utils.h"
 
 template <typename T>
-class CDL012Swaps : public CD<T> {  // Calls CDL012 irrespective of P.ModelType 
+class CDL012Swaps : public CD<T> { 
     private:
-        unsigned int MaxNumSwaps;
+        std::size_t MaxNumSwaps;
         Params<T> P;
-        unsigned int NoSelectK;
+        std::size_t NoSelectK;
     public:
         CDL012Swaps(const T& Xi, const arma::vec& yi, const Params<T>& Pi);
 
@@ -31,64 +32,91 @@ template <typename T>
 FitResult<T> CDL012Swaps<T>::Fit() {
     auto result = CDL012<T>(*(this->X), *(this->y), P).Fit(); // result will be maintained till the end
     this->B = result.B;
-    // Rcpp::Rcout << "CDL012Swaps B is " << this->B << "\n";
     double objective = result.Objective;
     P.Init = 'u';
     
     bool foundbetter = false;
-    for (unsigned int t = 0; t < this->MaxNumSwaps; ++t) {
-        //std::cout<<"1Swaps Iteration: "<<t<<". "<<"Obj: "<<objective<<std::endl;
-        //B.print();
+    
+    for (std::size_t t = 0; t < this->MaxNumSwaps; ++t) {
         arma::sp_mat::const_iterator start = this->B.begin();
         arma::sp_mat::const_iterator end   = this->B.end();
-        std::vector<unsigned int> NnzIndices;
+        std::vector<std::size_t> NnzIndices;
         for(arma::sp_mat::const_iterator it = start; it != end; ++it) {
             if (it.row() >= NoSelectK){
                 NnzIndices.push_back(it.row());
             }
         }
-        // Can easily shuffle here...
+        
+        // TODO: shuffle NNz Indices to prevent bias.
         //std::shuffle(std::begin(Order), std::end(Order), engine);
         
-        arma::vec r = *(this->y) - *(this->X) * this->B; // ToDO: take from CD !! No need for this computation.
+        // TODO: This calculation is already preformed in a previous step
+        // Can be pulled/stored 
+        arma::vec r = *(this->y) - *(this->X) * this->B; 
         
         for (auto& i : NnzIndices) {
-            
-            arma::rowvec riX = (r + this->B[i] * matrix_column_get(*(this->X), i)).t() * *(this->X); // expensive computation ## call the new function here, inlined? ##
+            arma::rowvec riX = (r + this->B[i] * matrix_column_get(*(this->X), i)).t() * *(this->X); 
             
             double maxcorr = -1;
-            unsigned int maxindex;
-            for(unsigned int j = NoSelectK; j < this->p; ++j) {// Can be made much faster..
+            std::size_t maxindex = -1;
+            
+            for(std::size_t j = NoSelectK; j < this->p; ++j) {
+                // TODO: Account for bounds when determining best swap
+                // Loops through each column and finds the column with the highest correlation to residuals
+                // In non-constrained cases, the highest correlation will always be the best option
+                // However, if bounds restrict the value of B[j], it is possible that swapping column 'i'
+                // and column 'j' might be rejected as B[j], when constrained, is not able to take a value
+                // with sufficient magnitude to utilie the correleation.
+                // Therefore, we must ensure that 'j' was not already rejected.
                 if (std::fabs(riX[j]) > maxcorr && this->B[j] == 0) {
                     maxcorr = std::fabs(riX[j]);
                     maxindex = j;
                 }
             }
             
+            // Check if the correlation is sufficiently large to make up for regularization
             if(maxcorr > (1 + 2 * this->ModelParams[2])*std::fabs(this->B[i]) + this->ModelParams[1]) {
+                Rcpp::Rcout << t << ": Proposing Swap " << i << " => NNZ and " << maxindex << " => 0 \n";
+                // Proposed new Swap
+                // Value (without considering bounds are solvable in closed form)
+                // Must be clamped to bounds
+                
+                T old_B = T(this->B); // Copy B if swap needs to be "undone"
+                // arma::vec old_r = P.r;
                 this->B[i] = 0;
-                this->B[maxindex] = (riX[maxindex] - std::copysign(this->ModelParams[1], riX[maxindex])) / (1 + 2 * this->ModelParams[2]);
+                
+                // Bi with No Bounds (nb);
+                double Bi_nb = (riX[maxindex]  - std::copysign(this->ModelParams[1],riX[maxindex])) / (1 + 2 * this->ModelParams[2]);
+                double Bi_wb = clamp(Bi_nb, this->Lows[maxindex], this->Highs[maxindex]);  // Bi With Bounds (wb)
+                this->B[maxindex] = Bi_wb;
+                
+                // Change initial solution to Swapped value to seed standard CD algorithm.
                 P.InitialSol = &(this->B);
                 *P.r = *(this->y) - *(this->X) * (this->B);
                 result = CDL012<T>(*(this->X), *(this->y), P).Fit();
-                // Rcpp::Rcout << "CDL012Swaps CDL012<T> Result B is " << result.B << "\n";
-                this->B = result.B;
-                objective = result.Objective;
-                foundbetter = true;
-                break;
                 
+                Rcpp::Rcout << "Swap Objective  " <<  result.Objective << " \n";
+                Rcpp::Rcout << "Old Objective  " <<  objective << " \n";
+                if (result.Objective <= objective){
+                    // Accept Swap
+                    this->B = result.B;
+                    objective = result.Objective;
+                    foundbetter = true;
+                    break;
+                } else {
+                    // Reject Swap
+                    this->B = old_B;
+                    //*P.r = old_r;
+                }
             }
         }
         
         if(!foundbetter) {
-            //result.Model = this;
+            // Early exit to prevent looping
             return result;
         }
     }
     
-    
-    //std::cout<<"Did not achieve CW Swap min" << std::endl;
-    //result.Model = this;
     return result;
 }
 

@@ -10,26 +10,31 @@ struct Params {
     Model Specs;
     //std::string ModelType = "L0";
     std::vector<double> ModelParams {0, 0, 0, 2};
-    unsigned int MaxIters = 500;
+    std::size_t MaxIters = 500;
     double Tol = 1e-8;
     char Init = 'z';
-    unsigned int RandomStartSize = 10;
+    std::size_t RandomStartSize = 10;
     arma::sp_mat * InitialSol;
     double b0 = 0; // intercept
     char CyclingOrder = 'c';
-    std::vector<unsigned int> Uorder;
+    std::vector<std::size_t> Uorder;
     bool ActiveSet = true;
-    unsigned int ActiveSetNum = 6;
-    unsigned int MaxNumSwaps = 200; // Used by CDSwaps
+    std::size_t ActiveSetNum = 6;
+    std::size_t MaxNumSwaps = 200; // Used by CDSwaps
     std::vector<double> * Xtr;
     arma::rowvec * ytX;
-    std::map<unsigned int, arma::rowvec> * D;
-    unsigned int Iter = 0; // Current iteration number in the grid
-    unsigned int ScreenSize = 1000;
+    std::map<std::size_t, arma::rowvec> * D;
+    std::size_t Iter = 0; // Current iteration number in the grid
+    std::size_t ScreenSize = 1000;
     arma::vec * r;
     T * Xy; // used for classification.
-    unsigned int NoSelectK = 0;
+    std::size_t NoSelectK = 0;
     bool intercept = false;
+    // double Low;
+    // double High;
+    arma::vec Lows;
+    arma::vec Highs;
+
 };
 
 #endif

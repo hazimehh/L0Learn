@@ -19,10 +19,10 @@ class CDL012SquaredHingeSwaps : public CD<T> {
         double b0;
         double stl0Lc;
         std::vector<double> * Xtr;
-        unsigned int Iter;
-        unsigned int NoSelectK;
+        std::size_t Iter;
+        std::size_t NoSelectK;
 
-        unsigned int MaxNumSwaps;
+        std::size_t MaxNumSwaps;
         Params<T> P;
 
     public:
@@ -61,16 +61,16 @@ FitResult<T> CDL012SquaredHingeSwaps<T>::Fit() {
     
     double objective = result.Objective;
     double Fmin = objective;
-    unsigned int maxindex;
+    std::size_t maxindex;
     double Bmaxindex;
     
     P.Init = 'u';
     
     bool foundbetter;
-    for (unsigned int t = 0; t < MaxNumSwaps; ++t) {
+    for (std::size_t t = 0; t < MaxNumSwaps; ++t) {
         arma::sp_mat::const_iterator start = this->B.begin();
         arma::sp_mat::const_iterator end   = this->B.end();
-        std::vector<unsigned int> NnzIndices;
+        std::vector<std::size_t> NnzIndices;
         for(arma::sp_mat::const_iterator it = start; it != end; ++it) {
             if (it.row() >= NoSelectK)
                 NnzIndices.push_back(it.row());
@@ -86,7 +86,7 @@ FitResult<T> CDL012SquaredHingeSwaps<T>::Fit() {
             arma::uvec indices = arma::find(onemyxbnoj > 0);
             
             
-            for(unsigned int i = 0; i < this->p; ++i) {
+            for(std::size_t i = 0; i < this->p; ++i) {
                 if(this->B[i] == 0 && i>=NoSelectK) {
                     
                     double Biold = 0;
@@ -101,7 +101,7 @@ FitResult<T> CDL012SquaredHingeSwaps<T>::Fit() {
                         //std::cout<<"Adding: "<<i<< std::endl;
                         arma::vec onemyxbnoji = onemyxbnoj;
                         
-                        unsigned int l = 0;
+                        std::size_t l = 0;
                         arma::sp_mat Btemp = this->B;
                         Btemp[j] = 0;
                         //double ObjTemp = Objective(onemyxbnoj,Btemp);
@@ -110,7 +110,7 @@ FitResult<T> CDL012SquaredHingeSwaps<T>::Fit() {
                             double x = Biold - partial_i / qp2lamda2;
                             double z = std::abs(x) - lambda1ol;
                             
-                            Binew = std::copysign(z, x); // no need to check if >= sqrt(2lambda_0/Lc)
+                            Binew = clamp(std::copysign(z, x), this->Lows[i], this->Highs[i]); // no need to check if >= sqrt(2lambda_0/Lc)
                             onemyxbnoji += (Biold - Binew) * *(this->y) % matrix_column_get(*(this->X), i);
                             
                             arma::uvec indicesi = arma::find(onemyxbnoji > 0);

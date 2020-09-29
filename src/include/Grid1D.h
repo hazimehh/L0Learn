@@ -12,16 +12,16 @@
 template <typename T>
 class Grid1D {
     private:
-        unsigned int G_ncols;
+        std::size_t G_ncols;
         Params<T> P;
         const T * X;
         const arma::vec * y;
-        unsigned int p;
+        std::size_t p;
         //std::vector<FitResult*> G;
         std::vector<std::unique_ptr<FitResult<T>>> G;
         arma::vec Lambdas;
         bool LambdaU;
-        unsigned int NnzStopNum;
+        std::size_t NnzStopNum;
         std::vector<double> * Xtr;
         arma::rowvec * ytX;
         double LambdaMinFactor;
@@ -30,7 +30,7 @@ class Grid1D {
         bool XtrAvailable;
         double ytXmax2d;
         double ScaleDownFactor;
-        unsigned int NoSelectK;
+        std::size_t NoSelectK;
 
     public:
         Grid1D(const T& Xi, const arma::vec& yi, const GridParams<T>& PG);
@@ -49,7 +49,7 @@ Grid1D<T>::Grid1D(const T& Xi, const arma::vec& yi, const GridParams<T>& PG) {
     P = PG.P;
     P.Xtr = new std::vector<double>(X->n_cols); // needed! careful
     P.ytX = new arma::rowvec(X->n_cols);
-    P.D = new std::map<unsigned int, arma::rowvec>();
+    P.D = new std::map<std::size_t, arma::rowvec>();
     P.r = new arma::vec(Xi.n_rows);
     Xtr = P.Xtr;
     ytX = P.ytX;
@@ -112,7 +112,7 @@ std::vector<std::unique_ptr<FitResult<T>>> Grid1D<T>::Fit() {
             /*
              Params Ptemp = P;
              Ptemp.CyclingOrder = 'u';
-             Ptemp.Uorder = std::vector<unsigned int>();
+             Ptemp.Uorder = std::vector<std::size_t>();
              
              auto Model = make_CD(*X, *y, Ptemp);
              FitResult * result = new FitResult;
@@ -158,14 +158,14 @@ std::vector<std::unique_ptr<FitResult<T>>> Grid1D<T>::Fit() {
         //Lambdas = arma::flipud(Lambdas);
         
         
-        //unsigned int StopNum = (X->n_rows < NnzStopNum) ? X->n_rows : NnzStopNum;
-        unsigned int StopNum = NnzStopNum;
+        //std::size_t StopNum = (X->n_rows < NnzStopNum) ? X->n_rows : NnzStopNum;
+        std::size_t StopNum = NnzStopNum;
         //std::vector<double>* Xtr = P.Xtr;
-        std::vector<unsigned int> idx(p);
+        std::vector<std::size_t> idx(p);
         double Xrmax;
         bool prevskip = false; //previous grid point was skipped
         bool currentskip = false; // current grid point should be skipped
-        for (unsigned int i = 0; i < G_ncols; ++i) {
+        for (std::size_t i = 0; i < G_ncols; ++i) {
             //std::cout<<"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! STARTED GRID ITER: "<<i<<std::endl;
             
             
@@ -182,9 +182,9 @@ std::vector<std::unique_ptr<FitResult<T>>> Grid1D<T>::Fit() {
                 std::iota(idx.begin(), idx.end(), 0); // make global class var later
                 // Exclude the first NoSelectK features from sorting.
                 if (PartialSort && p > 5000 + NoSelectK)
-                    std::partial_sort(idx.begin() + NoSelectK, idx.begin() + 5000 + NoSelectK, idx.end(), [this](unsigned int i1, unsigned int i2) {return (*Xtr)[i1] > (*Xtr)[i2] ;});
+                    std::partial_sort(idx.begin() + NoSelectK, idx.begin() + 5000 + NoSelectK, idx.end(), [this](std::size_t i1, std::size_t i2) {return (*Xtr)[i1] > (*Xtr)[i2] ;});
                 else
-                    std::sort(idx.begin() + NoSelectK, idx.end(), [this](unsigned int i1, unsigned int i2) {return (*Xtr)[i1] > (*Xtr)[i2] ;});
+                    std::sort(idx.begin() + NoSelectK, idx.end(), [this](std::size_t i1, std::size_t i2) {return (*Xtr)[i1] > (*Xtr)[i2] ;});
                 P.CyclingOrder = 'u';
                 P.Uorder = idx; // can be made faster
                 
@@ -192,13 +192,13 @@ std::vector<std::unique_ptr<FitResult<T>>> Grid1D<T>::Fit() {
                 Xrmax = (*Xtr)[idx[NoSelectK]];
                 
                 if (i > 0) {
-                    std::vector<unsigned int> Sp;
+                    std::vector<std::size_t> Sp;
                     arma::sp_mat::const_iterator it;
                     for(it = prevresult->B.begin(); it != prevresult->B.end(); ++it) {
                         Sp.push_back(it.row());
                     }
                     
-                    for(unsigned int l = NoSelectK; l < p; ++l) {
+                    for(std::size_t l = NoSelectK; l < p; ++l) {
                         if ( std::binary_search(Sp.begin(), Sp.end(), idx[l]) == false ) {
                             Xrmax = (*Xtr)[idx[l]];
                             //std::cout<<"Grid Iteration: "<<i<<" Xrmax= "<<Xrmax<<std::endl;
@@ -247,8 +247,8 @@ std::vector<std::unique_ptr<FitResult<T>>> Grid1D<T>::Fit() {
              //sort again
              std::iota(idx.begin(), idx.end(), 0); // make global class var later
              
-             //std::partial_sort(idx.begin(),idx.begin()+100, idx.end(),[this](unsigned int i1, unsigned int i2) {return (*Xtr)[i1] > (*Xtr)[i2] ;});
-             std::sort(idx.begin(), idx.end(),[this](unsigned int i1, unsigned int i2) {return (*Xtr)[i1] > (*Xtr)[i2] ;}); /////////////////////////////////////////////////////
+             //std::partial_sort(idx.begin(),idx.begin()+100, idx.end(),[this](std::size_t i1, std::size_t i2) {return (*Xtr)[i1] > (*Xtr)[i2] ;});
+             std::sort(idx.begin(), idx.end(),[this](std::size_t i1, std::size_t i2) {return (*Xtr)[i1] > (*Xtr)[i2] ;}); /////////////////////////////////////////////////////
              
              P.CyclingOrder = 'u';
              P.Uorder = idx; // can be made faster
@@ -277,13 +277,13 @@ std::vector<std::unique_ptr<FitResult<T>>> Grid1D<T>::Fit() {
                 
                 scaledown = false;
                 if (i >= 1) {
-                    std::vector<unsigned int> Spold;
+                    std::vector<std::size_t> Spold;
                     arma::sp_mat::const_iterator itold;
                     for(itold = prevresult->B.begin(); itold != prevresult->B.end(); ++itold) {
                         Spold.push_back(itold.row());
                     }
                     
-                    std::vector<unsigned int> Spnew;
+                    std::vector<std::size_t> Spnew;
                     arma::sp_mat::const_iterator itnew;
                     for(itnew = result->B.begin(); itnew != result->B.end(); ++itnew) {
                         Spnew.push_back(itnew.row());

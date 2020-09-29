@@ -3,7 +3,11 @@ inst/doc
 .DS_Store
 *.o
 *.so
-tests/box_test/.hypothesis/*
-tests/box_test/.ipynb_checkpoints/*
-.Rproj.user
 *.tmp
+*.csv
+*.dat
+tests/box_test/.hypothesis/
+*.ipynb_checkpoints/
+*.DS_Store
+.RHistory
+L0Learn.Rproj

@@ -15,8 +15,8 @@ std::tuple<T, arma::vec, arma::vec, double, double>  Normalize(const T& X,
                                                        arma::vec & y_normalized, 
                                                        bool Normalizey, 
                                                        bool intercept) {
-    unsigned int n = X.n_rows;
-    // unsigned int p = X.n_cols;
+    std::size_t n = X.n_rows;
+    // std::size_t p = X.n_cols;
     
     auto martrix_center_return = matrix_center(X, intercept);
     T X_normalized = std::get<0>(martrix_center_return);

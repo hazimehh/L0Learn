@@ -15,7 +15,7 @@ Depends: R (>= 3.3.0)
 SystemRequirements: C++11
 Imports: Rcpp (>= 0.12.13), Matrix, methods, ggplot2, reshape2
 LinkingTo: Rcpp, RcppArmadillo
-RoxygenNote: 6.1.1
+RoxygenNote: 7.1.1
 Suggests: 
     knitr,
     rmarkdown,
