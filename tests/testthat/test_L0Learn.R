@@ -3,7 +3,7 @@ library("testthat")
 library("L0Learn")
 source("utils.R")
 
-tmp <-  L0Learn::GenSynthetic(n=100, p=1000, k=10, seed=1, rho=2)
+tmp <-  L0Learn::GenSynthetic(n=100, p=1000, k=10, seed=1, rho=1.2)
 X <- tmp[[1]]
 y <- tmp[[2]]
 tol = 1e-4

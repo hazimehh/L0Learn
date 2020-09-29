@@ -2,13 +2,6 @@
 // [[Rcpp::depends(RcppArmadillo)]]
 
 template <typename T>
-void sparse_intercept_check(T m, bool Intercept){
-  if (std::is_same<T, arma::sp_mat>::value && Intercept) {
-    Rcpp::stop("Intercept support is only allowed for Dense Matricies.");
-  }
-}
-
-template <typename T>
 Rcpp::List _L0LearnFit(const T& X, const arma::vec& y, const std::string Loss, const std::string Penalty,
                        const std::string Algorithm, const unsigned int NnzStopNum, const unsigned int G_ncols,
                        const unsigned int G_nrows, const double Lambda2Max, const double Lambda2Min,
@@ -16,8 +9,6 @@ Rcpp::List _L0LearnFit(const T& X, const arma::vec& y, const std::string Loss, c
                        const unsigned int ActiveSetNum, const unsigned int MaxNumSwaps, const double ScaleDownFactor,
                        unsigned int ScreenSize, const bool LambdaU, const std::vector< std::vector<double> > Lambdas,
                        const unsigned int ExcludeFirstK, const bool Intercept){
-  
-  sparse_intercept_check(X, Intercept);
   
   auto p = X.n_cols;
   GridParams<T> PG;
@@ -143,8 +134,6 @@ Rcpp::List _L0LearnCV(const T& X, const arma::vec& y, const std::string Loss, co
                       const unsigned int MaxNumSwaps, const double ScaleDownFactor, unsigned int ScreenSize, const bool LambdaU,
                       const std::vector< std::vector<double> > Lambdas, const unsigned int nfolds, const double seed,
                       const unsigned int ExcludeFirstK, const bool Intercept) {
-  
-  sparse_intercept_check(X, Intercept);
   
   auto p = X.n_cols;
   auto n = X.n_rows;

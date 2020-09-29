@@ -58,6 +58,12 @@ FitResult<T> CDL0<T>::Fit() {
     for (unsigned int t = 0; t < this->MaxIters; ++t) {
         this->Bprev = this->B;
         
+        if (this->isSparse && this->intercept){
+            double new_b0 = arma::mean(this->r);
+            this->r += this->b0 - new_b0;
+            this->b0 = new_b0;
+        }
+        
         for (auto& i : this->Order) {
             double cor = matrix_column_dot(*(this->X), i, this->r);
             (*Xtr)[i] = std::abs(cor); // do abs here instead from when sorting
@@ -71,6 +77,7 @@ FitResult<T> CDL0<T>::Fit() {
                 this->r += matrix_column_mult(*(this->X), i, Bi);
                 this->B[i] = 0;
             }
+            
         }
         
         if (this->Converged()) {
@@ -100,15 +107,21 @@ FitResult<T> CDL0<T>::Fit() {
         if (this->ActiveSet) {
             this->SupportStabilized();
         }
-        
+    }
+    
+    // Re-optimize b0 after convergence.
+    if (this->isSparse && this->intercept){
+        double new_b0 = arma::mean(this->r);
+        this->r += this->b0 - new_b0;
+        this->b0 = new_b0;
     }
     
     
     this->result.Objective = objective;
     this->result.B = this->B;
-    //result.Model = this;
     *(this->result.r) = this->r; // change to pointer later
     this->result.IterNum = this->CurrentIters;
+    this->result.intercept = this->b0;
     return this->result;
 }
 

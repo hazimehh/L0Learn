@@ -5,3 +5,5 @@ inst/doc
 *.so
 tests/box_test/.hypothesis/*
 tests/box_test/.ipynb_checkpoints/*
+.Rproj.user
+*.tmp

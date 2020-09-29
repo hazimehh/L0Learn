@@ -16,7 +16,6 @@ class CDL012SquaredHinge : public CD<T> {
         double qp2lamda2;
         double lambda1;
         double lambda1ol;
-        double b0;
         std::vector<double> * Xtr;
         unsigned int Iter;
         arma::vec onemyxb;
@@ -24,7 +23,6 @@ class CDL012SquaredHinge : public CD<T> {
         T * Xy;
         unsigned int ScreenSize;
         std::vector<unsigned int> Range1p;
-        bool intercept;
 
     public:
         CDL012SquaredHinge(const T& Xi, const arma::vec& yi, const Params<T>& P);
@@ -49,17 +47,17 @@ CDL012SquaredHinge<T>::CDL012SquaredHinge(const T& Xi, const arma::vec& yi, cons
     thr = std::sqrt((2 * this->ModelParams[0]) / qp2lamda2);
     lambda1 = this->ModelParams[1];
     lambda1ol = lambda1 / qp2lamda2;
-    b0 = P.b0;
+    // b0 = P.b0;
     Xtr = P.Xtr;
     Iter = P.Iter;
     this->result.ModelParams = P.ModelParams;
-    onemyxb = 1 - *(this->y) % (*(this->X) * this->B + b0); // can be passed from prev solution, but definitely not a bottleneck now
+    onemyxb = 1 - *(this->y) % (*(this->X) * this->B + this->b0); // can be passed from prev solution, but definitely not a bottleneck now
     NoSelectK = P.NoSelectK;
     Xy = P.Xy;
     Range1p.resize(this->p);
     std::iota(std::begin(Range1p), std::end(Range1p), 0);
     ScreenSize = P.ScreenSize;
-    intercept = P.intercept;
+    // intercept = P.intercept;
 }
 
 
@@ -80,11 +78,11 @@ FitResult<T> CDL012SquaredHinge<T>::Fit() {
         this->Bprev = this->B;
         
         // Update the intercept
-        if (intercept) {
-            double b0old = b0;
+        if (this->intercept) {
+            double b0old = this->b0;
             double partial_b0 = arma::sum(2 * onemyxb.elem(indices) % (- (this->y)->elem(indices) ) );
-            b0 -= partial_b0 / (this->n * LipschitzConst); // intercept is not regularized
-            onemyxb += *(this->y) * (b0old - b0);
+            this->b0 -= partial_b0 / (this->n * LipschitzConst); // intercept is not regularized
+            onemyxb += *(this->y) * (b0old - this->b0);
             indices = arma::find(onemyxb > 0);
             //std::cout<<"Intercept: "<<b0<<" Obj: "<<Objective(r,B)<<std::endl;
         }
@@ -130,7 +128,7 @@ FitResult<T> CDL012SquaredHinge<T>::Fit() {
     this->result.Objective = objective;
     this->result.B = this->B;
     this->result.Model = this;
-    this->result.intercept = b0;
+    this->result.intercept = this->b0;
     this->result.IterNum = this->CurrentIters;
     return this->result;
 }

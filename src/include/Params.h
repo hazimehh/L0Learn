@@ -29,7 +29,7 @@ struct Params {
     arma::vec * r;
     T * Xy; // used for classification.
     unsigned int NoSelectK = 0;
-    bool intercept;
+    bool intercept = false;
 };
 
 #endif

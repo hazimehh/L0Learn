@@ -19,6 +19,16 @@ class CD {
         std::vector<unsigned int> Order; // Cycling order
         std::vector<unsigned int> OldOrder; // Cycling order to be used after support stabilization + convergence.
         FitResult<T> result;
+        
+        /* Intercept and b0 are used for:
+         *  1. Classification as b0 is updated iteratively in the CD algorithm 
+         *  2. Regression on Sparse Matrices as we cannot adjust the support of 
+         *  the columns of X and thus b0 must be updated iteraveily from the 
+         *  residuals 
+         */ 
+        bool intercept; 
+        double b0 = 0; 
+        bool isSparse;
 
     public:
         const T * X;
@@ -54,6 +64,11 @@ template <typename T>
 CD<T>::CD(const T& Xi, const arma::vec& yi, const Params<T>& P) :
     ModelParams{P.ModelParams}, CyclingOrder{P.CyclingOrder}, MaxIters{P.MaxIters},
     Tol{P.Tol}, ActiveSet{P.ActiveSet}, ActiveSetNum{P.ActiveSetNum} {
+        
+        isSparse = std::is_same<T,arma::sp_mat>::value;
+        
+        b0 = P.b0;
+        intercept = P.intercept;
         X = &Xi;
         y = &yi;
         
