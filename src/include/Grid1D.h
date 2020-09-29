@@ -95,35 +95,21 @@ Grid1D<T>::~Grid1D() {
 
 template <typename T>
 std::vector<std::unique_ptr<FitResult<T>>> Grid1D<T>::Fit() {
-    if (P.Specs.L0 || P.Specs.L0L2 || P.Specs.L0L1)
-    {
+    if (P.Specs.L0 || P.Specs.L0L2 || P.Specs.L0L1) {
         bool scaledown = false;
         
         double Lipconst;
         arma::vec Xtrarma;
-        if (P.Specs.Logistic)
-        {
+        if (P.Specs.Logistic) {
             if (!XtrAvailable) {
                 Xtrarma = 0.5 * arma::abs(y->t() * *X).t();
             } // = gradient of logistic loss at zero}
             Lipconst = 0.25 + 2 * P.ModelParams[2];
         } else if (P.Specs.SquaredHinge) {
-            
-            /*
-             Params Ptemp = P;
-             Ptemp.CyclingOrder = 'u';
-             Ptemp.Uorder = std::vector<std::size_t>();
-             
-             auto Model = make_CD(*X, *y, Ptemp);
-             FitResult * result = new FitResult;
-             *result = Model->Fit();
-             
-             std::cout<<"!!!!!!! Intercept: "<<result->intercept<<std::endl;
-             if (!XtrAvailable){Xtrarma = 2*arma::abs( (y->t() - result->intercept) * *X).t();} // = gradient of loss function at zero}
-             */
-            
-            
-            if (!XtrAvailable) {Xtrarma = 2 * arma::abs(y->t() * *X).t();} // = gradient of loss function at zero}
+            if (!XtrAvailable) {
+                // gradient of loss function at zero
+                Xtrarma = 2 * arma::abs(y->t() * *X).t();
+                } 
             Lipconst = 2 + 2 * P.ModelParams[2];
         } else {
             if (!XtrAvailable) {
@@ -166,6 +152,7 @@ std::vector<std::unique_ptr<FitResult<T>>> Grid1D<T>::Fit() {
         bool prevskip = false; //previous grid point was skipped
         bool currentskip = false; // current grid point should be skipped
         for (std::size_t i = 0; i < G_ncols; ++i) {
+            
             //std::cout<<"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! STARTED GRID ITER: "<<i<<std::endl;
             
             
@@ -175,6 +162,11 @@ std::vector<std::unique_ptr<FitResult<T>>> Grid1D<T>::Fit() {
                 //prevresult = std::move(G.back());
                 *prevresult = *(G.back());
             }
+            
+            // Rcpp::Rcout << "prevresult->ModelParams: \n";
+            // for (auto i = prevresult->ModelParams.begin(); i != prevresult->ModelParams.end(); ++i)
+            //     Rcpp::Rcout << *i << ", ";
+            // Rcpp::Rcout << "\n";
             
             currentskip = false;
             
@@ -269,8 +261,34 @@ std::vector<std::unique_ptr<FitResult<T>>> Grid1D<T>::Fit() {
             if(currentskip == false) {
                 
                 auto Model = make_CD(*X, *y, P);
+                
                 std::unique_ptr<FitResult<T>> result(new FitResult<T>);
                 *result = Model->Fit();
+                // if (i < 2){
+                //     Rcpp::Rcout << "B NNZ: " << result->B.n_nonzero << "\n";
+                //     //Rcpp::Rcout << "X sum " << arma::sum(arma::sum(*X, 0)) << "\n";
+                //     //Rcpp::Rcout << "y sum " << arma::sum(*y) << "\n";
+                //     Rcpp::Rcout << "ModelParams[0] " << P.ModelParams[0] << "\n";
+                //     Rcpp::Rcout << "ModelParams[1] " << P.ModelParams[1] << "\n";
+                //     Rcpp::Rcout << "ModelParams[2] " << P.ModelParams[2] << "\n";
+                //     Rcpp::Rcout << "ModelParams[3] " << P.ModelParams[3] << "\n";
+                //     Rcpp::Rcout << "InitialSol " << P.InitialSol->size() << "\n";
+                //     Rcpp::Rcout << "Residual " << arma::sum(*P.r) << "\n";
+                //     Rcpp::Rcout << "b0 " << P.b0 << "\n";
+                //     std::vector<std::size_t> Uorder;
+                //     bool ActiveSet = true;
+                //     std::size_t ActiveSetNum = 6;
+                //     std::size_t MaxNumSwaps = 200; // Used by CDSwaps
+                //     std::vector<double> * Xtr;
+                //     arma::rowvec * ytX;
+                //     std::map<std::size_t, arma::rowvec> * D;
+                //     std::size_t Iter = 0; // Current iteration number in the grid
+                //     std::size_t ScreenSize = 1000;
+                //     arma::vec * r;
+                //     T * Xy; // used for classification.
+                //     std::size_t NoSelectK = 0;
+                //     bool intercept = false;
+                // }
                 delete Model;
                 
                 //if (i>=1 && arma::norm(result->B-(G.back())->B,"inf")/arma::norm((G.back())->B,"inf") < 0.05){scaledown = true;} // got same solution

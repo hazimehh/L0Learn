@@ -61,19 +61,23 @@ FitResult<T> CDL0<T>::Fit() {
         this->Bprev = this->B;
         
         if (this->isSparse && this->intercept){
-            double new_b0 = arma::mean(this->r);
+            const double new_b0 = arma::mean(this->r);
             this->r += this->b0 - new_b0;
             this->b0 = new_b0;
         }
         
         for (auto& i : this->Order) {
-            double cor = matrix_column_dot(*(this->X), i, this->r);
+            const double cor = matrix_column_dot(*(this->X), i, this->r);
             
             (*Xtr)[i] = std::abs(cor); // do abs here instead from when sorting
             
-            double Bi = this->B[i]; // old Bi to adjust residuals if Bi updates
-            double Bi_nb = cor + Bi; // Bi with No Bounds (nb);
-            double Bi_wb = clamp(Bi_nb, this->Lows[i], this->Highs[i]);  // Bi With Bounds (wb)
+            const double Bi = this->B[i]; // old Bi to adjust residuals if Bi updates
+            const double Bi_nb = cor + Bi; // Bi with No Bounds (nb);
+            const double Bi_wb = clamp(Bi_nb, this->Lows[i], this->Highs[i]);  // Bi With Bounds (wb)
+           
+           
+            // New value that Bi will take
+            double new_Bi = Bi;
             
             /* 2 Cases:
              *     1. Set Bi to 0
@@ -81,26 +85,29 @@ FitResult<T> CDL0<T>::Fit() {
              */
             
             if (i < NoSelectK){
-                this->B[i] = Bi_wb;
-            } else if (std::fabs(Bi_nb) < thr){
+                new_Bi = Bi_wb;
+            } else if (std::abs(Bi_nb) < thr){
                 // Maximum value of Bi to small to pass L0 threshold => set to 0;
-                this->B[i] = 0;
+                new_Bi = 0;
             } else {
                 // We know Bi_nb >= sqrt(thr)
-                double delta = std::sqrt(Bi_nb*Bi_nb - thr*thr);
+                const double delta = std::sqrt(Bi_nb*Bi_nb - thr*thr);
                
                 if ((Bi_nb - delta <= Bi_wb) && (Bi_wb <= Bi_nb + delta)){
                     // Bi_wb exists in [Bi_nb - delta, Bi_nb+delta]
                     // Therefore accept Bi_wb
-                    this->B[i] = Bi_wb;
+                    new_Bi = Bi_wb;
                 } else {
-                    this->B[i] = 0;
+                    new_Bi = 0;
                 }
             }
             
 
-            // B changed from Bi to this->B[i], therefore update residual by change.
-            this->r += matrix_column_mult(*(this->X), i, Bi - this->B[i]);
+            // B[i] changed from Bi to new_Bi, therefore update residual by change.
+            if (Bi != new_Bi){
+                this->r += matrix_column_mult(*(this->X), i, Bi - new_Bi);
+                this->B[i] = new_Bi;
+            }
 
         }
         
@@ -135,7 +142,7 @@ FitResult<T> CDL0<T>::Fit() {
     
     // Re-optimize b0 after convergence.
     if (this->isSparse && this->intercept){
-        double new_b0 = arma::mean(this->r);
+        const double new_b0 = arma::mean(this->r);
         this->r += this->b0 - new_b0;
         this->b0 = new_b0;
     }
@@ -169,12 +176,12 @@ bool CDL0<T>::CWMinCheck() {
     for (auto& i : Sc) {
         // B[i] == 0 for all i in Sc
         
-        double Bi_nb = matrix_column_dot(*(this->X), i, this->r);
-        double Bi_wb = clamp(Bi_nb, this->Lows[i], this->Highs[i]);
+        const double Bi_nb = matrix_column_dot(*(this->X), i, this->r);
+        const double Bi_wb = clamp(Bi_nb, this->Lows[i], this->Highs[i]);
             
         if (std::abs(Bi_nb) >= thr) {
             // We know Bi_nb >= sqrt(thr)
-            double delta = std::sqrt(Bi_wb*Bi_wb - thr*thr);
+            const double delta = std::sqrt(Bi_wb*Bi_wb - thr*thr);
             
             if ((Bi_nb - delta <= Bi_wb) && (Bi_wb <= Bi_nb + delta)){
                 // Bi_wb exists in [Bi_nb - delta, Bi_nb+delta]

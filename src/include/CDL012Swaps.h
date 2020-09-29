@@ -92,7 +92,7 @@ FitResult<T> CDL012Swaps<T>::Fit() {
                 
                 // Change initial solution to Swapped value to seed standard CD algorithm.
                 P.InitialSol = &(this->B);
-                *P.r = *(this->y) - *(this->X) * (this->B);
+                *P.r = *(this->y) - *(this->X) * (this->B) - this->b0;
                 result = CDL012<T>(*(this->X), *(this->y), P).Fit();
                 
                 Rcpp::Rcout << "Swap Objective  " <<  result.Objective << " \n";

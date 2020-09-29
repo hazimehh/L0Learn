@@ -55,7 +55,7 @@ CDL012Logistic<T>::CDL012Logistic(const T& Xi, const arma::vec& yi, const Params
 
 template <typename T>
 inline double CDL012Logistic<T>::Objective(arma::vec & r, arma::sp_mat & B) {  // hint inline
-    auto l2norm = arma::norm(B, 2);
+    const auto l2norm = arma::norm(B, 2);
     // arma::sum(arma::log(1 + 1 / ExpyXB)) is the negative log-likelihood
     return arma::sum(arma::log(1 + 1 / ExpyXB)) + this->ModelParams[0] * B.n_nonzero + this->ModelParams[1] * arma::norm(B, 1) + this->ModelParams[2] * l2norm * l2norm;
 }
@@ -76,8 +76,8 @@ FitResult<T> CDL012Logistic<T>::Fit() { // always uses active sets
         
         // Update the intercept
         if (this->intercept){
-            double b0old = this->b0;
-            double partial_b0 = - arma::sum( *(this->y) / (1 + ExpyXB) );
+            const double b0old = this->b0;
+            const double partial_b0 = - arma::sum( *(this->y) / (1 + ExpyXB) );
 
             this->b0 -= partial_b0 / (this->n * LipschitzConst); // intercept is not regularized
             ExpyXB %= arma::exp( (this->b0 - b0old) * *(this->y));
@@ -86,36 +86,48 @@ FitResult<T> CDL012Logistic<T>::Fit() { // always uses active sets
         for (auto& i : this->Order) {
             
             // Calculate Partial_i
-            double Biold = this->B[i];
-            double partial_i = - arma::sum( matrix_column_get(*(this->Xy), i) / (1 + ExpyXB) ) + twolambda2 * Biold;
+            const double Biold = this->B[i];
+            const double partial_i = - arma::sum( matrix_column_get(*(this->Xy), i) / (1 + ExpyXB) ) + twolambda2 * Biold;
             (*Xtr)[i] = std::abs(partial_i); // abs value of grad
             
             // Ideal value of Bi_new assuming no L0, L1, L2 or bounds.
-            double x = Biold - partial_i / qp2lamda2; 
+            const double x = Biold - partial_i / qp2lamda2; 
             
             // Bi with No Bounds (nb); accounting for L1, L2 penalties
-            double Bi_nb = std::copysign(std::abs(x) - lambda1/qp2lamda2, x);
-            double Bi_wb = clamp(Bi_nb, this->Lows[i], this->Highs[i]);  // Bi With Bounds (wb)
+            const double Bi_nb = std::copysign(std::abs(x) - lambda1/qp2lamda2, x);
+            const double Bi_wb = clamp(Bi_nb, this->Lows[i], this->Highs[i]);  // Bi With Bounds (wb)
+            
+            // New value that Bi will take
+            double new_Bi = Biold;
             
             if (i < NoSelectK){
-                this->B[i] = Bi_wb;
+                // Only penalize by l1 and l2 (NOT L0)
+                if (abs(x) < lambda1){
+                    new_Bi = 0;
+                } else {
+                    new_Bi = Bi_wb;
+                }
             } else if (Bi_nb < thr){
                 // Maximum value of Bi to small to pass L0 threshold => set to 0;
-                this->B[i] = 0;
+                new_Bi = 0;
             } else {
                 // We know Bi_nb >= thr)
-                double delta = std::sqrt(std::pow(std::abs(x) - lambda1/qp2lamda2, 2) - 2*this->ModelParams[0]*qp2lamda2);
+                const double delta = std::sqrt(std::pow(std::abs(x) - lambda1/qp2lamda2, 2) 
+                                                   - 2*this->ModelParams[0]*qp2lamda2);
                 if ((Bi_nb - delta <= Bi_wb) && (Bi_wb <= Bi_nb + delta)){
                     // Bi_wb exists in [Bi_nb - delta, Bi_nb+delta]
                     // Therefore accept Bi_wb
-                    this->B[i] = Bi_wb;
+                    new_Bi = Bi_wb;
                 } else {
-                    this->B[i] = 0;
+                    new_Bi = 0;
                 }
             }
             
-            // B changed from Bi to this->B[i], therefore update residual by change.
-            ExpyXB %= arma::exp( (this->B[i] - Biold) * matrix_column_get(*(this->Xy), i));
+            // B[i] changed from Biold to new_Bi, therefore update residual by change.
+            if (Biold != new_Bi){
+                ExpyXB %= arma::exp( (new_Bi - Biold) * matrix_column_get(*(this->Xy), i));
+                this->B[i] = new_Bi;
+            }
         }
         
         this->SupportStabilized();
@@ -162,18 +174,18 @@ bool CDL012Logistic<T>::CWMinCheck() {
     
     for (auto& i : Sc)  {
         // Calculate Partial_i
-        double partial_i = - arma::sum( matrix_column_get(*(this->Xy), i) / (1 + ExpyXB) );
+        const double partial_i = - arma::sum( matrix_column_get(*(this->Xy), i) / (1 + ExpyXB) );
         (*Xtr)[i] = std::abs(partial_i); // abs value of grad
         
         // B[i] == 0 for all i in Sc.
-        double x = - partial_i / qp2lamda2;
-        double Bi_nb = std::copysign(std::abs(x) - lambda1/qp2lamda2, x);
-        double Bi_wb = clamp(Bi_nb, this->Lows[i], this->Highs[i]);  // Bi With Bounds (wb)
-        double delta;
+        const double x = - partial_i / qp2lamda2;
+        const double Bi_nb = std::copysign(std::abs(x) - lambda1/qp2lamda2, x);
+        const double Bi_wb = clamp(Bi_nb, this->Lows[i], this->Highs[i]);  // Bi With Bounds (wb)
         
         if (std::abs(Bi_nb) >= thr) {
             // We know Bi_nb >= sqrt(thr)
-            double delta = std::sqrt(std::pow(std::abs(x) - lambda1/qp2lamda2, 2) - 2*this->ModelParams[0]*qp2lamda2);
+            const double delta = std::sqrt(std::pow(std::abs(x) - lambda1/qp2lamda2, 2) 
+                                               - 2*this->ModelParams[0]*qp2lamda2);
             
             if ((Bi_nb - delta <= Bi_wb) && (Bi_wb <= Bi_nb + delta)){
                 // Bi_wb exists in [Bi_nb - delta, Bi_nb+delta]

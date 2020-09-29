@@ -2,13 +2,6 @@
 // [[Rcpp::depends(RcppArmadillo)]]
 
 template <typename T>
-void sparse_intercept_check(T m, bool Intercept){
-  if (std::is_same<T, arma::sp_mat>::value && Intercept) {
-    Rcpp::stop("Intercept support is only allowed for Dense Matricies.");
-  }
-}
-
-template <typename T>
 GridParams<T> makeGridParams(const std::string Loss, const std::string Penalty,
                              const std::string Algorithm, const std::size_t NnzStopNum, const std::size_t G_ncols,
                              const std::size_t G_nrows, const double Lambda2Max, const double Lambda2Min,
@@ -99,8 +92,6 @@ Rcpp::List _L0LearnFit(const T& X, const arma::vec& y, const std::string Loss, c
                        std::size_t ScreenSize, const bool LambdaU, const std::vector< std::vector<double> > Lambdas,
                        const std::size_t ExcludeFirstK, const bool Intercept, const arma::vec &Lows, const arma::vec &Highs){
   
-  sparse_intercept_check(X, Intercept);
-  
   GridParams<T> PG = makeGridParams<T>(Loss, Penalty, Algorithm, NnzStopNum, G_ncols, G_nrows, 
                       Lambda2Max, Lambda2Min, PartialSort, MaxIters, Tol, ActiveSet,
                       ActiveSetNum, MaxNumSwaps, ScaleDownFactor, ScreenSize,
@@ -147,8 +138,6 @@ Rcpp::List _L0LearnCV(const T& X, const arma::vec& y, const std::string Loss, co
                       const unsigned int MaxNumSwaps, const double ScaleDownFactor, unsigned int ScreenSize, const bool LambdaU,
                       const std::vector< std::vector<double> > Lambdas, const unsigned int nfolds, const double seed,
                       const unsigned int ExcludeFirstK, const bool Intercept, const arma::vec &Lows, const arma::vec &Highs){
-  
-  sparse_intercept_check(X, Intercept);
   
   GridParams<T> PG = makeGridParams<T>(Loss, Penalty, Algorithm, NnzStopNum, G_ncols, G_nrows, 
                                        Lambda2Max, Lambda2Min, PartialSort, MaxIters, Tol, ActiveSet,

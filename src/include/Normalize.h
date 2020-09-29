@@ -15,7 +15,7 @@ std::tuple<T, arma::vec, arma::vec, double, double>  Normalize(const T& X,
                                                        arma::vec & y_normalized, 
                                                        bool Normalizey, 
                                                        bool intercept) {
-    std::size_t n = X.n_rows;
+    // std::size_t n = X.n_rows;
     // std::size_t p = X.n_cols;
     
     auto martrix_center_return = matrix_center(X, intercept);
@@ -49,6 +49,7 @@ std::tuple<T, arma::vec, arma::vec, double, double>  Normalize(const T& X,
     } else {
         y_normalized = y;
         BetaMultiplier = 1 / (scaleX.t()); // transpose scale to get a col vec
+        scaley = 1;
     }
     return std::make_tuple(X_normalized, BetaMultiplier, meanX.t(), meany, scaley);
 }

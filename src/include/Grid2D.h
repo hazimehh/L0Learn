@@ -148,6 +148,7 @@ std::vector< std::vector<std::unique_ptr<FitResult<T>> > > Grid2D<T>::Fit()
         PG.ytXmax = ytXmax;
         
         PG.P.ModelParams[index] = Lambdas2[i];
+        // Rcpp::Rcout << i << "th PG.P.ModelParams[" << index << "] "<< Lambdas2[i] << " \n";
         if (PG.LambdaU == true)
             PG.Lambdas = PG.LambdasGrid[i];
         

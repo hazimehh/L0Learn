@@ -3,7 +3,7 @@ library("testthat")
 library("L0Learn")
 source("utils.R")
 
-tmp <-  L0Learn::GenSynthetic(n=100, p=5000, k=10, seed=1, rho=1.5)
+tmp <-  L0Learn::GenSynthetic(n=100, p=5000, k=10, seed=1)#, rho=1.5)
 X <- tmp[[1]]
 y <- tmp[[2]]
 y_bin <- sign(y)
@@ -141,4 +141,55 @@ test_that("L0Learn respects vector bounds", {
             expect_true(all((lows <= fit$beta[[1]][,i ]) && (fit$beta[[1]][,i ]<= highs)))
         }
     }
+})
+
+find <- function(x, inside){
+    which(sapply(inside, FUN=function(X) x %in% X), arr.ind = TRUE)
+}
+
+test_that("L0Learn with bounds is better than no-bounds", {
+    lows = -.02
+    highs = .02
+    fit_wb <- L0Learn.fit(X, y, intercept = FALSE, lows=lows, highs=highs)
+    fit_nb <- L0Learn.fit(X, y, intercept = FALSE, scaleDownFactor = .8, nLambda = 300)
+    
+    for (i in 1:length(fit_wb$suppSize[[1]])){
+        nnz_wb = fit_wb$suppSize[[1]][i]
+        if (nnz_wb > 10){ #Don't look at NoSelectK
+            solution_with_same_nnz =  find(nnz_wb, fit_nb$suppSize[[1]])[1]
+            if (is.finite(solution_with_same_nnz)){
+                # If there is a solution in fit_nb that has the same number of nnz.
+                beta_wb = fit_wb$beta[[1]][, i]
+                beta_nb = clamp(fit_nb$beta[[1]][, solution_with_same_nnz], lows, highs)
+                
+                beta_wb = fit_wb$beta[[1]][, i]
+                beta_nb = clamp(fit_nb$beta[[1]][, i], lows, highs)
+                
+                r_wb = y - X %*% beta_wb
+                r_nb = y - X %*% beta_nb
+                
+                expect_gte(norm(r_nb, "22"), norm(r_wb, "2"))
+            }
+        }
+    }
+})
+
+test_that("L0Learn and glmnet find similar solutions", {
+    lows = -0.02
+    highs = 0.02
+    for (i in 1:2){
+        if (i == 1){
+            p = "L0L1"
+            alpha = 1
+        } else{
+            p = "L0L2"
+            alpha = 0
+        }
+        fit_L0 = L0Learn.fit(X, y, penalty = p, autoLambda= FALSE, lambdaGrid = list(c(1e-6)), lows=lows,highs=highs)
+        fit_glmnet = glmnet(X, y, alpha = alpha, lower=lows,upper=highs)
+    }
+        
+    }
+    fit_L0 = L0Learn.fit(X, y, penalty = "L0L1", lows=-.02,highs=.02)
+    fit_glmnet = glmnet(X,y,lower=-.02,upper=.02)
 })

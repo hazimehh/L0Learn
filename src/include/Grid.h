@@ -73,6 +73,7 @@ void Grid<T>::Fit() {
     for (std::size_t i=0; i<G.size(); ++i) {
         // Rcpp::Rcout << "Lambda12 " << G[i][0]->ModelParams[1] << ", " << G[i][0]->ModelParams[2] <<  "\n";
         if (PG.P.Specs.L0L1){ 
+            // Rcpp::Rcout << "Lambda12.push_back(G[i][0]->ModelParams[1]);: "<< G[i][0]->ModelParams[1] << " \n";
             Lambda12.push_back(G[i][0]->ModelParams[1]); 
         } else if (PG.P.Specs.L0L2) { 
             Lambda12.push_back(G[i][0]->ModelParams[2]); 
@@ -80,7 +81,6 @@ void Grid<T>::Fit() {
         
         // Rcpp::Rcout << "Size of G[" << i << "] = " << G[i].size() << " \n";
         for (auto &g : G[i]) {
-            
             Lambda0[i].push_back(g->ModelParams[0]);
             
             NnzCount[i].push_back(g->B.n_nonzero);
@@ -95,17 +95,14 @@ void Grid<T>::Fit() {
             double intercept;
             
             
-            if (PG.P.Specs.Classification) {
-                std::tie(B_unscaled, intercept) = DeNormalize(g->B, BetaMultiplier, meanX, meany);
-                Solutions[i].push_back(B_unscaled);
-                Intercepts[i].push_back(scaley*(g->intercept) + intercept);
-            } else {
-                std::tie(B_unscaled, intercept) = DeNormalize(g->B, BetaMultiplier, meanX, meany);
-                Solutions[i].push_back(B_unscaled);
-                // g->intercept is 0 unless b0 is optimized for in CD.
-                // This happens when a sparse matrix is used and P.intercept is True
-                Intercepts[i].push_back(intercept + scaley*g->intercept);
-            }
+            std::tie(B_unscaled, intercept) = DeNormalize(g->B, BetaMultiplier, meanX, meany);
+            Solutions[i].push_back(B_unscaled);
+            /* scaley is 1 for classification problems.
+            *  g->intercept is 0 unless specifically optimized for in:
+            *       classification
+            *       sparse regression and intercept = true
+            */
+            Intercepts[i].push_back(scaley*g->intercept + intercept);
         }
     }
 }

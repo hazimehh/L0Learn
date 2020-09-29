@@ -24,53 +24,76 @@ test_that('L0Learn Accepts Proper Matricies', {
 })
 
 
-test_that("L0Learn fit and cvfit are deterministic for Dense", {
-    for (f in c(L0Learn.cvfit, L0Learn.fit)){
-      for (p in c("L0", "L0L2", "L0L1")){
-        set.seed(1)
-        x1 <- f(X, y, penalty=p, intercept = FALSE)
-        set.seed(1)
-        x2 <- f(X, y, penalty=p, intercept = FALSE)
-        expect_equal(x1, x2) 
-      }
+test_that("L0Learn fit are deterministic for Dense fit", {
+    for (p in c("L0", "L0L2", "L0L1")){
+      set.seed(1)
+      x1 <- L0Learn.fit(X, y, penalty=p, intercept = FALSE)
+      set.seed(1)
+      x2 <- L0Learn.fit(X, y, penalty=p, intercept = FALSE)
+      expect_equal(x1, x2, info=p)
     }
 })
 
-test_that("L0Learn fit and cvfit are deterministic for Sparse", {
-    for (f in c(L0Learn.cvfit, L0Learn.fit)){
-        set.seed(1)
-        x1 <-f(X_sparse, y, intercept = FALSE)
-        set.seed(1)
-        x2 <- f(X_sparse, y, intercept = FALSE)
-        expect_equal(x1, x2)
+test_that("L0Learn cvfit are deterministic for Dense cvfit", {
+    for (p in c("L0", "L0L2", "L0L1")){
+      set.seed(1)
+      x1 <- L0Learn.cvfit(X, y, penalty=p, intercept = FALSE)
+      set.seed(1)
+      x2 <- L0Learn.cvfit(X, y, penalty=p, intercept = FALSE)
+      expect_equal_cv(x1, x2, info=p) 
     }
 })
 
+test_that("L0Learn fit and cvfit are deterministic for Dense fit", {
+  for (p in c("L0", "L0L2", "L0L1")){
+    set.seed(1)
+    x1 <- L0Learn.fit(X_sparse, y, penalty=p, intercept = FALSE)
+    set.seed(1)
+    x2 <- L0Learn.fit(X_sparse, y, penalty=p, intercept = FALSE)
+    expect_equal(x1, x2, info=p)
+  }
+})
 
-test_that("L0Learn fit and cvfit find same solution for different matrix representations", {
-    for (f in c(L0Learn.fit, L0Learn.cvfit)){
-        set.seed(1)
-        x1 <- f(X, y, intercept = FALSE)
-        set.seed(1)
-        x2 <- f(X_sparse, y, intercept = FALSE)
-        expect_equal_cv(x1, x2)
-    }
+test_that("L0Learn fit and cvfit are deterministic for Dense cvfit", {
+  for (p in c("L0", "L0L2", "L0L1")){
+    set.seed(1)
+    x1 <- L0Learn.cvfit(X_sparse, y, penalty=p, intercept = FALSE)
+    set.seed(1)
+    x2 <- L0Learn.cvfit(X_sparse, y, penalty=p, intercept = FALSE)
+    expect_equal_cv(x1, x2, info=p) 
+  }
 })
 
 
-test_that("L0Learn fit and cvfit fail with Sparse Matricies and Intercepts", {
-    f1 <- function(){
-        L0Learn.fit(X_sparse, y, intercept = TRUE)
+test_that("L0Learn fit find same solution for different matrix representations", {
+    for (p in c("L0", "L0L2", "L0L1")){
+      set.seed(1)
+      x1 <- L0Learn.fit(X_sparse, y, penalty=p, intercept = FALSE)
+      set.seed(1)
+      x2 <- L0Learn.fit(X, y, penalty=p, intercept = FALSE)
+      expect_equal(x1, x2, info=p)
     }
-    f2 <- function(){
-      L0Learn.cvfit(X_sparse, y, intercept = TRUE)
-    }
-    expect_error(f1())
-    expect_error(f2())
+})
+
+test_that("L0Learn cvfit find same solution for different matrix representations", {
+  for (p in c("L0", "L0L2", "L0L1")){
+    set.seed(1)
+    x1 <- L0Learn.cvfit(X_sparse, y, penalty=p, intercept = FALSE)
+    set.seed(1)
+    x2 <- L0Learn.cvfit(X, y, penalty=p, intercept = FALSE)
+    expect_equal_cv(x1, x2, info=p)
+  }
 })
 
 
-test_that("L0Learn runs for all penalty for Sparse and Dense Matrices", {
+test_that("L0Learn fit and cvfit run with sparse X and intercepts", {
+    L0Learn.fit(X_sparse, y, intercept = TRUE)
+    L0Learn.cvfit(X_sparse, y, intercept = TRUE)
+    succeed()
+})
+
+
+test_that("L0Learn matchs for all penalty for Sparse and Dense Matrices", {
     for (p in c("L0", "L0L2", "L0L1")){
       for (f in c(L0Learn.cvfit, L0Learn.fit)){
         set.seed(1)
@@ -91,41 +114,29 @@ test_that("L0Learn.Fit runs for all Loss for Sparse and Dense Matrices", {
         x1 <- L0Learn.fit(X, y_bin, loss=l, intercept = FALSE)
         set.seed(1)
         x2 <- L0Learn.fit(X_sparse, y_bin, loss=l, intercept = FALSE)
-        expect_equal_cv(x1, x2)
+        expect_equal(x1, x2, info = paste("fit", l))
         
         set.seed(1)
         x1 <- L0Learn.cvfit(X, y_bin, loss=l, intercept = FALSE)
         set.seed(1)
         x2 <- L0Learn.cvfit(X_sparse, y_bin, loss=l, intercept = FALSE)
-        expect_equal_cv(x1, x2)
-    }
-    set.seed(1)
-    x1 <- L0Learn.fit(X, y, loss='SquaredError', intercept = FALSE)
-    set.seed(1)
-    x2 <- L0Learn.fit(X_sparse, y, loss='SquaredError', intercept = FALSE)
-    expect_equal_cv(x1, x2)
-    
-    set.seed(1)
-    x1 <- L0Learn.cvfit(X, y, loss='SquaredError', intercept = FALSE)
-    set.seed(1)
-    x2 <- L0Learn.cvfit(X_sparse, y, loss='SquaredError', intercept = FALSE)
-    expect_equal_cv(x1, x2)
-
-})
-
-
-test_that("L0Learn.Fit runs for all algorithm for Sparse and Dense Matrices", {
-    for (p in c("L0", "L0L2", "L0L1")){
-        set.seed(1)
-        x1 <- L0Learn.fit(X, y, penalty=p, algorithm='CDPSI', intercept = FALSE)
-        set.seed(1)
-        x2 <- L0Learn.fit(X_sparse, y, penalty=p, algorithm='CDPSI', intercept = FALSE)
-        expect_equal_cv(x1, x2)
-        
-        set.seed(1)
-        x1 <- L0Learn.cvfit(X, y, penalty=p, algorithm='CDPSI', intercept = FALSE)
-        set.seed(1)
-        x2 <- L0Learn.cvfit(X_sparse, y, penalty=p, algorithm='CDPSI', intercept = FALSE)
-        expect_equal_cv(x1, x2)
+        expect_equal_cv(x1, x2, info = paste("fit", l))
     }
 })
+
+
+# test_that("L0Learn.Fit runs for all algorithm for Sparse and Dense Matrices", {
+#     for (p in c("L0", "L0L2", "L0L1")){
+#         set.seed(1)
+#         x1 <- L0Learn.fit(X, y, penalty=p, algorithm='CDPSI', intercept = FALSE)
+#         set.seed(1)
+#         x2 <- L0Learn.fit(X_sparse, y, penalty=p, algorithm='CDPSI', intercept = FALSE)
+#         expect_equal_cv(x1, x2)
+#         
+#         set.seed(1)
+#         x1 <- L0Learn.cvfit(X, y, penalty=p, algorithm='CDPSI', intercept = FALSE)
+#         set.seed(1)
+#         x2 <- L0Learn.cvfit(X_sparse, y, penalty=p, algorithm='CDPSI', intercept = FALSE)
+#         expect_equal_cv(x1, x2)
+#     }
+# })

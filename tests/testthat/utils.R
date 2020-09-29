@@ -1,28 +1,4 @@
 library("L0Learn")
-# 
-# check_similar_fit_solution <- function(x, y, tolerance=1e-5, cv_tolerance=1e-3){
-#     for (s in c("p", "n", "varnames", "settings", "loss", "penalty", "gamma")){
-#         expect_identical(x[[s]], y[[s]])
-#     }
-#     
-#     # This is not an ideal test. Somehow, even though I set the seed before each
-#     # test there is a difference in solution size. Indictating a bug in the Rcpp
-#     # code.
-#     
-#     num_s = min(x[["beta"]][[1]]@Dim[[2]],
-#                 y[["beta"]][[1]]@Dim[[2]])
-#     
-#     for (s in c("lambda", "a0", "converged", "suppSize")){
-#         expect_equal(x[[s]][[1]][1:num_s],
-#                      y[[s]][[1]][1:num_s],
-#                      tolerance=tolerance)
-#     }
-#     
-#     expect_equal(as.matrix(x[["beta"]][[1]])[, 1:num_s],
-#                  as.matrix(y[["beta"]][[1]])[, 1:num_s],
-#                  tolerance=tolerance)
-#     
-# }
 
 expect_equal_cv <- function(x, y, cv_tolerance=1e-6, info=NULL) {
     for (i in seq_along(x)){
@@ -32,18 +8,6 @@ expect_equal_cv <- function(x, y, cv_tolerance=1e-6, info=NULL) {
             expect_equal(x[i], y[i], info=info)
         }
     }
-}
-
-
-funcFromStr <- function(func){
-    if (func == 'fit'){
-        func <- L0Learn.fit
-    } else if (func == 'cvfit'){
-        func <- L0Learn.cvfit
-    } else {
-        fail("Unkown function")
-    }
-    func
 }
 
 

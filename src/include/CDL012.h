@@ -63,48 +63,53 @@ FitResult<T> CDL012<T>::Fit() {
         this->Bprev = this->B;
         
         if (this->isSparse && this->intercept){
-            double new_b0 = arma::mean(this->r);
+            const double new_b0 = arma::mean(this->r);
             this->r += this->b0 - new_b0;
             this->b0 = new_b0;
         }
         
         for (auto& i : this->Order) {
-            double cor = matrix_column_dot(*(this->X), i, this->r);
+            const double cor = matrix_column_dot(*(this->X), i, this->r);
             
             (*Xtr)[i] = std::abs(cor); // do abs here instead from when sorting
             
+            const double Bi = this->B[i]; // old Bi to adjust residuals if Bi updates
+            const double x = cor + Bi;
+            const double Bi_nb = std::copysign((std::abs(x) - lambda1) / Onep2lamda2, x); // Bi with No Bounds (nb);
+            const double Bi_wb = clamp(Bi_nb, this->Lows[i], this->Highs[i]);  // Bi With Bounds (wb)
             
-            double Bi = this->B[i]; // old Bi to adjust residuals if Bi updates
-            double x = cor + Bi;
-            double Bi_nb = std::copysign((std::abs(x) - lambda1) / Onep2lamda2, x); // Bi with No Bounds (nb);
-            double Bi_wb = clamp(Bi_nb, this->Lows[i], this->Highs[i]);  // Bi With Bounds (wb)
-            
-            /* 2 Cases:
-             *     1. Set Bi to 0
-             *     2. Set Bi to NNZ
-             */
+            // New value that Bi will take
+            double new_Bi = Bi;
             
             if (i < NoSelectK){
-                this->B[i] = Bi_wb;
+                // Only penalize by l1 and l2 (NOT L0)
+                if (abs(x) < lambda1){
+                    new_Bi = 0;
+                } else {
+                    new_Bi = Bi_wb;
+                }
             } else if (std::abs(Bi_nb) < thr){
                 // Maximum value of Bi to small to pass L0 threshold => set to 0;
-                this->B[i] = 0;
+                new_Bi = 0;
             } else {
                 // We know Bi_nb >= thr)
-                double delta = std::sqrt(std::pow(std::abs(x) - lambda1, 2) - 2*this->ModelParams[0]*Onep2lamda2);
-                delta /= Onep2lamda2;
+                const double delta = std::sqrt(std::pow(std::abs(x) - lambda1, 2) 
+                                                   - 2*this->ModelParams[0]*Onep2lamda2) / Onep2lamda2;
                 
                 if ((Bi_nb - delta <= Bi_wb) && (Bi_wb <= Bi_nb + delta)){
                     // Bi_wb exists in [Bi_nb - delta, Bi_nb+delta]
                     // Therefore accept Bi_wb
-                    this->B[i] = Bi_wb;
+                    new_Bi = Bi_wb;
                 } else {
-                    this->B[i] = 0;
+                    new_Bi = 0;
                 }
             }
             
-            // B changed from Bi to this->B[i], therefore update residual by change.
-            this->r += matrix_column_mult(*(this->X), i, Bi - this->B[i]);
+            // B[i] changed from Bi to new_Bi, therefore update residual by change.
+            if (Bi != new_Bi){
+                this->r += matrix_column_mult(*(this->X), i, Bi - new_Bi);
+                this->B[i] = new_Bi;
+            }
         }
             
         //B.print();
@@ -137,7 +142,7 @@ FitResult<T> CDL012<T>::Fit() {
     }
     
     if (this->isSparse && this->intercept){
-        double new_b0 = arma::mean(this->r);
+        const double new_b0 = arma::mean(this->r);
         this->r += this->b0 - new_b0;
         this->b0 = new_b0;
     }
@@ -170,14 +175,17 @@ bool CDL012<T>::CWMinCheck(){
     for (auto& i : Sc) {
         // B[i] == 0 for all i in Sc
     
-        double x = matrix_column_dot(*(this->X), i, this->r);
-        double Bi_nb = std::copysign((std::abs(x) - lambda1) / Onep2lamda2, x); // Bi with No Bounds (nb);
-        double Bi_wb = clamp(Bi_nb, this->Lows[i], this->Highs[i]);  // Bi With Bounds (wb)
+        const double x = matrix_column_dot(*(this->X), i, this->r);
+        const double absx = std::abs(x);
+        (*Xtr)[i] = absx; // do abs here instead from when sorting
+        
+        const double Bi_nb = std::copysign((std::abs(x) - lambda1) / Onep2lamda2, x); // Bi with No Bounds (nb);
+        const double Bi_wb = clamp(Bi_nb, this->Lows[i], this->Highs[i]);  // Bi With Bounds (wb)
         
         if (std::abs(Bi_nb) >= thr) {
             // We know Bi_nb >= sqrt(thr)
-            double delta = std::sqrt(std::pow(std::abs(x) - lambda1, 2)  - 2*this->ModelParams[0]*Onep2lamda2);
-            delta /= Onep2lamda2;
+            const double delta = std::sqrt(std::pow(std::abs(x) - lambda1, 2) 
+                                               - 2*this->ModelParams[0]*Onep2lamda2)/Onep2lamda2;
             
             if ((Bi_nb - delta <= Bi_wb) && (Bi_wb <= Bi_nb + delta)){
                 // Bi_wb exists in [Bi_nb - delta, Bi_nb+delta]
