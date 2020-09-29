@@ -21,7 +21,7 @@ class CDL012SquaredHinge : public CD<T> {
         arma::vec onemyxb;
         std::size_t NoSelectK;
         T * Xy;
-        unsigned int ScreenSize;
+        std::size_t ScreenSize;
         std::vector<std::size_t> Range1p;
 
 
