@@ -17,6 +17,7 @@ class Grid {
         arma::vec BetaMultiplier;
         arma::vec meanX;
         double meany;
+        double scaley;
 
     public:
 
@@ -41,8 +42,9 @@ class Grid {
 template <typename T>
 Grid<T>::Grid(const T& X, const arma::vec& y, const GridParams<T>& PGi) {
     PG = PGi;
-    std::tie(Xscaled, BetaMultiplier, meanX, meany) = Normalize(X, 
-             y, yscaled,!PG.P.Specs.Classification, PG.intercept);
+
+    std::tie(Xscaled, BetaMultiplier, meanX, meany, scaley) = Normalize(X, 
+             y, yscaled, !PG.P.Specs.Classification, PG.intercept);
     
     // Must rescale bounds by BetaMultiplier inorder for final result to conform to bounds
     PG.P.Lows /= BetaMultiplier;
@@ -96,11 +98,13 @@ void Grid<T>::Fit() {
             if (PG.P.Specs.Classification) {
                 std::tie(B_unscaled, intercept) = DeNormalize(g->B, BetaMultiplier, meanX, meany);
                 Solutions[i].push_back(B_unscaled);
-                Intercepts[i].push_back(g->intercept + intercept); // + needed
+                Intercepts[i].push_back(scaley*(g->intercept) + intercept);
             } else {
                 std::tie(B_unscaled, intercept) = DeNormalize(g->B, BetaMultiplier, meanX, meany);
                 Solutions[i].push_back(B_unscaled);
-                Intercepts[i].push_back(intercept);
+                // g->intercept is 0 unless b0 is optimized for in CD.
+                // This happens when a sparse matrix is used and P.intercept is True
+                Intercepts[i].push_back(intercept + scaley*g->intercept);
             }
         }
     }

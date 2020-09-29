@@ -29,11 +29,12 @@ struct Params {
     arma::vec * r;
     T * Xy; // used for classification.
     std::size_t NoSelectK = 0;
-    bool intercept;
+    bool intercept = false;
     // double Low;
     // double High;
     arma::vec Lows;
     arma::vec Highs;
+
 };
 
 #endif

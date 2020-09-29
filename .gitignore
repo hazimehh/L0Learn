@@ -1,5 +1,6 @@
 inst/doc
-.Rproj.user
+.Rproj*
+.DS_Store
 *.o
 *.so
 *.tmp

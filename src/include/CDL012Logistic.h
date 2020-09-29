@@ -16,7 +16,6 @@ class CDL012Logistic : public CD<T> {
         double qp2lamda2;
         double lambda1;
         double lambda1ol;
-        double b0 = 0;
         arma::vec ExpyXB;
         std::vector<double> * Xtr;
         T * Xy;
@@ -24,7 +23,7 @@ class CDL012Logistic : public CD<T> {
         std::size_t NoSelectK;
         std::size_t ScreenSize;
         std::vector<std::size_t> Range1p;
-        bool intercept;
+
     public:
         CDL012Logistic(const T& Xi, const arma::vec& yi, const Params<T>& P);
         //~CDL012Logistic(){}
@@ -44,8 +43,7 @@ CDL012Logistic<T>::CDL012Logistic(const T& Xi, const arma::vec& yi, const Params
     thr = std::sqrt((2 * this->ModelParams[0]) / qp2lamda2);
     lambda1 = this->ModelParams[1];
     lambda1ol = lambda1 / qp2lamda2;
-    b0 = P.b0;
-    ExpyXB = arma::exp(*this->y % (*(this->X) * this->B + b0)); // Maintained throughout the algorithm
+    ExpyXB = arma::exp(*this->y % (*(this->X) * this->B + this->b0)); // Maintained throughout the algorithm
     Xtr = P.Xtr; Iter = P.Iter; 
     this->result.ModelParams = P.ModelParams; 
     Xy = P.Xy;
@@ -53,7 +51,6 @@ CDL012Logistic<T>::CDL012Logistic(const T& Xi, const arma::vec& yi, const Params
     Range1p.resize(this->p);
     std::iota(std::begin(Range1p), std::end(Range1p), 0);
     ScreenSize = P.ScreenSize;
-    intercept = P.intercept;
 }
 
 template <typename T>
@@ -78,11 +75,12 @@ FitResult<T> CDL012Logistic<T>::Fit() { // always uses active sets
         this->Bprev = this->B;
         
         // Update the intercept
-        if (intercept){
-            double b0old = b0;
+        if (this->intercept){
+            double b0old = this->b0;
             double partial_b0 = - arma::sum( *(this->y) / (1 + ExpyXB) );
-            b0 -= partial_b0 / (this->n * LipschitzConst); // intercept is not regularized or bounded 
-            ExpyXB %= arma::exp( (b0 - b0old) * *(this->y));
+
+            this->b0 -= partial_b0 / (this->n * LipschitzConst); // intercept is not regularized
+            ExpyXB %= arma::exp( (this->b0 - b0old) * *(this->y));
         }
         
         for (auto& i : this->Order) {
@@ -134,7 +132,7 @@ FitResult<T> CDL012Logistic<T>::Fit() { // always uses active sets
     this->result.Objective = objective;
     this->result.B = this->B;
     this->result.Model = this;
-    this->result.intercept = b0;
+    this->result.intercept = this->b0;
     this->result.ExpyXB = ExpyXB;
     this->result.IterNum = this->CurrentIters;
     
