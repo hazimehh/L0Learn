@@ -2,7 +2,7 @@
 #define FITRESULT_H
 #include "RcppArmadillo.h"
 
-template <typename T> // Forward Reference to prevent circular dependencies
+template <class T> // Forward Reference to prevent circular dependencies
 class CD;
 
 template <typename T>

@@ -36,8 +36,6 @@
 
 arma::sp_mat clamp_by_vector(arma::sp_mat B, const arma::vec lows, const arma::vec highs){
     // See above implementation without filter for error.
-    // Rcpp::Rcout << "Pre Clamp B \n";
-    // Rcpp::Rcout << B << "\n";
     auto begin = B.begin();
     auto end = B.end();
     
@@ -56,8 +54,7 @@ arma::sp_mat clamp_by_vector(arma::sp_mat B, const arma::vec lows, const arma::v
         double high = highs(it);
         B(it, 0) = clamp(B_item, low, high);
     }
-    // Rcpp::Rcout << "Post Clamp B \n";
-    // Rcpp::Rcout << B << "\n";
+    
     return B;
 }
 

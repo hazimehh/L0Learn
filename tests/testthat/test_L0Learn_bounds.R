@@ -1,6 +1,7 @@
 library("Matrix")
 library("testthat")
 library("L0Learn")
+library("raster")
 source("utils.R")
 
 tmp <-  L0Learn::GenSynthetic(n=100, p=5000, k=10, seed=1)#, rho=1.5)
@@ -174,22 +175,22 @@ test_that("L0Learn with bounds is better than no-bounds", {
     }
 })
 
-test_that("L0Learn and glmnet find similar solutions", {
-    lows = -0.02
-    highs = 0.02
-    for (i in 1:2){
-        if (i == 1){
-            p = "L0L1"
-            alpha = 1
-        } else{
-            p = "L0L2"
-            alpha = 0
-        }
-        fit_L0 = L0Learn.fit(X, y, penalty = p, autoLambda= FALSE, lambdaGrid = list(c(1e-6)), lows=lows,highs=highs)
-        fit_glmnet = glmnet(X, y, alpha = alpha, lower=lows,upper=highs)
-    }
-        
-    }
-    fit_L0 = L0Learn.fit(X, y, penalty = "L0L1", lows=-.02,highs=.02)
-    fit_glmnet = glmnet(X,y,lower=-.02,upper=.02)
-})
+# test_that("L0Learn and glmnet find similar solutions", {
+#     lows = -0.02
+#     highs = 0.02
+#     for (i in 1:2){
+#         if (i == 1){
+#             p = "L0L1"
+#             alpha = 1
+#         } else{
+#             p = "L0L2"
+#             alpha = 0
+#         }
+#         fit_L0 = L0Learn.fit(X, y, penalty = p, autoLambda= FALSE, lambdaGrid = list(c(1e-6)), lows=lows,highs=highs)
+#         fit_glmnet = glmnet(X, y, alpha = alpha, lower=lows,upper=highs)
+#     }
+#         
+#     }
+#     fit_L0 = L0Learn.fit(X, y, penalty = "L0L1", lows=-.02,highs=.02)
+#     fit_glmnet = glmnet(X,y,lower=-.02,upper=.02)
+# })

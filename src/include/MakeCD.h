@@ -12,7 +12,7 @@
 #include "CDL012SquaredHingeSwaps.h"
 
 
-template <typename T>
+template <class T>
 CD<T> * make_CD(const T& Xi, const arma::vec& yi, const Params<T>& P) {
     if (P.Specs.SquaredError) {
         if (P.Specs.CD) {
