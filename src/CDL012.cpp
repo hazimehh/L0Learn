@@ -3,17 +3,11 @@
 
 template <class T>
 CDL012<T>::CDL012(const T& Xi, const arma::vec& yi, const Params<T>& P) : CD<T>(Xi, yi, P) {
-    Onep2lamda2 = 1 + 2 * this->ModelParams[2]; 
-    thr = std::sqrt((2 * this->ModelParams[0]) / Onep2lamda2);
-    lambda1 = this->ModelParams[1]; 
-    Xtr = P.Xtr; 
-    Iter = P.Iter; 
-    this->result.ModelParams = P.ModelParams; 
-    ScreenSize = P.ScreenSize; 
+    Onep2lamda2 = 1 + 2 * this->lambda2; 
+    
+    this->thr2 = 2 * this->lambda0 / Onep2lamda2;
+    this->thr = std::sqrt(this->thr2);
     this->r = *P.r;
-    Range1p.resize(this->p); 
-    std::iota(std::begin(Range1p), std::end(Range1p), 0); 
-    NoSelectK = P.NoSelectK;
     this->result.r = P.r;
 }
 
@@ -27,7 +21,7 @@ FitResult<T> CDL012<T>::Fit() {
     std::vector<std::size_t> FullOrder = this->Order;
     bool FirstRestrictedPass = true;
     if (this->ActiveSet) {
-        this->Order.resize(std::min((int) (this->B.n_nonzero + ScreenSize + NoSelectK), (int)(this->p))); // std::min(1000,Order.size())
+        this->Order.resize(std::min((int) (this->B.n_nonzero + this->ScreenSize + this->NoSelectK), (int)(this->p))); // std::min(1000,Order.size())
     }
     
     bool ActiveSetInitial = this->ActiveSet;
@@ -36,53 +30,12 @@ FitResult<T> CDL012<T>::Fit() {
         this->Bprev = this->B;
         
         if (this->isSparse && this->intercept){
-            const double new_b0 = arma::mean(this->r);
-            this->r += this->b0 - new_b0;
-            this->b0 = new_b0;
+            this->UpdateSparse_b0(this->r);
         }
         
         for (auto& i : this->Order) {
-            const double cor = matrix_column_dot(*(this->X), i, this->r);
+            this->UpdateBi(i);
             
-            (*Xtr)[i] = std::abs(cor); // do abs here instead from when sorting
-            
-            const double Bi = this->B[i]; // old Bi to adjust residuals if Bi updates
-            const double x = cor + Bi;
-            const double Bi_nb = std::copysign((std::abs(x) - lambda1) / Onep2lamda2, x); // Bi with No Bounds (nb);
-            const double Bi_wb = clamp(Bi_nb, this->Lows[i], this->Highs[i]);  // Bi With Bounds (wb)
-            
-            // New value that Bi will take
-            double new_Bi = Bi;
-            
-            if (i < NoSelectK){
-                // Only penalize by l1 and l2 (NOT L0)
-                if (abs(x) < lambda1){
-                    new_Bi = 0;
-                } else {
-                    new_Bi = Bi_wb;
-                }
-            } else if (std::abs(Bi_nb) < thr){
-                // Maximum value of Bi to small to pass L0 threshold => set to 0;
-                new_Bi = 0;
-            } else {
-                // We know Bi_nb >= thr)
-                const double delta = std::sqrt(std::pow(std::abs(x) - lambda1, 2) 
-                                                   - 2*this->ModelParams[0]*Onep2lamda2) / Onep2lamda2;
-                
-                if ((Bi_nb - delta <= Bi_wb) && (Bi_wb <= Bi_nb + delta)){
-                    // Bi_wb exists in [Bi_nb - delta, Bi_nb+delta]
-                    // Therefore accept Bi_wb
-                    new_Bi = Bi_wb;
-                } else {
-                    new_Bi = 0;
-                }
-            }
-            
-            // B[i] changed from Bi to new_Bi, therefore update residual by change.
-            if (Bi != new_Bi){
-                this->r += matrix_column_mult(*(this->X), i, Bi - new_Bi);
-                this->B[i] = new_Bi;
-            }
         }
         
         //B.print();
@@ -115,9 +68,7 @@ FitResult<T> CDL012<T>::Fit() {
     }
     
     if (this->isSparse && this->intercept){
-        const double new_b0 = arma::mean(this->r);
-        this->r += this->b0 - new_b0;
-        this->b0 = new_b0;
+        this->UpdateSparse_b0(this->r);
     }
     
     this->result.Objective = objective;
@@ -138,36 +89,15 @@ bool CDL012<T>::CWMinCheck(){
     
     std::vector<std::size_t> Sc;
     set_difference(
-        Range1p.begin(),
-        Range1p.end(),
+        this->Range1p.begin(),
+        this->Range1p.end(),
         S.begin(),
         S.end(),
         back_inserter(Sc));
     
     bool Cwmin = true;
     for (auto& i : Sc) {
-        // B[i] == 0 for all i in Sc
-        
-        const double x = matrix_column_dot(*(this->X), i, this->r);
-        const double absx = std::abs(x);
-        (*Xtr)[i] = absx; // do abs here instead from when sorting
-        
-        const double Bi_nb = std::copysign((std::abs(x) - lambda1) / Onep2lamda2, x); // Bi with No Bounds (nb);
-        const double Bi_wb = clamp(Bi_nb, this->Lows[i], this->Highs[i]);  // Bi With Bounds (wb)
-        
-        if (std::abs(Bi_nb) >= thr) {
-            // We know Bi_nb >= sqrt(thr)
-            const double delta = std::sqrt(std::pow(std::abs(x) - lambda1, 2) 
-                                               - 2*this->ModelParams[0]*Onep2lamda2)/Onep2lamda2;
-            
-            if ((Bi_nb - delta <= Bi_wb) && (Bi_wb <= Bi_nb + delta)){
-                // Bi_wb exists in [Bi_nb - delta, Bi_nb+delta]
-                // Therefore accept Bi_wb
-                this->B[i] = Bi_wb;
-                this->r -= matrix_column_mult(*(this->X), i, Bi_wb);
-                Cwmin = false;
-            }
-        }
+        Cwmin = this->UpdateBiCWMinCheck(i, Cwmin);
     }
     return Cwmin;
     

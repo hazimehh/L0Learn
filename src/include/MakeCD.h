@@ -13,7 +13,7 @@
 
 
 template <class T>
-CD<T> * make_CD(const T& Xi, const arma::vec& yi, const Params<T>& P) {
+CDBase<T> * make_CD(const T& Xi, const arma::vec& yi, const Params<T>& P) {
     if (P.Specs.SquaredError) {
         if (P.Specs.CD) {
             if (P.Specs.L0) {

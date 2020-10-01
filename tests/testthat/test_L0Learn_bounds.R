@@ -169,7 +169,7 @@ test_that("L0Learn with bounds is better than no-bounds", {
                 r_wb = y - X %*% beta_wb
                 r_nb = y - X %*% beta_nb
                 
-                expect_gte(norm(r_nb, "22"), norm(r_wb, "2"))
+                expect_gte(norm(r_nb, "2"), norm(r_wb, "2"))
             }
         }
     }

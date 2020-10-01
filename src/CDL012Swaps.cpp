@@ -1,18 +1,14 @@
 #include "CDL012Swaps.h"
 
 template <class T>
-CDL012Swaps<T>::CDL012Swaps(const T& Xi, const arma::vec& yi, const Params<T>& Pi) : CD<T>(Xi, yi, Pi) {
-    MaxNumSwaps = Pi.MaxNumSwaps;
-    P = Pi;
-    NoSelectK=P.NoSelectK;
-}
+CDL012Swaps<T>::CDL012Swaps(const T& Xi, const arma::vec& yi, const Params<T>& Pi) : CDSwaps<T>(Xi, yi, Pi) {}
 
 template <class T>
 FitResult<T> CDL012Swaps<T>::Fit() {
-    auto result = CDL012<T>(*(this->X), *(this->y), P).Fit(); // result will be maintained till the end
+    auto result = CDL012<T>(*(this->X), *(this->y), this->P).Fit(); // result will be maintained till the end
     this->B = result.B;
     double objective = result.Objective;
-    P.Init = 'u';
+    this->P.Init = 'u';
     
     bool foundbetter = false;
     
@@ -21,7 +17,7 @@ FitResult<T> CDL012Swaps<T>::Fit() {
         arma::sp_mat::const_iterator end   = this->B.end();
         std::vector<std::size_t> NnzIndices;
         for(arma::sp_mat::const_iterator it = start; it != end; ++it) {
-            if (it.row() >= NoSelectK){
+            if (it.row() >= this->NoSelectK){
                 NnzIndices.push_back(it.row());
             }
         }
@@ -39,7 +35,7 @@ FitResult<T> CDL012Swaps<T>::Fit() {
             double maxcorr = -1;
             std::size_t maxindex = -1;
             
-            for(std::size_t j = NoSelectK; j < this->p; ++j) {
+            for(std::size_t j = this->NoSelectK; j < this->p; ++j) {
                 // TODO: Account for bounds when determining best swap
                 // Loops through each column and finds the column with the highest correlation to residuals
                 // In non-constrained cases, the highest correlation will always be the best option
@@ -70,9 +66,9 @@ FitResult<T> CDL012Swaps<T>::Fit() {
                 this->B[maxindex] = Bi_wb;
                 
                 // Change initial solution to Swapped value to seed standard CD algorithm.
-                P.InitialSol = &(this->B);
-                *P.r = *(this->y) - *(this->X) * (this->B) - this->b0;
-                result = CDL012<T>(*(this->X), *(this->y), P).Fit();
+                this->P.InitialSol = &(this->B);
+                *this->P.r = *(this->y) - *(this->X) * (this->B) - this->b0;
+                result = CDL012<T>(*(this->X), *(this->y), this->P).Fit();
                 
                 // Rcpp::Rcout << "Swap Objective  " <<  result.Objective << " \n";
                 // Rcpp::Rcout << "Old Objective  " <<  objective << " \n";

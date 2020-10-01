@@ -17,6 +17,7 @@ template <class T>
 void Grid<T>::Fit() {
     
     std::vector<std::vector<std::unique_ptr<FitResult<T>>>> G;
+    
     if (PG.P.Specs.L0) {
         G.push_back(std::move(Grid1D<T>(Xscaled, yscaled, PG).Fit()));
         Lambda12.push_back(0);
@@ -29,13 +30,9 @@ void Grid<T>::Fit() {
     Solutions = std::vector< std::vector<arma::sp_mat> >(G.size());
     Intercepts = std::vector< std::vector<double> >(G.size());
     Converged = std::vector< std::vector<bool> >(G.size());
-    
-    //for (auto &g : G)
-    // Rcpp::Rcout << "Starting G iteration \n";
+
     for (std::size_t i=0; i<G.size(); ++i) {
-        // Rcpp::Rcout << "Lambda12 " << G[i][0]->ModelParams[1] << ", " << G[i][0]->ModelParams[2] <<  "\n";
         if (PG.P.Specs.L0L1){ 
-            // Rcpp::Rcout << "Lambda12.push_back(G[i][0]->ModelParams[1]);: "<< G[i][0]->ModelParams[1] << " \n";
             Lambda12.push_back(G[i][0]->ModelParams[1]); 
         } else if (PG.P.Specs.L0L2) { 
             Lambda12.push_back(G[i][0]->ModelParams[2]); 
@@ -55,7 +52,6 @@ void Grid<T>::Fit() {
             
             arma::sp_mat B_unscaled;
             double intercept;
-            
             
             std::tie(B_unscaled, intercept) = DeNormalize(g->B, BetaMultiplier, meanX, meany);
             Solutions[i].push_back(B_unscaled);

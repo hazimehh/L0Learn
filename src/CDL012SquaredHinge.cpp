@@ -2,39 +2,32 @@
 
 template <class T>
 CDL012SquaredHinge<T>::CDL012SquaredHinge(const T& Xi, const arma::vec& yi, const Params<T>& P) : CD<T>(Xi, yi, P) {
-    twolambda2 = 2 * this->ModelParams[2];
+    twolambda2 = 2 * this->lambda2;
     qp2lamda2 = (LipschitzConst + twolambda2); // this is the univariate lipschitz const of the differentiable objective
-    thr = std::sqrt((2 * this->ModelParams[0]) / qp2lamda2);
-    lambda1 = this->ModelParams[1];
-    lambda1ol = lambda1 / qp2lamda2;
-    Xtr = P.Xtr;
-    Iter = P.Iter;
-    this->result.ModelParams = P.ModelParams;
+    this->thr2 = (2 * this->lambda0) / qp2lamda2;
+    this->thr = std::sqrt(this->thr2);
+    lambda1ol = this->lambda1 / qp2lamda2;
+    
+    this->B = clamp_by_vector(this->B, this->Lows, this->Highs);
     
     // TODO: Review this line
     // TODO: Pass work from previous solution.
     onemyxb = 1 - *(this->y) % (*(this->X) * this->B + this->b0);
-    NoSelectK = P.NoSelectK;
+    
+    // TODO: Add comment for purpose of 'indices'
+    indices = arma::find(onemyxb > 0);
     Xy = P.Xy;
-    Range1p.resize(this->p);
-    std::iota(std::begin(Range1p), std::end(Range1p), 0);
-    ScreenSize = P.ScreenSize;
 }
 
 
 template <class T>
 FitResult<T> CDL012SquaredHinge<T>::Fit() {
     
-    this->B = clamp_by_vector(this->B, this->Lows, this->Highs);
-    
-    // TODO: Add comment for purpose of 'indices'
-    arma::uvec indices = arma::find(onemyxb > 0);
-    
-    const double objective = Objective(this->r, this->B);
+    const double objective = Objective(); // Implicitly uses onemyx
     
     
     std::vector<std::size_t> FullOrder = this->Order; // never used in LR
-    this->Order.resize(std::min((int) (this->B.n_nonzero + ScreenSize + NoSelectK), (int)(this->p)));
+    this->Order.resize(std::min((int) (this->B.n_nonzero + this->ScreenSize + this->NoSelectK), (int)(this->p)));
     
     
     for (auto t = 0; t < this->MaxIters; ++t) {
@@ -51,49 +44,7 @@ FitResult<T> CDL012SquaredHinge<T>::Fit() {
         }
         
         for (auto& i : this->Order) {
-            // Calculate Partial_i
-            const double Biold = this->B[i];
-            
-            const double partial_i = arma::sum(2 * onemyxb.elem(indices) % (- matrix_column_get(*Xy, i).elem(indices))  ) + twolambda2 * Biold;
-            
-            (*Xtr)[i] = std::abs(partial_i); // abs value of grad
-            
-            // Ideal value of Bi_new assuming no L0, L1, L2 or bounds.
-            const double x = Biold - partial_i / qp2lamda2;
-            const double Bi_nb = std::copysign(std::abs(x) - lambda1/qp2lamda2, x); // Bi with No Bounds (nb)
-            const double Bi_wb = clamp(Bi_nb, this->Lows[i], this->Highs[i]);  // Bi With Bounds (wb)
-            
-            // New value that Bi will take
-            double new_Bi = Biold;
-            
-            if (i < NoSelectK){
-                // Only penalize by l1 and l2 (NOT L0)
-                if (abs(x) < lambda1){
-                    new_Bi = 0;
-                } else {
-                    new_Bi = Bi_wb;
-                }
-            } else if (std::abs(Bi_nb) < thr){
-                // Maximum value of Bi to small to pass L0 threshold => set to 0;
-                new_Bi = 0;
-            } else {
-                // We know Bi_nb >= thr
-                const double delta = std::sqrt(std::pow(std::abs(x) - lambda1/qp2lamda2, 2) 
-                                                   - 2*this->ModelParams[0]*qp2lamda2);
-                if ((Bi_nb - delta <= Bi_wb) && (Bi_wb <= Bi_nb + delta)){
-                    // Bi_wb exists in [Bi_nb - delta, Bi_nb+delta]
-                    // Therefore accept Bi_wb
-                    new_Bi = Bi_wb;
-                } else {
-                    new_Bi = 0;
-                }
-            }
-            
-            if (Biold != new_Bi){
-                onemyxb += (Biold - new_Bi) * matrix_column_get(*(this->Xy), i);
-                this->B[i] = new_Bi;
-                indices = arma::find(onemyxb > 0);
-            }
+            this->UpdateBi(i);
         }
         
         this->SupportStabilized();
@@ -124,43 +75,16 @@ bool CDL012SquaredHinge<T>::CWMinCheck(){
     
     std::vector<std::size_t> Sc;
     set_difference(
-        Range1p.begin(),
-        Range1p.end(),
+        this->Range1p.begin(),
+        this->Range1p.end(),
         S.begin(),
         S.end(),
         back_inserter(Sc));
     
     bool Cwmin = true;
     
-    arma::uvec indices = arma::find(onemyxb > 0);
-    
     for (auto& i : Sc) {
-        
-        double partial_i = arma::sum(2 * onemyxb.elem(indices) % (- matrix_column_get(*(this->Xy), i).elem(indices)));
-        
-        (*Xtr)[i] = std::abs(partial_i); // abs value of grad
-        
-        // Ideal value of Bi_new assuming no L0, L1, L2 or bounds.
-        // B[i] == 0 for all i in Sc
-        const double x = - partial_i / qp2lamda2;
-        const double Bi_nb = std::copysign(std::abs(x) - lambda1/qp2lamda2, x); // Bi with No Bounds (nb)
-        const double Bi_wb = clamp(Bi_nb, this->Lows[i], this->Highs[i]);  // Bi With Bounds (wb)
-        
-        if (std::abs(Bi_nb) >= thr) {
-            // We know Bi_nb >= sqrt(thr)
-            const double delta = std::sqrt(std::pow(std::abs(x) - lambda1/qp2lamda2, 2) 
-                                               - 2*this->ModelParams[0]*qp2lamda2);
-            
-            if ((Bi_nb - delta <= Bi_wb) && (Bi_wb <= Bi_nb + delta)){
-                // Bi_wb exists in [Bi_nb - delta, Bi_nb+delta]
-                // Therefore accept Bi_wb
-                this->B[i] = Bi_wb;
-                this->Order.push_back(i);
-                onemyxb -= Bi_wb * matrix_column_get(*(this->Xy), i);
-                indices = arma::find(onemyxb > 0);
-                Cwmin = false;
-            }
-        }
+        Cwmin = this->UpdateBiCWMinCheck(i, Cwmin);
     }
     return Cwmin;
 }

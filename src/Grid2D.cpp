@@ -30,8 +30,8 @@ Grid2D<T>::~Grid2D(){
 template <class T>
 std::vector< std::vector<std::unique_ptr<FitResult<T>> > > Grid2D<T>::Fit() {
     arma::vec Xtrarma;
-    if (PG.P.Specs.Logistic)
-    {
+    
+    if (PG.P.Specs.Logistic) {
         auto n = X->n_rows;
         double b0 = 0;
         arma::vec ExpyXB =  arma::ones<arma::vec>(n);
@@ -107,7 +107,9 @@ std::vector< std::vector<std::unique_ptr<FitResult<T>> > > Grid2D<T>::Fit() {
         PG.ytXmax = ytXmax;
         
         PG.P.ModelParams[index] = Lambdas2[i];
-        // Rcpp::Rcout << i << "th PG.P.ModelParams[" << index << "] "<< Lambdas2[i] << " \n";
+        
+       /// Rcpp::Rcout << i << "th PG.P.ModelParams[" << index << "] "<< Lambdas2[i] << " \n";
+        
         if (PG.LambdaU == true)
             PG.Lambdas = PG.LambdasGrid[i];
         
