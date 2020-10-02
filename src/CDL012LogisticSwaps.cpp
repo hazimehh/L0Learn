@@ -14,7 +14,7 @@ CDL012LogisticSwaps<T>::CDL012LogisticSwaps(const T& Xi, const arma::vec& yi, co
 template <class T>
 FitResult<T> CDL012LogisticSwaps<T>::Fit() {
     auto result = CDL012Logistic<T>(*(this->X), *(this->y), this->P).Fit(); // result will be maintained till the end
-    this->b0 = result.intercept; // Initialize from previous later....!
+    this->b0 = result.b0; // Initialize from previous later....!
     this->B = result.B;
     ExpyXB = result.ExpyXB; // Maintained throughout the algorithm
     
@@ -118,11 +118,15 @@ FitResult<T> CDL012LogisticSwaps<T>::Fit() {
                     this->B[j] = 0;
                     this->B[maxindex] = Bmaxindex;
                     this->P.InitialSol = &(this->B);
+                    
+                    // TODO: Check if this line is necessary. P should already have b0.
                     this->P.b0 = this->b0;
+                    
                     result = CDL012Logistic<T>(*(this->X), *(this->y), this->P).Fit();
+                    
                     ExpyXB = result.ExpyXB;
                     this->B = result.B;
-                    this->b0 = result.intercept;
+                    this->b0 = result.b0;
                     objective = result.Objective;
                     Fmin = objective;
                     foundbetter = true;

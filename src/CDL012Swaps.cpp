@@ -7,6 +7,7 @@ template <class T>
 FitResult<T> CDL012Swaps<T>::Fit() {
     auto result = CDL012<T>(*(this->X), *(this->y), this->P).Fit(); // result will be maintained till the end
     this->B = result.B;
+    this->b0 = result.b0;
     double objective = result.Objective;
     this->P.Init = 'u';
     
@@ -27,7 +28,7 @@ FitResult<T> CDL012Swaps<T>::Fit() {
         
         // TODO: This calculation is already preformed in a previous step
         // Can be pulled/stored 
-        arma::vec r = *(this->y) - *(this->X) * this->B; 
+        arma::vec r = *(this->y) - *(this->X) * this->B - this->b0; 
         
         for (auto& i : NnzIndices) {
             arma::rowvec riX = (r + this->B[i] * matrix_column_get(*(this->X), i)).t() * *(this->X); 
@@ -51,7 +52,7 @@ FitResult<T> CDL012Swaps<T>::Fit() {
             
             // Check if the correlation is sufficiently large to make up for regularization
             if(maxcorr > (1 + 2 * this->ModelParams[2])*std::fabs(this->B[i]) + this->ModelParams[1]) {
-                Rcpp::Rcout << t << ": Proposing Swap " << i << " => NNZ and " << maxindex << " => 0 \n";
+                // Rcpp::Rcout << t << ": Proposing Swap " << i << " => NNZ and " << maxindex << " => 0 \n";
                 // Proposed new Swap
                 // Value (without considering bounds are solvable in closed form)
                 // Must be clamped to bounds
@@ -68,6 +69,7 @@ FitResult<T> CDL012Swaps<T>::Fit() {
                 // Change initial solution to Swapped value to seed standard CD algorithm.
                 this->P.InitialSol = &(this->B);
                 *this->P.r = *(this->y) - *(this->X) * (this->B) - this->b0;
+                // this->P alread has access to b0.
                 result = CDL012<T>(*(this->X), *(this->y), this->P).Fit();
                 
                 // Rcpp::Rcout << "Swap Objective  " <<  result.Objective << " \n";

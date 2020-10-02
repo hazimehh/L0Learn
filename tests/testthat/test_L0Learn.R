@@ -14,13 +14,56 @@ if (sum(apply(X, 2, sd) == 0)) {
 
 X_sparse <- as(X, "dgCMatrix")
 
-
 test_that('L0Learn Accepts Proper Matricies', {
     ignore <- L0Learn.fit(X, y)
     ignore <- L0Learn.cvfit(X, y)
     ignore <- L0Learn.fit(X_sparse, y, intercept = FALSE)
     ignore <- L0Learn.cvfit(X_sparse, y, intercept = FALSE)
     succeed()
+})
+
+test_that("L0Learn respects excludeFirstK for large L0", {
+  userLambda = list()
+  BIGuserLambda[[1]] <- c(10)
+  for (k in c(0, 1, 10)){
+    x1 <- L0Learn.fit(X, y, penalty = "L0", autoLambda=FALSE,
+                      lambdaGrid=BIGuserLambda, excludeFirstK = k)
+    
+    expect_equal(x1$suppSize[[1]][1], k)
+  }
+})
+
+test_that("L0Learn excludeFirstK is still subject to L1 norms", {
+  K = p =  10
+  n = 100
+
+  tmp <-  L0Learn::GenSynthetic(n=n, p=p, k=5, seed=1)
+  X_real <- tmp[[1]]
+  
+  tmp <-  L0Learn::GenSynthetic(n=n, p=p, k=5, seed=2)
+  y_fake <- tmp[[2]]
+  
+  # X_real has little to do with generation of y_fake.
+  # Therefore, as L1 grows we can expect that the columns go to 0.
+  
+  
+  x1 <- L0Learn.fit(X_real, y_fake, penalty = "L0", excludeFirstK = K, maxSuppSize = p)
+  
+  expect_equal(length(x1$suppSize[[1]]), 1)
+  expect_equal(x1$suppSize[[1]][1], 10)
+  
+  # TODO: Fix Crash when excludeFirstK >= p
+  # x2 <- L0Learn.fit(X_real, y_fake, penalty = "L0L1", excludeFirstK = K, maxSuppSize = 10)
+  
+  # TODO: Fix issue when support is not maximized in first iteration for 
+  # x2 <- L0Learn.fit(X_real, y_fake, penalty = "L0L1", excludeFirstK = K-1, maxSuppSize = 10) 
+  # All coefficients should only be regularized by L1, the x2$suppSize is strange.
+  
+  
+  x2 <- L0Learn.fit(X_real, y_fake, penalty = "L0L1", excludeFirstK = K-1, maxSuppSize = p) 
+  for (s in x2$suppSize[[1]]){
+    expect_lt(s, p)
+  }
 })
 
 

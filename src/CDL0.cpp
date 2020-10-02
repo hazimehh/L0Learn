@@ -76,7 +76,7 @@ FitResult<T> CDL0<T>::Fit() {
     this->result.B = this->B;
     *(this->result.r) = this->r; // change to pointer later
     this->result.IterNum = this->CurrentIters;
-    this->result.intercept = this->b0;
+    this->result.b0 = this->b0;
 
     return this->result;
 }

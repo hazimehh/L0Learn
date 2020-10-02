@@ -13,7 +13,7 @@ CDL012SquaredHingeSwaps<T>::CDL012SquaredHingeSwaps(const T& Xi, const arma::vec
 template <class T>
 FitResult<T> CDL012SquaredHingeSwaps<T>::Fit() {
     auto result = CDL012SquaredHinge<T>(*(this->X), *(this->y), this->P).Fit(); // result will be maintained till the end
-    this->b0 = result.intercept; // Initialize from previous later....!
+    this->b0 = result.b0; // Initialize from previous later....!
     this->B = result.B;
     
     arma::vec onemyxb = 1 - *(this->y) % (*(this->X) * this->B + this->b0);
@@ -103,12 +103,14 @@ FitResult<T> CDL012SquaredHingeSwaps<T>::Fit() {
                 this->B[maxindex] = Bmaxindex;
                 
                 this->P.InitialSol = &(this->B);
+                
+                // TODO: Check if this line is needed. P should already have b0.
                 this->P.b0 = this->b0;
                 
                 result = CDL012SquaredHinge<T>(*(this->X), *(this->y), this->P).Fit();
                 
                 this->B = result.B;
-                this->b0 = result.intercept;
+                this->b0 = result.b0;
                 
                 // TODO: Double check equation
                 // TODO: Take solution from 'result'

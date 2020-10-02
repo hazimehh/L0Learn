@@ -83,7 +83,7 @@ std::vector<std::unique_ptr<FitResult<T>>> Grid1D<T>::Fit() {
                 Xtrarma = arma::abs(*ytX).t(); // Least squares
             }
             Lipconst = 1 + 2 * P.ModelParams[2];
-            *P.r = *y; // B = 0 initially
+            *P.r = *y - P.b0; // B = 0 initially
         }
         
         double ytXmax;
@@ -245,7 +245,7 @@ std::vector<std::unique_ptr<FitResult<T>>> Grid1D<T>::Fit() {
                 }
                 //result->B.t().print();
                 P.InitialSol = &(G.back()->B);
-                P.b0 = G.back()->intercept;
+                P.b0 = G.back()->b0;
                 // Udate: After 1.1.0, P.r is automatically updated by the previous call to CD
                 //*P.r = G.back()->r;
                 

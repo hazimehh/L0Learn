@@ -63,8 +63,8 @@ void CD<T>::UpdateSparse_b0(arma::vec& r){
     // Only run for regression when sparse and intercept is True.
     // r is this->r on outer scope;                                                           
     const double new_b0 = arma::mean(r);
-    r += this->b0 - new_b0;
-    this->b0 = new_b0;
+    r -= new_b0;
+    this->b0 += new_b0;
 }
 
 
@@ -92,23 +92,24 @@ void CD<T>::UpdateBi(const std::size_t i){
     
     if (i < this->NoSelectK){
         // L0 penalty is not accounted for. Only L1 and L2 (if either are used)
-        if (std::abs(nrb_Bi) < this->lambda1){
+        // Rcpp::Rcout << "i: " << i << ", nrb_Bi:" << nrb_Bi << ", lambda1: " << this->lambda1 << "\n";
+        if (std::abs(nrb_Bi) > this->lambda1){
             new_Bi = bnd_Bi;
         } else {
             new_Bi = 0;
         }
     } else if (std::abs(reg_Bi) < this->thr){
         new_Bi = 0; 
-    }
-    
-    const double delta = std::sqrt(reg_Bi*reg_Bi - this->thr2);
-    
-    if ((reg_Bi - delta <= bnd_Bi) && (bnd_Bi <= reg_Bi + delta)){
-        // Bi_wb exists in [Bi_nb - delta, Bi_nb+delta]
-        // Therefore accept Bi_wb
-        new_Bi = bnd_Bi;
     } else {
-        new_Bi = 0;
+      const double delta = std::sqrt(reg_Bi*reg_Bi - this->thr2);
+      
+      if ((reg_Bi - delta <= bnd_Bi) && (bnd_Bi <= reg_Bi + delta)){
+          // Bi_wb exists in [Bi_nb - delta, Bi_nb+delta]
+          // Therefore accept Bi_wb
+          new_Bi = bnd_Bi;
+      } else {
+          new_Bi = 0;
+      }
     }
     
     if (old_Bi != new_Bi){
@@ -138,23 +139,23 @@ bool CD<T>::UpdateBiCWMinCheck(const std::size_t i, const bool Cwmin){
   
   if (i < this->NoSelectK){
     // L0 penalty is not accounted for. Only L1 and L2 (if either are used)
-    if (std::abs(nrb_Bi) < this->lambda1){
+    if (std::abs(nrb_Bi) > this->lambda1){
       new_Bi = bnd_Bi;
     } else {
       new_Bi = 0;
     }
   } else if (std::abs(reg_Bi) < this->thr){
     new_Bi = 0; 
-  }
-  
-  const double delta = std::sqrt(reg_Bi*reg_Bi - this->thr2);
-  
-  if ((reg_Bi - delta <= bnd_Bi) && (bnd_Bi <= reg_Bi + delta)){
-    // Bi_wb exists in [Bi_nb - delta, Bi_nb+delta]
-    // Therefore accept Bi_wb
-    new_Bi = bnd_Bi;
-  } else {
-    new_Bi = 0;
+  } else{
+    const double delta = std::sqrt(reg_Bi*reg_Bi - this->thr2);
+    
+    if ((reg_Bi - delta <= bnd_Bi) && (bnd_Bi <= reg_Bi + delta)){
+      // Bi_wb exists in [Bi_nb - delta, Bi_nb+delta]
+      // Therefore accept Bi_wb
+      new_Bi = bnd_Bi;
+    } else {
+      new_Bi = 0;
+    }
   }
   
   if (0 != new_Bi){

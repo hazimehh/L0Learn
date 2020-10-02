@@ -61,7 +61,7 @@ FitResult<T> CDL012SquaredHinge<T>::Fit() {
     this->result.Objective = objective;
     this->result.B = this->B;
     this->result.Model = this;
-    this->result.intercept = this->b0;
+    this->result.b0 = this->b0;
     this->result.IterNum = this->CurrentIters;
     return this->result;
 }

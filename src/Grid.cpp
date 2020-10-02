@@ -51,16 +51,16 @@ void Grid<T>::Fit() {
             }
             
             arma::sp_mat B_unscaled;
-            double intercept;
+            double b0;
             
-            std::tie(B_unscaled, intercept) = DeNormalize(g->B, BetaMultiplier, meanX, meany);
+            std::tie(B_unscaled, b0) = DeNormalize(g->B, BetaMultiplier, meanX, meany);
             Solutions[i].push_back(B_unscaled);
             /* scaley is 1 for classification problems.
              *  g->intercept is 0 unless specifically optimized for in:
              *       classification
              *       sparse regression and intercept = true
              */
-            Intercepts[i].push_back(scaley*g->intercept + intercept);
+            Intercepts[i].push_back(scaley*g->b0 + b0);
         }
     }
 }
