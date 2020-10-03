@@ -17,7 +17,7 @@ FitResult<T> CDL012Logistic<T>::Fit() { // always uses active sets
     
     this->B = clamp_by_vector(this->B, this->Lows, this->Highs);
     
-    double objective = Objective(); // Implicitly used ExpyXB
+    this->objective = Objective(); // Implicitly used ExpyXB
     
     std::vector<std::size_t> FullOrder = this->Order; // never used in LR
     this->Order.resize(std::min((int) (this->B.n_nonzero + this->ScreenSize + this->NoSelectK), (int)(this->p)));
@@ -45,7 +45,7 @@ FitResult<T> CDL012Logistic<T>::Fit() { // always uses active sets
         }
     }
     
-    this->result.Objective = objective;
+    this->result.Objective = this->objective;
     this->result.B = this->B;
     this->result.Model = this;
     this->result.b0 = this->b0;

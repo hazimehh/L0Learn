@@ -31,18 +31,18 @@ userLambda[[1]] <- c(logspace(-1, -10, 100))
 test_that("Intercepts are supported for all losses, algorithims, penalites, and matrix types", {
   # Try all losses
   for (p in c("L0", "L0L1", "L0L2")){
-    L0Learn.fit(Xsmall_sparse, ysmall, penalty=p)
-    L0Learn.cvfit(Xsmall_sparse, ysmall, penalty=p, nFolds=2)
+    L0Learn.fit(Xsmall_sparse, ysmall, penalty=p, intercept = TRUE)
+    L0Learn.cvfit(Xsmall_sparse, ysmall, penalty=p, nFolds=2, intercept = TRUE)
   }
   
   for (a in c("CD", "CDPSI")){
-    L0Learn.fit(Xsmall_sparse, ysmall, algorithm=a)
-    L0Learn.cvfit(Xsmall_sparse, ysmall, algorithm=a, nFolds=2)
+    L0Learn.fit(Xsmall_sparse, ysmall, algorithm=a, intercept = TRUE)
+    L0Learn.cvfit(Xsmall_sparse, ysmall, algorithm=a, nFolds=2, intercept = TRUE)
   }
   
   for (l in c("Logistic", "SquaredHinge")){
-    L0Learn.fit(Xsmall_sparse, sign(ysmall), loss=l)
-    L0Learn.cvfit(Xsmall_sparse, ysmall, algorithm=a, nFolds=2)
+    L0Learn.fit(Xsmall_sparse, sign(ysmall), loss=l, intercept = TRUE)
+    L0Learn.cvfit(Xsmall_sparse, ysmall, algorithm=a, nFolds=2, intercept = TRUE)
   }
   succeed()
 })
@@ -135,41 +135,43 @@ test_that("Intercepts achieve a lower insample-error", {
       }
     }
     
-    logistic <- function(x){1/(1+exp(-x))};
-    
-    x1 <- L0Learn.fit(X_sparse, sign(y), penalty="L0", intercept = TRUE,
-                      algorithm = a,
-                      loss = "Logistic", autoLambda=FALSE, lambdaGrid=userLambda, 
-                      maxSuppSize=1000)
-    x2 <- L0Learn.fit(X_sparse, sign(y), penalty="L0", intercept = FALSE, 
-                      algorithm = a,
-                      loss = "Logistic", autoLambda=FALSE, lambdaGrid=userLambda, 
-                      maxSuppSize=1000)
-    
-    for (i in 1:min_length){
-      x1_loss = norm(sign(logistic(X%*%x1$beta[[1]][,i] + x1$a0[[1]][i])) - sign(y), '2')
-      x2_loss = norm(sign(logistic(X%*%x2$beta[[1]][,i] + x2$a0[[1]][i])) - sign(y), '2')
-      #print(paste(i, x1_loss - x2_loss))
-      expect_lt(x1_loss, x2_loss)
-    }
-    
-    squaredHinge <- function(y, yhat){max(0, 1-y*yhat)**2}
-    
-    x1 <- L0Learn.fit(X_sparse, sign(y), penalty="L0", intercept = TRUE,
-                      algorithm = a,
-                      loss = "SquaredHinge", autoLambda=FALSE, lambdaGrid=userLambda, 
-                      maxSuppSize=1000)
-    x2 <- L0Learn.fit(X_sparse, sign(y), penalty="L0", intercept = FALSE, 
-                      algorithm = a,
-                      loss = "SquaredHinge", autoLambda=FALSE, lambdaGrid=userLambda, 
-                      maxSuppSize=1000)
-    
-    for (i in 1:min_length){
-      x1_loss = sum(squaredHinge(sign(X%*%x1$beta[[1]][,i] + x1$a0[[1]][i]), sign(y)))
-      x2_loss = sum(squaredHinge(sign(X%*%x2$beta[[1]][,i] + x2$a0[[1]][i]), sign(y)))
-      #print(paste(i, x1_loss - x2_loss))
-      expect_lt(x1_loss, x2_loss)
-    }
+    # logistic <- function(x){1/(1+exp(-x))};
+    # logit <- sum(log(logistic))
+    # 
+    # x1 <- L0Learn.fit(X_sparse, sign(y), penalty="L0", intercept = TRUE,
+    #                   algorithm = a,
+    #                   loss = "Logistic", autoLambda=FALSE, lambdaGrid=userLambda, 
+    #                   maxSuppSize=1000)
+    # x2 <- L0Learn.fit(X_sparse, sign(y), penalty="L0", intercept = FALSE, 
+    #                   algorithm = a,
+    #                   loss = "Logistic", autoLambda=FALSE, lambdaGrid=userLambda, 
+    #                   maxSuppSize=1000)
+    # 
+    # for (i in 1:min_length){
+    #   
+    #   x1_loss = sum(sign(y)*logistic(X%*%x1$beta[[1]][,i] + x1$a0[[1]][i])) # more 1s
+    #   x2_loss = sum(sign(y)*logistic(X%*%x2$beta[[1]][,i] + x2$a0[[1]][i])) # more -1s
+    #   print(paste(i, x1_loss - x2_loss))
+    #   #expect_lt(x1_loss, x2_loss)
+    # }
+    # 
+    # squaredHinge <- function(y, yhat){max(0, 1-y*yhat)**2}
+    # 
+    # x1 <- L0Learn.fit(X_sparse, sign(y), penalty="L0", intercept = TRUE,
+    #                   algorithm = a,
+    #                   loss = "SquaredHinge", autoLambda=FALSE, lambdaGrid=userLambda, 
+    #                   maxSuppSize=1000)
+    # x2 <- L0Learn.fit(X_sparse, sign(y), penalty="L0", intercept = FALSE, 
+    #                   algorithm = a,
+    #                   loss = "SquaredHinge", autoLambda=FALSE, lambdaGrid=userLambda, 
+    #                   maxSuppSize=1000)
+    # 
+    # for (i in 1:min_length){
+    #   x1_loss = sum(squaredHinge(sign(X%*%x1$beta[[1]][,i] + x1$a0[[1]][i]), sign(y)))
+    #   x2_loss = sum(squaredHinge(sign(X%*%x2$beta[[1]][,i] + x2$a0[[1]][i]), sign(y)))
+    #   #print(paste(i, x1_loss - x2_loss))
+    #   expect_lt(x1_loss, x2_loss)
+    # }
   }
 })
 
@@ -179,7 +181,7 @@ test_that("Intercepts are learned close to real values", {
   
   k = 10 
   for (a in c("CD", "CDPSI")){
-    for (b0 in c(2, 10, 100)){
+    for (b0 in c(-100, -10, -2, 2, 10, 100)){
       tmp <-  L0Learn::GenSynthetic(n=500, p=200, k=k, seed=1, rho=1, b0=b0)
       X2 <- tmp[[1]]
       y2 <- tmp[[2]]
@@ -193,12 +195,20 @@ test_that("Intercepts are learned close to real values", {
       x1 <- L0Learn.fit(X2_sparse, y2, penalty="L0", intercept = TRUE, algorithm = a, 
                         autoLambda=FALSE, lambdaGrid=fineuserLambda, maxSuppSize=1000)
       
+      x2 <- L0Learn.fit(X2, y2, penalty="L0", intercept = TRUE, algorithm = a, 
+                        autoLambda=FALSE, lambdaGrid=fineuserLambda, maxSuppSize=1000)
+      
       for (i in 1:length(x1$suppSize[[1]])){
         if (x1$suppSize[[1]][i] ==  k){
-          expect_lt(abs(x1$a0[[1]][i] - b0), .01*b0)
+          expect_lt(abs(x1$a0[[1]][i] - b0), abs(.01*b0))
+        }
+      }
+      
+      for (i in 1:length(x2$suppSize[[1]])){
+        if (x2$suppSize[[1]][i] ==  k){
+          expect_lt(abs(x2$a0[[1]][i] - b0), abs(.01*b0))
         }
       }
     }
-    
   }
 })

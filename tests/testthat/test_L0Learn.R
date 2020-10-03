@@ -23,7 +23,7 @@ test_that('L0Learn Accepts Proper Matricies', {
 })
 
 test_that("L0Learn respects excludeFirstK for large L0", {
-  userLambda = list()
+  BIGuserLambda = list()
   BIGuserLambda[[1]] <- c(10)
   for (k in c(0, 1, 10)){
     x1 <- L0Learn.fit(X, y, penalty = "L0", autoLambda=FALSE,
@@ -76,6 +76,7 @@ test_that("L0Learn fit are deterministic for Dense fit", {
       expect_equal(x1, x2, info=p)
     }
 })
+
 
 test_that("L0Learn cvfit are deterministic for Dense cvfit", {
     for (p in c("L0", "L0L2", "L0L1")){

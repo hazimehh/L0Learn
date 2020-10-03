@@ -15,7 +15,7 @@ FitResult<T> CDL0<T>::Fit() {
     this->B = clamp_by_vector(this->B, this->Lows, this->Highs);
     
     //bool SecondPass = false;
-    double objective = Objective(this->r, this->B);
+    this->objective = Objective(this->r, this->B);
     
     std::vector<std::size_t> FullOrder = this->Order;
     bool FirstRestrictedPass = true;
@@ -72,7 +72,7 @@ FitResult<T> CDL0<T>::Fit() {
         this->UpdateSparse_b0(this->r);
     }
     
-    this->result.Objective = objective;
+    this->result.Objective = this->objective;
     this->result.B = this->B;
     *(this->result.r) = this->r; // change to pointer later
     this->result.IterNum = this->CurrentIters;

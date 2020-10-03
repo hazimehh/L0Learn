@@ -23,7 +23,7 @@ CDL012SquaredHinge<T>::CDL012SquaredHinge(const T& Xi, const arma::vec& yi, cons
 template <class T>
 FitResult<T> CDL012SquaredHinge<T>::Fit() {
     
-    const double objective = Objective(); // Implicitly uses onemyx
+    this->objective = Objective(); // Implicitly uses onemyx
     
     
     std::vector<std::size_t> FullOrder = this->Order; // never used in LR
@@ -58,7 +58,7 @@ FitResult<T> CDL012SquaredHinge<T>::Fit() {
         }
     }
     
-    this->result.Objective = objective;
+    this->result.Objective = this->objective;
     this->result.B = this->B;
     this->result.Model = this;
     this->result.b0 = this->b0;
