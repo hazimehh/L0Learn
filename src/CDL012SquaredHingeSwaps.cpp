@@ -68,8 +68,8 @@ FitResult<T> CDL012SquaredHingeSwaps<T>::Fit() {
                         while(!converged) {
                             double x = Biold - partial_i / qp2lamda2;
                             double z = std::abs(x) - lambda1ol;
-                            
-                            Binew = clamp(std::copysign(z, x), this->Lows[i], this->Highs[i]); // no need to check if >= sqrt(2lambda_0/Lc)
+                            Binew = std::copysign(z, x);
+                            // Binew = clamp(std::copysign(z, x), this->Lows[i], this->Highs[i]); // no need to check if >= sqrt(2lambda_0/Lc)
                             onemyxbnoji += (Biold - Binew) * *(this->y) % matrix_column_get(*(this->X), i);
                             
                             arma::uvec indicesi = arma::find(onemyxbnoji > 0);

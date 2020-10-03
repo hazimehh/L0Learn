@@ -42,7 +42,7 @@ FitResult<T> CDL012Swaps<T>::Fit() {
                 // In non-constrained cases, the highest correlation will always be the best option
                 // However, if bounds restrict the value of B[j], it is possible that swapping column 'i'
                 // and column 'j' might be rejected as B[j], when constrained, is not able to take a value
-                // with sufficient magnitude to utilie the correleation.
+                // with sufficient magnitude to utilize the correlation.
                 // Therefore, we must ensure that 'j' was not already rejected.
                 if (std::fabs(riX[j]) > maxcorr && this->B[j] == 0) {
                     maxcorr = std::fabs(riX[j]);
@@ -63,13 +63,17 @@ FitResult<T> CDL012Swaps<T>::Fit() {
                 
                 // Bi with No Bounds (nb);
                 double Bi_nb = (riX[maxindex]  - std::copysign(this->ModelParams[1],riX[maxindex])) / (1 + 2 * this->ModelParams[2]);
-                double Bi_wb = clamp(Bi_nb, this->Lows[maxindex], this->Highs[maxindex]);  // Bi With Bounds (wb)
-                this->B[maxindex] = Bi_wb;
+                //double Bi_wb = clamp(Bi_nb, this->Lows[maxindex], this->Highs[maxindex]);  // Bi With Bounds (wb)
+                this->B[maxindex] = Bi_nb;
                 
                 // Change initial solution to Swapped value to seed standard CD algorithm.
                 this->P.InitialSol = &(this->B);
                 *this->P.r = *(this->y) - *(this->X) * (this->B) - this->b0;
                 // this->P alread has access to b0.
+                
+                // proposed_result object.
+                // Keep tack of previous_best result object
+                // Only override previous_best if proposed_result has a better objective.
                 result = CDL012<T>(*(this->X), *(this->y), this->P).Fit();
                 
                 // Rcpp::Rcout << "Swap Objective  " <<  result.Objective << " \n";
@@ -80,11 +84,13 @@ FitResult<T> CDL012Swaps<T>::Fit() {
                     objective = result.Objective;
                     foundbetter = true;
                     break;
-                } else {
+                } 
+                // else {
                     // Reject Swap
-                    this->B = old_B;
+                    // TODO: Fully "clear" the proposed swap from r, B0, ...
+                    // this->B = old_B;
                     //*P.r = old_r;
-                }
+                // }
             }
         }
         

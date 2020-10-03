@@ -147,6 +147,14 @@ L0Learn.fit <- function(x, y, loss="SquaredError", penalty="L0", algorithm="CD",
     if (any(lows >= highs) || any(lows > 0) || any(highs < 0)){
         stop("Bounds must conform to the following conditions: Lows <= 0, Highs >= 0, Lows < Highs")
     }
+    
+    if (algorithm == "CDPSI"){
+        if (any(lows != -Inf) || any(highs != Inf)){
+            stop("Bounds are not YET supported for CDPSI algorithm. Please raise
+                 an issue at 'https://github.com/hazimehh/L0Learn' to express 
+                 interest in this functionality")
+        }
+    }
 
 
 	# The C++ function uses LambdaU = 1 for user-specified grid. In R, we use autoLambda0 = 0 for user-specified grid (thus the negation when passing the parameter to the function below)

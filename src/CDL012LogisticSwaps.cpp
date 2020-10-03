@@ -38,13 +38,13 @@ FitResult<T> CDL012LogisticSwaps<T>::Fit() {
                 NnzIndices.push_back(it.row());
             }
         }
+        
         // TODO: Add shuffle of Order
         //std::shuffle(std::begin(Order), std::end(Order), engine);
         
         foundbetter = false;
         
         for (auto& j : NnzIndices) {
-            
             // Set B[j] = 0
             arma::vec ExpyXBnoj = ExpyXB % arma::exp( - this->B[j] * matrix_column_get(*(this->Xy), j));
             
@@ -52,7 +52,7 @@ FitResult<T> CDL012LogisticSwaps<T>::Fit() {
             { // Scope used to automatically de-allocate objects
             arma::vec temp_gradient = 1 + ExpyXBnoj;
             T divided_matrix = matrix_vector_divide(*Xy, temp_gradient);
-            arma::rowvec gradient = - matrix_column_sums(divided_matrix);   
+            gradient = - matrix_column_sums(divided_matrix);   
             }
             
             arma::uvec indices = arma::sort_index(arma::abs(gradient), "descend");
@@ -67,8 +67,6 @@ FitResult<T> CDL012LogisticSwaps<T>::Fit() {
                     
                     arma::vec ExpyXBnoji = ExpyXBnoj;
                     
-                    double Binew;
-                    
                     double Biold = 0;
                     double partial_i = gradient[i];
                     bool converged = false;
@@ -80,7 +78,8 @@ FitResult<T> CDL012LogisticSwaps<T>::Fit() {
                     
                     double x = Biold - partial_i/qp2lamda2;
                     double z = std::abs(x) - lambda1ol;
-                    Binew = clamp(std::copysign(z, x), this->Lows[i], this->Highs[i]); // no need to check if >= sqrt(2lambda_0/Lc)
+                    double Binew = std::copysign(z, x);
+                    // double Binew = clamp(std::copysign(z, x), this->Lows[i], this->Highs[i]); // no need to check if >= sqrt(2lambda_0/Lc)
                     
                     while(!converged && innerindex < 20  && ObjTemp >= Fmin) { // ObjTemp >= Fmin
                         ExpyXBnoji %= arma::exp( (Binew - Biold) *  matrix_column_get(*Xy, i));

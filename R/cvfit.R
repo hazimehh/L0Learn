@@ -85,6 +85,14 @@ L0Learn.cvfit <- function(x,y, loss="SquaredError", penalty="L0", algorithm="CD"
     if (any(lows >= highs) || any(lows > 0) || any(highs < 0)){
         stop("Bounds must conform to the following conditions: Lows <= 0, Highs >= 0, Lows < Highs")
     }
+    
+    if (algorithm == "CDPSI"){
+        if (any(lows != -Inf) || any(highs != Inf)){
+            stop("Bounds are not YET supported for CDPSI algorithm. Please raise
+                 an issue at 'https://github.com/hazimehh/L0Learn' to express 
+                 interest in this functionality")
+        }
+    }
 
 	# The C++ function uses LambdaU = 1 for user-specified grid. In R, we use AutoLambda0 = 0 for user-specified grid (thus the negation when passing the parameter to the function below)
 	M <- .Call('_L0Learn_L0LearnCV', PACKAGE = 'L0Learn', x, y, loss, penalty, algorithm, maxSuppSize, nLambda, nGamma, gammaMax, gammaMin, partialSort, maxIters, tol, activeSet, activeSetNum, maxSwaps, scaleDownFactor, screenSize, !autoLambda, lambdaGrid, nFolds, seed, excludeFirstK, intercept, lows, highs)

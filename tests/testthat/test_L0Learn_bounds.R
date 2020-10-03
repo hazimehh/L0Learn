@@ -4,7 +4,7 @@ library("L0Learn")
 library("raster")
 source("utils.R")
 
-tmp <-  L0Learn::GenSynthetic(n=100, p=5000, k=10, seed=1)#, rho=1.5)
+tmp <-  L0Learn::GenSynthetic(n=100, p=5000, k=10, seed=1, rho=1.5)
 X <- tmp[[1]]
 y <- tmp[[2]]
 y_bin <- sign(y)
@@ -70,6 +70,21 @@ test_that('L0Learn Fails on in-proper Bounds', {
     }
 })
 
+test_that("L0Learn fit fails on CDPSI with bound", {
+    f1 <- function(){
+        L0Learn.fit(X, y, algorithm = "CDPSI", lows=0)
+    }
+    f2 <- function(){
+        L0Learn.fit(X, y, algorithm = "CDPSI", highs=0)
+    }
+    f3 <- function(){
+        L0Learn.fit(X, y, algorithm = "CDPSI", lows=rep(0, 5000), highs=rep(1, 5000))
+    }
+    expect_error(f1())
+    expect_error(f2())
+    expect_error(f3())
+})
+
 test_that("L0Learn fit respect bounds", {
     low = -.04
     high = .05
@@ -104,14 +119,14 @@ test_that("L0Learn respects bounds for all Losses", {
     high = .05
     maxIters = 2
     maxSwaps = 2
-    for (a in c("CD", "CDPSI")){
+    for (a in c("CD")){ #for (a in c("CD", "CDPSI")){
         for (m in list(X, X_sparse)){
             for (p in c("L0", "L0L1", "L0L2")){
                 for (l in c("Logistic", "SquaredHinge")){ 
+                    print(paste(a, typeof(m), p, l))
                     fit <- L0Learn.fit(m, y_bin, loss=l, intercept = FALSE,
                                          penalty=p, algorithm = a, lows=low,
                                          highs=high, maxIters = maxIters, maxSwaps = maxSwaps)
-                    print(paste(a, typeof(m), p, l))
                     for (i in 1:length(fit$beta)){
                         expect_gte(min(fit$beta[[i]]), low-epsilon)
                         expect_lte(max(fit$beta[[i]]), high+epsilon)
