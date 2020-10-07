@@ -76,6 +76,8 @@ class CDBase {
         // virtual inline double GetBiDelta(const double reg_Bi)=0;
         
         virtual inline void ApplyNewBi(const std::size_t i, const double old_Bi, const double new_Bi)=0;
+        
+        virtual inline void ApplyNewBiCWMinCheck(const std::size_t i, const double old_Bi, const double new_Bi)=0;
 
         static CDBase * make_CD(const T& Xi, const arma::vec& yi, const Params<T>& P);
 
@@ -127,6 +129,8 @@ class CDSwaps : public CDBase<T> {
         // inline double GetBiDelta(const double Bi_reg) final;
         
         inline void ApplyNewBi(const std::size_t i, const double Bi_old, const double Bi_new) final;
+        
+        inline void ApplyNewBiCWMinCheck(const std::size_t i, const double old_Bi, const double new_Bi) final;
     
 };
 
@@ -155,6 +159,10 @@ template <class T>
 inline void CDSwaps<T>::ApplyNewBi(const std::size_t i, const double Bi_old, const double Bi_new){
 }
 
+
+template <class T>
+inline void CDSwaps<T>::ApplyNewBiCWMinCheck(const std::size_t i, const double Bi_old, const double Bi_new){
+}
 
 
 #endif

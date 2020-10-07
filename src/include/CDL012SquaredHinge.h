@@ -39,6 +39,8 @@ class CDL012SquaredHinge : public CD<T> {
         // inline double GetBiDelta(const double Bi_reg) final;
         
         inline void ApplyNewBi(const std::size_t i, const double Bi_old, const double Bi_new) final;
+        
+        inline void ApplyNewBiCWMinCheck(const std::size_t i, const double old_Bi, const double new_Bi) final;
 
         bool CWMinCheck();
         
@@ -69,6 +71,14 @@ inline void CDL012SquaredHinge<T>::ApplyNewBi(const std::size_t i, const double 
     onemyxb += (Bi_old - Bi_new) * matrix_column_get(*(this->Xy), i);
     this->B[i] = Bi_new;
     indices = arma::find(onemyxb > 0);
+}
+
+template <class T>
+inline void CDL012SquaredHinge<T>::ApplyNewBiCWMinCheck(const std::size_t i, const double Bi_old, const double Bi_new){
+    onemyxb += (Bi_old - Bi_new) * matrix_column_get(*(this->Xy), i);
+    this->B[i] = Bi_new;
+    indices = arma::find(onemyxb > 0);
+    this->Order.push_back(i);
 }
 
 template <class T>

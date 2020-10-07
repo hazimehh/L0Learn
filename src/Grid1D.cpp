@@ -1,6 +1,4 @@
 #include "Grid1D.h"
-#include <thread>
-#include <chrono>
 
 template <class T>
 Grid1D<T>::Grid1D(const T& Xi, const arma::vec& yi, const GridParams<T>& PG) {
@@ -95,11 +93,16 @@ std::vector<std::unique_ptr<FitResult<T>>> Grid1D<T>::Fit() {
         }
         
         double lambdamax = ((ytXmax - P.ModelParams[1]) * (ytXmax - P.ModelParams[1])) / (2 * (Lipconst));
+        
+        Rcpp::Rcout << "lambdamax: " << lambdamax << "\n";
+        
         if (!LambdaU) {
             P.ModelParams[0] = lambdamax;
         } else {
             P.ModelParams[0] = Lambdas[0];
         }
+        
+        Rcpp::Rcout << "P ModelParams: {" << P.ModelParams[0] << ", " << P.ModelParams[1] << ", " << P.ModelParams[2] << ", " << P.ModelParams[3] <<   "}\n";
         
         P.Init = 'z';
         
@@ -130,7 +133,7 @@ std::vector<std::unique_ptr<FitResult<T>>> Grid1D<T>::Fit() {
       
             currentskip = false;
             
-            if (prevskip == false) {
+            if (!prevskip) {
                 
                 std::iota(idx.begin(), idx.end(), 0); // make global class var later
                 // Exclude the first NoSelectK features from sorting.
@@ -174,51 +177,30 @@ std::vector<std::unique_ptr<FitResult<T>>> Grid1D<T>::Fit() {
             } else if (i >= 1 && LambdaU) {
                 P.ModelParams[0] = Lambdas[i];
             }
+            
+            Rcpp::Rcout << "P.ModelParams[0]: " << P.ModelParams[0] << "\n";
            
-            if(currentskip == false) {
-                
+            if (!currentskip) {
+            
                 auto Model = make_CD(*X, *y, P);
                 
                 std::unique_ptr<FitResult<T>> result(new FitResult<T>);
                 *result = Model->Fit();
-                // if (i < 2){
-                    // Rcpp::Rcout << "B NNZ: " << result->B.n_nonzero << "\n";
-                    // std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-                    // Rcpp::Rcout << "X sum " << arma::sum(arma::sum(*X, 0)) << "\n";
-                    // Rcpp::Rcout << "y sum " << arma::sum(*y) << "\n";
-                    // Rcpp::Rcout << "ModelParams[0] " << result->ModelParams[0] << "\n";
-                    // Rcpp::Rcout << "ModelParams[1] " << result->ModelParams[1] << "\n";
-                    // Rcpp::Rcout << "ModelParams[2] " << result->ModelParams[2] << "\n";
-                    // Rcpp::Rcout << "ModelParams[3] " << result->ModelParams[3] << "\n";
-                    // Rcpp::Rcout << "InitialSol " << result->B->size() << "\n";
-                    // Rcpp::Rcout << "Residual " << arma::sum(result->r) << "\n";
-                    // Rcpp::Rcout << "b0 " << P.b0 << "\n";
-                    // std::vector<std::size_t> Uorder;
-                    // bool ActiveSet = true;
-                    // std::size_t ActiveSetNum = 6;
-                    // std::size_t MaxNumSwaps = 200; // Used by CDSwaps
-                    // std::vector<double> * Xtr;
-                    // arma::rowvec * ytX;
-                    // std::map<std::size_t, arma::rowvec> * D;
-                    // std::size_t Iter = 0; // Current iteration number in the grid
-                    // std::size_t ScreenSize = 1000;
-                    // arma::vec * r;
-                    // T * Xy; // used for classification.
-                    // std::size_t NoSelectK = 0;
-                    // bool intercept = false;
-                // }
+    
                 delete Model;
                 
                 scaledown = false;
                 if (i >= 1) {
                     std::vector<std::size_t> Spold;
                     arma::sp_mat::const_iterator itold;
+                    
                     for(itold = prevresult->B.begin(); itold != prevresult->B.end(); ++itold) {
                         Spold.push_back(itold.row());
                     }
                     
                     std::vector<std::size_t> Spnew;
                     arma::sp_mat::const_iterator itnew;
+                    
                     for(itnew = result->B.begin(); itnew != result->B.end(); ++itnew) {
                         Spnew.push_back(itnew.row());
                     }
@@ -227,19 +209,20 @@ std::vector<std::unique_ptr<FitResult<T>>> Grid1D<T>::Fit() {
                     
                     if (Spold == Spnew) {
                         samesupp = true;
+                        scaledown = true;
                     }
                     
-                    //
-                    
-                    if (samesupp) {
-                        scaledown = true;
-                    } // got same solution
+                    // //
+                    // 
+                    // if (samesupp) {
+                    //     scaledown = true;
+                    // } // got same solution
                 }
                 
                 //else {scaledown = false;}
                 G.push_back(std::move(result));
-                //std::cout<<"### ### ###"<<std::endl;
-                //std::cout<<"Iteration: "<<i<<". "<<"Nnz: "<< result->B.n_nonzero << ". Lambda: "<<P.ModelParams[0]<< std::endl;
+                
+                
                 if(G.back()->B.n_nonzero >= StopNum) {
                     break;
                 }
@@ -253,11 +236,6 @@ std::vector<std::unique_ptr<FitResult<T>>> Grid1D<T>::Fit() {
             
             delete prevresult;
             
-            //std::cout<<"Lambda0, Lambda1, Lambda2: "<<P.ModelParams[0]<<", "<<P.ModelParams[1]<<", "<<P.ModelParams[2]<<std::endl;
-            
-            // Prepare P for next iteration
-            //P.ModelParams[0] = Lambdas[i+1];
-            //P.ModelParams[0] = ((Xrmax - P.ModelParams[1])*(Xrmax - P.ModelParams[1]))/(2*(1+2*P.ModelParams[2]));
             
             P.Init = 'u';
             P.Iter += 1;

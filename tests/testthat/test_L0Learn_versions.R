@@ -1,118 +1,34 @@
-library("Matrix")
 library("testthat")
 library("L0Learn")
-source("utils.R")
 
+L0LEARNVERSIONDATAFOLDER = normalizePath(file.path("~/Documents/GitHub/L0LearnVersionData"))
+version_to_load_from="1.2.1"
 
-tmp <-  L0Learn::GenSynthetic(n=100, p=1000, k=10, seed=1)
-X <- tmp[[1]]
-y <- tmp[[2]]
-y_bin = sign(y)
-tol = 1e-4
-
-if (sum(apply(X, 2, sd) == 0)) {
-    stop("X needs to have non-zero std for each column")
+# Assert data is available to test from
+if (!(version_to_load_from %in% dir(L0LEARNVERSIONDATAFOLDER))){
+    print(L0LEARNVERSIONDATAFOLDER)
+    stop("'version_to_load_from' must exist in 'L0LEARNVERSIONDATAFOLDER'")
 }
 
-X_sparse <- as(X, "dgCMatrix")
-seed = 1
 
-matrices = list(X=X, X_sparse=X_sparse)
-
-if (packageVersion("L0Learn") == "2.0.0"){
-    # savetest(seed, func, x, y, params, name)
+test_that("All versions run as expected", {
+    # Load data object
+    data <- readRDS(file.path(L0LEARNVERSIONDATAFOLDER, version_to_load_from, "data.rData"))
     
-    # Standard Tests
-    # saved as "<method>_<matrix>_<penalty>.Rdata"
-    for (f in c("fit", "cvfit")){
-        for (m_name in names(matrices)){
-            m = matrices[[m_name]]
-            for (p in c("L0", "L0L2", "L0L1")){
-                savetest(seed, f, m, y, list(penalty=p, intercept=FALSE),
-                         paste(paste(f, m_name, p, sep="_"), ".Rdata", sep=''))
-            }
+    # Load tests:
+    tests <- readLines(file.path(L0LEARNVERSIONDATAFOLDER, 
+                       version_to_load_from, 'tests.txt'))
+    
+    
+    
+    # Run tests:
+    for (i in 1:length(tests)){
+        if (!grepl("CDPSI", tests[i], fixed=TRUE)){
+            fit <- eval(parse(text=tests[[i]]))
+            version_fit <- readRDS(file.path(L0LEARNVERSIONDATAFOLDER,
+                                             version_to_load_from,
+                                             paste(i, ".rData", sep='')))
+            expect_equal(fit, version_fit$fit, info=i)
         }
     }
-    
-    # Test Losses
-    # saved as "fit_<matrix>_<loss>.Rdata"
-    for (l in c("SquaredError")){
-        for (m_name in names(matrices)){
-            m = matrices[[m_name]]
-            for (p in c("L0", "L0L2", "L0L1")){
-                savetest(seed, 'fit', m, y, list(loss=l, intercept=FALSE),
-                         paste(paste('fit', m_name, l, sep="_"), ".Rdata", sep=''))
-            }
-        }
-    }
-    
-    for (l in c("Logistic", "SquaredHinge")){
-        for (m_name in names(matrices)){
-            m = matrices[[m_name]]
-            for (p in c("L0", "L0L2", "L0L1")){
-                savetest(seed, f, m, y_bin, list(loss=l, intercept=FALSE),
-                         paste(paste(f, m_name, l, sep="_"), ".Rdata", sep=''))
-            }
-        }
-    }
-    
-    # Algorithms
-    # saved as "fit_<matrix>_<penalty>.Rdata"
-    for (a in c("CD", "CDPSI")){
-        for (m_name in names(matrices)){
-            m = matrices[[m_name]]
-            for (p in c("L0", "L0L2", "L0L1")){
-                savetest(seed, "fit", m, y, list(algorithm=a, intercept=FALSE),
-                         paste(paste("fit", m_name, a, sep="_"), ".Rdata", sep=''))
-            }
-        }
-    }
-    
-} else if (packageVersion("L0Learn") == "2.0.0") {
-    
-    # Standard Tests
-    for (f in c("fit", "cvfit")){
-        for (m_name in names(matrices)){
-            m = matrices[[m_name]]
-            for (p in c("L0", "L0L2", "L0L1")){
-                load(paste(paste(f, m_name, p, sep="_"), ".Rdata", sep=''))
-                runtest(savedResult)
-            }
-        }
-    }
-    
-    # Test Losses
-    # saved as "fit_<matrix>_<loss>.Rdata"
-    for (l in c("SquaredError")){
-        for (m_name in names(matrices)){
-            m = matrices[[m_name]]
-            for (p in c("L0", "L0L2", "L0L1")){
-                load(paste(paste('fit', m_name, l, sep="_"), ".Rdata", sep=''))
-                runtest(savedResult)
-            }
-        }
-    }
-    
-    for (l in c("Logistic", "SquaredHinge")){
-        for (m_name in names(matrices)){
-            m = matrices[[m_name]]
-            for (p in c("L0", "L0L2", "L0L1")){
-                load(paste(paste(f, m_name, l, sep="_"), ".Rdata", sep=''))
-                runtest(savedResult)
-            }
-        }
-    }
-    
-    # Algorithms
-    # saved as "fit_<matrix>_<penalty>.Rdata"
-    for (a in c("CD", "CDPSI")){
-        for (m_name in names(matrices)){
-            m = matrices[[m_name]]
-            for (p in c("L0", "L0L2", "L0L1")){
-                load(paste(paste("fit", m_name, a, sep="_"), ".Rdata", sep=''))
-                runtest(savedResult)
-            }
-        }
-    }
-    
-}
+})

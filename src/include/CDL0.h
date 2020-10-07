@@ -34,6 +34,8 @@ class CDL0: public CD<T> {
         
         inline void ApplyNewBi(const std::size_t i, const double old_Bi, const double new_Bi) final;
         
+        inline void ApplyNewBiCWMinCheck(const std::size_t i, const double old_Bi, const double new_Bi) final;
+        
         bool CWMinCheck();
 };
 
@@ -59,6 +61,12 @@ inline double CDL0<T>::GetBiReg(const double nrb_Bi){
 
 template <class T>
 inline void CDL0<T>::ApplyNewBi(const std::size_t i, const double old_Bi, const double new_Bi){
+    this->r += matrix_column_mult(*(this->X), i, old_Bi - new_Bi);
+    this->B[i] = new_Bi;
+}
+
+template <class T>
+inline void CDL0<T>::ApplyNewBiCWMinCheck(const std::size_t i, const double old_Bi, const double new_Bi){
     this->r += matrix_column_mult(*(this->X), i, old_Bi - new_Bi);
     this->B[i] = new_Bi;
 }

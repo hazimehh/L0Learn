@@ -99,7 +99,7 @@ std::vector< std::vector<std::unique_ptr<FitResult<T>> > > Grid2D<T>::Fit() {
     
     
     PG.XtrAvailable = true;
-    
+    Rcpp::Rcout << "Grid2D Start\n";
     for(std::size_t i=0; i<Lambdas2.size();++i) { //auto &l : Lambdas2
         *Xtr = Xtrvec;
         
@@ -108,13 +108,12 @@ std::vector< std::vector<std::unique_ptr<FitResult<T>> > > Grid2D<T>::Fit() {
         
         PG.P.ModelParams[index] = Lambdas2[i];
         
-       /// Rcpp::Rcout << i << "th PG.P.ModelParams[" << index << "] "<< Lambdas2[i] << " \n";
-        
         if (PG.LambdaU == true)
             PG.Lambdas = PG.LambdasGrid[i];
         
         //std::vector<std::unique_ptr<FitResult>> Gl();
         //auto Gl = Grid1D(*X, *y, PG).Fit();
+        Rcpp::Rcout << "Grid1D Start: " << i << "\n";
         G.push_back(std::move(Grid1D<T>(*X, *y, PG).Fit()));
     }
     

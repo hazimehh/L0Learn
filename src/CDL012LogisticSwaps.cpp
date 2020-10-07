@@ -93,7 +93,8 @@ FitResult<T> CDL012LogisticSwaps<T>::Fit() {
                         Biold = Binew;
                         x = Biold - partial_i/qp2lamda2;
                         z = std::abs(x) - lambda1ol;
-                        Binew = clamp(std::copysign(z, x), this->Lows[i], this->Highs[i]); // no need to check if >= sqrt(2lambda_0/Lc)
+                        Binew = std::copysign(z, x);
+                        // Binew = clamp(std::copysign(z, x), this->Lows[i], this->Highs[i]); // no need to check if >= sqrt(2lambda_0/Lc)
                         innerindex += 1;
                     }
                     

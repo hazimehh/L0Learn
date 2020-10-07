@@ -38,7 +38,6 @@ void Grid<T>::Fit() {
             Lambda12.push_back(G[i][0]->ModelParams[2]); 
         }
         
-        // Rcpp::Rcout << "Size of G[" << i << "] = " << G[i].size() << " \n";
         for (auto &g : G[i]) {
             Lambda0[i].push_back(g->ModelParams[0]);
             

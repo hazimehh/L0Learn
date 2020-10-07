@@ -35,6 +35,8 @@ class CDL012Logistic : public CD<T> {
         // inline double GetBiDelta(const double Bi_reg) final;
         
         inline void ApplyNewBi(const std::size_t i, const double Bi_old, const double Bi_new) final;
+        
+        inline void ApplyNewBiCWMinCheck(const std::size_t i, const double old_Bi, const double new_Bi) final;
 
         bool CWMinCheck();
 
@@ -61,9 +63,18 @@ inline double CDL012Logistic<T>::GetBiReg(const double Bi_step){
 // }
 
 template <class T>
-inline void CDL012Logistic<T>::ApplyNewBi(const std::size_t i, const double Bi_old, const double Bi_new){
-    ExpyXB %= arma::exp( (Bi_new - Bi_old) * matrix_column_get(*(this->Xy), i));
-    this->B[i] = Bi_new;
+inline void CDL012Logistic<T>::ApplyNewBi(const std::size_t i, const double old_Bi, const double new_Bi){
+    ExpyXB %= arma::exp( (new_Bi - old_Bi) * matrix_column_get(*(this->Xy), i));
+    this->B[i] = new_Bi;
+}
+
+template <class T>
+inline void CDL012Logistic<T>::ApplyNewBiCWMinCheck(const std::size_t i,
+                                                    const double old_Bi,
+                                                    const double new_Bi){
+    ExpyXB %= arma::exp( (new_Bi - old_Bi) * matrix_column_get(*(this->Xy), i));
+    this->B[i] = new_Bi;
+    this->Order.push_back(i);
 }
 
 template <class T>

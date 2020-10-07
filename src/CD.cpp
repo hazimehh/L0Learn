@@ -158,8 +158,8 @@ bool CD<T>::UpdateBiCWMinCheck(const std::size_t i, const bool Cwmin){
     }
   }
   
-  if (0 != new_Bi){
-    this->ApplyNewBi(i, 0, new_Bi);
+  if (new_Bi != 0){
+    this->ApplyNewBiCWMinCheck(i, 0, new_Bi);
     return false;
   } else{
     return Cwmin;
@@ -172,11 +172,7 @@ bool CD<T>::Converged() {
     this->CurrentIters += 1; // keeps track of the number of calls to Converged
     double objectiveold = this->objective;
     this->objective = this->Objective();
-    if (std::abs(objectiveold - this->objective) / objectiveold <= this->Tol) {// handles obj <=0 for non-descent methods
-        return true; 
-    } else { 
-        return false; 
-    }
+    return std::abs(objectiveold - this->objective) <= this->Tol*objectiveold; 
 }
 
 template <class T>
