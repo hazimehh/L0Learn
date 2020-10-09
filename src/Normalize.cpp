@@ -1,13 +1,13 @@
 #include <Normalize.h>
 
 
-arma::rowvec matrix_normalize(const arma::mat& mat, arma::mat& mat_norm){
+arma::rowvec matrix_normalize(arma::mat& mat_norm){
     
-    auto p = mat.n_cols;
+    auto p = mat_norm.n_cols;
     arma::rowvec scaleX = arma::zeros<arma::rowvec>(p); // will contain the l2norm of every col
     
     for (auto col = 0; col < p; col++) {
-        double l2norm = arma::norm(mat.unsafe_col(col), 2);
+        double l2norm = arma::norm(matrix_column_get(mat_norm, col), 2);
         scaleX(col) = l2norm;
     }
     
@@ -37,7 +37,7 @@ std::tuple<arma::vec, arma::vec, double>  Normalize(const arma::mat& X, const ar
     
     X_normalized = X.each_row() - meanX;
     
-    arma::rowvec scaleX = matrix_normalize(X, X_normalized); // contains the l2norm of every col
+    arma::rowvec scaleX = matrix_normalize(X_normalized); // contains the l2norm of every col
   
     arma::vec BetaMultiplier;
     double meany = 0;
