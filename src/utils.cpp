@@ -58,12 +58,12 @@ arma::sp_mat clamp_by_vector(arma::sp_mat B, const arma::vec lows, const arma::v
     return B;
 }
 
-arma::rowvec matrix_normalize(const arma::sp_mat &mat, arma::sp_mat &mat_norm){
-    auto p = mat.n_cols;
+arma::rowvec matrix_normalize(arma::sp_mat &mat_norm){
+    auto p = mat_norm.n_cols;
     arma::rowvec scaleX = arma::zeros<arma::rowvec>(p); // will contain the l2norm of every col
     
     for (auto col = 0; col < p; col++){
-        double l2norm = arma::norm(matrix_column_get(mat, col), 2);
+        double l2norm = arma::norm(matrix_column_get(mat_norm, col), 2);
         scaleX(col) = l2norm;
     }
     
@@ -82,13 +82,13 @@ arma::rowvec matrix_normalize(const arma::sp_mat &mat, arma::sp_mat &mat_norm){
     return scaleX;
 }
 
-arma::rowvec matrix_normalize(const arma::mat& mat, arma::mat& mat_norm){
+arma::rowvec matrix_normalize(arma::mat& mat_norm){
 
-    auto p = mat.n_cols;
+    auto p = mat_norm.n_cols;
     arma::rowvec scaleX = arma::zeros<arma::rowvec>(p); // will contain the l2norm of every col
     
     for (auto col = 0; col < p; col++) {
-        double l2norm = arma::norm(matrix_column_get(mat, col), 2);
+        double l2norm = arma::norm(matrix_column_get(mat_norm, col), 2);
         scaleX(col) = l2norm;
     }
     

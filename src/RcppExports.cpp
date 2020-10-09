@@ -247,26 +247,24 @@ BEGIN_RCPP
 END_RCPP
 }
 // R_matrix_normalize_dense
-Rcpp::List R_matrix_normalize_dense(arma::mat mat, arma::mat mat_norm);
-RcppExport SEXP _L0Learn_R_matrix_normalize_dense(SEXP matSEXP, SEXP mat_normSEXP) {
+Rcpp::List R_matrix_normalize_dense(arma::mat mat_norm);
+RcppExport SEXP _L0Learn_R_matrix_normalize_dense(SEXP mat_normSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::mat >::type mat(matSEXP);
     Rcpp::traits::input_parameter< arma::mat >::type mat_norm(mat_normSEXP);
-    rcpp_result_gen = Rcpp::wrap(R_matrix_normalize_dense(mat, mat_norm));
+    rcpp_result_gen = Rcpp::wrap(R_matrix_normalize_dense(mat_norm));
     return rcpp_result_gen;
 END_RCPP
 }
 // R_matrix_normalize_sparse
-Rcpp::List R_matrix_normalize_sparse(arma::sp_mat mat, arma::sp_mat mat_norm);
-RcppExport SEXP _L0Learn_R_matrix_normalize_sparse(SEXP matSEXP, SEXP mat_normSEXP) {
+Rcpp::List R_matrix_normalize_sparse(arma::sp_mat mat_norm);
+RcppExport SEXP _L0Learn_R_matrix_normalize_sparse(SEXP mat_normSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::sp_mat >::type mat(matSEXP);
     Rcpp::traits::input_parameter< arma::sp_mat >::type mat_norm(mat_normSEXP);
-    rcpp_result_gen = Rcpp::wrap(R_matrix_normalize_sparse(mat, mat_norm));
+    rcpp_result_gen = Rcpp::wrap(R_matrix_normalize_sparse(mat_norm));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -312,8 +310,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_L0Learn_R_matrix_column_dot_sparse", (DL_FUNC) &_L0Learn_R_matrix_column_dot_sparse, 3},
     {"_L0Learn_R_matrix_column_mult_dense", (DL_FUNC) &_L0Learn_R_matrix_column_mult_dense, 3},
     {"_L0Learn_R_matrix_column_mult_sparse", (DL_FUNC) &_L0Learn_R_matrix_column_mult_sparse, 3},
-    {"_L0Learn_R_matrix_normalize_dense", (DL_FUNC) &_L0Learn_R_matrix_normalize_dense, 2},
-    {"_L0Learn_R_matrix_normalize_sparse", (DL_FUNC) &_L0Learn_R_matrix_normalize_sparse, 2},
+    {"_L0Learn_R_matrix_normalize_dense", (DL_FUNC) &_L0Learn_R_matrix_normalize_dense, 1},
+    {"_L0Learn_R_matrix_normalize_sparse", (DL_FUNC) &_L0Learn_R_matrix_normalize_sparse, 1},
     {"_L0Learn_R_matrix_center_dense", (DL_FUNC) &_L0Learn_R_matrix_center_dense, 2},
     {"_L0Learn_R_matrix_center_sparse", (DL_FUNC) &_L0Learn_R_matrix_center_sparse, 2},
     {NULL, NULL, 0}

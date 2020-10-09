@@ -65,12 +65,12 @@ R_matrix_column_mult_sparse <- function(mat, col, u) {
     .Call('_L0Learn_R_matrix_column_mult_sparse', PACKAGE = 'L0Learn', mat, col, u)
 }
 
-R_matrix_normalize_dense <- function(mat, mat_norm) {
-    .Call('_L0Learn_R_matrix_normalize_dense', PACKAGE = 'L0Learn', mat, mat_norm)
+R_matrix_normalize_dense <- function(mat_norm) {
+    .Call('_L0Learn_R_matrix_normalize_dense', PACKAGE = 'L0Learn', mat_norm)
 }
 
-R_matrix_normalize_sparse <- function(mat, mat_norm) {
-    .Call('_L0Learn_R_matrix_normalize_sparse', PACKAGE = 'L0Learn', mat, mat_norm)
+R_matrix_normalize_sparse <- function(mat_norm) {
+    .Call('_L0Learn_R_matrix_normalize_sparse', PACKAGE = 'L0Learn', mat_norm)
 }
 
 R_matrix_center_dense <- function(mat, intercept) {

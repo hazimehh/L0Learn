@@ -114,9 +114,9 @@ arma::vec inline matrix_column_mult(const arma::sp_mat &mat, T1 col, const T2 &u
     return matrix_column_get(mat, col)*u;
 }
 
-arma::rowvec matrix_normalize(const arma::sp_mat &mat,arma::sp_mat &mat_norm);
+arma::rowvec matrix_normalize(arma::sp_mat &mat_norm);
 
-arma::rowvec matrix_normalize(const arma::mat &mat, arma::mat &mat_norm);
+arma::rowvec matrix_normalize(arma::mat &mat_norm);
 
 std::tuple<arma::mat, arma::rowvec> matrix_center(const arma::mat& X,
                                                   bool intercept);

@@ -75,15 +75,15 @@ arma::vec R_matrix_column_mult_sparse(const arma::sp_mat &mat, int col, double u
 }
 
 // [[Rcpp::export]]
-Rcpp::List R_matrix_normalize_dense(arma::mat mat, arma::mat mat_norm){
-    arma::rowvec ScaleX = matrix_normalize(mat, mat_norm);
+Rcpp::List R_matrix_normalize_dense(arma::mat mat_norm){
+    arma::rowvec ScaleX = matrix_normalize(mat_norm);
     return Rcpp::List::create(Rcpp::Named("mat_norm") = mat_norm,
                               Rcpp::Named("ScaleX") = ScaleX);
 };
 
 // [[Rcpp::export]]
-Rcpp::List R_matrix_normalize_sparse(arma::sp_mat mat, arma::sp_mat mat_norm){
-    arma::rowvec ScaleX = matrix_normalize(mat, mat_norm);
+Rcpp::List R_matrix_normalize_sparse(arma::sp_mat mat_norm){
+    arma::rowvec ScaleX = matrix_normalize(mat_norm);
     return Rcpp::List::create(Rcpp::Named("mat_norm") = mat_norm,
                               Rcpp::Named("ScaleX") = ScaleX);
 };

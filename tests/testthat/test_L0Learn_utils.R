@@ -4,7 +4,7 @@ library("L0Learn")
 library("tilting")
 
 tmp <-  L0Learn::GenSynthetic(n=500, p=1000, k=10, seed=1, rho=1)
-X <- tmp[[1]]
+X <- tmp[[1]] + rnorm(1000)
 y <- tmp[[2]]
 tol = 1e-4
 
@@ -117,12 +117,12 @@ test_that('matrix_normalize dense', {
         X_norm_copy = as.matrix(X_norm)
         expect_equal(X_norm, X_norm_copy)
         
-        x1 <- .Call("_L0Learn_R_matrix_normalize_dense", X, X_norm)
+        x1 <- .Call("_L0Learn_R_matrix_normalize_dense", X_norm)
         
         expect_equal(X_norm, X_norm_copy) # R should not modify X_norm
         
-        expect_equal(col.norm(X), as.vector(x1$ScaleX))
-        expect_equal(X_norm %*% diag(1/col.norm(X)), x1$mat_norm)
+        expect_equal(col.norm(X_norm), as.vector(x1$ScaleX))
+        expect_equal(X_norm %*% diag(1/col.norm(X_norm)), x1$mat_norm)
     }
 })
 
@@ -132,7 +132,7 @@ test_that('matrix_normalize sparse', {
     
     expect_equal(X_norm, X_norm_copy)
     
-    x1 <- .Call("_L0Learn_R_matrix_normalize_sparse", X_sparse, X_norm)
+    x1 <- .Call("_L0Learn_R_matrix_normalize_sparse", X_norm)
     
     expect_equal(X_norm, X_norm_copy) # R should not modify X_norm
     
