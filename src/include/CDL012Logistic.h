@@ -54,7 +54,7 @@ inline double CDL012Logistic<T>::GetBiValue(const double old_Bi, const double gr
 
 template <class T>
 inline double CDL012Logistic<T>::GetBiReg(const double Bi_step){
-    return std::copysign(std::abs(Bi_step) - lambda1ol, Bi_step);
+    return std::abs(Bi_step) - lambda1ol;
 }
 
 // template <class T>

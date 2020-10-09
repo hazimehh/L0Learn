@@ -23,12 +23,10 @@ test_that("All versions run as expected", {
     
     # Run tests:
     for (i in 1:length(tests)){
-        if (!grepl("CDPSI", tests[i], fixed=TRUE)){
-            fit <- eval(parse(text=tests[[i]]))
-            version_fit <- readRDS(file.path(L0LEARNVERSIONDATAFOLDER,
-                                             version_to_load_from,
-                                             paste(i, ".rData", sep='')))
-            expect_equal(fit, version_fit$fit, info=i)
-        }
+        fit <- eval(parse(text=tests[[i]]))
+        version_fit <- readRDS(file.path(L0LEARNVERSIONDATAFOLDER,
+                                         version_to_load_from,
+                                         paste(i, ".rData", sep='')))
+        expect_equal(fit, version_fit$fit, info=i)
     }
 })

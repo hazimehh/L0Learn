@@ -48,7 +48,8 @@ class CDL012SquaredHinge : public CD<T> {
 
 template <class T>
 inline double CDL012SquaredHinge<T>::GetBiGrad(const std::size_t i){
-    return arma::sum(2 * onemyxb.elem(indices) % (- matrix_column_get(*Xy, i).elem(indices))  ) + twolambda2 * this->B[i];
+    // Rcpp::Rcout << "Grad stuff: " << arma::sum(2 * onemyxb.elem(indices) % (- matrix_column_get(*Xy, i).elem(indices))  ) << "\n";
+    return arma::sum(2 * onemyxb.elem(indices) % (- matrix_column_get(*Xy, i).elem(indices)) ) + twolambda2 * this->B[i];
 }
 
 template <class T>
@@ -58,7 +59,7 @@ inline double CDL012SquaredHinge<T>::GetBiValue(const double old_Bi, const doubl
 
 template <class T>
 inline double CDL012SquaredHinge<T>::GetBiReg(const double Bi_step){
-    return std::copysign(std::abs(Bi_step) - this->lambda1/qp2lamda2, Bi_step);;
+    return std::abs(Bi_step) - lambda1ol;
 }
 
 // template <class T>

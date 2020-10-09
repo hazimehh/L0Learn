@@ -51,7 +51,7 @@ inline double CDL012<T>::GetBiValue(const double old_Bi, const double grd_Bi){
 template <class T>
 inline double CDL012<T>::GetBiReg(const double nrb_Bi){
     // sign(nrb_Bi)*(|nrb_Bi| - lambda1)/(1 + 2*lambda2)
-    return std::copysign((std::abs(nrb_Bi) - this->lambda1) / Onep2lamda2, nrb_Bi);
+    return (std::abs(nrb_Bi) - this->lambda1) / Onep2lamda2;
 }
 
 // template <class T>

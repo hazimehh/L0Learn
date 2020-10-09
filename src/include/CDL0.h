@@ -51,7 +51,7 @@ inline double CDL0<T>::GetBiValue(const double old_Bi, const double grd_Bi){
 
 template <class T>
 inline double CDL0<T>::GetBiReg(const double nrb_Bi){
-    return nrb_Bi;
+    return std::abs(nrb_Bi);
 }
 
 // template <class T>

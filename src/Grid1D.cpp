@@ -94,7 +94,7 @@ std::vector<std::unique_ptr<FitResult<T>>> Grid1D<T>::Fit() {
         
         double lambdamax = ((ytXmax - P.ModelParams[1]) * (ytXmax - P.ModelParams[1])) / (2 * (Lipconst));
         
-        Rcpp::Rcout << "lambdamax: " << lambdamax << "\n";
+        // Rcpp::Rcout << "lambdamax: " << lambdamax << "\n";
         
         if (!LambdaU) {
             P.ModelParams[0] = lambdamax;
@@ -102,7 +102,7 @@ std::vector<std::unique_ptr<FitResult<T>>> Grid1D<T>::Fit() {
             P.ModelParams[0] = Lambdas[0];
         }
         
-        Rcpp::Rcout << "P ModelParams: {" << P.ModelParams[0] << ", " << P.ModelParams[1] << ", " << P.ModelParams[2] << ", " << P.ModelParams[3] <<   "}\n";
+        // Rcpp::Rcout << "P ModelParams: {" << P.ModelParams[0] << ", " << P.ModelParams[1] << ", " << P.ModelParams[2] << ", " << P.ModelParams[3] <<   "}\n";
         
         P.Init = 'z';
         
@@ -178,7 +178,7 @@ std::vector<std::unique_ptr<FitResult<T>>> Grid1D<T>::Fit() {
                 P.ModelParams[0] = Lambdas[i];
             }
             
-            Rcpp::Rcout << "P.ModelParams[0]: " << P.ModelParams[0] << "\n";
+            // Rcpp::Rcout << "P.ModelParams[0]: " << P.ModelParams[0] << "\n";
            
             if (!currentskip) {
             
