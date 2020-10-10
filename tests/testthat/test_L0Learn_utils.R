@@ -24,6 +24,12 @@ test_that('Normalize matches Normalizev_1_2_0', {
         y_norm = 0*y
         x1 <- .Call("_L0Learn_R_Normalize_dense", X, y, X_norm, y_norm, Normalizey, FALSE)
         x2 <- .Call("_L0Learn_R_Normalizev_1_2_0_dense", X, y, X_norm, y_norm, Normalizey, FALSE)
-        expect_failure(expect_equal(x1, x2)) # Expect not equal
+        expect_equal(x1$X, x2$X)
+        expect_equal(x1$y, x2$y)
+        expect_equal(x1$y_norm, x2$y_norm)
+        expect_equal(x1$meanX, x2$meanX)
+        expect_equal(x1$meany, x2$meany)
+        
+        expect_failure(expect_equal(x1$X_norm, x2$X_norm))
     }
-})
+}) 
