@@ -9,3 +9,11 @@ L0LearnFit <- function(X, y, Loss, Penalty, Algorithm, NnzStopNum, G_ncols, G_nr
     .Call('_L0Learn_L0LearnFit', PACKAGE = 'L0Learn', X, y, Loss, Penalty, Algorithm, NnzStopNum, G_ncols, G_nrows, Lambda2Max, Lambda2Min, PartialSort, MaxIters, Tol, ActiveSet, ActiveSetNum, MaxNumSwaps, ScaleDownFactor, ScreenSize, LambdaU, Lambdas, ExcludeFirstK, Intercept)
 }
 
+R_Normalize_dense <- function(X, y, X_normalized, y_normalized, Normalizey, intercept) {
+    .Call('_L0Learn_R_Normalize_dense', PACKAGE = 'L0Learn', X, y, X_normalized, y_normalized, Normalizey, intercept)
+}
+
+R_Normalizev_1_2_0_dense <- function(X, y, X_normalized, y_normalized, Normalizey, intercept) {
+    .Call('_L0Learn_R_Normalizev_1_2_0_dense', PACKAGE = 'L0Learn', X, y, X_normalized, y_normalized, Normalizey, intercept)
+}
+
