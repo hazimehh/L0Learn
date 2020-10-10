@@ -1,13 +1,12 @@
 #include <Normalize.h>
 
-
 arma::rowvec matrix_normalize(arma::mat& mat_norm){
     
     auto p = mat_norm.n_cols;
     arma::rowvec scaleX = arma::zeros<arma::rowvec>(p); // will contain the l2norm of every col
     
     for (auto col = 0; col < p; col++) {
-        double l2norm = arma::norm(matrix_column_get(mat_norm, col), 2);
+        double l2norm = arma::norm(mat_norm.unsafe_col(col), 2);
         scaleX(col) = l2norm;
     }
     
@@ -24,7 +23,7 @@ arma::rowvec matrix_normalize(arma::mat& mat_norm){
 // scale, meanX, meany
 std::tuple<arma::vec, arma::vec, double>  Normalize(const arma::mat& X, const arma::vec& y, arma::mat & X_normalized, arma::vec & y_normalized, bool Normalizey = false, bool intercept = true)
 {
-    unsigned int n = X.n_rows;
+    // unsigned int n = X.n_rows;
     unsigned int p = X.n_cols;
 
     arma::rowvec meanX;
