@@ -14,7 +14,8 @@ struct FitResult {
     arma::vec * r;
     std::vector<double> ModelParams;
     double b0 = 0; // used by classification models and sparse regression models
-    arma::vec ExpyXB; // Used by logistic regression
+    arma::vec ExpyXB; // Used by Logistic regression
+    arma::vec onemyxb; // Used by SquaredHinge regression
 };
 
 #endif

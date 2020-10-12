@@ -3,7 +3,7 @@
 template <class T>
 CDL012SquaredHingeSwaps<T>::CDL012SquaredHingeSwaps(const T& Xi, const arma::vec& yi, const Params<T>& Pi) : CDSwaps<T>(Xi, yi, Pi) {
     twolambda2 = 2 * this->lambda2;
-    qp2lamda2 = (LipschitzConst + twolambda2); // this is the univariate lipschitz const of the differentiable objective
+    qp2lamda2 = (LipschitzConst + twolambda2); // this is the univariate lipschitz constant of the differentiable objective
     this->thr2 = (2 * this->lambda0) / qp2lamda2;
     this->thr = std::sqrt(this->thr2);
     stl0Lc = std::sqrt((2 * this->lambda0) * qp2lamda2);
@@ -16,7 +16,7 @@ FitResult<T> CDL012SquaredHingeSwaps<T>::Fit() {
     this->b0 = result.b0; // Initialize from previous later....!
     this->B = result.B;
     
-    arma::vec onemyxb = 1 - *(this->y) % (*(this->X) * this->B + this->b0);
+    arma::vec onemyxb = result.onemyxb;
     
     double objective = result.Objective;
     double Fmin = objective;
@@ -55,7 +55,7 @@ FitResult<T> CDL012SquaredHingeSwaps<T>::Fit() {
                     double partial_i = arma::sum(2 * onemyxbnoj.elem(indices) % (- (this->y)->elem(indices) % matrix_column_get(*(this->X), i).elem(indices)));
                     
                     bool converged = false;
-                    if (std::abs(partial_i) >= this->lambda1 + stl0Lc) {
+                    if (std::abs(partial_i) >= this->lambda1 + stl0Lc){
                         
                         //std::cout<<"Adding: "<<i<< std::endl;
                         arma::vec onemyxbnoji = onemyxbnoj;
@@ -66,17 +66,20 @@ FitResult<T> CDL012SquaredHingeSwaps<T>::Fit() {
                         //double ObjTemp = Objective(onemyxbnoj,Btemp);
                         //double Biolddescent = 0;
                         while(!converged) {
+                            
                             double x = Biold - partial_i / qp2lamda2;
                             double z = std::abs(x) - lambda1ol;
                             Binew = std::copysign(z, x);
+                            
                             // Binew = clamp(std::copysign(z, x), this->Lows[i], this->Highs[i]); // no need to check if >= sqrt(2lambda_0/Lc)
                             onemyxbnoji += (Biold - Binew) * *(this->y) % matrix_column_get(*(this->X), i);
                             
                             arma::uvec indicesi = arma::find(onemyxbnoji > 0);
                             partial_i = arma::sum(2 * onemyxbnoji.elem(indicesi) % (- (this->y)->elem(indicesi) % matrix_column_get(*(this->X), i).elem(indicesi)));
                             
-                            if (std::abs((Binew - Biold) / Biold) < 0.0001) 
-                                converged = true;
+                            if (std::abs((Binew - Biold) / Biold) < 0.0001){
+                                converged = true;   
+                            }
                             
                             Biold = Binew;
                             l += 1;
@@ -85,8 +88,6 @@ FitResult<T> CDL012SquaredHingeSwaps<T>::Fit() {
                         
                         // Can be made much faster (later)
                         Btemp[i] = Binew;
-                        //auto l2norm = arma::norm(Btemp,2);
-                        //double Fnew = arma::sum(arma::log(1 + 1/ExpyXBnoji)) + ModelParams[0]*Btemp.n_nonzero + ModelParams[1]*arma::norm(Btemp,1) + ModelParams[2]*l2norm*l2norm;
                         double Fnew = Objective(onemyxbnoji, Btemp);
                         //std::cout<<"Fnew: "<<Fnew<<"Index: "<<i<<std::endl;
                         if (Fnew < Fmin) {
@@ -112,9 +113,7 @@ FitResult<T> CDL012SquaredHingeSwaps<T>::Fit() {
                 this->B = result.B;
                 this->b0 = result.b0;
                 
-                // TODO: Double check equation
-                // TODO: Take solution from 'result'
-                onemyxb = 1 - *(this->y) % (*(this->X) * this->B + this->b0); // no need to calc. - change later.
+                onemyxb = result.onemyxb;
                 objective = result.Objective;
                 Fmin = objective;
                 foundbetter = true;
