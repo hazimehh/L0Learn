@@ -1,23 +1,26 @@
 #ifndef GRID1D_H
 #define GRID1D_H
 #include <memory>
+#include <algorithm>
+#include <map>
+#include "RcppArmadillo.h"
 #include "Params.h"
 #include "GridParams.h"
 #include "FitResult.h"
+#include "MakeCD.h"
 
-class Grid1D
-{
+template <class T>
+class Grid1D {
     private:
-        unsigned int G_ncols;
-        Params P;
-        const arma::mat * X;
+        std::size_t G_ncols;
+        Params<T> P;
+        const T * X;
         const arma::vec * y;
-        unsigned int p;
-        //std::vector<FitResult*> G;
-        std::vector<std::unique_ptr<FitResult>> G;
+        std::size_t p;
+        std::vector<std::unique_ptr<FitResult<T>>> G;
         arma::vec Lambdas;
         bool LambdaU;
-        unsigned int NnzStopNum;
+        std::size_t NnzStopNum;
         std::vector<double> * Xtr;
         arma::rowvec * ytX;
         double LambdaMinFactor;
@@ -26,12 +29,12 @@ class Grid1D
         bool XtrAvailable;
         double ytXmax2d;
         double ScaleDownFactor;
-        unsigned int NoSelectK;
+        std::size_t NoSelectK;
 
     public:
-        Grid1D(const arma::mat& Xi, const arma::vec& yi, const GridParams& PG);
+        Grid1D(const T& Xi, const arma::vec& yi, const GridParams<T>& PG);
         ~Grid1D();
-        std::vector<std::unique_ptr<FitResult>> Fit();
+        std::vector<std::unique_ptr<FitResult<T>>> Fit();
 };
 
 #endif

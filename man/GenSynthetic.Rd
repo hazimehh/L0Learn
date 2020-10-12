@@ -4,7 +4,7 @@
 \alias{GenSynthetic}
 \title{Generate Synthetic Data}
 \usage{
-GenSynthetic(n, p, k, seed)
+GenSynthetic(n, p, k, seed, rho = 0)
 }
 \arguments{
 \item{n}{Number of samples}
@@ -14,6 +14,8 @@ GenSynthetic(n, p, k, seed)
 \item{k}{Number of non-zeros in true vector of coefficients}
 
 \item{seed}{The seed used for randomly generating the data}
+
+\item{rho}{The threshold for setting values to 0.  if |X(i, j)| > rho => X(i, j) <- 0}
 }
 \value{
 A list containing the data matrix X and the response vector y.

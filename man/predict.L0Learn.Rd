@@ -5,11 +5,9 @@
 \alias{predict.L0LearnCV}
 \title{Predict Response}
 \usage{
-\method{predict}{L0Learn}(object, newx, lambda = NULL, gamma = NULL,
-  ...)
+\method{predict}{L0Learn}(object, newx, lambda = NULL, gamma = NULL, ...)
 
-\method{predict}{L0LearnCV}(object, newx, lambda = NULL, gamma = NULL,
-  ...)
+\method{predict}{L0LearnCV}(object, newx, lambda = NULL, gamma = NULL, ...)
 }
 \arguments{
 \item{object}{The output of L0Learn.fit or L0Learn.cvfit}

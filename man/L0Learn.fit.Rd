@@ -4,13 +4,32 @@
 \alias{L0Learn.fit}
 \title{Fit an L0-regularized model}
 \usage{
-L0Learn.fit(x, y, loss = "SquaredError", penalty = "L0",
-  algorithm = "CD", maxSuppSize = 100, nLambda = 100, nGamma = 10,
-  gammaMax = 10, gammaMin = 1e-04, partialSort = TRUE,
-  maxIters = 200, tol = 1e-06, activeSet = TRUE, activeSetNum = 3,
-  maxSwaps = 100, scaleDownFactor = 0.8, screenSize = 1000,
-  autoLambda = TRUE, lambdaGrid = list(0), excludeFirstK = 0,
-  intercept = TRUE)
+L0Learn.fit(
+  x,
+  y,
+  loss = "SquaredError",
+  penalty = "L0",
+  algorithm = "CD",
+  maxSuppSize = 100,
+  nLambda = 100,
+  nGamma = 10,
+  gammaMax = 10,
+  gammaMin = 1e-04,
+  partialSort = TRUE,
+  maxIters = 200,
+  tol = 1e-06,
+  activeSet = TRUE,
+  activeSetNum = 3,
+  maxSwaps = 100,
+  scaleDownFactor = 0.8,
+  screenSize = 1000,
+  autoLambda = TRUE,
+  lambdaGrid = list(0),
+  excludeFirstK = 0,
+  intercept = TRUE,
+  lows = -Inf,
+  highs = Inf
+)
 }
 \arguments{
 \item{x}{The data matrix.}
@@ -73,6 +92,10 @@ which are used by the algorithm when fitting for the ith value of gamma (see the
 i.e., the first excludeFirstK variables will not be included in the L0-norm penalty (they will still be included in the L1 or L2 norm penalties.).}
 
 \item{intercept}{If FALSE, no intercept term is included in the model.}
+
+\item{lows}{Lower bounds for coefficients. Either a scalar for all coefficients to have the same bound or a vector of size p (number of columns of X) where lows[i] is the lower bound for coefficient i.}
+
+\item{highs}{Upper bounds for coefficients. Either a scalar for all coefficients to have the same bound or a vector of size p (number of columns of X) where highs[i] is the upper bound for coefficient i.}
 }
 \value{
 An S3 object of type "L0Learn" describing the regularization path. The object has the following members.

@@ -47,6 +47,8 @@
 #' @param excludeFirstK This parameter takes non-negative integers. The first excludeFirstK features in x will be excluded from variable selection,
 #' i.e., the first excludeFirstK variables will not be included in the L0-norm penalty (they will still be included in the L1 or L2 norm penalties.).
 #' @param intercept If FALSE, no intercept term is included in the model.
+#' @param lows Lower bounds for coefficients. Either a scalar for all coefficients to have the same bound or a vector of size p (number of columns of X) where lows[i] is the lower bound for coefficient i.
+#' @param highs Upper bounds for coefficients. Either a scalar for all coefficients to have the same bound or a vector of size p (number of columns of X) where highs[i] is the upper bound for coefficient i.
 #' @return An S3 object of type "L0Learn" describing the regularization path. The object has the following members.
 #' \item{a0}{a0 is a list of intercept sequences. The ith element of the list (i.e., a0[[i]]) is the sequence of intercepts corresponding to the ith gamma value (i.e., gamma[i]).}
 #' \item{beta}{This is a list of coefficient matrices. The ith element of the list is a p x \code{length(lambda)} matrix which
@@ -92,10 +94,13 @@
 #' print(fit4)
 #'
 #' @export
-L0Learn.fit <- function(x,y, loss="SquaredError", penalty="L0", algorithm="CD", maxSuppSize=100, nLambda=100, nGamma=10,
-						gammaMax=10, gammaMin=0.0001, partialSort = TRUE, maxIters=200,
-						tol=1e-6, activeSet=TRUE, activeSetNum=3, maxSwaps=100, scaleDownFactor=0.8, screenSize=1000, autoLambda = TRUE, lambdaGrid = list(0), excludeFirstK=0, intercept = TRUE)
-{
+L0Learn.fit <- function(x, y, loss="SquaredError", penalty="L0", algorithm="CD", 
+                        maxSuppSize=100, nLambda=100, nGamma=10, gammaMax=10,
+                        gammaMin=0.0001, partialSort = TRUE, maxIters=200,
+						tol=1e-6, activeSet=TRUE, activeSetNum=3, maxSwaps=100,
+						scaleDownFactor=0.8, screenSize=1000, autoLambda = TRUE,
+						lambdaGrid = list(0), excludeFirstK=0, intercept = TRUE,
+						lows=-Inf, highs=Inf) {
 
 	# Some sanity checks for the inputs
 	if ( !(loss %in% c("SquaredError","Logistic","SquaredHinge")) ){
@@ -123,9 +128,42 @@ L0Learn.fit <- function(x,y, loss="SquaredError", penalty="L0", algorithm="CD", 
 					gammaMin = 1e-7
 			}
 	}
+    is.scalar <- function(x) is.atomic(x) && length(x) == 1L && !is.character(x) && Im(x)==0 && !is.nan(x) && !is.na(x)
+    
+    p = dim(x)[[2]]
+    
+    if (is.scalar(lows)){
+        lows = lows*rep(1, p)
+    } else if (!all(sapply(lows, is.scalar)) || length(lows) != p) { 
+        stop('Lows must be a vector of real values of length p')
+    } 
+    
+    if (is.scalar(highs)){
+        highs = highs*rep(1, p)
+    } else if (!all(sapply(highs, is.scalar)) || length(highs) != p) { 
+        stop('Highs must be a vector of real values of length p')
+    } 
+    
+    if (any(lows >= highs) || any(lows > 0) || any(highs < 0)){
+        stop("Bounds must conform to the following conditions: Lows <= 0, Highs >= 0, Lows < Highs")
+    }
+    
+    if (algorithm == "CDPSI"){
+        if (any(lows != -Inf) || any(highs != Inf)){
+            stop("Bounds are not YET supported for CDPSI algorithm. Please raise
+                 an issue at 'https://github.com/hazimehh/L0Learn' to express 
+                 interest in this functionality")
+        }
+        
+        if (loss == "SquaredHinge"){
+            stop("Using algorithm='CDPSI' and loss=;SquaredHinge' is currently unsupported in
+                 v2.0.0dev. This should be fixed soon.")
+        }
+    }
+
 
 	# The C++ function uses LambdaU = 1 for user-specified grid. In R, we use autoLambda0 = 0 for user-specified grid (thus the negation when passing the parameter to the function below)
-	M <- .Call('_L0Learn_L0LearnFit', PACKAGE = 'L0Learn', x, y, loss, penalty, algorithm, maxSuppSize, nLambda, nGamma, gammaMax, gammaMin, partialSort, maxIters, tol, activeSet, activeSetNum, maxSwaps, scaleDownFactor, screenSize, !autoLambda, lambdaGrid, excludeFirstK, intercept)
+	M <- .Call('_L0Learn_L0LearnFit', PACKAGE = 'L0Learn', x, y, loss, penalty, algorithm, maxSuppSize, nLambda, nGamma, gammaMax, gammaMin, partialSort, maxIters, tol, activeSet, activeSetNum, maxSwaps, scaleDownFactor, screenSize, !autoLambda, lambdaGrid, excludeFirstK, intercept, lows, highs)
 
 	settings = list()
 	settings[[1]] = intercept # Settings only contains intercept for now. Might include additional elements later.
@@ -139,8 +177,7 @@ L0Learn.fit <- function(x,y, loss="SquaredError", penalty="L0", algorithm="CD", 
 					if (last == 1){
 							print("Warning! Only 1 element in path with support size > maxSuppSize.")
 							print("Try increasing maxSuppSize to resolve the issue.")
-					}
-					else{
+					} else{
 							M$SuppSize[[i]] = M$SuppSize[[i]][-last]
 							M$Converged[[i]] = M$Converged[[i]][-last]
 							M$lambda[[i]] = M$lambda[[i]][-last]

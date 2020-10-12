@@ -1,129 +1,109 @@
 #include "CDL0.h"
 
-CDL0::CDL0(const arma::mat& Xi, const arma::vec& yi, const Params& P) : CD(Xi, yi, P)
-{
-    thr = sqrt(2 * ModelParams[0]); Xtr = P.Xtr; Iter = P.Iter;
-    result.ModelParams = P.ModelParams; ScreenSize = P.ScreenSize;
-    r = *P.r; Range1p.resize(p); std::iota(std::begin(Range1p), std::end(Range1p), 0); NoSelectK = P.NoSelectK;
-    result.r = P.r;
+
+template <class T>
+CDL0<T>::CDL0(const T& Xi, const arma::vec& yi, const Params<T>& P) : CD<T>(Xi, yi, P){
+    this->thr2 = 2 * this->lambda0;
+    this->thr = sqrt(this->thr2); 
+    this->r = *P.r; 
+    this->result.r = P.r;
 }
 
-FitResult CDL0::Fit()
-{
-
+template <class T>
+FitResult<T> CDL0<T>::Fit() {
+    
+    this->B = clamp_by_vector(this->B, this->Lows, this->Highs);
+    
     //bool SecondPass = false;
-    objective = Objective(r, B);
-
-    std::vector<unsigned int> FullOrder = Order;
+    this->objective = Objective(this->r, this->B);
+    
+    std::vector<std::size_t> FullOrder = this->Order;
     bool FirstRestrictedPass = true;
-    if (ActiveSet)
-    {
-        Order.resize(std::min((int) (B.n_nonzero + ScreenSize + NoSelectK), (int)(p))); // std::min(1000,Order.size())
+    
+    if (this->ActiveSet) {
+        this->Order.resize(std::min((int) (this->B.n_nonzero + this->ScreenSize + this->NoSelectK), (int)(this->p))); // std::min(1000,Order.size())
     }
-
-    bool ActiveSetInitial = ActiveSet;
-
-    for (unsigned int t = 0; t < MaxIters; ++t)
-    {
-        Bprev = B;
-
-        for (auto& i : Order)
-        {
-            double cor = arma::dot(r, X->unsafe_col(i));
-            (*Xtr)[i] = std::abs(cor); // do abs here instead from when sorting
-            double Bi = B[i]; // B[i] is costly
-            double x = cor + Bi;
-            if (x >= thr || x <= -thr || i < NoSelectK) 	// often false so body is not costly
-            {
-                r += X->unsafe_col(i) * (Bi - x);
-                B[i] = x;
-            }
-
-            else if (Bi != 0)   // do nothing if x=0 and B[i] = 0
-            {
-                r += X->unsafe_col(i) * Bi;
-                B[i] = 0;
-            }
+    
+    bool ActiveSetInitial = this->ActiveSet;
+    
+    for (std::size_t t = 0; t < this->MaxIters; ++t) {
+        this->Bprev = this->B;
+        
+        if (this->isSparse && this->intercept){
+            this->UpdateSparse_b0(this->r);
         }
-
-        if (Converged())
-        {
-            if(FirstRestrictedPass && ActiveSetInitial)
-            {
-                if (CWMinCheck()) {break;}
-                FirstRestrictedPass = false;
-                Stabilized = false;
-                ActiveSet = true;
-                Order = FullOrder;
-
-            }
-
-            else
-            {
-                if (Stabilized == true && ActiveSetInitial)  // && !SecondPass
-                {
-                    if (CWMinCheck()) {break;}
-                    Order = OldOrder; // Recycle over all coordinates to make sure the achieved point is a CW-min.
-                    //SecondPass = true; // a 2nd pass will be performed
-                    Stabilized = false;
-                    ActiveSet = true;
+        
+        for (auto& i : this->Order) {
+            this->UpdateBi(i);
+        }
+        
+        if (this->Converged()) {
+            if(FirstRestrictedPass && ActiveSetInitial) {
+                if (CWMinCheck()) {
+                    break;
                 }
-
-                else
-                {
+                FirstRestrictedPass = false;
+                this->Stabilized = false;
+                this->ActiveSet = true;
+                this->Order = FullOrder;
+                
+            } else {
+                if (this->Stabilized == true && ActiveSetInitial) { // && !SecondPass
+                    if (CWMinCheck()) {
+                        break;
+                    }
+                    this->Order = this->OldOrder; // Recycle over all coordinates to make sure the achieved point is a CW-min.
+                    //SecondPass = true; // a 2nd pass will be performed
+                    this->Stabilized = false;
+                    this->ActiveSet = true;
+                } else {
                     break;
                 }
             }
-
         }
-
-        if (ActiveSet) {SupportStabilized();}
-
+        
+        if (this->ActiveSet) {
+            this->SupportStabilized();
+        }
     }
+    
+    // Re-optimize b0 after convergence.
+    if (this->isSparse && this->intercept){
+        this->UpdateSparse_b0(this->r);
+    }
+    
+    this->result.Objective = this->objective;
+    this->result.B = this->B;
+    *(this->result.r) = this->r; // change to pointer later
+    this->result.IterNum = this->CurrentIters;
+    this->result.b0 = this->b0;
 
-
-    result.Objective = objective;
-    result.B = B;
-    //result.Model = this;
-    *(result.r) = r; // change to pointer later
-    result.IterNum = CurrentIters;
-    return result;
+    return this->result;
 }
 
-inline double CDL0::Objective(arma::vec & r, arma::sp_mat & B)   // hint inline
-{
-    return 0.5 * arma::dot(r, r) + ModelParams[0] * B.n_nonzero;
-}
-
-
-bool CDL0::CWMinCheck()
-{
+template <class T>
+bool CDL0<T>::CWMinCheck() {
     // Get the Sc = FullOrder - Order
-    std::vector<unsigned int> S;
-    for(arma::sp_mat::const_iterator it = B.begin(); it != B.end(); ++it) {S.push_back(it.row());}
-
-    std::vector<unsigned int> Sc;
+    std::vector<std::size_t> S;
+    for(arma::sp_mat::const_iterator it = this->B.begin(); it != this->B.end(); ++it) {
+        S.push_back(it.row());
+    }
+    
+    std::vector<std::size_t> Sc;
     set_difference(
-        Range1p.begin(),
-        Range1p.end(),
+        this->Range1p.begin(),
+        this->Range1p.end(),
         S.begin(),
         S.end(),
         back_inserter(Sc));
-
+    
     bool Cwmin = true;
-    for (auto& i : Sc)
-    {
-        double x = arma::dot(r, X->unsafe_col(i));
-        double absx = std::abs(x);
-        (*Xtr)[i] = absx; // do abs here instead from when sorting
-        // B[i] = 0 in this case!
-        if (absx >= thr) 	// often false so body is not costly
-        {
-            r -= X->unsafe_col(i) * x;
-            B[i] = x;
-            Cwmin = false;
-        }
+    for (auto& i : Sc) {
+        Cwmin = this->UpdateBiCWMinCheck(i, Cwmin);
     }
     return Cwmin;
-
+    
 }
+
+template class CDL0<arma::mat>;
+template class CDL0<arma::sp_mat>;

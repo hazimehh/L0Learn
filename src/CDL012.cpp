@@ -1,137 +1,107 @@
 #include "CDL012.h"
 
 
-CDL012::CDL012(const arma::mat& Xi, const arma::vec& yi, const Params& P) : CD(Xi, yi, P)
-{
-    thr = std::sqrt((2 * ModelParams[0]) / (1 + 2 * ModelParams[2]));
-    Onep2lamda2 = 1 + 2 * ModelParams[2]; lambda1 = ModelParams[1]; Xtr = P.Xtr; Iter = P.Iter; result.ModelParams = P.ModelParams; ScreenSize = P.ScreenSize; r = *P.r;
-    Range1p.resize(p); std::iota(std::begin(Range1p), std::end(Range1p), 0); NoSelectK = P.NoSelectK;
-    result.r = P.r;
+template <class T>
+CDL012<T>::CDL012(const T& Xi, const arma::vec& yi, const Params<T>& P) : CD<T>(Xi, yi, P) {
+    Onep2lamda2 = 1 + 2 * this->lambda2; 
+    
+    this->thr2 = 2 * this->lambda0 / Onep2lamda2;
+    this->thr = std::sqrt(this->thr2);
+    this->r = *P.r;
+    this->result.r = P.r;
 }
 
-FitResult CDL012::Fit()
-{
-
-    // bool SecondPass = false;
-
-    objective = Objective(r, B);
-
-    std::vector<unsigned int> FullOrder = Order;
+template <class T>
+FitResult<T> CDL012<T>::Fit() {
+    
+    this->B = clamp_by_vector(this->B, this->Lows, this->Highs);
+    
+    this->objective = Objective(this->r, this->B);
+    
+    std::vector<std::size_t> FullOrder = this->Order;
     bool FirstRestrictedPass = true;
-    if (ActiveSet)
-    {
-        Order.resize(std::min((int) (B.n_nonzero + ScreenSize + NoSelectK), (int)(p))); // std::min(1000,Order.size())
+    if (this->ActiveSet) {
+        this->Order.resize(std::min((int) (this->B.n_nonzero + this->ScreenSize + this->NoSelectK), (int)(this->p))); // std::min(1000,Order.size())
     }
+    
+    bool ActiveSetInitial = this->ActiveSet;
 
-    bool ActiveSetInitial = ActiveSet;
-
-
-    for (unsigned int t = 0; t < MaxIters; ++t)
-    {
-        Bprev = B;
-
-        for (auto& i : Order)
-        {
-            double cor = arma::dot(r, X->unsafe_col(i));
-
-            (*Xtr)[i] = std::abs(cor); // do abs here instead from when sorting
-
-            double Bi = B[i]; // B[i] is costly
-            double x = cor + Bi; // x is beta_tilde_i
-            double z = (std::abs(x) - lambda1) / Onep2lamda2;
-
-            if (z >= thr || (i < NoSelectK && z>0) ) 	// often false so body is not costly
-            {
-                B[i] = std::copysign(z, x);
-
-                r = r + X->unsafe_col(i) * (Bi - B[i]);
-            }
-
-            else if (Bi != 0)   // do nothing if x=0 and B[i] = 0
-            {
-                r = r + X->unsafe_col(i) * Bi;
-                B[i] = 0;
-            }
+    for (std::size_t t = 0; t < this->MaxIters; ++t) {
+        this->Bprev = this->B;
+        
+        if (this->isSparse && this->intercept){
+            this->UpdateSparse_b0(this->r);
         }
-
+        
+        for (auto& i : this->Order) {
+            this->UpdateBi(i);
+            
+        }
+        
         //B.print();
-        if (Converged())
-        {
-            if(FirstRestrictedPass && ActiveSetInitial)
-            {
-                if (CWMinCheck()) {break;}
-                FirstRestrictedPass = false;
-                Order = FullOrder;
-                Stabilized = false;
-                ActiveSet = true;
-            }
-
-            else
-            {
-                if (Stabilized == true && ActiveSetInitial)  // && !SecondPass
-                {
-                    if (CWMinCheck()) {break;}
-                    Order = OldOrder; // Recycle over all coordinates to make sure the achieved point is a CW-min.
-                    //SecondPass = true; // a 2nd pass will be performed
-                    Stabilized = false;
-                    ActiveSet = true;
+        if (this->Converged()) {
+            if(FirstRestrictedPass && ActiveSetInitial) {
+                if (CWMinCheck()) {
+                    break;
                 }
-
-                else
-                {
+                FirstRestrictedPass = false;
+                this->Order = FullOrder;
+                this->Stabilized = false;
+                this->ActiveSet = true;
+            } else {
+                if (this->Stabilized && ActiveSetInitial) { // && !SecondPass
+                    if (CWMinCheck()) {
+                        break;
+                    }
+                    this->Order = this->OldOrder; // Recycle over all coordinates to make sure the achieved point is a CW-min.
+                    //SecondPass = true; // a 2nd pass will be performed
+                    this->Stabilized = false;
+                    this->ActiveSet = true;
+                } else {
                     break;
                 }
             }
-
         }
-        if (ActiveSet) {SupportStabilized();}
-
+        if (this->ActiveSet) {
+            this->SupportStabilized();
+        }
     }
-
-    result.Objective = objective;
-    result.B = B;
-    //result.Model = this;
-    *(result.r) = r; // change to pointer later
-    result.IterNum = CurrentIters;
-    return result;
+    
+    if (this->isSparse && this->intercept){
+        this->UpdateSparse_b0(this->r);
+    }
+    
+    this->result.Objective = this->objective;
+    this->result.B = this->B;
+    *(this->result.r) = this->r; // change to pointer later
+    this->result.IterNum = this->CurrentIters;
+    this->result.b0 = this->b0;
+    return this->result;
 }
 
-inline double CDL012::Objective(arma::vec & r, arma::sp_mat & B)   // hint inline
-{
-    auto l2norm = arma::norm(B, 2);
-    return 0.5 * arma::dot(r, r) + ModelParams[0] * B.n_nonzero + ModelParams[1] * arma::norm(B, 1) + ModelParams[2] * l2norm * l2norm;
-}
-
-
-bool CDL012::CWMinCheck()
-{
+template <class T>
+bool CDL012<T>::CWMinCheck(){
     // Get the Sc = FullOrder - Order
-    std::vector<unsigned int> S;
-    for(arma::sp_mat::const_iterator it = B.begin(); it != B.end(); ++it) {S.push_back(it.row());}
-
-    std::vector<unsigned int> Sc;
+    std::vector<std::size_t> S;
+    for(arma::sp_mat::const_iterator it = this->B.begin(); it != this->B.end(); ++it) {
+        S.push_back(it.row());
+    }
+    
+    std::vector<std::size_t> Sc;
     set_difference(
-        Range1p.begin(),
-        Range1p.end(),
+        this->Range1p.begin(),
+        this->Range1p.end(),
         S.begin(),
         S.end(),
         back_inserter(Sc));
-
+    
     bool Cwmin = true;
-    for (auto& i : Sc)
-    {
-        double x = arma::dot(r, X->unsafe_col(i));
-        double absx = std::abs(x);
-        (*Xtr)[i] = absx; // do abs here instead from when sorting
-        double z = (absx - lambda1) / Onep2lamda2;
-
-        if (z > thr) 	// often false so body is not costly
-        {
-            B[i] = std::copysign(z, x);
-            r -= X->unsafe_col(i) * B[i];
-            Cwmin = false;
-        }
+    for (auto& i : Sc) {
+        Cwmin = this->UpdateBiCWMinCheck(i, Cwmin);
     }
     return Cwmin;
-
+    
 }
+
+template class CDL012<arma::mat>;
+template class CDL012<arma::sp_mat>;
