@@ -16,7 +16,7 @@ We support both regression (using squared error loss) and classification (using 
 
 The toolkit is implemented in C++11 and can often run faster than popular sparse learning toolkits (see our experiments in the paper above). We also provide an easy-to-use R interface; see the section below for installation and usage of the R package.
 
-**NEW: Version 2.0.0 adds support for sparse matrices and box contraints on the coefficients.**
+**NEW: Version 2.0.0 adds support for sparse matrices (of type dgCMatrix) and box contraints on the coefficients.**
 
 ## R Package Installation
 The latest development version (v2.0.0) can be installed from Github:
