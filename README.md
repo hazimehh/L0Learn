@@ -16,16 +16,13 @@ We support both regression (using squared error loss) and classification (using 
 
 The toolkit is implemented in C++11 and can often run faster than popular sparse learning toolkits (see our experiments in the paper above). We also provide an easy-to-use R interface; see the section below for installation and usage of the R package.
 
+**NEW: Version 2.0.0 adds support for sparse matrices and box contraints on the coefficients.**
+
 ## R Package Installation
-The latest version of L0Learn (v1.2.0) can be installed from Github:
+The latest development version (v2.0.0) can be installed from Github:
 ```{R}
 library(devtools)
-install_github("hazimehh/L0Learn")
-```
-
-Alternatively, it can be installed from CRAN as follows:
-```{R}
-install.packages("L0Learn", repos = "http://cran.rstudio.com")
+install_github("hazimehh/L0Learn",ref="v2.0.0-dev")
 ```
 L0Learn's changelog can be accessed from [here](https://github.com/hazimehh/L0Learn/blob/master/ChangeLog).
 
