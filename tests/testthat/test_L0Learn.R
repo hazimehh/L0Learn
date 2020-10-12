@@ -28,7 +28,7 @@ test_that("L0Learn respects excludeFirstK for large L0", {
   for (k in c(0, 1, 10)){
     x1 <- L0Learn.fit(X, y, penalty = "L0", autoLambda=FALSE,
                       lambdaGrid=BIGuserLambda, excludeFirstK = k)
-    
+
     expect_equal(x1$suppSize[[1]][1], k)
   }
 })
@@ -39,28 +39,28 @@ test_that("L0Learn excludeFirstK is still subject to L1 norms", {
 
   tmp <-  L0Learn::GenSynthetic(n=n, p=p, k=5, seed=1)
   X_real <- tmp[[1]]
-  
+
   tmp <-  L0Learn::GenSynthetic(n=n, p=p, k=5, seed=2)
   y_fake <- tmp[[2]]
-  
+
   # X_real has little to do with generation of y_fake.
   # Therefore, as L1 grows we can expect that the columns go to 0.
-  
-  
+
+
   x1 <- L0Learn.fit(X_real, y_fake, penalty = "L0", excludeFirstK = K, maxSuppSize = p)
-  
+
   expect_equal(length(x1$suppSize[[1]]), 1)
   expect_equal(x1$suppSize[[1]][1], 10)
-  
+
   # TODO: Fix Crash when excludeFirstK >= p
   # x2 <- L0Learn.fit(X_real, y_fake, penalty = "L0L1", excludeFirstK = K, maxSuppSize = 10)
-  
-  # TODO: Fix issue when support is not maximized in first iteration for 
-  # x2 <- L0Learn.fit(X_real, y_fake, penalty = "L0L1", excludeFirstK = K-1, maxSuppSize = 10) 
+
+  # TODO: Fix issue when support is not maximized in first iteration for
+  # x2 <- L0Learn.fit(X_real, y_fake, penalty = "L0L1", excludeFirstK = K-1, maxSuppSize = 10)
   # All coefficients should only be regularized by L1, the x2$suppSize is strange.
-  
-  
-  x2 <- L0Learn.fit(X_real, y_fake, penalty = "L0L1", excludeFirstK = K-1, maxSuppSize = p) 
+
+
+  x2 <- L0Learn.fit(X_real, y_fake, penalty = "L0L1", excludeFirstK = K-1, maxSuppSize = p)
   for (s in x2$suppSize[[1]]){
     expect_lt(s, p)
   }
@@ -84,7 +84,7 @@ test_that("L0Learn cvfit are deterministic for Dense cvfit", {
       x1 <- L0Learn.cvfit(X, y, penalty=p, intercept = FALSE)
       set.seed(1)
       x2 <- L0Learn.cvfit(X, y, penalty=p, intercept = FALSE)
-      expect_equal_cv(x1, x2, info=p) 
+      expect_equal_cv(x1, x2, info=p)
     }
 })
 
@@ -104,7 +104,7 @@ test_that("L0Learn fit and cvfit are deterministic for Dense cvfit", {
     x1 <- L0Learn.cvfit(X_sparse, y, penalty=p, intercept = FALSE)
     set.seed(1)
     x2 <- L0Learn.cvfit(X_sparse, y, penalty=p, intercept = FALSE)
-    expect_equal_cv(x1, x2, info=p) 
+    expect_equal_cv(x1, x2, info=p)
   }
 })
 
@@ -159,28 +159,24 @@ test_that("L0Learn.Fit runs for all Loss for Sparse and Dense Matrices", {
         set.seed(1)
         x2 <- L0Learn.fit(X_sparse, y_bin, loss=l, intercept = FALSE)
         expect_equal(x1, x2, info = paste("fit", l))
-        
+
         set.seed(1)
         x1 <- L0Learn.cvfit(X, y_bin, loss=l, intercept = FALSE)
         set.seed(1)
         x2 <- L0Learn.cvfit(X_sparse, y_bin, loss=l, intercept = FALSE)
-        expect_equal_cv(x1, x2, info = paste("fit", l))
+        expect_equal(x1, x2, info = paste("fit", l))
     }
 })
 
 
-# test_that("L0Learn.Fit runs for all algorithm for Sparse and Dense Matrices", {
-#     for (p in c("L0", "L0L2", "L0L1")){
-#         set.seed(1)
-#         x1 <- L0Learn.fit(X, y, penalty=p, algorithm='CDPSI', intercept = FALSE)
-#         set.seed(1)
-#         x2 <- L0Learn.fit(X_sparse, y, penalty=p, algorithm='CDPSI', intercept = FALSE)
-#         expect_equal_cv(x1, x2)
-#         
-#         set.seed(1)
-#         x1 <- L0Learn.cvfit(X, y, penalty=p, algorithm='CDPSI', intercept = FALSE)
-#         set.seed(1)
-#         x2 <- L0Learn.cvfit(X_sparse, y, penalty=p, algorithm='CDPSI', intercept = FALSE)
-#         expect_equal_cv(x1, x2)
-#     }
-# })
+test_that("L0Learn.Fit runs for all algorithm for Sparse and Dense Matrices", {
+    for (p in c("L0", "L0L2", "L0L1")){
+      for (intercept in c(TRUE, FALSE)){
+        set.seed(1)
+        x1 <- L0Learn.fit(X, y, penalty=p, algorithm='CDPSI', intercept = intercept)
+        set.seed(1)
+        x2 <- L0Learn.fit(X, y, penalty=p, algorithm='CDPSI', intercept = intercept)
+        expect_equal(x1, x2, info = paste(p, intercept))
+      }
+    }
+})

@@ -14,6 +14,7 @@ if (!(version_to_load_from %in% dir(L0LEARNVERSIONDATAFOLDER))){
 test_that("All versions run as expected", {
     # Load data object
     data <- readRDS(file.path(L0LEARNVERSIONDATAFOLDER, version_to_load_from, "data.rData"))
+    smalldata <- readRDS(file.path(L0LEARNVERSIONDATAFOLDER, version_to_load_from, "small_data.rData"))
     
     # Load tests:
     tests <- readLines(file.path(L0LEARNVERSIONDATAFOLDER, 

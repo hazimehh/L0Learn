@@ -122,7 +122,9 @@ void CD<T>::UpdateBi(const std::size_t i){
         new_Bi = 0; 
     } else { 
       // Thus reg_Bi >= this->thr 
-      const double delta = std::sqrt(reg_Bi*reg_Bi - this->thr2);
+      const double delta_tmp = std::sqrt(reg_Bi*reg_Bi - this->thr2);
+      const double delta = (delta_tmp == delta_tmp) ? delta_tmp : 0;
+      // Handles 'nan' values to 0;
       
       // Rcpp::Rcout << "delta: "<< i <<" = " << delta <<  "\n";
       const double range_Bi = std::copysign(reg_Bi, nrb_Bi);
@@ -174,9 +176,11 @@ bool CD<T>::UpdateBiCWMinCheck(const std::size_t i, const bool Cwmin){
     new_Bi = 0; 
   } else{
     
-    const double delta = std::sqrt(reg_Bi*reg_Bi - this->thr2);
-    const double range_Bi = std::copysign(reg_Bi, nrb_Bi);
+    const double delta_tmp = std::sqrt(reg_Bi*reg_Bi - this->thr2);
+    const double delta = (delta_tmp == delta_tmp) ? delta_tmp : 0;
+    // Handles 'nan' values to 0;
     
+    const double range_Bi = std::copysign(reg_Bi, nrb_Bi);
     if ((range_Bi - delta <= bnd_Bi) && (bnd_Bi <= range_Bi + delta)){
       // Bi_wb exists in [Bi_nb - delta, Bi_nb+delta]
       // Therefore accept Bi_wb
