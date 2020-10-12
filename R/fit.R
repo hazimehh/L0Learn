@@ -154,6 +154,11 @@ L0Learn.fit <- function(x, y, loss="SquaredError", penalty="L0", algorithm="CD",
                  an issue at 'https://github.com/hazimehh/L0Learn' to express 
                  interest in this functionality")
         }
+        
+        if (loss == "SquaredHinge"){
+            stop("Using algorithm='CDPSI' and loss=;SquaredHinge' is currently unsupported in
+                 v2.0.0dev. This should be fixed soon.")
+        }
     }
 
 

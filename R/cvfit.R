@@ -92,6 +92,10 @@ L0Learn.cvfit <- function(x,y, loss="SquaredError", penalty="L0", algorithm="CD"
                  an issue at 'https://github.com/hazimehh/L0Learn' to express 
                  interest in this functionality")
         }
+        if (loss == "SquaredHinge"){
+            stop("Using algorithm='CDPSI' and loss=;SquaredHinge' is currently unsupported in
+                 v2.0.0dev. This should be fixed soon.")
+        }
     }
 
 	# The C++ function uses LambdaU = 1 for user-specified grid. In R, we use AutoLambda0 = 0 for user-specified grid (thus the negation when passing the parameter to the function below)
