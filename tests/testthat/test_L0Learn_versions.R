@@ -19,8 +19,14 @@ test_that("All versions run as expected", {
     # Load tests:
     tests <- readLines(file.path(L0LEARNVERSIONDATAFOLDER, 
                        version_to_load_from, 'tests.txt'))
-    
-    
+    smalldata <- readRDS(file.path(L0LEARNVERSIONDATAFOLDER,
+                                   version_to_load_from, "smalldata.rData"))
+    L0_grid <- readRDS(file.path(L0LEARNVERSIONDATAFOLDER,
+                                 version_to_load_from, "L0_grid.rData"))
+    L0_nGamma <- 1
+    L012_grid <- readRDS(file.path(L0LEARNVERSIONDATAFOLDER,
+                                 version_to_load_from, "L012_grid.rData"))
+    L012_nGamma <- length(L012_grid)
     
     # Run tests:
     for (i in 1:length(tests)){
