@@ -39,6 +39,7 @@
 #' strictly between 0 and 1 (i.e., 0 and 1 are not allowed). Larger values lead to closer lambdas and typically to smaller
 #' gaps between the support sizes. For details, see our paper - Section 5 on Adaptive Selection of Tuning Parameters).
 #' @param screenSize The number of coordinates to cycle over when performing initial correlation screening.
+#' @param autoLambda Ignored parameter. Kept for backwards compatibility.
 #' @param lambdaGrid A grid of Lambda values to use in computing the regularization path. This is by default an empty list and is ignored.
 #' When specified, LambdaGrid should be a list of length 'nGamma', where the ith element (corresponding to the ith gamma) should be a decreasing sequence of lambda values
 #' which are used by the algorithm when fitting for the ith value of gamma (see the vignette for details).
@@ -96,8 +97,9 @@ L0Learn.fit <- function(x, y, loss="SquaredError", penalty="L0", algorithm="CD",
                         maxSuppSize=100, nLambda=100, nGamma=10, gammaMax=10,
                         gammaMin=0.0001, partialSort = TRUE, maxIters=200,
 						tol=1e-6, activeSet=TRUE, activeSetNum=3, maxSwaps=100,
-						scaleDownFactor=0.8, screenSize=1000, lambdaGrid = list(), 
-						excludeFirstK=0, intercept = TRUE, lows=-Inf, highs=Inf) {
+						scaleDownFactor=0.8, screenSize=1000, autoLambda = NULL,
+						lambdaGrid = list(), excludeFirstK=0, intercept = TRUE,
+						lows=-Inf, highs=Inf) {
 
 	# Some sanity checks for the inputs
 	if ( !(loss %in% c("SquaredError","Logistic","SquaredHinge")) ){

@@ -33,8 +33,8 @@ L0Learn.cvfit <- function(x,y, loss="SquaredError", penalty="L0", algorithm="CD"
                           maxSuppSize=100, nLambda=100, nGamma=10, gammaMax=10, 
                           gammaMin=0.0001, partialSort = TRUE, maxIters=200,
                           tol=1e-6, activeSet=TRUE, activeSetNum=3, maxSwaps=100, 
-                          scaleDownFactor=0.8, screenSize=1000, lambdaGrid = list(), 
-                          nFolds=10, seed=1, excludeFirstK=0, 
+                          scaleDownFactor=0.8, screenSize=1000, autoLambda=NULL, 
+                          lambdaGrid = list(), nFolds=10, seed=1, excludeFirstK=0, 
                           intercept=TRUE, lows=-Inf, highs=Inf)
 {
 	set.seed(seed)
