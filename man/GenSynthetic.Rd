@@ -4,7 +4,7 @@
 \alias{GenSynthetic}
 \title{Generate Synthetic Data}
 \usage{
-GenSynthetic(n, p, k, seed, rho = 0)
+GenSynthetic(n, p, k, seed, rho = 0, b0 = 0)
 }
 \arguments{
 \item{n}{Number of samples}
@@ -16,14 +16,21 @@ GenSynthetic(n, p, k, seed, rho = 0)
 \item{seed}{The seed used for randomly generating the data}
 
 \item{rho}{The threshold for setting values to 0.  if |X(i, j)| > rho => X(i, j) <- 0}
+
+\item{b0}{intercept value to scale y by.}
 }
 \value{
-A list containing the data matrix X and the response vector y.
+A list containing:
+ the data matrix X,
+ the response vector y,
+ the coefficients B,
+ the error vector e,
+ the intercept term b0.
 }
 \description{
 Generates a synthetic dataset as follows: 1) Sample every element in data matrix X from N(0,1).
 2) Generate a vector B with the first k entries set to 1 and the rest are zeros. 3) Sample every element in the noise
-vector e from N(0,1). 4) Set y = XB + e.
+vector e from N(0,1). 4) Set y = XB + b0 + e.
 }
 \examples{
 data <- GenSynthetic(n=500,p=1000,k=10,seed=1)

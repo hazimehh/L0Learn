@@ -3,7 +3,7 @@
 #'
 #' @description Generates a synthetic dataset as follows: 1) Sample every element in data matrix X from N(0,1).
 #' 2) Generate a vector B with the first k entries set to 1 and the rest are zeros. 3) Sample every element in the noise
-#' vector e from N(0,1). 4) Set y = XB + e.
+#' vector e from N(0,1). 4) Set y = XB + b0 + e.
 #' @param n Number of samples
 #' @param p Number of features
 #' @param k Number of non-zeros in true vector of coefficients
@@ -21,7 +21,7 @@
 #' X = data$X
 #' y = data$y
 #' @export
-GenSynthetic <- function(n, p, k, seed, rho = 0, b0=0)
+GenSynthetic <- function(n, p, k, seed, rho=0, b0=0)
 {
     set.seed(seed) # fix the seed to get a reproducible result
     X = matrix(rnorm(n*p),nrow=n,ncol=p)
