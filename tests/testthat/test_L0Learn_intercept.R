@@ -2,7 +2,6 @@ library("Matrix")
 library("testthat")
 library("L0Learn")
 library("pracma")
-source("utils.R")
 
 # quad <- function(n, p, k=10, thr=.9){
 #     means = runif(p)

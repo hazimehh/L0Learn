@@ -2,7 +2,6 @@ library("Matrix")
 library("testthat")
 library("L0Learn")
 library("raster")
-source("utils.R")
 
 tmp <-  L0Learn::GenSynthetic(n=100, p=5000, k=10, seed=1, rho=1.5)
 X <- tmp[[1]]
@@ -90,7 +89,6 @@ test_that("L0Learn fit respect bounds", {
     high = .05
     for (m in list(X, X_sparse)){
         for (p in c("L0", "L0L1", "L0L2")){
-            print(p)
             fit <- L0Learn.fit(m, y, intercept = FALSE, penalty=p, lows=low, highs=high)
             for(i in 1:length(fit$beta)){
                 expect_gte(min(fit$beta[[i]]), low-epsilon)
@@ -123,7 +121,6 @@ test_that("L0Learn respects bounds for all Losses", {
         for (m in list(X, X_sparse)){
             for (p in c("L0", "L0L1", "L0L2")){
                 for (l in c("Logistic", "SquaredHinge")){ 
-                    print(paste(a, typeof(m), p, l))
                     fit <- L0Learn.fit(m, y_bin, loss=l, intercept = FALSE,
                                          penalty=p, algorithm = a, lows=low,
                                          highs=high, maxIters = maxIters, maxSwaps = maxSwaps)

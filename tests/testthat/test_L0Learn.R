@@ -1,7 +1,6 @@
 library("Matrix")
 library("testthat")
 library("L0Learn")
-source("utils.R")
 
 tmp <-  L0Learn::GenSynthetic(n=100, p=1000, k=10, seed=1, rho=1.5)
 X <- tmp[[1]]
@@ -84,7 +83,7 @@ test_that("L0Learn cvfit are deterministic for Dense cvfit", {
       x1 <- L0Learn.cvfit(X, y, penalty=p, intercept = FALSE)
       set.seed(1)
       x2 <- L0Learn.cvfit(X, y, penalty=p, intercept = FALSE)
-      expect_equal_cv(x1, x2, info=p)
+      expect_equal(x1, x2, info=p)
     }
 })
 
@@ -104,7 +103,7 @@ test_that("L0Learn fit and cvfit are deterministic for Dense cvfit", {
     x1 <- L0Learn.cvfit(X_sparse, y, penalty=p, intercept = FALSE)
     set.seed(1)
     x2 <- L0Learn.cvfit(X_sparse, y, penalty=p, intercept = FALSE)
-    expect_equal_cv(x1, x2, info=p)
+    expect_equal(x1, x2, info=p)
   }
 })
 
@@ -125,7 +124,7 @@ test_that("L0Learn cvfit find same solution for different matrix representations
     x1 <- L0Learn.cvfit(X_sparse, y, penalty=p, intercept = FALSE)
     set.seed(1)
     x2 <- L0Learn.cvfit(X, y, penalty=p, intercept = FALSE)
-    expect_equal_cv(x1, x2, info=p)
+    expect_equal(x1, x2, info=p)
   }
 })
 
@@ -144,7 +143,7 @@ test_that("L0Learn matchs for all penalty for Sparse and Dense Matrices", {
         x1 <- f(X, y, penalty = p, intercept = FALSE)
         set.seed(1)
         x2 <- f(X_sparse, y, penalty = p, intercept = FALSE)
-        expect_equal_cv(x1, x2)
+        expect_equal(x1, x2)
       }
     }
 })
