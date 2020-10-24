@@ -60,7 +60,7 @@ CDBase<T>::CDBase(const T& Xi, const arma::vec& yi, const Params<T>& P) :
 
 template <class T>
 void CD<T>::UpdateSparse_b0(arma::vec& r){
-    // Only run for regression when sparse and intercept is True.
+    // Only run for regression when T is arma::sp_mat and intercept is True.
     // r is this->r on outer scope;                                                           
     const double new_b0 = arma::mean(r);
     r -= new_b0;
@@ -70,103 +70,91 @@ void CD<T>::UpdateSparse_b0(arma::vec& r){
 
 template <class T>
 void CD<T>::UpdateBi(const std::size_t i){
-    const double grd_Bi = this->GetBiGrad(i); // Gradient of Loss wrt to Bi
-    // grd_Bi = <X_i, r> 
-  
-    // Rcpp::Rcout << "grd_Bi: "<< i <<" = " << grd_Bi <<  "\n";
+    // Update a single coefficient of B for various CD Settings
+    // The following functions are virtual and must be defined for any CD implementation.
+    //    GetBiValue
+    //    GetBiValue
+    //    GetBiReg
+    //    ApplyNewBi
+    //    ApplyNewBiCWMinCheck (found in UpdateBiCWMinCheck)
     
+    
+    const double grd_Bi = this->GetBiGrad(i); // Gradient of Loss wrt to Bi
+  
     (*this->Xtr)[i] = std::abs(grd_Bi);  // Store absolute value of gradient for later steps
     
-    const double old_Bi = this->B[i]; // old Bi to adjust residuals if Bi updates
-    
-    // Rcpp::Rcout << "old_Bi: "<< i <<" = " << old_Bi <<  "\n";
+    const double old_Bi = this->B[i]; // copy of old Bi to adjust residuals if Bi updates
     
     const double nrb_Bi = this->GetBiValue(old_Bi, grd_Bi); 
-    // CDL0: nrb_Bi = old_Bi + grd_Bi
-    // new Bi with no regularization or bounds applied for later computations.
-    // 'GetBiValue' must be implemented for each subclass of CD.
-    
-    // Rcpp::Rcout << "nrb_Bi: "<< i <<" = " << nrb_Bi <<  "\n";
+    // Update Step for New No regularization No Bounds Bi:
+    //                     n  r                 b     _Bi => nrb_Bi
+    // Example
+    // For CDL0: the update step is nrb_Bi = old_Bi + grd_Bi
     
     const double reg_Bi = this->GetBiReg(nrb_Bi); 
-    // CDL0: reg_Bi = nrb_Bi as there is no L1, L2 parameters
-    // Ideal Bi with regularization (no bounds)
-    // 'GetBiReg' must be implemented for each subclass of CD.
-    // Does not account for L0 
-  
-    // Rcpp::Rcout << "reg_Bi = "<< reg_Bi <<  "\n";
+    // Ideal Bi with L1 and L2 regularization (no bounds)
+    // Does not account for L0 regularziaton 
+    // Example
+    // For CDL0: reg_Bi = nrb_Bi as there is no L1, L2 parameters
     
     const double bnd_Bi = clamp(std::copysign(reg_Bi, nrb_Bi),
                                 this->Lows[i], this->Highs[i]); 
     // Ideal Bi with regularization and bounds
     
-    // Rcpp::Rcout << "bnd_Bi = " << bnd_Bi <<  "\n";
-    
     double new_Bi;
     
     if (i < this->NoSelectK){
-        // L0 penalty is not accounted for. Only L1 and L2 (if either are used)
-        // Rcpp::Rcout << "i: " << i << ", nrb_Bi:" << nrb_Bi << ", lambda1: " << this->lambda1 << "\n";
+        // L0 penalty is not applied for NoSelectK Variables.
+        // Only L1 and L2 (if either are used)
         if (std::abs(nrb_Bi) > this->lambda1){
             new_Bi = bnd_Bi;
         } else {
             new_Bi = 0;
         }
     } else if (reg_Bi < this->thr){
-        // old_Bi = 0
-        // grd_Bi = 1
-        // nrb_Bi = 1 + 0 = 1
-        // bnd_Bi = 1;
-        // Lets lambda0 = 10
-        
+        // If ideal non-bounded reg_Bi is less than threshold, coefficient is not worth setting.
         new_Bi = 0; 
     } else { 
       // Thus reg_Bi >= this->thr 
-      const double delta_tmp = std::sqrt(reg_Bi*reg_Bi - this->thr2);
-      const double delta = (delta_tmp == delta_tmp) ? delta_tmp : 0;
-      // Handles 'nan' values to 0;
       
-      // Rcpp::Rcout << "delta: "<< i <<" = " << delta <<  "\n";
+      const double delta_tmp = std::sqrt(reg_Bi*reg_Bi - this->thr2);
+      // Due to numerical precisions delta_tmp might be nan/
+      const double delta = (delta_tmp == delta_tmp) ? delta_tmp : 0;
+      // Turns nans to 0.
+      
       const double range_Bi = std::copysign(reg_Bi, nrb_Bi);
-      // Rcpp::Rcout << "Range [ "<< range_Bi - delta <<", " << range_Bi + delta  <<  "]\n";
-      if ((range_Bi - delta <= bnd_Bi) && (bnd_Bi <= range_Bi + delta)){
-          // Bi_wb exists in [Bi_nb - delta, Bi_nb+delta]
-          // Therefore accept Bi_wb
+      
+      
+      if ((range_Bi - delta < bnd_Bi) && (bnd_Bi < range_Bi + delta)){
+          // bnd_Bi exists in [bnd_Bi - delta, bnd_Bi + delta]
+          // Therefore accept bnd_Bi
           new_Bi = bnd_Bi;
-          // Rcpp::Rcout << "NNZ Range "<< i << "\n";
       } else {
+          // Otherwise, reject bnd_Bi
           new_Bi = 0;
       }
     }
     
-    if (old_Bi != new_Bi){
-        // Rcpp::Rcout << "NNZ ApplyNewBi "<< i << "\n";
+    if (std::abs(old_Bi - new_Bi) > 1e-9){ // Global constant or a tuneable constant. 
+      // Always accept change unless old_Bi or new_Bi is equal to 0
         this->ApplyNewBi(i, old_Bi, new_Bi);
     }
 }
 
 template <class T>
 bool CD<T>::UpdateBiCWMinCheck(const std::size_t i, const bool Cwmin){
-  const double grd_Bi = this->GetBiGrad(i); // Gradient of Loss wrt to Bi
-  (*this->Xtr)[i] = std::abs(grd_Bi);  // Store absolute value of gradient for later steps
+  // See CD<T>::UpdateBi for documentation
+  const double grd_Bi = this->GetBiGrad(i); 
+  
+  (*this->Xtr)[i] = std::abs(grd_Bi);  
   
   const double nrb_Bi = this->GetBiValue(0, grd_Bi); 
-  // new Bi with no regularization or bounds applied for later computations.
-  // 'GetBiValue' must be implemented for each subclass of CD.
-  
   const double reg_Bi = this->GetBiReg(nrb_Bi); 
-  // Ideal Bi with regularization (no bounds)
-  // 'GetBiReg' must be implemented for each subclass of CD.
-  // Does not account for L0 
-  
   const double bnd_Bi = clamp(std::copysign(reg_Bi, nrb_Bi),
                               this->Lows[i], this->Highs[i]); 
-  // Ideal Bi with regularization and bounds
-  
   double new_Bi;
   
   if (i < this->NoSelectK){
-    // L0 penalty is not accounted for. Only L1 and L2 (if either are used)
     if (std::abs(nrb_Bi) > this->lambda1){
       new_Bi = bnd_Bi;
     } else {
@@ -178,23 +166,19 @@ bool CD<T>::UpdateBiCWMinCheck(const std::size_t i, const bool Cwmin){
     
     const double delta_tmp = std::sqrt(reg_Bi*reg_Bi - this->thr2);
     const double delta = (delta_tmp == delta_tmp) ? delta_tmp : 0;
-    // Handles 'nan' values to 0;
-    
+
     const double range_Bi = std::copysign(reg_Bi, nrb_Bi);
-    if ((range_Bi - delta <= bnd_Bi) && (bnd_Bi <= range_Bi + delta)){
-      // Bi_wb exists in [Bi_nb - delta, Bi_nb+delta]
-      // Therefore accept Bi_wb
+    if ((range_Bi - delta < bnd_Bi) && (bnd_Bi < range_Bi + delta)){
       new_Bi = bnd_Bi;
     } else {
       new_Bi = 0;
     }
   }
   
-  if (new_Bi != 0){
-    // Rcpp::Rcout << "NNZ ApplyNewBiCWMinCheck "<< i << "\n";
+  if (std::abs(new_Bi) > 1e-9){
     this->ApplyNewBiCWMinCheck(i, 0, new_Bi);
     return false;
-  } else{
+  } else {
     return Cwmin;
   }
 }
