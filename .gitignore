@@ -11,3 +11,7 @@ tests/box_test/.hypothesis/
 *.DS_Store
 .RHistory
 L0Learn.Rproj
+.Rproj.user
+*.log
+config.status
+debug_log.ipynb

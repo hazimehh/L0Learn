@@ -96,9 +96,6 @@ template <class T>
 inline double CDL012SquaredHinge<T>::Objective() {
     
     auto l2norm = arma::norm(this->B, 2);
-    //arma::vec onemyxb = 1 - *y % (*X * B + b0);
-    // arma::uvec indices = arma::find(onemyxb > 0);
-    
     return arma::sum(onemyxb.elem(indices) % onemyxb.elem(indices)) + this->lambda0 * this->B.n_nonzero + this->lambda1 * arma::norm(this->B, 1) + this->lambda2 * l2norm * l2norm;
 }
 

@@ -13,7 +13,7 @@ URL: https://arxiv.org/abs/1803.01454
 License: MIT + file LICENSE
 Depends: R (>= 3.3.0)
 SystemRequirements: C++11
-Imports: Rcpp (>= 0.12.13), Matrix, methods, ggplot2, reshape2
+Imports: Rcpp (>= 0.12.13), Matrix, methods, ggplot2, reshape2, MASS
 LinkingTo: Rcpp, RcppArmadillo
 RoxygenNote: 7.1.1
 Suggests: 

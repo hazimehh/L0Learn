@@ -23,8 +23,8 @@ L0Learn.fit(
   maxSwaps = 100,
   scaleDownFactor = 0.8,
   screenSize = 1000,
-  autoLambda = TRUE,
-  lambdaGrid = list(0),
+  autoLambda = NULL,
+  lambdaGrid = list(),
   excludeFirstK = 0,
   intercept = TRUE,
   lows = -Inf,
@@ -81,11 +81,10 @@ gaps between the support sizes. For details, see our paper - Section 5 on Adapti
 
 \item{screenSize}{The number of coordinates to cycle over when performing initial correlation screening.}
 
-\item{autoLambda}{If FALSE, the user specifies a grid of Lambda values through the lambdaGrid parameter. Otherwise,
-if TRUE, the values of Lambda are automatically selected based on the data.}
+\item{autoLambda}{Ignored parameter. Kept for backwards compatibility.}
 
-\item{lambdaGrid}{A grid of Lambda values to use in computing the regularization path. This is ignored unless autoLambda = FALSE.
-LambdaGrid should be a list, where the ith element (corresponding to the ith gamma) should be a decreasing sequence of lambda values
+\item{lambdaGrid}{A grid of Lambda values to use in computing the regularization path. This is by default an empty list and is ignored.
+When specified, LambdaGrid should be a list of length 'nGamma', where the ith element (corresponding to the ith gamma) should be a decreasing sequence of lambda values
 which are used by the algorithm when fitting for the ith value of gamma (see the vignette for details).}
 
 \item{excludeFirstK}{This parameter takes non-negative integers. The first excludeFirstK features in x will be excluded from variable selection,

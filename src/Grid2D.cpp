@@ -101,6 +101,7 @@ std::vector< std::vector<std::unique_ptr<FitResult<T>> > > Grid2D<T>::Fit() {
     PG.XtrAvailable = true;
     // Rcpp::Rcout << "Grid2D Start\n";
     for(std::size_t i=0; i<Lambdas2.size();++i) { //auto &l : Lambdas2
+        // Rcpp::Rcout << "Grid1D Start: " << i << "\n";
         *Xtr = Xtrvec;
         
         PG.Xtr = Xtr;
