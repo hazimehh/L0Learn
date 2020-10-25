@@ -135,7 +135,7 @@ void CD<T>::UpdateBi(const std::size_t i){
       }
     }
     
-    if (std::abs(old_Bi - new_Bi) > 1e-9){ // Global constant or a tuneable constant. 
+    if (std::abs(old_Bi - new_Bi) > 1e-15){ // Global constant or a tuneable constant. 
       // Always accept change unless old_Bi or new_Bi is equal to 0
         this->ApplyNewBi(i, old_Bi, new_Bi);
     }
@@ -175,7 +175,7 @@ bool CD<T>::UpdateBiCWMinCheck(const std::size_t i, const bool Cwmin){
     }
   }
   
-  if (std::abs(new_Bi) > 1e-9){
+  if (std::abs(new_Bi) > 1e-15){
     this->ApplyNewBiCWMinCheck(i, 0, new_Bi);
     return false;
   } else {
