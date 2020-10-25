@@ -61,7 +61,7 @@ GenSyntheticHighCorr <- function(n, p, k, seed, rho=0, b0=0, noise_ratio=1, mu=0
 
 library("Rcpp")
 # This C++ code is much much faster
-cppFunction('NumericMatrix cor_matrix(const int p, const double base_cor) {
+cppFunction('NumericMatrix cor_matrix_(const int p, const double base_cor) {
     NumericMatrix cor(p, p);
     for (int i = 0; i < p; i++){
         for (int j = 0; j < p; j++){
@@ -70,3 +70,10 @@ cppFunction('NumericMatrix cor_matrix(const int p, const double base_cor) {
     }
   return cor;
 }')
+
+#' @description Generates a exponential correlation matrix: 
+#' @export
+cor_matrix <- function(p, base_cor=.9){
+  cor_matrix_(p, base_cor)
+}
+
