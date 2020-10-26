@@ -18,8 +18,8 @@ FitResult<T> CDL012SquaredHingeSwaps<T>::Fit() {
     
     arma::vec onemyxb = result.onemyxb;
     
-    double objective = result.Objective;
-    double Fmin = objective;
+    this->objective = result.Objective;
+    double Fmin = this->objective;
     std::size_t maxindex;
     double Bmaxindex;
     
@@ -34,13 +34,12 @@ FitResult<T> CDL012SquaredHingeSwaps<T>::Fit() {
             if (it.row() >= this->NoSelectK)
                 NnzIndices.push_back(it.row());
         }
-        // Can easily shuffle here...
-        //std::shuffle(std::begin(Order), std::end(Order), engine);
+        // TODO: Implement shuffle of NnzIndices Indicies
+
         foundbetter = false;
         
         for (auto& j : NnzIndices) {
-            // Remove j
-            //arma::vec ExpyXBnoj = ExpyXB % arma::exp( - B[j] *  *y % X->unsafe_col(j));
+           
             arma::vec onemyxbnoj = onemyxb + this->B[j] * *(this->y) % matrix_column_get(*(this->X), j);
             arma::uvec indices = arma::find(onemyxbnoj > 0);
             
@@ -99,7 +98,7 @@ FitResult<T> CDL012SquaredHingeSwaps<T>::Fit() {
                 }
             }
             
-            if (Fmin < objective) {
+            if (Fmin < this->objective) {
                 this->B[j] = 0;
                 this->B[maxindex] = Bmaxindex;
                 
@@ -114,8 +113,8 @@ FitResult<T> CDL012SquaredHingeSwaps<T>::Fit() {
                 this->b0 = result.b0;
                 
                 onemyxb = result.onemyxb;
-                objective = result.Objective;
-                Fmin = objective;
+                this->objective = result.Objective;
+                Fmin = this->objective;
                 foundbetter = true;
                 break;
             }

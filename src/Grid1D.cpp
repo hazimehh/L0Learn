@@ -122,7 +122,7 @@ std::vector<std::unique_ptr<FitResult<T>>> Grid1D<T>::Fit() {
         bool currentskip = false; // current grid point should be skipped
         
         for (std::size_t i = 0; i < G_ncols; ++i) {
-            
+            // Rcpp::Rcout << "Grid1D: " << i << "\n";
             FitResult<T> *  prevresult = new FitResult<T>; // prevresult is ptr to the prev result object
             //std::unique_ptr<FitResult> prevresult;
             if (i > 0) {
