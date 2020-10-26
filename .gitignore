@@ -1,1 +1,7 @@
 inst/doc
+*.Rproj*
+*.o
+.DS_Store
+tests/box_test/.hypothesis/*
+tests/box_test/.ipynb_checkpoints/*
+.Rproj.user

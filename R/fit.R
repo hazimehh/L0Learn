@@ -39,10 +39,9 @@
 #' strictly between 0 and 1 (i.e., 0 and 1 are not allowed). Larger values lead to closer lambdas and typically to smaller
 #' gaps between the support sizes. For details, see our paper - Section 5 on Adaptive Selection of Tuning Parameters).
 #' @param screenSize The number of coordinates to cycle over when performing initial correlation screening.
-#' @param autoLambda If FALSE, the user specifies a grid of Lambda values through the lambdaGrid parameter. Otherwise,
-#' if TRUE, the values of Lambda are automatically selected based on the data.
-#' @param lambdaGrid A grid of Lambda values to use in computing the regularization path. This is ignored unless autoLambda = FALSE.
-#' LambdaGrid should be a list, where the ith element (corresponding to the ith gamma) should be a decreasing sequence of lambda values
+#' @param autoLambda Ignored parameter. Kept for backwards compatibility.
+#' @param lambdaGrid A grid of Lambda values to use in computing the regularization path. This is by default an empty list and is ignored.
+#' When specified, LambdaGrid should be a list of length 'nGamma', where the ith element (corresponding to the ith gamma) should be a decreasing sequence of lambda values
 #' which are used by the algorithm when fitting for the ith value of gamma (see the vignette for details).
 #' @param excludeFirstK This parameter takes non-negative integers. The first excludeFirstK features in x will be excluded from variable selection,
 #' i.e., the first excludeFirstK variables will not be included in the L0-norm penalty (they will still be included in the L1 or L2 norm penalties.).
@@ -92,9 +91,12 @@
 #' print(fit4)
 #'
 #' @export
-L0Learn.fit <- function(x,y, loss="SquaredError", penalty="L0", algorithm="CD", maxSuppSize=100, nLambda=100, nGamma=10,
-						gammaMax=10, gammaMin=0.0001, partialSort = TRUE, maxIters=200,
-						tol=1e-6, activeSet=TRUE, activeSetNum=3, maxSwaps=100, scaleDownFactor=0.8, screenSize=1000, autoLambda = TRUE, lambdaGrid = list(0), excludeFirstK=0, intercept = TRUE)
+L0Learn.fit <- function(x,y, loss="SquaredError", penalty="L0", algorithm="CD",
+                        maxSuppSize=100, nLambda=100, nGamma=10, gammaMax=10,
+                        gammaMin=0.0001, partialSort = TRUE, maxIters=200,
+						tol=1e-6, activeSet=TRUE, activeSetNum=3, maxSwaps=100,
+						scaleDownFactor=0.8, screenSize=1000, autoLambda = NULL, 
+						lambdaGrid = list(), excludeFirstK=0, intercept = TRUE)
 {
 
 	# Some sanity checks for the inputs
@@ -123,6 +125,71 @@ L0Learn.fit <- function(x,y, loss="SquaredError", penalty="L0", algorithm="CD", 
 					gammaMin = 1e-7
 			}
 	}
+    
+    # Handle Lambda Grids:
+    if (length(lambdaGrid) != 0){
+        autoLambda = FALSE
+    } else {
+        autoLambda = TRUE
+    }
+    
+    if (penalty == "L0" && !autoLambda){
+        bad_lambdaGrid = FALSE
+        if (length(lambdaGrid) != 1){
+            bad_lambdaGrid = TRUE
+        }
+        current = Inf
+        for (nxt in lambdaGrid[[1]]){
+            if (nxt >= current){
+                bad_lambdaGrid = TRUE 
+                break
+            }
+            if (nxt < 0){
+                bad_lambdaGrid = TRUE 
+                break
+            }
+            current = nxt
+            
+        }
+        
+        if (bad_lambdaGrid){
+            stop("L0 Penalty requires 'lambdaGrid' to be a list of length 1. 
+                 Where lambdaGrid[[1]] is a list or vector of decreasing positive values.")
+        }
+    }
+    
+    if (penalty != "L0" && !autoLambda){
+        # Covers L0L1, L0L2 cases
+        bad_lambdaGrid = FALSE
+        if (length(lambdaGrid) != nGamma){
+            bad_lambdaGrid = TRUE
+        }
+        
+        for (i in 1:length(lambdaGrid)){
+            current = Inf
+            for (nxt in lambdaGrid[[i]]){
+                if (nxt >= current){
+                    bad_lambdaGrid = TRUE 
+                    break
+                }
+                if (nxt < 0){
+                    bad_lambdaGrid = TRUE 
+                    break
+                }
+                current = nxt
+            }
+            if (bad_lambdaGrid){
+                break
+            }
+        }
+        
+        if (bad_lambdaGrid){
+            stop("L0L1 or L0L2 Penalty requires 'lambdaGrid' to be a list of length 'nGamma'. 
+                 Where lambdaGrid[[i]] is a list or vector of decreasing positive values.")
+        }
+        
+        
+    }
 
 	# The C++ function uses LambdaU = 1 for user-specified grid. In R, we use autoLambda0 = 0 for user-specified grid (thus the negation when passing the parameter to the function below)
 	M <- .Call('_L0Learn_L0LearnFit', PACKAGE = 'L0Learn', x, y, loss, penalty, algorithm, maxSuppSize, nLambda, nGamma, gammaMax, gammaMin, partialSort, maxIters, tol, activeSet, activeSetNum, maxSwaps, scaleDownFactor, screenSize, !autoLambda, lambdaGrid, excludeFirstK, intercept)

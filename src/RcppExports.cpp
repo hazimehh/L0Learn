@@ -72,10 +72,44 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// R_Normalize_dense
+Rcpp::List R_Normalize_dense(const arma::mat& X, const arma::vec& y, arma::mat& X_normalized, arma::vec& y_normalized, bool Normalizey, bool intercept);
+RcppExport SEXP _L0Learn_R_Normalize_dense(SEXP XSEXP, SEXP ySEXP, SEXP X_normalizedSEXP, SEXP y_normalizedSEXP, SEXP NormalizeySEXP, SEXP interceptSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type y(ySEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type X_normalized(X_normalizedSEXP);
+    Rcpp::traits::input_parameter< arma::vec& >::type y_normalized(y_normalizedSEXP);
+    Rcpp::traits::input_parameter< bool >::type Normalizey(NormalizeySEXP);
+    Rcpp::traits::input_parameter< bool >::type intercept(interceptSEXP);
+    rcpp_result_gen = Rcpp::wrap(R_Normalize_dense(X, y, X_normalized, y_normalized, Normalizey, intercept));
+    return rcpp_result_gen;
+END_RCPP
+}
+// R_Normalizev_1_2_0_dense
+Rcpp::List R_Normalizev_1_2_0_dense(const arma::mat& X, const arma::vec& y, arma::mat& X_normalized, arma::vec& y_normalized, bool Normalizey, bool intercept);
+RcppExport SEXP _L0Learn_R_Normalizev_1_2_0_dense(SEXP XSEXP, SEXP ySEXP, SEXP X_normalizedSEXP, SEXP y_normalizedSEXP, SEXP NormalizeySEXP, SEXP interceptSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type y(ySEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type X_normalized(X_normalizedSEXP);
+    Rcpp::traits::input_parameter< arma::vec& >::type y_normalized(y_normalizedSEXP);
+    Rcpp::traits::input_parameter< bool >::type Normalizey(NormalizeySEXP);
+    Rcpp::traits::input_parameter< bool >::type intercept(interceptSEXP);
+    rcpp_result_gen = Rcpp::wrap(R_Normalizev_1_2_0_dense(X, y, X_normalized, y_normalized, Normalizey, intercept));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_L0Learn_L0LearnCV", (DL_FUNC) &_L0Learn_L0LearnCV, 24},
     {"_L0Learn_L0LearnFit", (DL_FUNC) &_L0Learn_L0LearnFit, 22},
+    {"_L0Learn_R_Normalize_dense", (DL_FUNC) &_L0Learn_R_Normalize_dense, 6},
+    {"_L0Learn_R_Normalizev_1_2_0_dense", (DL_FUNC) &_L0Learn_R_Normalizev_1_2_0_dense, 6},
     {NULL, NULL, 0}
 };
 
