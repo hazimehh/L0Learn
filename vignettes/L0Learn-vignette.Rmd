@@ -2,7 +2,7 @@
 title: "L0Learn Vignette"
 #author:  "Hussein Hazimeh and Rahul Mazumder"
 author:
-- name: Hussein Hazimeh and Rahul Mazumder
+- name: Hussein Hazimeh and Rahul Mazumder and Tim Nonet
 - name: Massachusetts Institute of Technology (MIT)
 date: "`r Sys.Date()`"
 #output: rmarkdown::html_vignette
@@ -226,18 +226,80 @@ plot(fit, gamma=0)
 
 We can see in the plot above that first 3 variables are included in all the solutions of the path.
 
+### Coefficient Bounds
+Often, due to domain knowledge a user might want to supply bounds for the value a coefficient might take. Starting in version 2.0.0, L0Learn supports bounds for CD algorithms for all losses and penalties. (Support for the CDPSI algorithim is a planned feature in later version.). By default, L0Learn does not apply bounds (or more accurately they are infinite $-∞ <= \beta_i <= ∞$). Users can supply global bounds by setting `lows` and `highs` to scalar values such that `lows <= 0`, `lows != highs`, and `highs >= 0`. In addition, both `lows` and `highs` can be a vector of length `p` which can allow for individual coefficients to have different bounds.
+
+All of the following are valid.
+```{r}
+L0Learn.fit(X, y, penalty="L0", lows=-0.5)
+L0Learn.fit(X, y, penalty="L0", highs=0.5)
+L0Learn.fit(X, y, penalty="L0", lows=-0.5, highs=0.5)
+
+low_vector <- c(rep(-0.1, 500), rep(-0.125, 500))
+fit <- L0Learn.fit(X, y, penalty="L0", lows=low_vector, highs=0.25)
+```
+
+We can see the coefficients are subject to the bounds.
+```{r}
+print(max(fit$beta[[1]]))
+print(min(fit$beta[[1]][1:500, ]))
+print(min(fit$beta[[1]][501:1000, ]))
+```
+
 ### User-specified Lambda Grids
-By default, `L0Learn` selects the sequence of lambda values in an efficient manner to avoid wasted computation (since close $\lambda$ values can typically lead to the same solution). Advanced users of the toolkit can change this default behavior and supply their own sequence of $\lambda$ values. This can be done by setting the `autoLambda` parameter to `FALSE` and supplying the $\lambda$ values through the parameter `lambdaGrid`. Specifically, the value assigned to `lambdaGrid` should be a list with the same length as `nGamma` in case of L0L2/L0L1 and of length 1 in case of L0. The ith element in `LambdaGrid` should be a **decreasing** sequence of lambda values which are used by the algorithm for the ith value of gamma. For example, to fit an L0 model with the sequence of user-specified lambda values: 1, 1e-1, 1e-2, 1e-3, 1e-4, we run the following:
+By default, `L0Learn` selects the sequence of lambda values in an efficient manner to avoid wasted computation (since close $\lambda$ values can typically lead to the same solution). Advanced users of the toolkit can change this default behavior and supply their own sequence of $\lambda$ values. This can be done supplying the $\lambda$ values through the parameter `lambdaGrid`. L0Learn versions before 2.0.0 would also require setting the `autoLambda` parameter to `FALSE`. While, this parameter remains in version 2.0.0 for backwards compatibility, the parameter is a dummy and does not control anything.
+
+Specifically, the value assigned to `lambdaGrid` should be a list with the same length as `nGamma` in case of L0L2/L0L1 and of length 1 in case of L0. The ith element in `LambdaGrid` should be a **decreasing** sequence of positive lambda values which are used by the algorithm for the ith value of gamma. For example, to fit an L0 model with the sequence of user-specified lambda values: 1, 1e-1, 1e-2, 1e-3, 1e-4, we run the following:
 ```{r}
 userLambda <- list()
 userLambda[[1]] <- c(1, 1e-1, 1e-2, 1e-3, 1e-4)
+fit <- L0Learn.fit(X, y, penalty="L0", lambdaGrid=userLambda, maxSuppSize=1000) 
+# `autoLambda` is no longer needed to be set. It is inferred from `userLambda`
 fit <- L0Learn.fit(X, y, penalty="L0", autoLambda=FALSE, lambdaGrid=userLambda, maxSuppSize=1000)
+# Setting `autoLambda` will not cause any issues.
 ```
 To verify the results we print the fit object:
 ```{r}
 print(fit)
 ```
 Note that the $\lambda$ values above are the desired values. For L0L2 and L0L1 penalties, the same can be done where the lambdaGrid parameter should be assigned a list of size `nGamma`.
+```{r}
+userLambda <- list()
+userLambda[[1]] <- c(1, 1e-1, 1e-2, 1e-3, 1e-4)
+userLambda[[2]] <- c(10, 2, 1, 0.01, 0.002, 0.001, 1e-5) 
+userLambda[[3]] <- c(1e-4, 1e-5) 
+# userLambda[[i]] must be a vector of positive decreasing reals.
+fit <- L0Learn.fit(X, y, penalty="L0L2", lambdaGrid=userLambda, nGamma = 3, maxSuppSize=1000)
+```
+
+```{r}
+print(fit)
+```
+
+### Sparse Matrix Support
+L0Learn offers support for sparse matrices. Specifically, L0Learn supports the dgCMatrix class, the most common sparse matrix type. Unfortunately, other sparse types are not support and must be converted to a dgCMatrix to work with L0Learn. L0Learn keeps the matrix sparse internally and thus is highly memory efficient and can be extremely time efficient if the matrix is sufficiently sparse. 
+
+There is no API change for sparse vs dense matrices. However, if `intercept=TRUE` (the default case), there will be slight differences in the intercept value due to standardization and normalization methods of sparse vs dense matrices. Otherwise, if `intercept=FALSE`, the results will be identical for both sparse and dense representations of the same data.
+
+```{r}
+X_sparse <- as(X, "dgCMatrix")
+fit_dense <- L0Learn.fit(X, y, penalty="L0", intercept = FALSE)
+fit_sparse <- L0Learn.fit(X_sparse, y, penalty="L0", intercept = FALSE)
+
+all.equal(fit_dense, fit_sparse)
+
+```
+The intercept terms are slightly different for the different representations.
+```{r}
+X_sparse <- as(X, "dgCMatrix")
+fit_dense <- L0Learn.fit(X, y, penalty="L0", intercept = TRUE)
+fit_sparse <- L0Learn.fit(X_sparse, y, penalty="L0", intercept = TRUE)
+
+print(fit_dense$a0[[1]][0:10])
+print(fit_sparse$a0[[1]][0:10])
+
+```
+
 
 
 # References
