@@ -32,8 +32,6 @@ class CDL012 : public CD<T> {
         inline void ApplyNewBi(const std::size_t i, const double old_Bi, const double new_Bi) final; 
         
         inline void ApplyNewBiCWMinCheck(const std::size_t i, const double old_Bi, const double new_Bi) final;
-        
-        bool CWMinCheck();
 
 };
 

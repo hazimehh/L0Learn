@@ -104,6 +104,8 @@ class CD : public CDBase<T>{
         
         bool Converged();
         
+        bool CWMinCheck();
+        
 };
 
 

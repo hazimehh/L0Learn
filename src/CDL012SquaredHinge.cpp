@@ -51,7 +51,7 @@ FitResult<T> CDL012SquaredHinge<T>::Fit() {
         
         // only way to terminate is by (i) converging on active set and (ii) CWMinCheck
         if (this->Converged()) {
-            if (CWMinCheck()) {
+            if (this->CWMinCheck()) {
                 break;
             }
             break;
@@ -67,28 +67,6 @@ FitResult<T> CDL012SquaredHinge<T>::Fit() {
     return this->result;
 }
 
-
-template <class T>
-bool CDL012SquaredHinge<T>::CWMinCheck(){
-    std::vector<std::size_t> S;
-    for(arma::sp_mat::const_iterator it = this->B.begin(); it != this->B.end(); ++it)
-        S.push_back(it.row());
-    
-    std::vector<std::size_t> Sc;
-    set_difference(
-        this->Range1p.begin(),
-        this->Range1p.end(),
-        S.begin(),
-        S.end(),
-        back_inserter(Sc));
-    
-    bool Cwmin = true;
-    
-    for (auto& i : Sc) {
-        Cwmin = this->UpdateBiCWMinCheck(i, Cwmin);
-    }
-    return Cwmin;
-}
 
 template class CDL012SquaredHinge<arma::mat>;
 template class CDL012SquaredHinge<arma::sp_mat>;

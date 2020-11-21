@@ -14,7 +14,6 @@ FitResult<T> CDL0<T>::Fit() {
     
     this->B = clamp_by_vector(this->B, this->Lows, this->Highs);
     
-    //bool SecondPass = false;
     this->objective = Objective(this->r, this->B);
     
     std::vector<std::size_t> FullOrder = this->Order;
@@ -39,7 +38,7 @@ FitResult<T> CDL0<T>::Fit() {
         
         if (this->Converged()) {
             if(FirstRestrictedPass && ActiveSetInitial) {
-                if (CWMinCheck()) {
+                if (this->CWMinCheck()) {
                     break;
                 }
                 FirstRestrictedPass = false;
@@ -49,7 +48,7 @@ FitResult<T> CDL0<T>::Fit() {
                 
             } else {
                 if (this->Stabilized == true && ActiveSetInitial) { // && !SecondPass
-                    if (CWMinCheck()) {
+                    if (this->CWMinCheck()) {
                         break;
                     }
                     this->Order = this->OldOrder; // Recycle over all coordinates to make sure the achieved point is a CW-min.
@@ -81,29 +80,6 @@ FitResult<T> CDL0<T>::Fit() {
     return this->result;
 }
 
-template <class T>
-bool CDL0<T>::CWMinCheck() {
-    // Get the Sc = FullOrder - Order
-    std::vector<std::size_t> S;
-    for(arma::sp_mat::const_iterator it = this->B.begin(); it != this->B.end(); ++it) {
-        S.push_back(it.row());
-    }
-    
-    std::vector<std::size_t> Sc;
-    set_difference(
-        this->Range1p.begin(),
-        this->Range1p.end(),
-        S.begin(),
-        S.end(),
-        back_inserter(Sc));
-    
-    bool Cwmin = true;
-    for (auto& i : Sc) {
-        Cwmin = this->UpdateBiCWMinCheck(i, Cwmin);
-    }
-    return Cwmin;
-    
-}
 
 template class CDL0<arma::mat>;
 template class CDL0<arma::sp_mat>;

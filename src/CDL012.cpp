@@ -21,7 +21,7 @@ FitResult<T> CDL012<T>::Fit() {
     std::vector<std::size_t> FullOrder = this->Order;
     bool FirstRestrictedPass = true;
     if (this->ActiveSet) {
-        this->Order.resize(std::min((int) (this->B.n_nonzero + this->ScreenSize + this->NoSelectK), (int)(this->p))); // std::min(1000,Order.size())
+        this->Order.resize(std::min((int) (this->B.n_nonzero + this->ScreenSize + this->NoSelectK), (int)(this->p)));
     }
     
     bool ActiveSetInitial = this->ActiveSet;
@@ -41,7 +41,7 @@ FitResult<T> CDL012<T>::Fit() {
         //B.print();
         if (this->Converged()) {
             if(FirstRestrictedPass && ActiveSetInitial) {
-                if (CWMinCheck()) {
+                if (this->CWMinCheck()) {
                     break;
                 }
                 FirstRestrictedPass = false;
@@ -50,7 +50,7 @@ FitResult<T> CDL012<T>::Fit() {
                 this->ActiveSet = true;
             } else {
                 if (this->Stabilized && ActiveSetInitial) { // && !SecondPass
-                    if (CWMinCheck()) {
+                    if (this->CWMinCheck()) {
                         break;
                     }
                     this->Order = this->OldOrder; // Recycle over all coordinates to make sure the achieved point is a CW-min.
@@ -79,29 +79,6 @@ FitResult<T> CDL012<T>::Fit() {
     return this->result;
 }
 
-template <class T>
-bool CDL012<T>::CWMinCheck(){
-    // Get the Sc = FullOrder - Order
-    std::vector<std::size_t> S;
-    for(arma::sp_mat::const_iterator it = this->B.begin(); it != this->B.end(); ++it) {
-        S.push_back(it.row());
-    }
-    
-    std::vector<std::size_t> Sc;
-    set_difference(
-        this->Range1p.begin(),
-        this->Range1p.end(),
-        S.begin(),
-        S.end(),
-        back_inserter(Sc));
-    
-    bool Cwmin = true;
-    for (auto& i : Sc) {
-        Cwmin = this->UpdateBiCWMinCheck(i, Cwmin);
-    }
-    return Cwmin;
-    
-}
 
 template class CDL012<arma::mat>;
 template class CDL012<arma::sp_mat>;

@@ -40,7 +40,7 @@ FitResult<T> CDL012Logistic<T>::Fit() { // always uses active sets
         this->SupportStabilized();
         
         // only way to terminate is by (i) converging on active set and (ii) CWMinCheck
-        if (this->Converged() && CWMinCheck()) {
+        if (this->Converged() && this->CWMinCheck()) {
             break;
         }
     }
@@ -55,29 +55,6 @@ FitResult<T> CDL012Logistic<T>::Fit() { // always uses active sets
     return this->result;
 }
 
-template <class T>
-bool CDL012Logistic<T>::CWMinCheck() {
-    // Checks for violations outside Supp and updates Order in case of violations
-    std::vector<std::size_t> S;
-    
-    for (arma::sp_mat::const_iterator it = this->B.begin(); it != this->B.end(); ++it)
-        S.push_back(it.row());
-    
-    std::vector<std::size_t> Sc;
-    set_difference(
-        this->Range1p.begin(),
-        this->Range1p.end(),
-        S.begin(),
-        S.end(),
-        back_inserter(Sc));
-    
-    bool Cwmin = true;
-    
-    for (auto& i : Sc)  {
-        Cwmin = this->UpdateBiCWMinCheck(i, Cwmin);
-    }
-    return Cwmin;
-}
 
 template class CDL012Logistic<arma::mat>;
 template class CDL012Logistic<arma::sp_mat>;

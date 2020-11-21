@@ -41,8 +41,6 @@ class CDL012SquaredHinge : public CD<T> {
         inline void ApplyNewBi(const std::size_t i, const double Bi_old, const double Bi_new) final;
         
         inline void ApplyNewBiCWMinCheck(const std::size_t i, const double old_Bi, const double new_Bi) final;
-
-        bool CWMinCheck();
         
 };
 
