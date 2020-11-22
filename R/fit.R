@@ -198,28 +198,35 @@ L0Learn.fit <- function(x, y, loss="SquaredError", penalty="L0", algorithm="CD",
     
     p = dim(x)[[2]]
     
-    if (is.scalar(lows)){
-        lows = lows*rep(1, p)
-    } else if (!all(sapply(lows, is.scalar)) || length(lows) != p) { 
-        stop('Lows must be a vector of real values of length p')
-    } 
+    withBounds = FALSE
     
-    if (is.scalar(highs)){
-        highs = highs*rep(1, p)
-    } else if (!all(sapply(highs, is.scalar)) || length(highs) != p) { 
-        stop('Highs must be a vector of real values of length p')
-    } 
-    
-    if (any(lows >= highs) || any(lows > 0) || any(highs < 0)){
-        stop("Bounds must conform to the following conditions: Lows <= 0, Highs >= 0, Lows < Highs")
-    }
-    
-    if (algorithm == "CDPSI"){
-        if (any(lows != -Inf) || any(highs != Inf)){
-            stop("Bounds are not YET supported for CDPSI algorithm. Please raise
-                 an issue at 'https://github.com/hazimehh/L0Learn' to express 
-                 interest in this functionality")
+    if ((!identical(lows, -Inf)) || (!identical(highs, Inf))){
+        withBounds = TRUE
+        
+        if (algorithm == "CDPSI"){
+            if (any(lows != -Inf) || any(highs != Inf)){
+                stop("Bounds are not YET supported for CDPSI algorithm. Please raise
+                     an issue at 'https://github.com/hazimehh/L0Learn' to express 
+                     interest in this functionality")
+            }
         }
+    
+        if (is.scalar(lows)){
+            lows = lows*rep(1, p)
+        } else if (!all(sapply(lows, is.scalar)) || length(lows) != p) { 
+            stop('Lows must be a vector of real values of length p')
+        } 
+        
+        if (is.scalar(highs)){
+            highs = highs*rep(1, p)
+        } else if (!all(sapply(highs, is.scalar)) || length(highs) != p) { 
+            stop('Highs must be a vector of real values of length p')
+        } 
+        
+        if (any(lows >= highs) || any(lows > 0) || any(highs < 0)){
+            stop("Bounds must conform to the following conditions: Lows <= 0, Highs >= 0, Lows < Highs")
+        }
+        
     }
 
 	# The C++ function uses LambdaU = 1 for user-specified grid. In R, we use autoLambda0 = 0 for user-specified grid (thus the negation when passing the parameter to the function below)
@@ -227,7 +234,7 @@ L0Learn.fit <- function(x, y, loss="SquaredError", penalty="L0", algorithm="CD",
 	           algorithm, maxSuppSize, nLambda, nGamma, gammaMax, gammaMin,
 	           partialSort, maxIters, tol, activeSet, activeSetNum, maxSwaps, 
 	           scaleDownFactor, screenSize, !autoLambda, lambdaGrid,
-	           excludeFirstK, intercept, lows, highs)
+	           excludeFirstK, intercept, withBounds, lows, highs)
 
 	settings = list()
 	settings[[1]] = intercept # Settings only contains intercept for now. Might include additional elements later.

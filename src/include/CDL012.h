@@ -15,7 +15,9 @@ class CDL012 : public CD<T> {
         CDL012(const T& Xi, const arma::vec& yi, const Params<T>& P);
         //~CDL012(){}
 
-        FitResult<T> Fit() final;
+        FitResult<T> _FitWithBounds() final;
+        
+        FitResult<T> _Fit() final;
 
         inline double Objective(const arma::vec & r, const arma::sp_mat & B) final;
         

@@ -24,7 +24,9 @@ class CDL012SquaredHinge : public CD<T> {
         
         //~CDL012SquaredHinge(){}
 
-        FitResult<T> Fit() final;
+        FitResult<T> _FitWithBounds() final;
+        
+        FitResult<T> _Fit() final;
 
         inline double Objective(const arma::vec & r, const arma::sp_mat & B) final;
         

@@ -20,7 +20,10 @@ class CDL012Logistic : public CD<T> {
     public:
         CDL012Logistic(const T& Xi, const arma::vec& yi, const Params<T>& P);
         //~CDL012Logistic(){}
-        FitResult<T> Fit() final;
+        
+        FitResult<T> _FitWithBounds() final;
+        
+        FitResult<T> _Fit() final;
 
         inline double Objective(const arma::vec & r, const arma::sp_mat & B) final;
         

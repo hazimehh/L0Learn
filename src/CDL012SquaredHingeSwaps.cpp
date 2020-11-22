@@ -11,7 +11,12 @@ CDL012SquaredHingeSwaps<T>::CDL012SquaredHingeSwaps(const T& Xi, const arma::vec
 }
 
 template <class T>
-FitResult<T> CDL012SquaredHingeSwaps<T>::Fit() {
+FitResult<T> CDL012SquaredHingeSwaps<T>::_FitWithBounds() {
+    throw "This Error should not happen. Please report it as an issue to https://github.com/hazimehh/L0Learn ";
+}
+
+template <class T>
+FitResult<T> CDL012SquaredHingeSwaps<T>::_Fit() {
     auto result = CDL012SquaredHinge<T>(*(this->X), *(this->y), this->P).Fit(); // result will be maintained till the end
     this->b0 = result.b0; // Initialize from previous later....!
     this->B = result.B;

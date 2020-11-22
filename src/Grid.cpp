@@ -8,9 +8,11 @@ Grid<T>::Grid(const T& X, const arma::vec& y, const GridParams<T>& PGi) {
     std::tie(Xscaled, BetaMultiplier, meanX, meany, scaley) = Normalize(X, 
              y, yscaled, !PG.P.Specs.Classification, PG.intercept);
     
-    // Must rescale bounds by BetaMultiplier inorder for final result to conform to bounds
-    PG.P.Lows /= BetaMultiplier;
-    PG.P.Highs /= BetaMultiplier;
+    // Must rescale bounds by BetaMultiplier in order for final result to conform to bounds
+    if (PG.P.withBounds){
+        PG.P.Lows /= BetaMultiplier;
+        PG.P.Highs /= BetaMultiplier;   
+    }
 }
 
 template <class T>

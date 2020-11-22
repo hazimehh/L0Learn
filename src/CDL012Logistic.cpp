@@ -13,10 +13,7 @@ CDL012Logistic<T>::CDL012Logistic(const T& Xi, const arma::vec& yi, const Params
 }
 
 template <class T>
-FitResult<T> CDL012Logistic<T>::Fit() { // always uses active sets
-    
-    this->B = clamp_by_vector(this->B, this->Lows, this->Highs);
-    
+FitResult<T> CDL012Logistic<T>::_Fit() {
     this->objective = Objective(); // Implicitly used ExpyXB
     
     std::vector<std::size_t> FullOrder = this->Order; // never used in LR
@@ -41,6 +38,49 @@ FitResult<T> CDL012Logistic<T>::Fit() { // always uses active sets
         
         // only way to terminate is by (i) converging on active set and (ii) CWMinCheck
         if (this->Converged() && this->CWMinCheck()) {
+            break;
+        }
+    }
+    
+    this->result.Objective = this->objective;
+    this->result.B = this->B;
+    this->result.Model = this;
+    this->result.b0 = this->b0;
+    this->result.ExpyXB = ExpyXB;
+    this->result.IterNum = this->CurrentIters;
+    
+    return this->result;
+}
+
+template <class T>
+FitResult<T> CDL012Logistic<T>::_FitWithBounds() { // always uses active sets
+    
+    this->B = clamp_by_vector(this->B, this->Lows, this->Highs);
+    
+    this->objective = Objective(); // Implicitly used ExpyXB
+    
+    std::vector<std::size_t> FullOrder = this->Order; // never used in LR
+    this->Order.resize(std::min((int) (this->B.n_nonzero + this->ScreenSize + this->NoSelectK), (int)(this->p)));
+    
+    for (std::size_t t = 0; t < this->MaxIters; ++t) {
+        this->Bprev = this->B;
+        
+        // Update the intercept
+        if (this->intercept){
+            const double b0old = this->b0;
+            const double partial_b0 = - arma::sum( *(this->y) / (1 + ExpyXB) );
+            this->b0 -= partial_b0 / (this->n * LipschitzConst); // intercept is not regularized
+            ExpyXB %= arma::exp( (this->b0 - b0old) * *(this->y));
+        }
+        
+        for (auto& i : this->Order) {
+            this->UpdateBiWithBounds(i);
+        }
+        
+        this->SupportStabilized();
+        
+        // only way to terminate is by (i) converging on active set and (ii) CWMinCheck
+        if (this->Converged() && this->CWMinCheckWithBounds()) {
             break;
         }
     }

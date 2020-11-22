@@ -3,8 +3,14 @@
 template <class T>
 CDL012Swaps<T>::CDL012Swaps(const T& Xi, const arma::vec& yi, const Params<T>& Pi) : CDSwaps<T>(Xi, yi, Pi) {}
 
+
 template <class T>
-FitResult<T> CDL012Swaps<T>::Fit() {
+FitResult<T> CDL012Swaps<T>::_FitWithBounds() {
+    throw "This Error should not happen. Please report it as an issue to https://github.com/hazimehh/L0Learn ";
+}
+
+template <class T>
+FitResult<T> CDL012Swaps<T>::_Fit() {
     auto result = CDL012<T>(*(this->X), *(this->y), this->P).Fit(); // result will be maintained till the end
     this->B = result.B;
     this->b0 = result.b0;

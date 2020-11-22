@@ -12,7 +12,12 @@ CDL012LogisticSwaps<T>::CDL012LogisticSwaps(const T& Xi, const arma::vec& yi, co
 }
 
 template <class T>
-FitResult<T> CDL012LogisticSwaps<T>::Fit() {
+FitResult<T> CDL012LogisticSwaps<T>::_FitWithBounds() {
+    throw "This Error should not happen. Please report it as an issue to https://github.com/hazimehh/L0Learn ";
+}
+
+template <class T>
+FitResult<T> CDL012LogisticSwaps<T>::_Fit() {
     auto result = CDL012Logistic<T>(*(this->X), *(this->y), this->P).Fit(); // result will be maintained till the end
     this->b0 = result.b0; // Initialize from previous later....!
     this->B = result.B;

@@ -1,5 +1,14 @@
 #include "CD.h"
 
+#include <chrono>
+#include <thread>
+
+/*
+ * 
+ *  CDBase
+ * 
+ */
+
 template <class T>
 CDBase<T>::CDBase(const T& Xi, const arma::vec& yi, const Params<T>& P) :
     ModelParams{P.ModelParams}, CyclingOrder{P.CyclingOrder}, MaxIters{P.MaxIters},
@@ -20,6 +29,9 @@ CDBase<T>::CDBase(const T& Xi, const arma::vec& yi, const Params<T>& P) :
     
     this->b0 = P.b0;
     this->intercept = P.intercept;
+    
+    this->withBounds = P.withBounds;
+    
     this->X = &Xi;
     this->y = &yi;
     
@@ -59,118 +71,30 @@ CDBase<T>::CDBase(const T& Xi, const arma::vec& yi, const Params<T>& P) :
 }
 
 template <class T>
+FitResult<T> CDBase<T>::Fit(){
+  if (this->withBounds){
+    return this->_FitWithBounds();
+  } else{
+    return this->_Fit();
+  }
+}
+
+template class CDBase<arma::mat>;
+template class CDBase<arma::sp_mat>;
+
+/*
+ * 
+ *  CD
+ * 
+ */
+
+template <class T>
 void CD<T>::UpdateSparse_b0(arma::vec& r){
     // Only run for regression when T is arma::sp_mat and intercept is True.
     // r is this->r on outer scope;                                                           
     const double new_b0 = arma::mean(r);
     r -= new_b0;
     this->b0 += new_b0;
-}
-
-
-template <class T>
-void CD<T>::UpdateBi(const std::size_t i){
-    // Update a single coefficient of B for various CD Settings
-    // The following functions are virtual and must be defined for any CD implementation.
-    //    GetBiValue
-    //    GetBiValue
-    //    GetBiReg
-    //    ApplyNewBi
-    //    ApplyNewBiCWMinCheck (found in UpdateBiCWMinCheck)
-    
-    
-    const double grd_Bi = this->GetBiGrad(i); // Gradient of Loss wrt to Bi
-  
-    (*this->Xtr)[i] = std::abs(grd_Bi);  // Store absolute value of gradient for later steps
-    
-    const double old_Bi = this->B[i]; // copy of old Bi to adjust residuals if Bi updates
-    
-    const double nrb_Bi = this->GetBiValue(old_Bi, grd_Bi); 
-    // Update Step for New No regularization No Bounds Bi:
-    //                     n  r                 b     _Bi => nrb_Bi
-    // Example
-    // For CDL0: the update step is nrb_Bi = old_Bi + grd_Bi
-    
-    const double reg_Bi = this->GetBiReg(nrb_Bi); 
-    // Ideal Bi with L1 and L2 regularization (no bounds)
-    // Does not account for L0 regularziaton 
-    // Example
-    // For CDL0: reg_Bi = nrb_Bi as there is no L1, L2 parameters
-    
-    const double bnd_Bi = clamp(std::copysign(reg_Bi, nrb_Bi),
-                                this->Lows[i], this->Highs[i]); 
-    // Ideal Bi with regularization and bounds
-  
-    if (i < this->NoSelectK){
-        // L0 penalty is not applied for NoSelectK Variables.
-        // Only L1 and L2 (if either are used)
-        if (std::abs(nrb_Bi) > this->lambda1){
-          this->ApplyNewBi(i, old_Bi, bnd_Bi);
-        } else {
-          this->ApplyNewBi(i, old_Bi, 0);
-        }
-    } else if (reg_Bi < this->thr){
-        // If ideal non-bounded reg_Bi is less than threshold, coefficient is not worth setting.
-        if (old_Bi != 0){
-            this->ApplyNewBi(i, old_Bi, 0);
-        }
-    } else { 
-      // Thus reg_Bi >= this->thr 
-      
-      const double delta_tmp = std::sqrt(reg_Bi*reg_Bi - this->thr2);
-      // Due to numerical precisions delta_tmp might be nan/
-      const double delta = (delta_tmp == delta_tmp) ? delta_tmp : 0;
-      // Turns nans to 0.
-      
-      const double range_Bi = std::copysign(reg_Bi, nrb_Bi);
-      
-      
-      if ((range_Bi - delta < bnd_Bi) && (bnd_Bi < range_Bi + delta)){
-          // bnd_Bi exists in [bnd_Bi - delta, bnd_Bi + delta]
-          // Therefore accept bnd_Bi
-          this->ApplyNewBi(i, old_Bi, bnd_Bi);
-      } else {
-          // Otherwise, reject bnd_Bi
-          this->ApplyNewBi(i, old_Bi, 0);
-      }
-    }
-}
-
-template <class T>
-bool CD<T>::UpdateBiCWMinCheck(const std::size_t i, const bool Cwmin){
-  // See CD<T>::UpdateBi for documentation
-  const double grd_Bi = this->GetBiGrad(i); 
-  
-  (*this->Xtr)[i] = std::abs(grd_Bi);  
-  
-  const double nrb_Bi = this->GetBiValue(0, grd_Bi); 
-  const double reg_Bi = this->GetBiReg(nrb_Bi); 
-  const double bnd_Bi = clamp(std::copysign(reg_Bi, nrb_Bi),
-                              this->Lows[i], this->Highs[i]); 
-
-  if (i < this->NoSelectK){
-    if (std::abs(nrb_Bi) > this->lambda1){
-      this->ApplyNewBiCWMinCheck(i, 0, bnd_Bi);
-      return false;
-    } else {
-      return Cwmin;
-    }
-      
-  } else if (reg_Bi < this->thr){
-    return Cwmin;
-  } else {
-    
-    const double delta_tmp = std::sqrt(reg_Bi*reg_Bi - this->thr2);
-    const double delta = (delta_tmp == delta_tmp) ? delta_tmp : 0;
-
-    const double range_Bi = std::copysign(reg_Bi, nrb_Bi);
-    if ((range_Bi - delta < bnd_Bi) && (bnd_Bi < range_Bi + delta)){
-      this->ApplyNewBiCWMinCheck(i, 0, bnd_Bi);
-      return false;
-    } else {
-      return Cwmin;
-    }
-  }
 }
 
 
@@ -227,7 +151,7 @@ void CD<T>::SupportStabilized() {
 }
 
 template <class T>
-bool CD<T>::CWMinCheck() {
+bool CD<T>::CWMinCheckWithBounds() {
     std::vector<std::size_t> S;
     for(arma::sp_mat::const_iterator it = this->B.begin(); it != this->B.end(); ++it) {
         S.push_back(it.row());
@@ -243,15 +167,36 @@ bool CD<T>::CWMinCheck() {
     
     bool Cwmin = true;
     for (auto& i : Sc) {
-        Cwmin = this->UpdateBiCWMinCheck(i, Cwmin);
+        Cwmin = this->UpdateBiCWMinCheckWithBounds(i, Cwmin);
     }
     return Cwmin;
 }
+
+template <class T>
+bool CD<T>::CWMinCheck() {
+  std::vector<std::size_t> S;
+  for(arma::sp_mat::const_iterator it = this->B.begin(); it != this->B.end(); ++it) {
+    S.push_back(it.row());
+  }
   
-
-template class CDBase<arma::mat>;
-template class CDBase<arma::sp_mat>;
-
+  std::vector<std::size_t> Sc;
+  set_difference(
+    this->Range1p.begin(),
+    this->Range1p.end(),
+    S.begin(),
+    S.end(),
+    back_inserter(Sc));
+  
+  bool Cwmin = true;
+  for (auto& i : Sc) {
+    Rcpp::Rcout << "CW Iteration: " << i << "\n";
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    Cwmin = this->UpdateBiCWMinCheck(i, Cwmin);
+  }
+  
+  return Cwmin;
+}
+  
 
 template <class T>
 CD<T>::CD(const T& Xi, const arma::vec& yi, const Params<T>& P) : CDBase<T>(Xi, yi, P){
@@ -263,6 +208,12 @@ CD<T>::CD(const T& Xi, const arma::vec& yi, const Params<T>& P) : CDBase<T>(Xi, 
 template class CD<arma::mat>;
 template class CD<arma::sp_mat>;
 
+
+/*
+ * 
+ *  CDSwaps
+ * 
+ */
 
 template <class T>
 CDSwaps<T>::CDSwaps(const T& Xi, const arma::vec& yi, const Params<T>& Pi) : CDBase<T>(Xi, yi, Pi){

@@ -23,7 +23,9 @@ class CDL012LogisticSwaps : public CDSwaps<T> {
     public:
         CDL012LogisticSwaps(const T& Xi, const arma::vec& yi, const Params<T>& P);
 
-        FitResult<T> Fit() final;
+        FitResult<T> _FitWithBounds() final;
+        
+        FitResult<T> _Fit() final;
 
         inline double Objective(const arma::vec & r, const arma::sp_mat & B) final;
         

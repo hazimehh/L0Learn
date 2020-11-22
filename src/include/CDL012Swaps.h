@@ -14,7 +14,9 @@ class CDL012Swaps : public CDSwaps<T> {
     public:
         CDL012Swaps(const T& Xi, const arma::vec& yi, const Params<T>& Pi);
 
-        FitResult<T> Fit() final;
+        FitResult<T> _FitWithBounds() final;
+        
+        FitResult<T> _Fit() final;
 
         double Objective(const arma::vec & r, const arma::sp_mat & B) final;
         
