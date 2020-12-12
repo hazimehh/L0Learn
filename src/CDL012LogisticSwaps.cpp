@@ -50,7 +50,7 @@ FitResult CDL012LogisticSwaps::Fit()
         //std::shuffle(std::begin(Order), std::end(Order), engine);
         foundbetter = false;
 
-	arma::uvec screened_order = arma::conv_to< arma::uvec >::from(P.Uorder);
+	arma::uvec screened_order = arma::conv_to< arma::uvec >::from(std::vector<unsigned int>(P.Uorder.begin(), P.Uorder.begin()+100));
 
         for (auto& j : NnzIndices)
         {
