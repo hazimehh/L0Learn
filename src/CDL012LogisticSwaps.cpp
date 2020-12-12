@@ -50,6 +50,7 @@ FitResult CDL012LogisticSwaps::Fit()
         //std::shuffle(std::begin(Order), std::end(Order), engine);
         foundbetter = false;
 
+	arma::uvec screened_order = arma::conv_to< arma::uvec >::from(P.Uorder);
 
         for (auto& j : NnzIndices)
         {
@@ -59,7 +60,8 @@ FitResult CDL012LogisticSwaps::Fit()
 
             //auto start1 = std::chrono::high_resolution_clock::now();
             ///
-            arma::rowvec gradient = - arma::sum( Xy->each_col() / (1 + ExpyXBnoj) , 0); // + twolambda2 * Biold // sum column-wise
+		
+            arma::rowvec gradient = - arma::sum( Xy->each_col(screened_order) / (1 + ExpyXBnoj) , 0); // + twolambda2 * Biold // sum column-wise
             arma::uvec indices = arma::sort_index(arma::abs(gradient),"descend");
             bool foundbetteri = false;
             ///
@@ -71,7 +73,7 @@ FitResult CDL012LogisticSwaps::Fit()
             // Later: make sure this scans at least 10 coordinates from outside supp (now it does not)
             for(unsigned int ll = 0; ll < std::min(5, (int) p); ++ll)
             {
-                unsigned int i = indices(ll);
+                unsigned int i = screened_order(indices(ll));
                 if(B[i] == 0 && i >= NoSelectK)
                 {
                     arma::vec ExpyXBnoji = ExpyXBnoj;
