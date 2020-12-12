@@ -37,7 +37,7 @@ FitResult CDL012LogisticSwaps::Fit()
     bool foundbetter;
     for (unsigned int t = 0; t < MaxNumSwaps; ++t)
     {
-        //std::cout<<"1Swaps Iteration: "<<t<<". "<<"Obj: "<<objective<<std::endl;
+        std::cout<<"1Swaps Iteration: "<<t<<". "<<"Obj: "<<objective<<std::endl;
         //B.print();
         arma::sp_mat::const_iterator start = B.begin();
         arma::sp_mat::const_iterator end   = B.end();
@@ -143,6 +143,7 @@ FitResult CDL012LogisticSwaps::Fit()
                       objective = result.Objective;
                       Fmin = objective;
                       foundbetter = true;
+		      std::cout<<"Found better!!!"<< std::endl;
                       break;
                 }
             }
