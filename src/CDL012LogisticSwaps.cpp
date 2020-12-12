@@ -79,6 +79,7 @@ FitResult CDL012LogisticSwaps::Fit()
             for(unsigned int ll = 0; ll < std::min(5, (int) p); ++ll)
             {
                 unsigned int i = screened_order(indices(ll));
+		std::cout<<"HERE4"<<std::endl;
                 if(B[i] == 0 && i >= NoSelectK)
                 {
                     arma::vec ExpyXBnoji = ExpyXBnoj;
@@ -86,7 +87,9 @@ FitResult CDL012LogisticSwaps::Fit()
                     double Biold = 0;
                     double Binew;
                     //double partial_i = - arma::sum( (Xy->unsafe_col(i)) / (1 + ExpyXBnoji) ); // + twolambda2 * Biold
+	 	    std::cout<<"HERE5"<<std::endl;
                     double partial_i = gradient[indices(ll)];
+	    	    std::cout<<"HERE6"<<std::endl;
                     bool Converged = false;
 
                     arma::sp_mat Btemp = B;
