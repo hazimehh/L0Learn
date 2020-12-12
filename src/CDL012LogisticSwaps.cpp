@@ -59,7 +59,9 @@ FitResult CDL012LogisticSwaps::Fit()
 
             //auto start1 = std::chrono::high_resolution_clock::now();
             ///
-            arma::rowvec gradient = - arma::sum( Xy->each_col() / (1 + ExpyXBnoj) , 0); // + twolambda2 * Biold // sum column-wise
+            //arma::rowvec gradient = - arma::sum( Xy->each_col() / (1 + ExpyXBnoj) , 0); // + twolambda2 * Biold // sum column-wise
+            arma::rowvec gradient = - (1 + ExpyXBnoj).t() * *Xy ; // + twolambda2 * Biold // sum column-wise
+		
             arma::uvec indices = arma::sort_index(arma::abs(gradient),"descend");
             bool foundbetteri = false;
             ///
@@ -69,7 +71,7 @@ FitResult CDL012LogisticSwaps::Fit()
 
             //auto start2 = std::chrono::high_resolution_clock::now();
             // Later: make sure this scans at least 100 coordinates from outside supp (now it does not)
-            for(unsigned int ll = 0; ll < std::min(100, (int) p); ++ll)
+            for(unsigned int ll = 0; ll < std::min(5, (int) p); ++ll)
             {
                 unsigned int i = indices(ll);
                 if(B[i] == 0 && i >= NoSelectK)
@@ -91,7 +93,7 @@ FitResult CDL012LogisticSwaps::Fit()
                     double z = std::abs(x) - lambda1ol;
                     Binew = std::copysign(z, x); // no need to check if >= sqrt(2lambda_0/Lc)
 
-                    while(!Converged && innerindex < 20  && ObjTemp >= Fmin) // ObjTemp >= Fmin
+                    while(!Converged && innerindex < 5  && ObjTemp >= Fmin) // ObjTemp >= Fmin
                     {
                         ExpyXBnoji %= arma::exp( (Binew - Biold) *  Xy->unsafe_col(i));
                         partial_i = - arma::sum( (Xy->unsafe_col(i)) / (1 + ExpyXBnoji) ) + twolambda2 * Binew;
@@ -150,7 +152,7 @@ FitResult CDL012LogisticSwaps::Fit()
             //auto end2 = std::chrono::high_resolution_clock::now();
             //std::cout<<"restricted:  "<<std::chrono::duration_cast<std::chrono::milliseconds>(end2-start2).count() << " ms " << std::endl;
 
-            //if (foundbetter){break;}
+            if (foundbetter){break;}
 
         }
 
