@@ -79,6 +79,7 @@ FitResult CDL012LogisticSwaps::Fit()
             for(unsigned int ll = 0; ll < std::min(5, (int) p); ++ll)
             {
                 unsigned int i = screened_order(indices(ll));
+		std::cout<< ll << i << std::endl;
 		std::cout<<"HERE4"<<std::endl;
                 if(B[i] == 0 && i >= NoSelectK)
                 {
