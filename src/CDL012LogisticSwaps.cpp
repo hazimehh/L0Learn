@@ -3,6 +3,7 @@
 
 #include "Normalize.h" // Remove later
 #include <chrono>
+#include <algorithm>
 
 CDL012LogisticSwaps::CDL012LogisticSwaps(const arma::mat& Xi, const arma::vec& yi, const Params& Pi) : CD(Xi, yi, Pi)
 {
