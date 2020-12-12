@@ -86,7 +86,7 @@ FitResult CDL012LogisticSwaps::Fit()
                     double Biold = 0;
                     double Binew;
                     //double partial_i = - arma::sum( (Xy->unsafe_col(i)) / (1 + ExpyXBnoji) ); // + twolambda2 * Biold
-                    double partial_i = gradient[i];
+                    double partial_i = gradient[indices(ll)];
                     bool Converged = false;
 
                     arma::sp_mat Btemp = B;
