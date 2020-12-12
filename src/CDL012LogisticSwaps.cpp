@@ -51,7 +51,10 @@ FitResult CDL012LogisticSwaps::Fit()
         //std::shuffle(std::begin(Order), std::end(Order), engine);
         foundbetter = false;
 
-	arma::uvec screened_order = arma::conv_to< arma::uvec >::from(std::vector<unsigned int>(P.Uorder.begin(), P.Uorder.begin() + std::min<int>(100, P.Uorder.size())));
+	std::vector<unsigned int> temp_order = std::vector<unsigned int>(P.Uorder.begin(), P.Uorder.begin() + std::min<int>(100, P.Uorder.size()));
+	std::cout<<"HERE1"<<std::endl;
+	arma::uvec screened_order = arma::conv_to< arma::uvec >::from(temp_order);
+	std::cout<<"HERE2"<<std::endl;
 
         for (auto& j : NnzIndices)
         {
@@ -63,6 +66,7 @@ FitResult CDL012LogisticSwaps::Fit()
             ///
 		
             arma::rowvec gradient = - arma::sum( Xy->each_col(screened_order) / (1 + ExpyXBnoj) , 0); // + twolambda2 * Biold // sum column-wise
+	    std::cout<<"HERE3"<<std::endl;
             arma::uvec indices = arma::sort_index(arma::abs(gradient),"descend");
             bool foundbetteri = false;
             ///
