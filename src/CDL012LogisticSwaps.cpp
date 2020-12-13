@@ -65,13 +65,13 @@ FitResult CDL012LogisticSwaps::Fit()
 	    unsigned int j = NnzIndices[jj];
             // Remove j
             // // // arma::vec ExpyXBnoj = ExpyXB % arma::exp( - B[j] *  Xy->unsafe_col(j));
-	    arma::vec ExpyXBnoj = ExpyXBnojs.col(j);
+	    arma::vec ExpyXBnoj = ExpyXBnojs.col(jj);
 
             //auto start1 = std::chrono::high_resolution_clock::now();
             //
             //arma::rowvec gradient = - arma::sum( Xy->each_col() / (1 + ExpyXBnoj) , 0); // + twolambda2 * Biold // sum column-wise
             // // // arma::rowvec gradient = - (1 + ExpyXBnoj).t() * *Xy ; // + twolambda2 * Biold // sum column-wise
-	    arma::rowvec gradient = gradients.row(j);
+	    arma::rowvec gradient = gradients.row(jj);
 		
             arma::uvec indices = arma::sort_index(arma::abs(gradient),"descend");
             bool foundbetteri = false;
