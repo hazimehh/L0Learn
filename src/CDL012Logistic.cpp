@@ -39,7 +39,8 @@ FitResult CDL012Logistic::Fit() // always uses active sets
         // Update the intercept
         if (intercept){
           double b0old = b0;
-          double partial_b0 = - arma::sum( *y / (1 + ExpyXB) );
+          //double partial_b0 = - arma::sum( *y / (1 + ExpyXB) );
+          double partial_b0 = - arma::dot( *y , 1/(1 + ExpyXB) );
           b0 -= partial_b0 / (n * LipschitzConst); // intercept is not regularized
           ExpyXB %= arma::exp( (b0 - b0old) * *y);
       }
@@ -52,7 +53,9 @@ FitResult CDL012Logistic::Fit() // always uses active sets
 
             // Calculate Partial_i
             double Biold = B[i];
-            double partial_i = - arma::sum( (Xy->unsafe_col(i)) / (1 + ExpyXB) ) + twolambda2 * Biold;
+            // double partial_i = - arma::sum( (Xy->unsafe_col(i)) / (1 + ExpyXB) ) + twolambda2 * Biold;
+            double partial_i = - arma::dot(1 / (1 + ExpyXB), Xy->unsafe_col(i)) + twolambda2 * Biold;
+		
             (*Xtr)[i] = std::abs(partial_i); // abs value of grad
 
             double x = Biold - partial_i / qp2lamda2;
@@ -125,7 +128,8 @@ bool CDL012Logistic::CWMinCheck()
     for (auto& i : Sc)
     {
         // Calculate Partial_i
-        double partial_i = - arma::sum( (Xy->unsafe_col(i)) / (1 + ExpyXB) );
+        //double partial_i = - arma::sum( (Xy->unsafe_col(i)) / (1 + ExpyXB) );
+        double partial_i = - arma::dot(1/(1 + ExpyXB), Xy->unsafe_col(i));
         (*Xtr)[i] = std::abs(partial_i); // abs value of grad
         double x = - partial_i / qp2lamda2;
         double z = std::abs(x) - lambda1ol;
