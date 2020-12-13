@@ -57,7 +57,7 @@ FitResult CDL012LogisticSwaps::Fit()
      for (auto& j : NnzIndices)
         {
             // Remove j
-            ExpyXBnojs(:, j) = ExpyXB % arma::exp( - B[j] *  Xy->unsafe_col(j));
+            ExpyXBnojs.col(j) = ExpyXB % arma::exp( - B[j] *  Xy->unsafe_col(j));
      	}
      arma::mat gradients = - (1 + ExpyXBnojs).t() * *Xy;
 	    
@@ -67,13 +67,13 @@ FitResult CDL012LogisticSwaps::Fit()
 
             // Remove j
             // // // arma::vec ExpyXBnoj = ExpyXB % arma::exp( - B[j] *  Xy->unsafe_col(j));
-	    arma::vec ExpyXBnoj = ExpyXBnojs(:, j);
+	    arma::vec ExpyXBnoj = ExpyXBnojs.col(j);
 
             //auto start1 = std::chrono::high_resolution_clock::now();
             //
             //arma::rowvec gradient = - arma::sum( Xy->each_col() / (1 + ExpyXBnoj) , 0); // + twolambda2 * Biold // sum column-wise
             // // // arma::rowvec gradient = - (1 + ExpyXBnoj).t() * *Xy ; // + twolambda2 * Biold // sum column-wise
-	    arma::rowvec gradient = gradients(j, :);
+	    arma::rowvec gradient = gradients.row(j);
 		
             arma::uvec indices = arma::sort_index(arma::abs(gradient),"descend");
             bool foundbetteri = false;
