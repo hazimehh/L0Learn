@@ -82,7 +82,7 @@ FitResult CDL012LogisticSwaps::Fit()
 
             //auto start2 = std::chrono::high_resolution_clock::now();
             // Later: make sure this scans at least 100 coordinates from outside supp (now it does not)
-            for(unsigned int ll = 0; ll < std::min(100, (int) p); ++ll)
+            for(unsigned int ll = 0; ll < std::min(50, (int) p); ++ll)
             {
                 unsigned int i = indices(ll);
                 if(B[i] == 0 && i >= NoSelectK)
