@@ -6,7 +6,7 @@
 #include "utils.h"
 
 template <class T>
-class CDL012 : public CD<T> {
+class CDL012 : public CD<T, CDL012<T>>{
     private:
         double Onep2lamda2;
         arma::vec r; //vector of residuals
@@ -23,17 +23,15 @@ class CDL012 : public CD<T> {
         
         inline double Objective() final;
 
-        inline double GetBiGrad(const std::size_t i) final;
+        inline double GetBiGrad(const std::size_t i);
         
-        inline double GetBiValue(const double old_Bi, const double grd_Bi) final;
+        inline double GetBiValue(const double old_Bi, const double grd_Bi);
         
-        inline double GetBiReg(const double nrb_Bi) final;
+        inline double GetBiReg(const double nrb_Bi);
         
-        // inline double GetBiDelta(const double reg_Bi) final;
+        inline void ApplyNewBi(const std::size_t i, const double old_Bi, const double new_Bi); 
         
-        inline void ApplyNewBi(const std::size_t i, const double old_Bi, const double new_Bi) final; 
-        
-        inline void ApplyNewBiCWMinCheck(const std::size_t i, const double old_Bi, const double new_Bi) final;
+        inline void ApplyNewBiCWMinCheck(const std::size_t i, const double old_Bi, const double new_Bi);
 
 };
 
@@ -53,11 +51,6 @@ inline double CDL012<T>::GetBiReg(const double nrb_Bi){
     // sign(nrb_Bi)*(|nrb_Bi| - lambda1)/(1 + 2*lambda2)
     return (std::abs(nrb_Bi) - this->lambda1) / Onep2lamda2;
 }
-
-// template <class T>
-// inline double CDL012<T>::GetBiDelta(const double Bi_reg){
-//     return std::sqrt(Bi_reg*Bi_reg - this->thr2);
-// }
 
 template <class T>
 inline void CDL012<T>::ApplyNewBi(const std::size_t i, const double Bi_old, const double Bi_new){
@@ -82,5 +75,152 @@ inline double CDL012<T>::Objective() {
     auto l2norm = arma::norm(this->B, 2);
     return 0.5 * arma::dot(this->r, this->r) + this->lambda0 * this->B.n_nonzero + this->lambda1 * arma::norm(this->B, 1) + this->lambda2 * l2norm * l2norm;
 }
+
+template <class T>
+CDL012<T>::CDL012(const T& Xi, const arma::vec& yi, const Params<T>& P) : CD<T, CDL012<T>>(Xi, yi, P) {
+    Onep2lamda2 = 1 + 2 * this->lambda2; 
+    
+    this->thr2 = 2 * this->lambda0 / Onep2lamda2;
+    this->thr = std::sqrt(this->thr2);
+    this->r = *P.r;
+    this->result.r = P.r;
+}
+
+template <class T>
+FitResult<T> CDL012<T>::_Fit() {
+    
+    this->objective = Objective(this->r, this->B);
+    
+    std::vector<std::size_t> FullOrder = this->Order;
+    bool FirstRestrictedPass = true;
+    if (this->ActiveSet) {
+        this->Order.resize(std::min((int) (this->B.n_nonzero + this->ScreenSize + this->NoSelectK), (int)(this->p)));
+    }
+    
+    bool ActiveSetInitial = this->ActiveSet;
+    
+    for (std::size_t t = 0; t < this->MaxIters; ++t) {
+        this->Bprev = this->B;
+        
+        if (this->isSparse && this->intercept){
+            this->UpdateSparse_b0(this->r);
+        }
+        
+        for (auto& i : this->Order) {
+            this->UpdateBi(i);
+            
+        }
+        
+        //B.print();
+        if (this->Converged()) {
+            if(FirstRestrictedPass && ActiveSetInitial) {
+                if (this->CWMinCheck()) {
+                    break;
+                }
+                FirstRestrictedPass = false;
+                this->Order = FullOrder;
+                this->Stabilized = false;
+                this->ActiveSet = true;
+            } else {
+                if (this->Stabilized && ActiveSetInitial) { // && !SecondPass
+                    if (this->CWMinCheck()) {
+                        break;
+                    }
+                    this->Order = this->OldOrder; // Recycle over all coordinates to make sure the achieved point is a CW-min.
+                    //SecondPass = true; // a 2nd pass will be performed
+                    this->Stabilized = false;
+                    this->ActiveSet = true;
+                } else {
+                    break;
+                }
+            }
+        }
+        if (this->ActiveSet) {
+            this->SupportStabilized();
+        }
+    }
+    
+    if (this->isSparse && this->intercept){
+        this->UpdateSparse_b0(this->r);
+    }
+    
+    this->result.Objective = this->objective;
+    this->result.B = this->B;
+    *(this->result.r) = this->r; // change to pointer later
+    this->result.IterNum = this->CurrentIters;
+    this->result.b0 = this->b0;
+    return this->result;
+}
+
+template <class T>
+FitResult<T> CDL012<T>::_FitWithBounds() {
+    
+    this->B = clamp_by_vector(this->B, this->Lows, this->Highs);
+    
+    this->objective = Objective(this->r, this->B);
+    
+    std::vector<std::size_t> FullOrder = this->Order;
+    bool FirstRestrictedPass = true;
+    if (this->ActiveSet) {
+        this->Order.resize(std::min((int) (this->B.n_nonzero + this->ScreenSize + this->NoSelectK), (int)(this->p)));
+    }
+    
+    bool ActiveSetInitial = this->ActiveSet;
+    
+    for (std::size_t t = 0; t < this->MaxIters; ++t) {
+        this->Bprev = this->B;
+        
+        if (this->isSparse && this->intercept){
+            this->UpdateSparse_b0(this->r);
+        }
+        
+        for (auto& i : this->Order) {
+            this->UpdateBiWithBounds(i);
+            
+        }
+        
+        //B.print();
+        if (this->Converged()) {
+            if(FirstRestrictedPass && ActiveSetInitial) {
+                if (this->CWMinCheckWithBounds()) {
+                    break;
+                }
+                FirstRestrictedPass = false;
+                this->Order = FullOrder;
+                this->Stabilized = false;
+                this->ActiveSet = true;
+            } else {
+                if (this->Stabilized && ActiveSetInitial) { // && !SecondPass
+                    if (this->CWMinCheckWithBounds()) {
+                        break;
+                    }
+                    this->Order = this->OldOrder; // Recycle over all coordinates to make sure the achieved point is a CW-min.
+                    //SecondPass = true; // a 2nd pass will be performed
+                    this->Stabilized = false;
+                    this->ActiveSet = true;
+                } else {
+                    break;
+                }
+            }
+        }
+        if (this->ActiveSet) {
+            this->SupportStabilized();
+        }
+    }
+    
+    if (this->isSparse && this->intercept){
+        this->UpdateSparse_b0(this->r);
+    }
+    
+    this->result.Objective = this->objective;
+    this->result.B = this->B;
+    *(this->result.r) = this->r; // change to pointer later
+    this->result.IterNum = this->CurrentIters;
+    this->result.b0 = this->b0;
+    return this->result;
+}
+
+template class CDL012<arma::mat>;
+template class CDL012<arma::sp_mat>;
 
 #endif

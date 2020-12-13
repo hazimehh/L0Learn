@@ -3,13 +3,13 @@
 #include "RcppArmadillo.h"
 
 template <class T> // Forward Reference to prevent circular dependencies
-class CD;
+class CDBase;
 
 template <typename T>
 struct FitResult {
     double Objective;
     arma::sp_mat B;
-    CD<T> * Model;
+    CDBase<T> * Model;
     std::size_t IterNum;
     arma::vec * r;
     std::vector<double> ModelParams;
