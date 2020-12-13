@@ -59,7 +59,7 @@ FitResult CDL012LogisticSwaps::Fit()
             // Remove NnzIndices[j]
             ExpyXBnojs.col(j) = ExpyXB % arma::exp( - B[NnzIndices[j]] *  Xy->unsafe_col(NnzIndices[j]));
      	}
-     	arma::mat gradients = - (1 + ExpyXBnojs).t() * *Xy;
+     	arma::mat gradients = - 1/(1 + ExpyXBnojs).t() * *Xy;
         for (unsigned int jj = 0; jj < NnzIndices.size(); ++jj)
         {
 	    unsigned int j = NnzIndices[jj];
