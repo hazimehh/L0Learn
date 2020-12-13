@@ -54,17 +54,15 @@ FitResult CDL012LogisticSwaps::Fit()
 	//
 	
      arma::mat ExpyXBnojs = arma::zeros(n, NnzIndices.size());
-     for (auto& j : NnzIndices)
+     for (unsigned int j = 0; j < NnzIndices.size(); ++j)
         {
-            // Remove j
-            ExpyXBnojs.col(j) = ExpyXB % arma::exp( - B[j] *  Xy->unsafe_col(j));
+            // Remove NnzIndices[j]
+            ExpyXBnojs.col(j) = ExpyXB % arma::exp( - B[NnzIndices[j]] *  Xy->unsafe_col(NnzIndices[j]));
      	}
-     arma::mat gradients = - (1 + ExpyXBnojs).t() * *Xy;
-	    
-
-        for (auto& j : NnzIndices)
+     	arma::mat gradients = - (1 + ExpyXBnojs).t() * *Xy;
+        for (unsigned int jj = 0; jj < NnzIndices.size(); ++jj)
         {
-
+	    unsigned int j = NnzIndices[jj];
             // Remove j
             // // // arma::vec ExpyXBnoj = ExpyXB % arma::exp( - B[j] *  Xy->unsafe_col(j));
 	    arma::vec ExpyXBnoj = ExpyXBnojs.col(j);
