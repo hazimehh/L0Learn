@@ -108,7 +108,7 @@ FitResult CDL012LogisticSwaps::Fit()
                     {
                         ExpyXBnoji %= arma::exp( (Binew - Biold) *  Xy->unsafe_col(i));
                         // partial_i = - arma::sum( (Xy->unsafe_col(i)) / (1 + ExpyXBnoji) ) + twolambda2 * Binew;
-			partial_i = - arma::dot( (1 + ExpyXBnoji),  Xy->unsafe_col(i) ) + twolambda2 * Binew;
+			partial_i = - arma::dot( 1/(1 + ExpyXBnoji),  Xy->unsafe_col(i) ) + twolambda2 * Binew;
 
                         if (std::abs((Binew - Biold)/Biold) < 0.0001){
                           Converged = true;
