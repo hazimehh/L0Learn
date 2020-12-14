@@ -79,7 +79,7 @@ FitResult CDL012LogisticSwaps::Fit()
 	    arma::rowvec abs_gradient = abs_gradients.row(jj);
 	    std::vector<unsigned int> indices(p);
 	    std::iota(indices.begin(), indices.end(), 0);
-            std::partial_sort(idx.begin(), idx.begin() + 100, idx.end(), [this](unsigned int i1, unsigned int i2) {return abs_gradient[i1] > abs_gradient[i2] ;});
+            std::partial_sort(indices.begin(), indices.begin() + 50, indices.end(), [&abs_gradient](unsigned int i1, unsigned int i2) {return abs_gradient[i1] > abs_gradient[i2] ;});
 
             bool foundbetteri = false;
             ///
