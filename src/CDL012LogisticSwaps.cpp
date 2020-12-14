@@ -79,7 +79,7 @@ FitResult CDL012LogisticSwaps::Fit()
 	    arma::rowvec abs_gradient = abs_gradients.row(jj);
 	    std::vector<unsigned int> indices(p);
 	    std::iota(indices.begin(), indices.end(), 0);
-            std::partial_sort(indices.begin(), indices.begin() + 50, indices.end(), [&abs_gradient](unsigned int i1, unsigned int i2) {return abs_gradient[i1] > abs_gradient[i2] ;});
+            std::partial_sort(indices.begin(), indices.begin() + 100, indices.end(), [&abs_gradient](unsigned int i1, unsigned int i2) {return abs_gradient[i1] > abs_gradient[i2] ;});
 
             bool foundbetteri = false;
             ///
@@ -89,7 +89,7 @@ FitResult CDL012LogisticSwaps::Fit()
 
             //auto start2 = std::chrono::high_resolution_clock::now();
             // Later: make sure this scans at least 100 coordinates from outside supp (now it does not)
-            for(unsigned int ll = 0; ll < std::min(50, (int) p); ++ll)
+            for(unsigned int ll = 0; ll < std::min(100, (int) p); ++ll)
             {
                 unsigned int i = indices[ll]; // (ll) if arma uvec.
                 if(B[i] == 0 && i >= NoSelectK)
