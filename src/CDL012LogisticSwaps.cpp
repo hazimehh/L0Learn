@@ -60,6 +60,7 @@ FitResult CDL012LogisticSwaps::Fit()
             ExpyXBnojs.col(j) = ExpyXB % arma::exp( - B[NnzIndices[j]] *  Xy->unsafe_col(NnzIndices[j]));
      	}
      	arma::mat gradients = - 1/(1 + ExpyXBnojs).t() * *Xy;
+	arma::mat abs_gradients = arma::abs(gradients);
         for (unsigned int jj = 0; jj < NnzIndices.size(); ++jj)
         {
 	    unsigned int j = NnzIndices[jj];
@@ -73,7 +74,13 @@ FitResult CDL012LogisticSwaps::Fit()
             // // // arma::rowvec gradient = - (1 + ExpyXBnoj).t() * *Xy ; // + twolambda2 * Biold // sum column-wise
 	    arma::rowvec gradient = gradients.row(jj);
 		
-            arma::uvec indices = arma::sort_index(arma::abs(gradient),"descend");
+            //arma::uvec indices = arma::sort_index(arma::abs(gradient),"descend");
+	    //
+	    arma::rowvec abs_gradient = abs_gradients.row(jj);
+	    std::vector<unsigned int> indices(p);
+	    std::iota(indices.begin(), indices.end(), 0);
+            std::partial_sort(idx.begin(), idx.begin() + 100, idx.end(), [this](unsigned int i1, unsigned int i2) {return abs_gradient[i1] > abs_gradient[i2] ;});
+
             bool foundbetteri = false;
             ///
             //auto end1 = std::chrono::high_resolution_clock::now();
@@ -84,7 +91,7 @@ FitResult CDL012LogisticSwaps::Fit()
             // Later: make sure this scans at least 100 coordinates from outside supp (now it does not)
             for(unsigned int ll = 0; ll < std::min(50, (int) p); ++ll)
             {
-                unsigned int i = indices(ll);
+                unsigned int i = indices[ll]; // (ll) if arma uvec.
                 if(B[i] == 0 && i >= NoSelectK)
                 {
                     arma::vec ExpyXBnoji = ExpyXBnoj;
