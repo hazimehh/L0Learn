@@ -4,6 +4,7 @@
 #include "CD.h"
 #include "FitResult.h"
 #include "utils.h"
+#include "BetaVector.h"
 
 template <class T>
 class CDL012 : public CD<T, CDL012<T>>{
@@ -19,7 +20,7 @@ class CDL012 : public CD<T, CDL012<T>>{
         
         FitResult<T> _Fit() final;
 
-        inline double Objective(const arma::vec & r, const arma::sp_mat & B) final;
+        inline double Objective(const arma::vec & r, const beta_vector & B) final;
         
         inline double Objective() final;
 
@@ -65,15 +66,15 @@ inline void CDL012<T>::ApplyNewBiCWMinCheck(const std::size_t i, const double Bi
 }
 
 template <class T>
-inline double CDL012<T>::Objective(const arma::vec & r, const arma::sp_mat & B) { 
+inline double CDL012<T>::Objective(const arma::vec & r, const beta_vector & B) { 
     auto l2norm = arma::norm(B, 2);
-    return 0.5 * arma::dot(r, r) + this->lambda0 * B.n_nonzero + this->lambda1 * arma::norm(B, 1) + this->lambda2 * l2norm * l2norm;
+    return 0.5 * arma::dot(r, r) + this->lambda0 * n_nonzero(this->B) + this->lambda1 * arma::norm(B, 1) + this->lambda2 * l2norm * l2norm;
 }
 
 template <class T>
 inline double CDL012<T>::Objective() { 
     auto l2norm = arma::norm(this->B, 2);
-    return 0.5 * arma::dot(this->r, this->r) + this->lambda0 * this->B.n_nonzero + this->lambda1 * arma::norm(this->B, 1) + this->lambda2 * l2norm * l2norm;
+    return 0.5 * arma::dot(this->r, this->r) + this->lambda0 * n_nonzero(this->B) + this->lambda1 * arma::norm(this->B, 1) + this->lambda2 * l2norm * l2norm;
 }
 
 template <class T>
@@ -94,7 +95,7 @@ FitResult<T> CDL012<T>::_Fit() {
     std::vector<std::size_t> FullOrder = this->Order;
     bool FirstRestrictedPass = true;
     if (this->ActiveSet) {
-        this->Order.resize(std::min((int) (this->B.n_nonzero + this->ScreenSize + this->NoSelectK), (int)(this->p)));
+        this->Order.resize(std::min((int) (n_nonzero(this->B) + this->ScreenSize + this->NoSelectK), (int)(this->p)));
     }
     
     bool ActiveSetInitial = this->ActiveSet;
@@ -162,7 +163,7 @@ FitResult<T> CDL012<T>::_FitWithBounds() {
     std::vector<std::size_t> FullOrder = this->Order;
     bool FirstRestrictedPass = true;
     if (this->ActiveSet) {
-        this->Order.resize(std::min((int) (this->B.n_nonzero + this->ScreenSize + this->NoSelectK), (int)(this->p)));
+        this->Order.resize(std::min((int) (n_nonzero(this->B) + this->ScreenSize + this->NoSelectK), (int)(this->p)));
     }
     
     bool ActiveSetInitial = this->ActiveSet;

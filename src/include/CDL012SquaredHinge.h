@@ -5,6 +5,7 @@
 #include "FitResult.h"
 #include "Params.h"
 #include "utils.h"
+#include "BetaVector.h"
 
 template <class T>
 class CDL012SquaredHinge : public CD<T, CDL012SquaredHinge<T>> {
@@ -28,7 +29,7 @@ class CDL012SquaredHinge : public CD<T, CDL012SquaredHinge<T>> {
         
         FitResult<T> _Fit() final;
 
-        inline double Objective(const arma::vec & r, const arma::sp_mat & B) final;
+        inline double Objective(const arma::vec & r, const beta_vector & B) final;
         
         inline double Objective() final;
         
@@ -76,12 +77,12 @@ inline void CDL012SquaredHinge<T>::ApplyNewBiCWMinCheck(const std::size_t i, con
 }
 
 template <class T>
-inline double CDL012SquaredHinge<T>::Objective(const arma::vec & onemyxb, const arma::sp_mat & B) {
+inline double CDL012SquaredHinge<T>::Objective(const arma::vec & onemyxb, const beta_vector & B) {
     
     auto l2norm = arma::norm(B, 2);
     arma::uvec indices = arma::find(onemyxb > 0);
     
-    return arma::sum(onemyxb.elem(indices) % onemyxb.elem(indices)) + this->lambda0 * B.n_nonzero + this->lambda1 * arma::norm(B, 1) + this->lambda2 * l2norm * l2norm;
+    return arma::sum(onemyxb.elem(indices) % onemyxb.elem(indices)) + this->lambda0 * n_nonzero(B) + this->lambda1 * arma::norm(B, 1) + this->lambda2 * l2norm * l2norm;
 }
 
 
@@ -89,7 +90,7 @@ template <class T>
 inline double CDL012SquaredHinge<T>::Objective() {
     
     auto l2norm = arma::norm(this->B, 2);
-    return arma::sum(onemyxb.elem(indices) % onemyxb.elem(indices)) + this->lambda0 * this->B.n_nonzero + this->lambda1 * arma::norm(this->B, 1) + this->lambda2 * l2norm * l2norm;
+    return arma::sum(onemyxb.elem(indices) % onemyxb.elem(indices)) + this->lambda0 * n_nonzero(this->B) + this->lambda1 * arma::norm(this->B, 1) + this->lambda2 * l2norm * l2norm;
 }
 
 template <class T>
@@ -116,7 +117,7 @@ FitResult<T> CDL012SquaredHinge<T>::_Fit() {
     
     
     std::vector<std::size_t> FullOrder = this->Order; // never used in LR
-    this->Order.resize(std::min((int) (this->B.n_nonzero + this->ScreenSize + this->NoSelectK), (int)(this->p)));
+    this->Order.resize(std::min((int) (n_nonzero(this->B) + this->ScreenSize + this->NoSelectK), (int)(this->p)));
     
     
     for (auto t = 0; t < this->MaxIters; ++t) {
@@ -163,7 +164,7 @@ FitResult<T> CDL012SquaredHinge<T>::_FitWithBounds() {
     
     
     std::vector<std::size_t> FullOrder = this->Order; // never used in LR
-    this->Order.resize(std::min((int) (this->B.n_nonzero + this->ScreenSize + this->NoSelectK), (int)(this->p)));
+    this->Order.resize(std::min((int) (n_nonzero(this->B) + this->ScreenSize + this->NoSelectK), (int)(this->p)));
     
     
     for (auto t = 0; t < this->MaxIters; ++t) {
@@ -190,7 +191,6 @@ FitResult<T> CDL012SquaredHinge<T>::_FitWithBounds() {
             if (this->CWMinCheckWithBounds()) {
                 break;
             }
-            break;
         }
     }
     

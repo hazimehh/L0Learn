@@ -2,6 +2,7 @@
 #define CD_H
 #include <algorithm>
 #include "RcppArmadillo.h"
+#include "BetaVector.h"
 #include "FitResult.h"
 #include "Params.h"
 #include "Model.h"
@@ -15,9 +16,9 @@ class CDBase {
         std::vector<double> * Xtr;
         std::size_t n, p;
         std::size_t Iter;
-        
-        arma::sp_mat B;
-        arma::sp_mat Bprev;
+    
+        beta_vector B;
+        beta_vector Bprev;
         
         std::size_t SameSuppCounter = 0;
         double objective;
@@ -64,7 +65,7 @@ class CDBase {
 
         virtual ~CDBase(){}
 
-        virtual inline double Objective(const arma::vec &, const arma::sp_mat &)=0;
+        virtual inline double Objective(const arma::vec &, const beta_vector &)=0;
         
         virtual inline double Objective()=0;
         
@@ -401,9 +402,12 @@ CDBase<T>::CDBase(const T& Xi, const arma::vec& yi, const Params<T>& P) :
             
             arma::vec values = arma::randu<arma::vec>(rsize) * 2 - 1; // uniform(-1,1)
             
-            this->B = arma::sp_mat(false, indices, values, p, 1, false, false);
+            arma::sp_mat tempB = arma::sp_mat(false, indices, values, p, 1, false, false);
+            
+            this->B = beta_vector(tempB); // Convert Sparse Matrix to beta_vector
+            
         } else {
-            this->B = arma::sp_mat(p, 1); // Initialized to zeros
+            this->B = arma::zeros<beta_vector>(p);
         }
         
         if (CyclingOrder == 'u') {
@@ -459,31 +463,13 @@ bool CD<T, Derived>::Converged() {
 template<class T, class Derived>
 void CD<T, Derived>::SupportStabilized() {
     
-    bool SameSupp = true;
-    
-    if (this->Bprev.n_nonzero != this->B.n_nonzero) {
-        SameSupp = false;
-    } else {  // same number of nnz and Supp is sorted
-        arma::sp_mat::const_iterator i1;
-        arma::sp_mat::const_iterator i2;
-        for(i1 = this->B.begin(), i2 = this->Bprev.begin(); i1 != this->B.end(); ++i1, ++i2) {
-            if (i1.row() != i2.row()) {
-                SameSupp = false;
-                break;
-            }
-        }
-    }
+    bool SameSupp = has_same_support(this->B, this->Bprev);
     
     if (SameSupp) {
         this->SameSuppCounter += 1;
         
         if (this->SameSuppCounter == this->ActiveSetNum - 1) {
-            std::vector<std::size_t> NewOrder(this->B.n_nonzero);
-            
-            arma::sp_mat::const_iterator i;
-            for(i = this->B.begin(); i != this->B.end(); ++i) {
-                NewOrder.push_back(i.row());
-            }
+            std::vector<std::size_t> NewOrder = nnzIndicies(this->B);
             
             std::sort(NewOrder.begin(), NewOrder.end(), [this](std::size_t i, std::size_t j) {return this->Order[i] <  this->Order[j] ;});
             
@@ -502,10 +488,7 @@ void CD<T, Derived>::SupportStabilized() {
 
 template<class T, class Derived>
 bool CD<T, Derived>::CWMinCheckWithBounds() {
-    std::vector<std::size_t> S;
-    for(arma::sp_mat::const_iterator it = this->B.begin(); it != this->B.end(); ++it) {
-        S.push_back(it.row());
-    }
+    std::vector<std::size_t> S = nnzIndicies(this->B);
     
     std::vector<std::size_t> Sc;
     set_difference(
@@ -524,10 +507,7 @@ bool CD<T, Derived>::CWMinCheckWithBounds() {
 
 template<class T, class Derived>
 bool CD<T, Derived>::CWMinCheck() {
-    std::vector<std::size_t> S;
-    for(arma::sp_mat::const_iterator it = this->B.begin(); it != this->B.end(); ++it) {
-        S.push_back(it.row());
-    }
+    std::vector<std::size_t> S = nnzIndicies(this->B);
     
     std::vector<std::size_t> Sc;
     set_difference(

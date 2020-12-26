@@ -43,7 +43,7 @@ void Grid<T>::Fit() {
         for (auto &g : G[i]) {
             Lambda0[i].push_back(g->ModelParams[0]);
             
-            NnzCount[i].push_back(g->B.n_nonzero);
+            NnzCount[i].push_back(n_nonzero(g->B));
             
             if (g->IterNum != PG.P.MaxIters){
                 Converged[i].push_back(true);
@@ -51,11 +51,11 @@ void Grid<T>::Fit() {
                 Converged[i].push_back(false);
             }
             
-            arma::sp_mat B_unscaled;
+            beta_vector B_unscaled;
             double b0;
             
             std::tie(B_unscaled, b0) = DeNormalize(g->B, BetaMultiplier, meanX, meany);
-            Solutions[i].push_back(B_unscaled);
+            Solutions[i].push_back(arma::sp_mat(B_unscaled));
             /* scaley is 1 for classification problems.
              *  g->intercept is 0 unless specifically optimized for in:
              *       classification

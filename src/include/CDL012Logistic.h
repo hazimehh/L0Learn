@@ -5,6 +5,7 @@
 #include "FitResult.h"
 #include "Params.h"
 #include "utils.h"
+#include "BetaVector.h"
 
 template <class T>
 class CDL012Logistic : public CD<T, CDL012Logistic<T>> {
@@ -25,7 +26,7 @@ class CDL012Logistic : public CD<T, CDL012Logistic<T>> {
         
         FitResult<T> _Fit() final;
 
-        inline double Objective(const arma::vec & r, const arma::sp_mat & B) final;
+        inline double Objective(const arma::vec & r, const beta_vector & B) final;
         
         inline double Objective() final;
         
@@ -72,17 +73,17 @@ inline void CDL012Logistic<T>::ApplyNewBiCWMinCheck(const std::size_t i,
 }
 
 template <class T>
-inline double CDL012Logistic<T>::Objective(const arma::vec & expyXB, const arma::sp_mat & B) {  // hint inline
+inline double CDL012Logistic<T>::Objective(const arma::vec & expyXB, const beta_vector & B) {  // hint inline
     const auto l2norm = arma::norm(B, 2);
     // arma::sum(arma::log(1 + 1 / expyXB)) is the negative log-likelihood
-    return arma::sum(arma::log(1 + 1 / expyXB)) + this->lambda0 * B.n_nonzero + this->lambda1 * arma::norm(B, 1) + this->lambda2 * l2norm * l2norm;
+    return arma::sum(arma::log(1 + 1 / expyXB)) + this->lambda0 * n_nonzero(B) + this->lambda1 * arma::norm(B, 1) + this->lambda2 * l2norm * l2norm;
 }
 
 template <class T>
 inline double CDL012Logistic<T>::Objective() {  // hint inline
     const auto l2norm = arma::norm(this->B, 2);
     // arma::sum(arma::log(1 + 1 / ExpyXB)) is the negative log-likelihood
-    return arma::sum(arma::log(1 + 1 / ExpyXB)) + this->lambda0 * this->B.n_nonzero + this->lambda1 * arma::norm(this->B, 1) + this->lambda2 * l2norm * l2norm;
+    return arma::sum(arma::log(1 + 1 / ExpyXB)) + this->lambda0 * n_nonzero(this->B) + this->lambda1 * arma::norm(this->B, 1) + this->lambda2 * l2norm * l2norm;
 }
 
 template <class T>
@@ -102,7 +103,7 @@ FitResult<T> CDL012Logistic<T>::_Fit() {
     this->objective = Objective(); // Implicitly used ExpyXB
     
     std::vector<std::size_t> FullOrder = this->Order; // never used in LR
-    this->Order.resize(std::min((int) (this->B.n_nonzero + this->ScreenSize + this->NoSelectK), (int)(this->p)));
+    this->Order.resize(std::min((int) (n_nonzero(this->B) + this->ScreenSize + this->NoSelectK), (int)(this->p)));
     
     for (std::size_t t = 0; t < this->MaxIters; ++t) {
         this->Bprev = this->B;
@@ -145,7 +146,7 @@ FitResult<T> CDL012Logistic<T>::_FitWithBounds() { // always uses active sets
     this->objective = Objective(); // Implicitly used ExpyXB
     
     std::vector<std::size_t> FullOrder = this->Order; // never used in LR
-    this->Order.resize(std::min((int) (this->B.n_nonzero + this->ScreenSize + this->NoSelectK), (int)(this->p)));
+    this->Order.resize(std::min((int) (n_nonzero(this->B) + this->ScreenSize + this->NoSelectK), (int)(this->p)));
     
     for (std::size_t t = 0; t < this->MaxIters; ++t) {
         this->Bprev = this->B;

@@ -4,8 +4,9 @@
 #include <tuple>
 #include "RcppArmadillo.h"
 #include "utils.h"
+#include "BetaVector.h"
 
-std::tuple<arma::sp_mat, double> DeNormalize(arma::sp_mat & B_scaled, 
+std::tuple<beta_vector, double> DeNormalize(beta_vector & B_scaled, 
                                              arma::vec & BetaMultiplier, 
                                              arma::vec & meanX, double meany);
 

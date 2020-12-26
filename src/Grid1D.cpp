@@ -148,11 +148,7 @@ std::vector<std::unique_ptr<FitResult<T>>> Grid1D<T>::Fit() {
                 Xrmax = (*Xtr)[idx[NoSelectK]];
                 
                 if (i > 0) {
-                    std::vector<std::size_t> Sp;
-                    arma::sp_mat::const_iterator it;
-                    for(it = prevresult->B.begin(); it != prevresult->B.end(); ++it) {
-                        Sp.push_back(it.row());
-                    }
+                    std::vector<std::size_t> Sp = nnzIndicies(prevresult->B);
                     
                     for(std::size_t l = NoSelectK; l < p; ++l) {
                         if ( std::binary_search(Sp.begin(), Sp.end(), idx[l]) == false ) {
@@ -191,20 +187,10 @@ std::vector<std::unique_ptr<FitResult<T>>> Grid1D<T>::Fit() {
                 
                 scaledown = false;
                 if (i >= 1) {
-                    std::vector<std::size_t> Spold;
-                    arma::sp_mat::const_iterator itold;
-                    
-                    for(itold = prevresult->B.begin(); itold != prevresult->B.end(); ++itold) {
-                        Spold.push_back(itold.row());
-                    }
-                    
-                    std::vector<std::size_t> Spnew;
-                    arma::sp_mat::const_iterator itnew;
-                    
-                    for(itnew = result->B.begin(); itnew != result->B.end(); ++itnew) {
-                        Spnew.push_back(itnew.row());
-                    }
-                    
+                    std::vector<std::size_t> Spold = nnzIndicies(prevresult->B);
+      
+                    std::vector<std::size_t> Spnew = nnzIndicies(result->B);
+                   
                     bool samesupp = false;
                     
                     if (Spold == Spnew) {
@@ -223,7 +209,7 @@ std::vector<std::unique_ptr<FitResult<T>>> Grid1D<T>::Fit() {
                 G.push_back(std::move(result));
                 
                 
-                if(G.back()->B.n_nonzero >= StopNum) {
+                if(n_nonzero(G.back()->B) >= StopNum) {
                     break;
                 }
                 //result->B.t().print();

@@ -6,6 +6,7 @@
 #include "Params.h"
 #include "FitResult.h"
 #include "utils.h"
+#include "BetaVector.h"
 
 
 template <class T>
@@ -22,7 +23,7 @@ class CDL0: public CD<T, CDL0<T>>{
         
         FitResult<T> _Fit() final;
     
-        inline double Objective(const arma::vec &, const arma::sp_mat &) final;
+        inline double Objective(const arma::vec &, const beta_vector &) final;
         
         inline double Objective() final;
         
@@ -65,13 +66,13 @@ inline void CDL0<T>::ApplyNewBiCWMinCheck(const std::size_t i, const double old_
 }
 
 template <class T>
-inline double CDL0<T>::Objective(const arma::vec & r, const arma::sp_mat & B) {
-    return 0.5 * arma::dot(r, r) + this->lambda0 * B.n_nonzero;
+inline double CDL0<T>::Objective(const arma::vec & r, const beta_vector & B) {
+    return 0.5 * arma::dot(r, r) + this->lambda0 * n_nonzero(B);
 }
 
 template <class T>
 inline double CDL0<T>::Objective() {
-    return 0.5 * arma::dot(this->r, this->r) + this->lambda0 * this->B.n_nonzero;
+    return 0.5 * arma::dot(this->r, this->r) + this->lambda0 * n_nonzero(this->B);
 }
 
 template <class T>
@@ -90,7 +91,7 @@ FitResult<T> CDL0<T>::_Fit() {
     bool FirstRestrictedPass = true;
     
     if (this->ActiveSet) {
-        this->Order.resize(std::min((int) (this->B.n_nonzero + this->ScreenSize + this->NoSelectK), (int)(this->p))); // std::min(1000,Order.size())
+        this->Order.resize(std::min((int) (n_nonzero(this->B) + this->ScreenSize + this->NoSelectK), (int)(this->p))); // std::min(1000,Order.size())
     }
     
     bool ActiveSetInitial = this->ActiveSet;
@@ -161,7 +162,7 @@ FitResult<T> CDL0<T>::_FitWithBounds() {
     bool FirstRestrictedPass = true;
     
     if (this->ActiveSet) {
-        this->Order.resize(std::min((int) (this->B.n_nonzero + this->ScreenSize + this->NoSelectK), (int)(this->p))); // std::min(1000,Order.size())
+        this->Order.resize(std::min((int) (n_nonzero(this->B) + this->ScreenSize + this->NoSelectK), (int)(this->p))); // std::min(1000,Order.size())
     }
     
     bool ActiveSetInitial = this->ActiveSet;

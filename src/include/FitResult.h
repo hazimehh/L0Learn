@@ -1,6 +1,7 @@
 #ifndef FITRESULT_H
 #define FITRESULT_H
 #include "RcppArmadillo.h"
+#include "BetaVector.h"
 
 template <class T> // Forward Reference to prevent circular dependencies
 class CDBase;
@@ -8,7 +9,7 @@ class CDBase;
 template <typename T>
 struct FitResult {
     double Objective;
-    arma::sp_mat B;
+    beta_vector B;
     CDBase<T> * Model;
     std::size_t IterNum;
     arma::vec * r;

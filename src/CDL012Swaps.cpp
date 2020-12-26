@@ -20,15 +20,9 @@ FitResult<T> CDL012Swaps<T>::_Fit() {
     bool foundbetter = false;
     
     for (std::size_t t = 0; t < this->MaxNumSwaps; ++t) {
-        arma::sp_mat::const_iterator start = this->B.begin();
-        arma::sp_mat::const_iterator end   = this->B.end();
-        std::vector<std::size_t> NnzIndices;
-        for(arma::sp_mat::const_iterator it = start; it != end; ++it) {
-            if (it.row() >= this->NoSelectK){
-                NnzIndices.push_back(it.row());
-            }
-        }
         
+        std::vector<std::size_t> NnzIndices = nnzIndicies(this->B, this->NoSelectK);
+
         foundbetter = false;
         
         // TODO: shuffle NNz Indices to prevent bias.

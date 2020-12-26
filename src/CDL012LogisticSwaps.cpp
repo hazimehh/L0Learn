@@ -35,14 +35,7 @@ FitResult<T> CDL012LogisticSwaps<T>::_Fit() {
     
     for (std::size_t t = 0; t < this->MaxNumSwaps; ++t) {
         
-        arma::sp_mat::const_iterator start = this->B.begin();
-        arma::sp_mat::const_iterator end   = this->B.end();
-        std::vector<std::size_t> NnzIndices;
-        for(arma::sp_mat::const_iterator it = start; it != end; ++it) {
-            if (it.row() >= this->NoSelectK) {
-                NnzIndices.push_back(it.row());
-            }
-        }
+        std::vector<std::size_t> NnzIndices = nnzIndicies(this->B, this->NoSelectK);
         
         // TODO: Add shuffle of Order
         //std::shuffle(std::begin(Order), std::end(Order), engine);
@@ -76,7 +69,7 @@ FitResult<T> CDL012LogisticSwaps<T>::_Fit() {
                     double partial_i = gradient[i];
                     bool converged = false;
                     
-                    arma::sp_mat Btemp = this->B;
+                    beta_vector Btemp = this->B;
                     Btemp[j] = 0;
                     double ObjTemp = Objective(ExpyXBnoji, Btemp);
                     std::size_t innerindex = 0;

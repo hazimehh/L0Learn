@@ -34,14 +34,9 @@ FitResult<T> CDL012SquaredHingeSwaps<T>::_Fit() {
     
     for (std::size_t t = 0; t < this->MaxNumSwaps; ++t) {
         // Rcpp::Rcout << "Swap Number: " << t << "|mean(onemyxb): " << arma::mean(onemyxb) << "\n";
-        arma::sp_mat::const_iterator start = this->B.begin();
-        arma::sp_mat::const_iterator end   = this->B.end();
         
-        std::vector<std::size_t> NnzIndices;
-        for(arma::sp_mat::const_iterator it = start; it != end; ++it) {
-            if (it.row() >= this->NoSelectK)
-                NnzIndices.push_back(it.row());
-        }
+        std::vector<std::size_t> NnzIndices = nnzIndicies(this->B, this->NoSelectK);
+        
         // TODO: Implement shuffle of NnzIndices Indicies
 
         foundbetter = false;
@@ -68,7 +63,7 @@ FitResult<T> CDL012SquaredHingeSwaps<T>::_Fit() {
                         arma::vec onemyxbnoji = onemyxbnoj;
                         
                         std::size_t l = 0;
-                        arma::sp_mat Btemp = this->B;
+                        beta_vector Btemp = this->B;
                         Btemp[j] = 0;
                         //double ObjTemp = Objective(onemyxbnoj,Btemp);
                         //double Biolddescent = 0;

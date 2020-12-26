@@ -7,6 +7,7 @@
 #include "FitResult.h"
 #include "Params.h"
 #include "utils.h"
+#include "BetaVector.h"
 
 template <class T>
 class CDL012LogisticSwaps : public CDSwaps<T> {
@@ -27,7 +28,7 @@ class CDL012LogisticSwaps : public CDSwaps<T> {
         
         FitResult<T> _Fit() final;
 
-        inline double Objective(const arma::vec & r, const arma::sp_mat & B) final;
+        inline double Objective(const arma::vec & r, const beta_vector & B) final;
         
         inline double Objective() final;
 
@@ -35,15 +36,15 @@ class CDL012LogisticSwaps : public CDSwaps<T> {
 
 
 template <class T>
-inline double CDL012LogisticSwaps<T>::Objective(const arma::vec & r, const arma::sp_mat & B) {
+inline double CDL012LogisticSwaps<T>::Objective(const arma::vec & r, const beta_vector & B) {
     auto l2norm = arma::norm(B, 2);
-    return arma::sum(arma::log(1 + 1 / r)) + this->lambda0 * B.n_nonzero + this->lambda1 * arma::norm(B, 1) + this->lambda2 * l2norm * l2norm;
+    return arma::sum(arma::log(1 + 1 / r)) + this->lambda0 * n_nonzero(B) + this->lambda1 * arma::norm(B, 1) + this->lambda2 * l2norm * l2norm;
 }
 
 template <class T>
 inline double CDL012LogisticSwaps<T>::Objective() {
     auto l2norm = arma::norm(this->B, 2);
-    return arma::sum(arma::log(1 + 1 / ExpyXB)) + this->lambda0 * this->B.n_nonzero + this->lambda1 * arma::norm(this->B, 1) + this->lambda2 * l2norm * l2norm;
+    return arma::sum(arma::log(1 + 1 / ExpyXB)) + this->lambda0 * n_nonzero(this->B) + this->lambda1 * arma::norm(this->B, 1) + this->lambda2 * l2norm * l2norm;
 }
 
 #endif

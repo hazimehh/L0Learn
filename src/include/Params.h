@@ -3,18 +3,18 @@
 #include <map>
 #include "RcppArmadillo.h"
 #include "Model.h"
+#include "BetaVector.h"
 
 template <typename T>
 struct Params {
 
     Model Specs;
-    //std::string ModelType = "L0";
     std::vector<double> ModelParams {0, 0, 0, 2};
     std::size_t MaxIters = 500;
     double Tol = 1e-8;
     char Init = 'z';
     std::size_t RandomStartSize = 10;
-    arma::sp_mat * InitialSol;
+    beta_vector * InitialSol;
     double b0 = 0; // intercept
     char CyclingOrder = 'c';
     std::vector<std::size_t> Uorder;

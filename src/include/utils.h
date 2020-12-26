@@ -2,6 +2,7 @@
 #define L0LEARN_UTILS_H
 #include <vector>
 #include "RcppArmadillo.h"
+#include "BetaVector.h"
 
 
 template <typename T>
@@ -13,6 +14,9 @@ inline T clamp(T x, T low, T high) {
         x = high;
     return x;
 }
+
+beta_vector clamp_by_vector(beta_vector B, const arma::vec& lows, const arma::vec& highs);
+
 
 template <typename T1>
 arma::vec inline matrix_column_get(const arma::mat &mat, T1 col){
