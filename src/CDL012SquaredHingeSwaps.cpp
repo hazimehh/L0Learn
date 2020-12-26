@@ -31,9 +31,12 @@ FitResult<T> CDL012SquaredHingeSwaps<T>::_Fit() {
     this->P.Init = 'u';
     
     bool foundbetter;
+    
     for (std::size_t t = 0; t < this->MaxNumSwaps; ++t) {
+        // Rcpp::Rcout << "Swap Number: " << t << "|mean(onemyxb): " << arma::mean(onemyxb) << "\n";
         arma::sp_mat::const_iterator start = this->B.begin();
         arma::sp_mat::const_iterator end   = this->B.end();
+        
         std::vector<std::size_t> NnzIndices;
         for(arma::sp_mat::const_iterator it = start; it != end; ++it) {
             if (it.row() >= this->NoSelectK)
@@ -90,10 +93,9 @@ FitResult<T> CDL012SquaredHingeSwaps<T>::_Fit() {
                             
                         }
                         
-                        // Can be made much faster (later)
                         Btemp[i] = Binew;
                         double Fnew = Objective(onemyxbnoji, Btemp);
-                        //std::cout<<"Fnew: "<<Fnew<<"Index: "<<i<<std::endl;
+                        
                         if (Fnew < Fmin) {
                             Fmin = Fnew;
                             maxindex = i;

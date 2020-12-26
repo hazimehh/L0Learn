@@ -29,6 +29,8 @@ FitResult<T> CDL012Swaps<T>::_Fit() {
             }
         }
         
+        foundbetter = false;
+        
         // TODO: shuffle NNz Indices to prevent bias.
         //std::shuffle(std::begin(Order), std::end(Order), engine);
         
@@ -63,8 +65,6 @@ FitResult<T> CDL012Swaps<T>::_Fit() {
                 // Value (without considering bounds are solvable in closed form)
                 // Must be clamped to bounds
                 
-                T old_B = T(this->B); // Copy B if swap needs to be "undone"
-                // arma::vec old_r = P.r;
                 this->B[i] = 0;
                 
                 // Bi with No Bounds (nb);
@@ -75,7 +75,7 @@ FitResult<T> CDL012Swaps<T>::_Fit() {
                 // Change initial solution to Swapped value to seed standard CD algorithm.
                 this->P.InitialSol = &(this->B);
                 *this->P.r = *(this->y) - *(this->X) * (this->B) - this->b0;
-                // this->P alread has access to b0.
+                // this->P already has access to b0.
                 
                 // proposed_result object.
                 // Keep tack of previous_best result object
@@ -84,19 +84,10 @@ FitResult<T> CDL012Swaps<T>::_Fit() {
                 
                 // Rcpp::Rcout << "Swap Objective  " <<  result.Objective << " \n";
                 // Rcpp::Rcout << "Old Objective  " <<  objective << " \n";
-                if (result.Objective <= objective){
-                    // Accept Swap
-                    this->B = result.B;
-                    objective = result.Objective;
-                    foundbetter = true;
-                    break;
-                } 
-                // else {
-                    // Reject Swap
-                    // TODO: Fully "clear" the proposed swap from r, B0, ...
-                    // this->B = old_B;
-                    //*P.r = old_r;
-                // }
+                this->B = result.B;
+                objective = result.Objective;
+                foundbetter = true;
+                break;
             }
         }
         

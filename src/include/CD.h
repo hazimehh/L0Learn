@@ -332,7 +332,6 @@ bool CD<T, Derived>::UpdateBiCWMinCheckWithBounds(const std::size_t i, const boo
         if (std::abs(nrb_Bi) > this->lambda1){
             static_cast<Derived*>(this)->ApplyNewBiCWMinCheck(i, old_Bi, bnd_Bi);
             return false;
-            ;;;;;;;;;;;;;
         } else {
             return Cwmin;
         }
