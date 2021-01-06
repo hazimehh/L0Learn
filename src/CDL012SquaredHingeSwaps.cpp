@@ -120,6 +120,7 @@ FitResult<T> CDL012SquaredHingeSwaps<T>::_Fit() {
                 foundbetter = true;
                 break;
             }
+            if (foundbetter){break;}
         }
         
         if(!foundbetter) {

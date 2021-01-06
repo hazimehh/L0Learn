@@ -141,7 +141,7 @@ FitResult<T> CDL012SquaredHinge<T>::_Fit() {
         
         // only way to terminate is by (i) converging on active set and (ii) CWMinCheck
         if ((this->Converged()) && this->CWMinCheck()) {
-                break;
+            break;
         }
     }
     

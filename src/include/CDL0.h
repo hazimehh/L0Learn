@@ -94,8 +94,6 @@ FitResult<T> CDL0<T>::_Fit() {
         this->Order.resize(std::min((int) (n_nonzero(this->B) + this->ScreenSize + this->NoSelectK), (int)(this->p))); // std::min(1000,Order.size())
     }
     
-    bool ActiveSetInitial = this->ActiveSet;
-    
     for (std::size_t t = 0; t < this->MaxIters; ++t) {
         this->Bprev = this->B;
         
@@ -108,7 +106,7 @@ FitResult<T> CDL0<T>::_Fit() {
         }
         
         if (this->Converged()) {
-            if(FirstRestrictedPass && ActiveSetInitial) {
+            if(FirstRestrictedPass) {
                 if (this->CWMinCheck()) {
                     break;
                 }
@@ -118,7 +116,7 @@ FitResult<T> CDL0<T>::_Fit() {
                 this->Order = FullOrder;
                 
             } else {
-                if (this->Stabilized == true && ActiveSetInitial) { // && !SecondPass
+                if (this->Stabilized) { // && !SecondPass
                     if (this->CWMinCheck()) {
                         break;
                     }
@@ -165,8 +163,6 @@ FitResult<T> CDL0<T>::_FitWithBounds() {
         this->Order.resize(std::min((int) (n_nonzero(this->B) + this->ScreenSize + this->NoSelectK), (int)(this->p))); // std::min(1000,Order.size())
     }
     
-    bool ActiveSetInitial = this->ActiveSet;
-    
     for (std::size_t t = 0; t < this->MaxIters; ++t) {
         this->Bprev = this->B;
         
@@ -179,7 +175,7 @@ FitResult<T> CDL0<T>::_FitWithBounds() {
         }
         
         if (this->Converged()) {
-            if(FirstRestrictedPass && ActiveSetInitial) {
+            if(FirstRestrictedPass) {
                 if (this->CWMinCheckWithBounds()) {
                     break;
                 }
@@ -189,7 +185,7 @@ FitResult<T> CDL0<T>::_FitWithBounds() {
                 this->Order = FullOrder;
                 
             } else {
-                if (this->Stabilized == true && ActiveSetInitial) { // && !SecondPass
+                if (this->Stabilized) { // && !SecondPass
                     if (this->CWMinCheckWithBounds()) {
                         break;
                     }

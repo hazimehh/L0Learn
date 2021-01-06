@@ -98,8 +98,6 @@ FitResult<T> CDL012<T>::_Fit() {
         this->Order.resize(std::min((int) (n_nonzero(this->B) + this->ScreenSize + this->NoSelectK), (int)(this->p)));
     }
     
-    bool ActiveSetInitial = this->ActiveSet;
-    
     for (std::size_t t = 0; t < this->MaxIters; ++t) {
         this->Bprev = this->B;
         
@@ -112,9 +110,8 @@ FitResult<T> CDL012<T>::_Fit() {
             
         }
         
-        //B.print();
         if (this->Converged()) {
-            if(FirstRestrictedPass && ActiveSetInitial) {
+            if(FirstRestrictedPass) {
                 if (this->CWMinCheck()) {
                     break;
                 }
@@ -123,7 +120,7 @@ FitResult<T> CDL012<T>::_Fit() {
                 this->Stabilized = false;
                 this->ActiveSet = true;
             } else {
-                if (this->Stabilized && ActiveSetInitial) { // && !SecondPass
+                if (this->Stabilized) { // && !SecondPass
                     if (this->CWMinCheck()) {
                         break;
                     }
@@ -166,8 +163,6 @@ FitResult<T> CDL012<T>::_FitWithBounds() {
         this->Order.resize(std::min((int) (n_nonzero(this->B) + this->ScreenSize + this->NoSelectK), (int)(this->p)));
     }
     
-    bool ActiveSetInitial = this->ActiveSet;
-    
     for (std::size_t t = 0; t < this->MaxIters; ++t) {
         this->Bprev = this->B;
         
@@ -182,7 +177,7 @@ FitResult<T> CDL012<T>::_FitWithBounds() {
         
         //B.print();
         if (this->Converged()) {
-            if(FirstRestrictedPass && ActiveSetInitial) {
+            if(FirstRestrictedPass) {
                 if (this->CWMinCheckWithBounds()) {
                     break;
                 }
@@ -191,7 +186,7 @@ FitResult<T> CDL012<T>::_FitWithBounds() {
                 this->Stabilized = false;
                 this->ActiveSet = true;
             } else {
-                if (this->Stabilized && ActiveSetInitial) { // && !SecondPass
+                if (this->Stabilized) { // && !SecondPass
                     if (this->CWMinCheckWithBounds()) {
                         break;
                     }

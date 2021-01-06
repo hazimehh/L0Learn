@@ -42,22 +42,34 @@ FitResult<T> CDL012LogisticSwaps<T>::_Fit() {
         
         foundbetter = false;
         
+        // TODO: Check if this should be Templated Operation
+        arma::mat ExpyXBnojs = arma::zeros(this->n, NnzIndices.size());
+        
+        int j_index = -1;
+        for (auto& j : NnzIndices)
+        {
+            // Remove NnzIndices[j]
+            ++j_index;
+            ExpyXBnojs.col(j_index) = ExpyXB % arma::exp( - this->B.at(j) * matrix_column_get(*(this->Xy), j));
+
+        }
+        arma::mat gradients = - 1/(1 + ExpyXBnojs).t() * *Xy;
+        arma::mat abs_gradients = arma::abs(gradients);
+        
+        
+        j_index = -1;
         for (auto& j : NnzIndices) {
             // Set B[j] = 0
-            arma::vec ExpyXBnoj = ExpyXB % arma::exp( - this->B[j] * matrix_column_get(*(this->Xy), j));
-            
-            arma::rowvec gradient;
-            { // Scope used to automatically de-allocate objects
-            arma::vec temp_gradient = 1 + ExpyXBnoj;
-            T divided_matrix = matrix_vector_divide(*Xy, temp_gradient);
-            gradient = - matrix_column_sums(divided_matrix);   
-            }
+            ++j_index;
+            arma::vec ExpyXBnoj = ExpyXBnojs.col(j_index);
+            arma::rowvec gradient = gradients.row(j_index);
+            arma::rowvec abs_gradient = abs_gradients.row(j_index);
             
             arma::uvec indices = arma::sort_index(arma::abs(gradient), "descend");
             foundbetter_i = false;
             
             // TODO: make sure this scans at least 100 coordinates from outside supp (now it does not)
-            for(std::size_t ll = 0; ll < std::min(100, (int) this->p); ++ll) {
+            for(std::size_t ll = 0; ll < std::min(50, (int) this->p); ++ll) {
                 std::size_t i = indices(ll);
                 
                 if(this->B[i] == 0 && i >= this->NoSelectK) {
@@ -79,9 +91,10 @@ FitResult<T> CDL012LogisticSwaps<T>::_Fit() {
                     double Binew = std::copysign(z, x);
                     // double Binew = clamp(std::copysign(z, x), this->Lows[i], this->Highs[i]); // no need to check if >= sqrt(2lambda_0/Lc)
                     
-                    while(!converged && innerindex < 20  && ObjTemp >= Fmin) { // ObjTemp >= Fmin
+                    while(!converged && innerindex < 10  && ObjTemp >= Fmin) { // ObjTemp >= Fmin
                         ExpyXBnoji %= arma::exp( (Binew - Biold) *  matrix_column_get(*Xy, i));
-                        partial_i = - arma::sum( matrix_column_get(*Xy, i) / (1 + ExpyXBnoji) ) + twolambda2 * Binew;
+                        //partial_i = - arma::sum( matrix_column_get(*Xy, i) / (1 + ExpyXBnoji) ) + twolambda2 * Binew;
+                        partial_i = - arma::dot( matrix_column_get(*Xy, i), 1/(1 + ExpyXBnoji) ) + twolambda2 * Binew;
                         
                         if (std::abs((Binew - Biold)/Biold) < 0.0001) {
                             converged = true;
@@ -135,7 +148,9 @@ FitResult<T> CDL012LogisticSwaps<T>::_Fit() {
             //auto end2 = std::chrono::high_resolution_clock::now();
             //std::cout<<"restricted:  "<<std::chrono::duration_cast<std::chrono::milliseconds>(end2-start2).count() << " ms " << std::endl;
             
-            //if (foundbetter){break;}
+            if (foundbetter){
+                break;
+            }
             
         }
         

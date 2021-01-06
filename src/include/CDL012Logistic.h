@@ -44,7 +44,12 @@ class CDL012Logistic : public CD<T, CDL012Logistic<T>> {
 
 template <class T>
 inline double CDL012Logistic<T>::GetBiGrad(const std::size_t i){
-    return -arma::sum( matrix_column_get(*(this->Xy), i) / (1 + ExpyXB) ) + twolambda2 * this->B[i];
+    /*
+     * Notes:
+     *      When called in CWMinCheck, we know that this->B[i] is 0.
+     */
+    return -arma::dot(matrix_column_get(*(this->Xy), i), 1 / (1 + ExpyXB) ) + twolambda2 * this->B[i];
+    //return -arma::sum( matrix_column_get(*(this->Xy), i) / (1 + ExpyXB) ) + twolambda2 * this->B[i];
 }
 
 template <class T>
@@ -111,7 +116,8 @@ FitResult<T> CDL012Logistic<T>::_Fit() {
         // Update the intercept
         if (this->intercept){
             const double b0old = this->b0;
-            const double partial_b0 = - arma::sum( *(this->y) / (1 + ExpyXB) );
+            // const double partial_b0 = - arma::sum( *(this->y) / (1 + ExpyXB) );
+            const double partial_b0 = - arma::dot( *(this->y) , 1/(1 + ExpyXB) );
             this->b0 -= partial_b0 / (this->n * LipschitzConst); // intercept is not regularized
             ExpyXB %= arma::exp( (this->b0 - b0old) * *(this->y));
         }
@@ -154,7 +160,8 @@ FitResult<T> CDL012Logistic<T>::_FitWithBounds() { // always uses active sets
         // Update the intercept
         if (this->intercept){
             const double b0old = this->b0;
-            const double partial_b0 = - arma::sum( *(this->y) / (1 + ExpyXB) );
+            // const double partial_b0 = - arma::sum( *(this->y) / (1 + ExpyXB) );
+            const double partial_b0 = - arma::dot( *(this->y) , 1/(1 + ExpyXB) );
             this->b0 -= partial_b0 / (this->n * LipschitzConst); // intercept is not regularized
             ExpyXB %= arma::exp( (this->b0 - b0old) * *(this->y));
         }
