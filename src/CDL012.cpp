@@ -12,18 +12,14 @@ CDL012::CDL012(const arma::mat& Xi, const arma::vec& yi, const Params& P) : CD(X
 FitResult CDL012::Fit()
 {
 
-    // bool SecondPass = false;
 
     objective = Objective(r, B);
 
     std::vector<unsigned int> FullOrder = Order;
-    bool FirstRestrictedPass = true;
     if (ActiveSet)
     {
         Order.resize(std::min((int) (B.n_nonzero + ScreenSize + NoSelectK), (int)(p))); // std::min(1000,Order.size())
     }
-
-    bool ActiveSetInitial = ActiveSet;
 
 
     for (unsigned int t = 0; t < MaxIters; ++t)
@@ -54,37 +50,12 @@ FitResult CDL012::Fit()
             }
         }
 
-        //B.print();
+        SupportStabilized();
+        // only way to terminate is by (i) converging on active set and (ii) CWMinCheck
         if (Converged())
         {
-            if(FirstRestrictedPass && ActiveSetInitial)
-            {
-                if (CWMinCheck()) {break;}
-                FirstRestrictedPass = false;
-                Order = FullOrder;
-                Stabilized = false;
-                ActiveSet = true;
-            }
-
-            else
-            {
-                if (Stabilized == true && ActiveSetInitial)  // && !SecondPass
-                {
-                    if (CWMinCheck()) {break;}
-                    Order = OldOrder; // Recycle over all coordinates to make sure the achieved point is a CW-min.
-                    //SecondPass = true; // a 2nd pass will be performed
-                    Stabilized = false;
-                    ActiveSet = true;
-                }
-
-                else
-                {
-                    break;
-                }
-            }
-
+            if (CWMinCheck()) {break;}
         }
-        if (ActiveSet) {SupportStabilized();}
 
     }
 
@@ -130,6 +101,7 @@ bool CDL012::CWMinCheck()
             B[i] = std::copysign(z, x);
             r -= X->unsafe_col(i) * B[i];
             Cwmin = false;
+            Order.push_back(i);
         }
     }
     return Cwmin;
