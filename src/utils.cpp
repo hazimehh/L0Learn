@@ -1,14 +1,13 @@
 #include "utils.h"
 
-beta_vector clamp_by_vector(beta_vector B, const arma::vec& lows, const arma::vec& highs){
-    std::size_t n = B.n_rows;
+void clamp_by_vector(arma::vec &B, const arma::vec& lows, const arma::vec& highs){
+    const std::size_t n = B.n_rows;
     for (std::size_t i = 0; i < n; i++){
         B.at(i) = clamp(B.at(i), lows.at(i), highs.at(i));
     }
-    return B;
 }
 
-arma::sp_mat clamp_by_vector(arma::sp_mat B, const arma::vec lows, const arma::vec highs){
+void clamp_by_vector(arma::sp_mat &B, const arma::vec& lows, const arma::vec& highs){
     // See above implementation without filter for error.
     auto begin = B.begin();
     auto end = B.end();
@@ -24,12 +23,10 @@ arma::sp_mat clamp_by_vector(arma::sp_mat B, const arma::vec lows, const arma::v
                               inds.end());
     for (auto& it : inds) { 
         double B_item = B(it, 0);
-        double low = lows(it);
-        double high = highs(it);
+        const double low = lows(it);
+        const double high = highs(it);
         B(it, 0) = clamp(B_item, low, high);
     }
-    
-    return B;
 }
 
 arma::rowvec matrix_normalize(arma::sp_mat &mat_norm){
@@ -76,10 +73,10 @@ arma::rowvec matrix_normalize(arma::mat& mat_norm){
     return scaleX;
 }
 
-std::tuple<arma::mat, arma::rowvec> matrix_center(const arma::mat& X, bool intercept){
+arma::rowvec matrix_center(const arma::mat& X, arma::mat& X_normalized, 
+                           bool intercept){
     auto p = X.n_cols;
     arma::rowvec meanX;
-    arma::mat X_normalized;
     
     if (intercept){
         meanX = arma::mean(X, 0);
@@ -89,13 +86,13 @@ std::tuple<arma::mat, arma::rowvec> matrix_center(const arma::mat& X, bool inter
         X_normalized = arma::mat(X);
     }
     
-    return std::make_tuple(X_normalized, meanX);
+    return meanX;
 }
 
-std::tuple<arma::sp_mat, arma::rowvec> matrix_center(const arma::sp_mat& X,
-                                                     bool intercept){
+arma::rowvec matrix_center(const arma::sp_mat& X, arma::sp_mat& X_normalized, 
+                           bool intercept){
     auto p = X.n_cols;
     arma::rowvec meanX = arma::zeros<arma::rowvec>(p);
-    arma::sp_mat X_normalized = arma::sp_mat(X);
-    return std::make_tuple(X_normalized, meanX);
+    X_normalized = arma::sp_mat(X);
+    return meanX;
 }

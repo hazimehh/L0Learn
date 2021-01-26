@@ -11,16 +11,14 @@ std::tuple<beta_vector, double> DeNormalize(beta_vector & B_scaled,
                                              arma::vec & meanX, double meany);
 
 template <typename T>
-std::tuple<T, arma::vec, arma::vec, double, double>  Normalize(const T& X, 
-                                                       const arma::vec& y, 
-                                                       arma::vec & y_normalized, 
-                                                       bool Normalizey, 
-                                                       bool intercept) {
+std::tuple<arma::vec, arma::vec, double, double>  Normalize(const T& X, 
+                                                            const arma::vec& y, 
+                                                            T& X_normalized, 
+                                                            arma::vec & y_normalized, 
+                                                            bool Normalizey, 
+                                                            bool intercept) {
     
-    auto martrix_center_return = matrix_center(X, intercept);
-    T X_normalized = std::get<0>(martrix_center_return);
-    arma::rowvec meanX = std::get<1>(martrix_center_return);
-    
+    arma::rowvec meanX = matrix_center(X, X_normalized, intercept);
     arma::rowvec scaleX = matrix_normalize(X_normalized);
     
     arma::vec BetaMultiplier;
@@ -48,7 +46,7 @@ std::tuple<T, arma::vec, arma::vec, double, double>  Normalize(const T& X,
         BetaMultiplier = 1 / (scaleX.t()); // transpose scale to get a col vec
         scaley = 1;
     }
-    return std::make_tuple(X_normalized, BetaMultiplier, meanX.t(), meany, scaley);
+    return std::make_tuple(BetaMultiplier, meanX.t(), meany, scaley);
 }
 
 #endif // NORMALIZE_H

@@ -32,12 +32,20 @@
 L0Learn.cvfit <- function(x,y, loss="SquaredError", penalty="L0", algorithm="CD", 
                           maxSuppSize=100, nLambda=100, nGamma=10, gammaMax=10, 
                           gammaMin=0.0001, partialSort = TRUE, maxIters=200,
-                          tol=1e-6, activeSet=TRUE, activeSetNum=3, maxSwaps=100, 
+                          rtol=1e-6, atol=1e-9, activeSet=TRUE, activeSetNum=3, maxSwaps=100, 
                           scaleDownFactor=0.8, screenSize=1000, autoLambda=NULL, 
                           lambdaGrid = list(), nFolds=10, seed=1, excludeFirstK=0, 
                           intercept=TRUE, lows=-Inf, highs=Inf)
 {
 	set.seed(seed)
+    
+    if ((rtol < 0) || (rtol >= 1)){
+        stop("The specified rtol parameter must exist in [0, 1)")
+    }
+    
+    if (atol < 0){
+        stop("The specified atol parameter must exist in [0, INF)")
+    }
 
 	# Some sanity checks for the inputs
 	if ( !(loss %in% c("SquaredError","Logistic","SquaredHinge")) ){
@@ -57,17 +65,28 @@ L0Learn.cvfit <- function(x,y, loss="SquaredError", penalty="L0", algorithm="CD"
 			y = as.numeric(levels(y))[y]
 
 			if (penalty == "L0"){
-					# Pure L0 is not supported for classification
-					# Below we add a small L2 component.
-					penalty = "L0L2"
-					nGamma = 1
-					gammaMax = 1e-7
-					gammaMin = 1e-7
+			    if ((length(lambdaGrid) != 0) && (length(lambdaGrid) != 1)){
+			        # If this error checking was left to the lower section, it would confuse users as 
+			        # we are converting L0 to L0L2 with small L2 penalty.
+			        # Here we must check if lambdaGrid is supplied (And thus use 'autolambda')
+			        # If 'lambdaGrid' is supplied, we must only supply 1 list of lambda values
+			        
+			        
+			        stop("L0 Penalty requires 'lambdaGrid' to be a list of length 1. 
+    			             Where lambdaGrid[[1]] is a list or vector of decreasing positive values.")
+			    }
+			    penalty = "L0L2"
+			    nGamma = 1
+			    gammaMax = 1e-7
+			    gammaMin = 1e-7
 			}
 	}
     
     # Handle Lambda Grids:
     if (length(lambdaGrid) != 0){
+        if (!is.null(autoLambda) && !autoLambda){
+            warning("In L0Learn V2.0.0, autoLambda is ignored and inferred if 'lambdaGrid' is supplied", call.=FALSE)
+        }
         autoLambda = FALSE
     } else {
         autoLambda = TRUE
@@ -81,7 +100,8 @@ L0Learn.cvfit <- function(x,y, loss="SquaredError", penalty="L0", algorithm="CD"
         }
         current = Inf
         for (nxt in lambdaGrid[[1]]){
-            if (nxt >= current){
+            if (nxt > current){
+                # This must be > instead of >= to allow first iteration L0L1 lambdas of all 0s to be valid
                 bad_lambdaGrid = TRUE 
                 break
             }
@@ -103,13 +123,16 @@ L0Learn.cvfit <- function(x,y, loss="SquaredError", penalty="L0", algorithm="CD"
         # Covers L0L1, L0L2 cases
         bad_lambdaGrid = FALSE
         if (length(lambdaGrid) != nGamma){
-            bad_lambdaGrid = TRUE
+            warning("In L0Learn V2.0.0, nGamma is ignored and replaced with length(lambdaGrid)", call.=FALSE)
+            nGamma = length(lambdaGrid)
+            # bad_lambdaGrid = TRUE # Remove in V2.0,0
         }
         
         for (i in 1:length(lambdaGrid)){
             current = Inf
             for (nxt in lambdaGrid[[i]]){
-                if (nxt >= current){
+                if (nxt > current){
+                    # This must be > instead of >= to allow first iteration L0L1 lambdas of all 0s to be valid
                     bad_lambdaGrid = TRUE 
                     break
                 }
@@ -165,13 +188,24 @@ L0Learn.cvfit <- function(x,y, loss="SquaredError", penalty="L0", algorithm="CD"
         }
         
     }
+    
+    M = list()
+    if (is(x, "sparseMatrix")){
+        M <- .Call('_L0Learn_L0LearnCV_sparse', PACKAGE = 'L0Learn', x, y, loss, penalty,
+                   algorithm, maxSuppSize, nLambda, nGamma, gammaMax, gammaMin,
+                   partialSort, maxIters, tol, atol, activeSet, activeSetNum, maxSwaps, 
+                   scaleDownFactor, screenSize, !autoLambda, lambdaGrid, nFolds, 
+                   seed, excludeFirstK, intercept, withBounds, lows, highs)
+    } else {
+        M <- .Call('_L0Learn_L0LearnCV_dense', PACKAGE = 'L0Learn', x, y, loss, penalty,
+                   algorithm, maxSuppSize, nLambda, nGamma, gammaMax, gammaMin,
+                   partialSort, maxIters, tol, atol, activeSet, activeSetNum, maxSwaps, 
+                   scaleDownFactor, screenSize, !autoLambda, lambdaGrid, nFolds, 
+                   seed, excludeFirstK, intercept, withBounds, lows, highs)
+    }
 
 	# The C++ function uses LambdaU = 1 for user-specified grid. In R, we use AutoLambda0 = 0 for user-specified grid (thus the negation when passing the parameter to the function below)
-	M <- .Call('_L0Learn_L0LearnCV', PACKAGE = 'L0Learn', x, y, loss, penalty,
-	           algorithm, maxSuppSize, nLambda, nGamma, gammaMax, gammaMin,
-	           partialSort, maxIters, tol, activeSet, activeSetNum, maxSwaps, 
-	           scaleDownFactor, screenSize, !autoLambda, lambdaGrid, nFolds, 
-	           seed, excludeFirstK, intercept, withBounds, lows, highs)
+
 
 	settings = list()
 	settings[[1]] = intercept # Settings only contains intercept for now. Might include additional elements later.

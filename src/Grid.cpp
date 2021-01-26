@@ -5,8 +5,8 @@ template <class T>
 Grid<T>::Grid(const T& X, const arma::vec& y, const GridParams<T>& PGi) {
     PG = PGi;
     
-    std::tie(Xscaled, BetaMultiplier, meanX, meany, scaley) = Normalize(X, 
-             y, yscaled, !PG.P.Specs.Classification, PG.intercept);
+    std::tie(BetaMultiplier, meanX, meany, scaley) = Normalize(X, 
+             y, Xscaled, yscaled, !PG.P.Specs.Classification, PG.intercept);
     
     // Must rescale bounds by BetaMultiplier in order for final result to conform to bounds
     if (PG.P.withBounds){

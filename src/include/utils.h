@@ -15,7 +15,9 @@ inline T clamp(T x, T low, T high) {
     return x;
 }
 
-beta_vector clamp_by_vector(beta_vector B, const arma::vec& lows, const arma::vec& highs);
+void clamp_by_vector(arma::vec &B, const arma::vec& lows, const arma::vec& highs);
+
+void clamp_by_vector(arma::sp_mat &B, const arma::vec& lows, const arma::vec& highs);
 
 
 template <typename T1>
@@ -122,12 +124,8 @@ arma::rowvec matrix_normalize(arma::sp_mat &mat_norm);
 
 arma::rowvec matrix_normalize(arma::mat &mat_norm);
 
-std::tuple<arma::mat, arma::rowvec> matrix_center(const arma::mat& X,
-                                                  bool intercept);
+arma::rowvec matrix_center(const arma::mat& X, arma::mat& X_normalized, bool intercept);
 
-std::tuple<arma::sp_mat, arma::rowvec> matrix_center(const arma::sp_mat& X,
-                                                     bool intercept);
-
-arma::sp_mat clamp_by_vector(arma::sp_mat, const arma::vec, const arma::vec);
+arma::rowvec matrix_center(const arma::sp_mat& X, arma::sp_mat& X_normalized, bool intercept);
 
 #endif //L0LEARN_UTILS_H

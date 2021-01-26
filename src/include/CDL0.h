@@ -63,6 +63,7 @@ template <class T>
 inline void CDL0<T>::ApplyNewBiCWMinCheck(const std::size_t i, const double old_Bi, const double new_Bi){
     this->r += matrix_column_mult(*(this->X), i, old_Bi - new_Bi);
     this->B[i] = new_Bi;
+    this->Order.push_back(i);
 }
 
 template <class T>
@@ -85,10 +86,10 @@ CDL0<T>::CDL0(const T& Xi, const arma::vec& yi, const Params<T>& P) : CD<T, CDL0
 
 template <class T>
 FitResult<T> CDL0<T>::_Fit() {
+    // Rcpp::Rcout << "CDL0 Fit:";
     this->objective = Objective(this->r, this->B);
     
     std::vector<std::size_t> FullOrder = this->Order;
-    bool FirstRestrictedPass = true;
     
     if (this->ActiveSet) {
         this->Order.resize(std::min((int) (n_nonzero(this->B) + this->ScreenSize + this->NoSelectK), (int)(this->p))); // std::min(1000,Order.size())
@@ -101,39 +102,19 @@ FitResult<T> CDL0<T>::_Fit() {
             this->UpdateSparse_b0(this->r);
         }
         
+        //Rcpp::Rcout << "{" << this->Order.size() << "}";
         for (auto& i : this->Order) {
             this->UpdateBi(i);
         }
         
-        if (this->Converged()) {
-            if(FirstRestrictedPass) {
-                if (this->CWMinCheck()) {
-                    break;
-                }
-                FirstRestrictedPass = false;
-                this->Stabilized = false;
-                this->ActiveSet = true;
-                this->Order = FullOrder;
-                
-            } else {
-                if (this->Stabilized) { // && !SecondPass
-                    if (this->CWMinCheck()) {
-                        break;
-                    }
-                    this->Order = this->OldOrder; // Recycle over all coordinates to make sure the achieved point is a CW-min.
-                    //SecondPass = true; // a 2nd pass will be performed
-                    this->Stabilized = false;
-                    this->ActiveSet = true;
-                } else {
-                    break;
-                }
-            }
-        }
+        this->RestrictSupport();
         
-        if (this->ActiveSet) {
-            this->SupportStabilized();
+        if (this->isConverged() && this->CWMinCheck()) {
+            //Rcpp::Rcout << " |Converged on iter:" << t << "CWMinCheck \n";
+            break;
         }
     }
+                
     
     // Re-optimize b0 after convergence.
     if (this->isSparse && this->intercept){
@@ -151,13 +132,12 @@ FitResult<T> CDL0<T>::_Fit() {
 
 template <class T>
 FitResult<T> CDL0<T>::_FitWithBounds() {
-    
-    this->B = clamp_by_vector(this->B, this->Lows, this->Highs);
+    // Rcpp::Rcout << "CDL0 Fit: ";
+    clamp_by_vector(this->B, this->Lows, this->Highs);
     
     this->objective = Objective(this->r, this->B);
     
     std::vector<std::size_t> FullOrder = this->Order;
-    bool FirstRestrictedPass = true;
     
     if (this->ActiveSet) {
         this->Order.resize(std::min((int) (n_nonzero(this->B) + this->ScreenSize + this->NoSelectK), (int)(this->p))); // std::min(1000,Order.size())
@@ -174,33 +154,11 @@ FitResult<T> CDL0<T>::_FitWithBounds() {
             this->UpdateBiWithBounds(i);
         }
         
-        if (this->Converged()) {
-            if(FirstRestrictedPass) {
-                if (this->CWMinCheckWithBounds()) {
-                    break;
-                }
-                FirstRestrictedPass = false;
-                this->Stabilized = false;
-                this->ActiveSet = true;
-                this->Order = FullOrder;
-                
-            } else {
-                if (this->Stabilized) { // && !SecondPass
-                    if (this->CWMinCheckWithBounds()) {
-                        break;
-                    }
-                    this->Order = this->OldOrder; // Recycle over all coordinates to make sure the achieved point is a CW-min.
-                    //SecondPass = true; // a 2nd pass will be performed
-                    this->Stabilized = false;
-                    this->ActiveSet = true;
-                } else {
-                    break;
-                }
-            }
-        }
+        this->RestrictSupport();
         
-        if (this->ActiveSet) {
-            this->SupportStabilized();
+        if (this->isConverged() && this->CWMinCheckWithBounds()) {
+            // Rcpp::Rcout << "Converged on iter:" << t << "\n";
+            break;
         }
     }
     

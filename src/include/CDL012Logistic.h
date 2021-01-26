@@ -126,10 +126,10 @@ FitResult<T> CDL012Logistic<T>::_Fit() {
             this->UpdateBi(i);
         }
         
-        this->SupportStabilized();
+        this->RestrictSupport();
         
         // only way to terminate is by (i) converging on active set and (ii) CWMinCheck
-        if (this->Converged() && this->CWMinCheck()) {
+        if (this->isConverged() && this->CWMinCheck()) {
             break;
         }
     }
@@ -147,7 +147,8 @@ FitResult<T> CDL012Logistic<T>::_Fit() {
 template <class T>
 FitResult<T> CDL012Logistic<T>::_FitWithBounds() { // always uses active sets
     
-    this->B = clamp_by_vector(this->B, this->Lows, this->Highs);
+    //arma::sp_mat B2 = this->B;
+    clamp_by_vector(this->B, this->Lows, this->Highs);
     
     this->objective = Objective(); // Implicitly used ExpyXB
     
@@ -170,10 +171,10 @@ FitResult<T> CDL012Logistic<T>::_FitWithBounds() { // always uses active sets
             this->UpdateBiWithBounds(i);
         }
         
-        this->SupportStabilized();
+        this->RestrictSupport();
         
         // only way to terminate is by (i) converging on active set and (ii) CWMinCheck
-        if (this->Converged() && this->CWMinCheckWithBounds()) {
+        if (this->isConverged() && this->CWMinCheckWithBounds()) {
             break;
         }
     }

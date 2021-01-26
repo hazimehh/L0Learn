@@ -8,6 +8,8 @@
 #include "Model.h"
 #include "utils.h"
 
+constexpr double lambda1_fudge_factor = 1e-15;
+
 
 template<class T>
 class CDBase {
@@ -51,7 +53,8 @@ class CDBase {
         char CyclingOrder;
         std::size_t MaxIters;
         std::size_t CurrentIters; // current number of iterations - maintained by Converged()
-        double Tol;
+        double rtol;
+        double atol;
         arma::vec Lows;
         arma::vec Highs;
         bool ActiveSet;
@@ -141,11 +144,11 @@ class CD : public CDBase<T>{
         
         bool UpdateBiCWMinCheckWithBounds(const std::size_t i, const bool Cwmin);
         
-        void SupportStabilized();
+        void RestrictSupport();
         
         void UpdateSparse_b0(arma::vec &r);
         
-        bool Converged();
+        bool isConverged();
         
         bool CWMinCheck();
         
@@ -262,29 +265,23 @@ void CD<T, Derived>::UpdateBi(const std::size_t i){
     
     const double new_Bi = std::copysign(reg_Bi, nrb_Bi); 
     
-    // Rcpp::Rcout << "reg_Bi: " << reg_Bi << "\n";
-    // Rcpp::Rcout << "new_Bi: " << new_Bi << "\n";
-    // Rcpp::Rcout << "this->thr: " << this->thr << "\n";
-    
     if (i < this->NoSelectK){
         // L0 penalty is not applied for NoSelectK Variables.
         // Only L1 and L2 (if either are used)
         if (std::abs(nrb_Bi) > this->lambda1){
-            // Rcpp::Rcout << "No Select k, Old: " << old_Bi << ", New: " << new_Bi << "\n";
             static_cast<Derived*>(this)->ApplyNewBi(i, old_Bi, new_Bi);
         } else if (old_Bi != 0) {
-            // Rcpp::Rcout << "No Select k, Old: " << old_Bi << ", New: " << 0 << "\n";
             static_cast<Derived*>(this)->ApplyNewBi(i, old_Bi, 0);
         }
-    } else if (reg_Bi < this->thr + 1e-15){
+    } else if (reg_Bi < this->thr + lambda1_fudge_factor){
         // If ideal non-bounded reg_Bi is less than threshold, coefficient is not worth setting.
         if (old_Bi != 0){
-            // Rcpp::Rcout << "Below Thresh, Old: " << old_Bi << ", New: " << 0 << "\n";
             static_cast<Derived*>(this)->ApplyNewBi(i, old_Bi, 0);
+            // Rcpp::Rcout << "Z" << i <<" ";
         }
     } else { 
-        // Rcpp::Rcout << "Old: " << old_Bi << ", New: " << new_Bi << "\n";
         static_cast<Derived*>(this)->ApplyNewBi(i, old_Bi, new_Bi);
+        // Rcpp::Rcout << "NZ" << i <<" ";
     }
 }
 
@@ -300,17 +297,10 @@ bool CD<T, Derived>::UpdateBiCWMinCheck(const std::size_t i, const bool Cwmin){
     const double reg_Bi = static_cast<Derived*>(this)->GetBiReg(nrb_Bi);
     const double new_Bi = std::copysign(reg_Bi, nrb_Bi);
     
-    if (i < this->NoSelectK){
-        if (std::abs(nrb_Bi) > this->lambda1){
-            static_cast<Derived*>(this)->ApplyNewBiCWMinCheck(i, old_Bi, reg_Bi);
-            return false;
-        } else {
-            return Cwmin;
-        }
-        
-    } else if (reg_Bi < this->thr){
+    if (reg_Bi < this->thr + lambda1_fudge_factor){
         return Cwmin;
     } else {
+        // Rcpp::Rcout << "Old B[" << i << "] = " << old_Bi << ", New B[" << i << "] = " << new_Bi << "\n";
         static_cast<Derived*>(this)->ApplyNewBiCWMinCheck(i, old_Bi, new_Bi);
         return false;
     }
@@ -329,15 +319,7 @@ bool CD<T, Derived>::UpdateBiCWMinCheckWithBounds(const std::size_t i, const boo
     const double bnd_Bi = clamp(std::copysign(reg_Bi, nrb_Bi),
                                 this->Lows[i], this->Highs[i]); 
     
-    if (i < this->NoSelectK){
-        if (std::abs(nrb_Bi) > this->lambda1){
-            static_cast<Derived*>(this)->ApplyNewBiCWMinCheck(i, old_Bi, bnd_Bi);
-            return false;
-        } else {
-            return Cwmin;
-        }
-        
-    } else if (reg_Bi < this->thr){
+    if (reg_Bi < this->thr){
         return Cwmin;
     } else {
         
@@ -363,7 +345,7 @@ bool CD<T, Derived>::UpdateBiCWMinCheckWithBounds(const std::size_t i, const boo
 template<class T>
 CDBase<T>::CDBase(const T& Xi, const arma::vec& yi, const Params<T>& P) :
     ModelParams{P.ModelParams}, CyclingOrder{P.CyclingOrder}, MaxIters{P.MaxIters},
-    Tol{P.Tol}, ActiveSet{P.ActiveSet}, ActiveSetNum{P.ActiveSetNum} 
+    rtol{P.rtol}, atol{P.atol}, ActiveSet{P.ActiveSet}, ActiveSetNum{P.ActiveSetNum} 
     {
         
         this->lambda0 = P.ModelParams[0];
@@ -391,23 +373,9 @@ CDBase<T>::CDBase(const T& Xi, const arma::vec& yi, const Params<T>& P) :
         
         if (P.Init == 'u') {
             this->B = *(P.InitialSol);
-        } else if (P.Init == 'r') {
-            arma::urowvec row_indices = arma::randi<arma::urowvec>(P.RandomStartSize, arma::distr_param(0, p - 1));
-            row_indices = arma::unique(row_indices);
-            auto rsize = row_indices.n_cols;
-            
-            arma::umat indices(2, rsize);
-            indices.row(0) = row_indices;
-            indices.row(1) = arma::zeros<arma::urowvec>(rsize);
-            
-            arma::vec values = arma::randu<arma::vec>(rsize) * 2 - 1; // uniform(-1,1)
-            
-            arma::sp_mat tempB = arma::sp_mat(false, indices, values, p, 1, false, false);
-            
-            this->B = beta_vector(tempB); // Convert Sparse Matrix to beta_vector
-            
         } else {
-            this->B = arma::zeros<beta_vector>(p);
+            //this->B = arma::zeros<beta_vector>(p);
+            this->B = this->B.zeros(p);
         }
         
         if (CyclingOrder == 'u') {
@@ -453,19 +421,20 @@ void CD<T, Derived>::UpdateSparse_b0(arma::vec& r){
 
 
 template<class T, class Derived>
-bool CD<T, Derived>::Converged() {
+bool CD<T, Derived>::isConverged() {
     this->CurrentIters += 1; // keeps track of the number of calls to Converged
-    double objectiveold = this->objective;
+    const double objectiveold = this->objective;
     this->objective = this->Objective();
-    return std::abs(objectiveold - this->objective) <= this->Tol*objectiveold; 
+    
+    // Rcpp::Rcout << "Old: "<< objectiveold << ", New: " << this->objective << "\n";
+    // Rcpp::Rcout << "Exit 1: " << (std::abs(objectiveold - this->objective) <= this->rtol*objectiveold) << ", Exit 2: " << (this->objective <= 1e-12) << "\n";
+    return std::abs(objectiveold - this->objective) <= this->rtol*objectiveold || this->objective <= this->atol; 
 }
 
 template<class T, class Derived>
-void CD<T, Derived>::SupportStabilized() {
+void CD<T, Derived>::RestrictSupport() {
     
-    bool SameSupp = has_same_support(this->B, this->Bprev);
-    
-    if (SameSupp) {
+    if (has_same_support(this->B, this->Bprev)) {
         this->SameSuppCounter += 1;
         
         if (this->SameSuppCounter == this->ActiveSetNum - 1) {
@@ -523,6 +492,8 @@ bool CD<T, Derived>::CWMinCheck() {
         // std::this_thread::sleep_for(std::chrono::milliseconds(100));
         Cwmin = this->UpdateBiCWMinCheck(i, Cwmin);
     }
+    
+    // Rcpp::Rcout << "CWMinCheckL " << Cwmin << "\n";
     
     return Cwmin;
 }

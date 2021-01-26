@@ -137,10 +137,10 @@ FitResult<T> CDL012SquaredHinge<T>::_Fit() {
             this->UpdateBi(i);
         }
         
-        this->SupportStabilized();
+        this->RestrictSupport();
         
         // only way to terminate is by (i) converging on active set and (ii) CWMinCheck
-        if ((this->Converged()) && this->CWMinCheck()) {
+        if ((this->isConverged()) && this->CWMinCheck()) {
             break;
         }
     }
@@ -158,10 +158,9 @@ FitResult<T> CDL012SquaredHinge<T>::_Fit() {
 template <class T>
 FitResult<T> CDL012SquaredHinge<T>::_FitWithBounds() {
     
-    this->B = clamp_by_vector(this->B, this->Lows, this->Highs);
+    clamp_by_vector(this->B, this->Lows, this->Highs);
     
     this->objective = Objective(); // Implicitly uses onemyx
-    
     
     std::vector<std::size_t> FullOrder = this->Order; // never used in LR
     this->Order.resize(std::min((int) (n_nonzero(this->B) + this->ScreenSize + this->NoSelectK), (int)(this->p)));
@@ -184,10 +183,10 @@ FitResult<T> CDL012SquaredHinge<T>::_FitWithBounds() {
             this->UpdateBiWithBounds(i);
         }
         
-        this->SupportStabilized();
+        this->RestrictSupport();
         
         // only way to terminate is by (i) converging on active set and (ii) CWMinCheck
-        if (this->Converged()) {
+        if (this->isConverged()) {
             if (this->CWMinCheckWithBounds()) {
                 break;
             }

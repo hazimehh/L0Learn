@@ -63,6 +63,7 @@ template <class T>
 inline void CDL012<T>::ApplyNewBiCWMinCheck(const std::size_t i, const double Bi_old, const double Bi_new){
     this->r += matrix_column_mult(*(this->X), i, Bi_old - Bi_new);
     this->B[i] = Bi_new;
+    this->Order.push_back(i);
 }
 
 template <class T>
@@ -93,7 +94,7 @@ FitResult<T> CDL012<T>::_Fit() {
     this->objective = Objective(this->r, this->B);
     
     std::vector<std::size_t> FullOrder = this->Order;
-    bool FirstRestrictedPass = true;
+
     if (this->ActiveSet) {
         this->Order.resize(std::min((int) (n_nonzero(this->B) + this->ScreenSize + this->NoSelectK), (int)(this->p)));
     }
@@ -107,34 +108,12 @@ FitResult<T> CDL012<T>::_Fit() {
         
         for (auto& i : this->Order) {
             this->UpdateBi(i);
-            
         }
         
-        if (this->Converged()) {
-            if(FirstRestrictedPass) {
-                if (this->CWMinCheck()) {
-                    break;
-                }
-                FirstRestrictedPass = false;
-                this->Order = FullOrder;
-                this->Stabilized = false;
-                this->ActiveSet = true;
-            } else {
-                if (this->Stabilized) { // && !SecondPass
-                    if (this->CWMinCheck()) {
-                        break;
-                    }
-                    this->Order = this->OldOrder; // Recycle over all coordinates to make sure the achieved point is a CW-min.
-                    //SecondPass = true; // a 2nd pass will be performed
-                    this->Stabilized = false;
-                    this->ActiveSet = true;
-                } else {
-                    break;
-                }
-            }
-        }
-        if (this->ActiveSet) {
-            this->SupportStabilized();
+        this->RestrictSupport();
+        
+        if (this->isConverged() && this->CWMinCheck()) {
+            break;
         }
     }
     
@@ -153,12 +132,12 @@ FitResult<T> CDL012<T>::_Fit() {
 template <class T>
 FitResult<T> CDL012<T>::_FitWithBounds() {
     
-    this->B = clamp_by_vector(this->B, this->Lows, this->Highs);
+    clamp_by_vector(this->B, this->Lows, this->Highs);
     
     this->objective = Objective(this->r, this->B);
     
     std::vector<std::size_t> FullOrder = this->Order;
-    bool FirstRestrictedPass = true;
+
     if (this->ActiveSet) {
         this->Order.resize(std::min((int) (n_nonzero(this->B) + this->ScreenSize + this->NoSelectK), (int)(this->p)));
     }
@@ -172,36 +151,15 @@ FitResult<T> CDL012<T>::_FitWithBounds() {
         
         for (auto& i : this->Order) {
             this->UpdateBiWithBounds(i);
-            
         }
         
+        this->RestrictSupport();
+        
         //B.print();
-        if (this->Converged()) {
-            if(FirstRestrictedPass) {
-                if (this->CWMinCheckWithBounds()) {
-                    break;
-                }
-                FirstRestrictedPass = false;
-                this->Order = FullOrder;
-                this->Stabilized = false;
-                this->ActiveSet = true;
-            } else {
-                if (this->Stabilized) { // && !SecondPass
-                    if (this->CWMinCheckWithBounds()) {
-                        break;
-                    }
-                    this->Order = this->OldOrder; // Recycle over all coordinates to make sure the achieved point is a CW-min.
-                    //SecondPass = true; // a 2nd pass will be performed
-                    this->Stabilized = false;
-                    this->ActiveSet = true;
-                } else {
-                    break;
-                }
-            }
+        if (this->isConverged() && this->CWMinCheckWithBounds()) {
+            break;
         }
-        if (this->ActiveSet) {
-            this->SupportStabilized();
-        }
+    
     }
     
     if (this->isSparse && this->intercept){

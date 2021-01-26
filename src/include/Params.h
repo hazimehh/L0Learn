@@ -11,8 +11,9 @@ struct Params {
     Model Specs;
     std::vector<double> ModelParams {0, 0, 0, 2};
     std::size_t MaxIters = 500;
-    double Tol = 1e-8;
-    char Init = 'z';
+    double rtol = 1e-8;
+    double atol = 1e-12;
+    char Init = 'z'; // 'z' => zeros
     std::size_t RandomStartSize = 10;
     beta_vector * InitialSol;
     double b0 = 0; // intercept
