@@ -17,6 +17,10 @@ L0LearnCV_dense <- function(X, y, Loss, Penalty, Algorithm, NnzStopNum, G_ncols,
     .Call('_L0Learn_L0LearnCV_dense', PACKAGE = 'L0Learn', X, y, Loss, Penalty, Algorithm, NnzStopNum, G_ncols, G_nrows, Lambda2Max, Lambda2Min, PartialSort, MaxIters, rtol, atol, ActiveSet, ActiveSetNum, MaxNumSwaps, ScaleDownFactor, ScreenSize, LambdaU, Lambdas, nfolds, seed, ExcludeFirstK, Intercept, withBounds, Lows, Highs)
 }
 
+cor_matrix <- function(p, base_cor) {
+    .Call('_L0Learn_cor_matrix', PACKAGE = 'L0Learn', p, base_cor)
+}
+
 R_matrix_column_get_dense <- function(mat, col) {
     .Call('_L0Learn_R_matrix_column_get_dense', PACKAGE = 'L0Learn', mat, col)
 }

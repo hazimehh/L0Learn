@@ -358,3 +358,15 @@ Rcpp::List L0LearnCV_dense(const arma::mat& X, const arma::vec& y, const std::st
                     ScaleDownFactor, ScreenSize, LambdaU, Lambdas,
                     nfolds, seed, ExcludeFirstK, Intercept, withBounds, Lows, Highs);
 }
+
+// [[Rcpp::export]]
+Rcpp::NumericMatrix cor_matrix(const int p, const double base_cor) {
+  Rcpp::NumericMatrix cor(p, p);
+  for (int i = 0; i < p; i++){
+    for (int j = 0; j < p; j++){
+      cor(i, j) = std::pow(base_cor, std::abs(i - j));
+    }
+  }
+  return cor;
+}
+

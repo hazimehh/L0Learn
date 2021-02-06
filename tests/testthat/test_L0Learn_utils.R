@@ -142,7 +142,8 @@ test_that('matrix_normalize sparse', {
 
 test_that('matrix_center dense', {
     for (intercept in c(TRUE, FALSE)){
-        x1 <- .Call("_L0Learn_R_matrix_center_dense", X, intercept)
+        x_norm <- 0*X
+        x1 <- .Call("_L0Learn_R_matrix_center_dense", X, x_norm, intercept)
         
         if (intercept){
             expect_equal(as.vector(x1$MeanX), colMeans(X))
@@ -157,7 +158,8 @@ test_that('matrix_center dense', {
 
 test_that('matrix_center sparse', {
     for (intercept in c(TRUE, FALSE)){
-        x1 <- .Call("_L0Learn_R_matrix_center_sparse", X_sparse, intercept)
+        x_norm = 0*X_sparse
+        x1 <- .Call("_L0Learn_R_matrix_center_sparse", X_sparse, x_norm, intercept)
             expect_equal(as.vector(x1$MeanX), 0*colMeans(X))
             expect_equal(x1$mat_norm, X_sparse)
     }

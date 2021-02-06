@@ -154,6 +154,18 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// cor_matrix
+Rcpp::NumericMatrix cor_matrix(const int p, const double base_cor);
+RcppExport SEXP _L0Learn_cor_matrix(SEXP pSEXP, SEXP base_corSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const int >::type p(pSEXP);
+    Rcpp::traits::input_parameter< const double >::type base_cor(base_corSEXP);
+    rcpp_result_gen = Rcpp::wrap(cor_matrix(p, base_cor));
+    return rcpp_result_gen;
+END_RCPP
+}
 // R_matrix_column_get_dense
 arma::vec R_matrix_column_get_dense(const arma::mat& mat, int col);
 RcppExport SEXP _L0Learn_R_matrix_column_get_dense(SEXP matSEXP, SEXP colSEXP) {
@@ -378,6 +390,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_L0Learn_L0LearnFit_dense", (DL_FUNC) &_L0Learn_L0LearnFit_dense, 26},
     {"_L0Learn_L0LearnCV_sparse", (DL_FUNC) &_L0Learn_L0LearnCV_sparse, 28},
     {"_L0Learn_L0LearnCV_dense", (DL_FUNC) &_L0Learn_L0LearnCV_dense, 28},
+    {"_L0Learn_cor_matrix", (DL_FUNC) &_L0Learn_cor_matrix, 2},
     {"_L0Learn_R_matrix_column_get_dense", (DL_FUNC) &_L0Learn_R_matrix_column_get_dense, 2},
     {"_L0Learn_R_matrix_column_get_sparse", (DL_FUNC) &_L0Learn_R_matrix_column_get_sparse, 2},
     {"_L0Learn_R_matrix_rows_get_dense", (DL_FUNC) &_L0Learn_R_matrix_rows_get_dense, 2},

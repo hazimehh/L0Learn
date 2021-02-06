@@ -193,13 +193,13 @@ L0Learn.cvfit <- function(x,y, loss="SquaredError", penalty="L0", algorithm="CD"
     if (is(x, "sparseMatrix")){
         M <- .Call('_L0Learn_L0LearnCV_sparse', PACKAGE = 'L0Learn', x, y, loss, penalty,
                    algorithm, maxSuppSize, nLambda, nGamma, gammaMax, gammaMin,
-                   partialSort, maxIters, tol, atol, activeSet, activeSetNum, maxSwaps, 
+                   partialSort, maxIters, rtol, atol, activeSet, activeSetNum, maxSwaps, 
                    scaleDownFactor, screenSize, !autoLambda, lambdaGrid, nFolds, 
                    seed, excludeFirstK, intercept, withBounds, lows, highs)
     } else {
         M <- .Call('_L0Learn_L0LearnCV_dense', PACKAGE = 'L0Learn', x, y, loss, penalty,
                    algorithm, maxSuppSize, nLambda, nGamma, gammaMax, gammaMin,
-                   partialSort, maxIters, tol, atol, activeSet, activeSetNum, maxSwaps, 
+                   partialSort, maxIters, rtol, atol, activeSet, activeSetNum, maxSwaps, 
                    scaleDownFactor, screenSize, !autoLambda, lambdaGrid, nFolds, 
                    seed, excludeFirstK, intercept, withBounds, lows, highs)
     }
