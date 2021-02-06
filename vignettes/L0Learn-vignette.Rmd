@@ -247,9 +247,9 @@ print(min(fit$beta[[1]][501:1000, ]))
 ```
 
 ### User-specified Lambda Grids
-By default, `L0Learn` selects the sequence of lambda values in an efficient manner to avoid wasted computation (since close $\lambda$ values can typically lead to the same solution). Advanced users of the toolkit can change this default behavior and supply their own sequence of $\lambda$ values. This can be done supplying the $\lambda$ values through the parameter `lambdaGrid`. L0Learn versions before 2.0.0 would also require setting the `autoLambda` parameter to `FALSE`. While, this parameter remains in version 2.0.0 for backwards compatibility, the parameter is a dummy and does not control anything.
+By default, `L0Learn` selects the sequence of lambda values in an efficient manner to avoid wasted computation (since close $\lambda$ values can typically lead to the same solution). Advanced users of the toolkit can change this default behavior and supply their own sequence of $\lambda$ values. This can be done supplying the $\lambda$ values through the parameter `lambdaGrid`. L0Learn versions before 2.0.0 would also require setting the `autoLambda` parameter to `FALSE`. While this parameter remains in version 2.0.0, for backwards compatibility, its functionality has been replaced by inspecting the value of `lambdaGrid`. Therefore, `autoLambda` the parameter is a dummy and does not control anything. A similar change has been made with `nGamma` as it can be inferred from the length of `lambdaGrid`, if it is supplied.
 
-Specifically, the value assigned to `lambdaGrid` should be a list with the same length as `nGamma` in case of L0L2/L0L1 and of length 1 in case of L0. The ith element in `LambdaGrid` should be a **decreasing** sequence of positive lambda values which are used by the algorithm for the ith value of gamma. For example, to fit an L0 model with the sequence of user-specified lambda values: 1, 1e-1, 1e-2, 1e-3, 1e-4, we run the following:
+Specifically, the value assigned to `lambdaGrid` should be a list of lists of decreasing positive doubles. The length of `lambdaGrid` (the number of lists stored) specifies the number of gamma parameters that will fill between `gammaMin`, and `gammaMax`. In the case of L0 penalty, `lambdaGrid` must be a list of length 1. In case of L0L2/L0L1 `lambdaGrid` can have any number of sub-lists stored. The length of `lambdaGrid` (the number of lists stored) specifies the number of gamma parameters that will fill between `gammaMin`, and `gammaMax`. The ith element in `LambdaGrid` should be a **decreasing** sequence of positive lambda values which are used by the algorithm for the ith value of gamma. For example, to fit an L0 model with the sequence of user-specified lambda values: 1, 1e-1, 1e-2, 1e-3, 1e-4, we run the following:
 ```{r}
 userLambda <- list()
 userLambda[[1]] <- c(1, 1e-1, 1e-2, 1e-3, 1e-4)
@@ -262,14 +262,14 @@ To verify the results we print the fit object:
 ```{r}
 print(fit)
 ```
-Note that the $\lambda$ values above are the desired values. For L0L2 and L0L1 penalties, the same can be done where the lambdaGrid parameter should be assigned a list of size `nGamma`.
+Note that the $\lambda$ values above are the desired values. For L0L2 and L0L1 penalties, the same can be done where the `lambdaGrid` parameter.
 ```{r}
 userLambda <- list()
 userLambda[[1]] <- c(1, 1e-1, 1e-2, 1e-3, 1e-4)
 userLambda[[2]] <- c(10, 2, 1, 0.01, 0.002, 0.001, 1e-5) 
 userLambda[[3]] <- c(1e-4, 1e-5) 
 # userLambda[[i]] must be a vector of positive decreasing reals.
-fit <- L0Learn.fit(X, y, penalty="L0L2", lambdaGrid=userLambda, nGamma = 3, maxSuppSize=1000)
+fit <- L0Learn.fit(X, y, penalty="L0L2", lambdaGrid=userLambda, maxSuppSize=1000)
 ```
 
 ```{r}

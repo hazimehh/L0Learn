@@ -103,7 +103,8 @@ test_that("L0Learn L0L1/2 grid works", {
   succeed()
 })
 
-test_that("L0Learn L0L1/2 grid fails with wrong nGamma", {
+test_that("L0Learn L0L1/2 ignores with wrong nGamma in v2.0.0", {
+  # This changed between v1.2.0 and v2.0.0
   userLambda = list()
   userLambda[[1]] <- c(10, 1, 0.1, 0.01)
   userLambda[[2]] <- c(11, 1.1, 0.11, 0.011, 0.0011)
@@ -112,23 +113,36 @@ test_that("L0Learn L0L1/2 grid fails with wrong nGamma", {
   f1 <- function(){
     L0Learn.fit(X, y, penalty = "L0L1", lambdaGrid=userLambda, nGamma=4)
   }
-  expect_error(f1())
-  
   f2 <- function(){
     L0Learn.fit(X, y, penalty = "L0L2", lambdaGrid=userLambda, nGamma=4)
   }
-  expect_error(f2())
-  
+    
+  if (packageVersion("L0Learn") >= '2.0.0'){
+    f1()
+    f2()
+    succeed()
+  } else{
+    expect_error(f1())
+    expect_error(f2())
+  }
+
   for (l in c("SquaredError", "SquaredHinge")){
     f1 <- function(){
       L0Learn.fit(X, sign(y), penalty = "L0L1", loss=l, lambdaGrid=userLambda, nGamma=4)
     }
-    expect_error(f1())
-    
     f2 <- function(){
       L0Learn.fit(X, sign(y), penalty = "L0L2", loss=l, lambdaGrid=userLambda, nGamma=4)
     }
-    expect_error(f2())
+    
+    if (packageVersion("L0Learn") >= '2.0.0'){
+      f1()
+      f2()
+      succeed()
+    } else {
+      expect_error(f1())
+      expect_error(f2())
+    }
+
   }
 })
 

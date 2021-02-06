@@ -7,7 +7,7 @@ n = 500
 p = 1000
 k = 25
 
-tmp <- L0Learn::GenSyntheticHighCorr(n, p, k, seed=1, noise_ratio = 0, base_cor = .95)
+tmp <- L0Learn::GenSyntheticHighCorr(n, p, k, seed=1, noise_ratio = 0, base_cor=.95)
 
 X <- tmp$X
 y <- tmp$y

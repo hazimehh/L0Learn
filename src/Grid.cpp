@@ -5,12 +5,14 @@ template <class T>
 Grid<T>::Grid(const T& X, const arma::vec& y, const GridParams<T>& PGi) {
     PG = PGi;
     
-    std::tie(Xscaled, BetaMultiplier, meanX, meany, scaley) = Normalize(X, 
-             y, yscaled, !PG.P.Specs.Classification, PG.intercept);
+    std::tie(BetaMultiplier, meanX, meany, scaley) = Normalize(X, 
+             y, Xscaled, yscaled, !PG.P.Specs.Classification, PG.intercept);
     
-    // Must rescale bounds by BetaMultiplier inorder for final result to conform to bounds
-    PG.P.Lows /= BetaMultiplier;
-    PG.P.Highs /= BetaMultiplier;
+    // Must rescale bounds by BetaMultiplier in order for final result to conform to bounds
+    if (PG.P.withBounds){
+        PG.P.Lows /= BetaMultiplier;
+        PG.P.Highs /= BetaMultiplier;   
+    }
 }
 
 template <class T>
@@ -41,7 +43,7 @@ void Grid<T>::Fit() {
         for (auto &g : G[i]) {
             Lambda0[i].push_back(g->ModelParams[0]);
             
-            NnzCount[i].push_back(g->B.n_nonzero);
+            NnzCount[i].push_back(n_nonzero(g->B));
             
             if (g->IterNum != PG.P.MaxIters){
                 Converged[i].push_back(true);
@@ -49,11 +51,11 @@ void Grid<T>::Fit() {
                 Converged[i].push_back(false);
             }
             
-            arma::sp_mat B_unscaled;
+            beta_vector B_unscaled;
             double b0;
             
             std::tie(B_unscaled, b0) = DeNormalize(g->B, BetaMultiplier, meanX, meany);
-            Solutions[i].push_back(B_unscaled);
+            Solutions[i].push_back(arma::sp_mat(B_unscaled));
             /* scaley is 1 for classification problems.
              *  g->intercept is 0 unless specifically optimized for in:
              *       classification

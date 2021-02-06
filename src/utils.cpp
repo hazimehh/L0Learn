@@ -1,40 +1,13 @@
 #include "utils.h"
 
-// arma::sp_mat clamp_by_vector(arma::sp_mat B, const arma::vec lows, const arma::vec highs){
-//     // Somehow this implementation fails unexpectedly.
-//     // Calling
-//     // >fit <- L0Learn.fit(X, y, algorithm = "CDPSI", lows=0)
-//     // ...
-//     // Clamp(-0.0379001, indx 859, indx 859)
-//     // Clamp(-0.0379001, 0, inf)
-//     // Clamp(0.196179, indx 936, indx 936)
-//     // Clamp(0.196179, 0, inf)
-//     // Clamp(0, indx 0, indx 0)
-//     // Clamp(0, 0, inf)
-//     // Clamp(-3.10504e+231, indx 3774873619, indx 3774873619)
-//     // Clamp(-3.10504e+231, 
-//     //       error: Mat::operator(): index out of bounds
-//     //           Error in L0Learn.fit(X, y, algorithm = "CDPSI", lows = 0) : 
-//     //           Mat::operator(): index out of bounds
-//     Rcpp::Rcout << "Begin Clamp\n";
-//     Rcpp::Rcout << "B Size" << B.size() << "\n";
-//     Rcpp::Rcout << B << "\n";
-//     Rcpp::Rcout << "lows Size" << lows.size() << "\n";
-//     Rcpp::Rcout << "highs Size" << highs.size() << "\n";
-//     auto begin = B.begin();
-//     auto end = B.end();
-//     for (; begin != end; ++begin){
-//         double v = *begin;
-//         Rcpp::Rcout << "Clamp(" << v << ", indx " << begin.row() << ", indx " << begin.row() << ")\n";
-//         Rcpp::Rcout << "Clamp(" << v << ", " << lows(begin.row()) << ", " << highs(begin.row()) << ")\n";
-//         double d = clamp(v,  lows(begin.row()), highs(begin.row()));
-//         *begin = d;
-//     }
-//     Rcpp::Rcout << "End Clamp\n";
-//     return B;
-// }
+void clamp_by_vector(arma::vec &B, const arma::vec& lows, const arma::vec& highs){
+    const std::size_t n = B.n_rows;
+    for (std::size_t i = 0; i < n; i++){
+        B.at(i) = clamp(B.at(i), lows.at(i), highs.at(i));
+    }
+}
 
-arma::sp_mat clamp_by_vector(arma::sp_mat B, const arma::vec lows, const arma::vec highs){
+void clamp_by_vector(arma::sp_mat &B, const arma::vec& lows, const arma::vec& highs){
     // See above implementation without filter for error.
     auto begin = B.begin();
     auto end = B.end();
@@ -50,12 +23,10 @@ arma::sp_mat clamp_by_vector(arma::sp_mat B, const arma::vec lows, const arma::v
                               inds.end());
     for (auto& it : inds) { 
         double B_item = B(it, 0);
-        double low = lows(it);
-        double high = highs(it);
+        const double low = lows(it);
+        const double high = highs(it);
         B(it, 0) = clamp(B_item, low, high);
     }
-    
-    return B;
 }
 
 arma::rowvec matrix_normalize(arma::sp_mat &mat_norm){
@@ -102,10 +73,10 @@ arma::rowvec matrix_normalize(arma::mat& mat_norm){
     return scaleX;
 }
 
-std::tuple<arma::mat, arma::rowvec> matrix_center(const arma::mat& X, bool intercept){
+arma::rowvec matrix_center(const arma::mat& X, arma::mat& X_normalized, 
+                           bool intercept){
     auto p = X.n_cols;
     arma::rowvec meanX;
-    arma::mat X_normalized;
     
     if (intercept){
         meanX = arma::mean(X, 0);
@@ -115,13 +86,13 @@ std::tuple<arma::mat, arma::rowvec> matrix_center(const arma::mat& X, bool inter
         X_normalized = arma::mat(X);
     }
     
-    return std::make_tuple(X_normalized, meanX);
+    return meanX;
 }
 
-std::tuple<arma::sp_mat, arma::rowvec> matrix_center(const arma::sp_mat& X,
-                                                     bool intercept){
+arma::rowvec matrix_center(const arma::sp_mat& X, arma::sp_mat& X_normalized, 
+                           bool intercept){
     auto p = X.n_cols;
     arma::rowvec meanX = arma::zeros<arma::rowvec>(p);
-    arma::sp_mat X_normalized = arma::sp_mat(X);
-    return std::make_tuple(X_normalized, meanX);
+    X_normalized = arma::sp_mat(X);
+    return meanX;
 }
