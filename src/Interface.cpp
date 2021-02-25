@@ -5,10 +5,13 @@ template <typename T>
 GridParams<T> makeGridParams(const std::string Loss, const std::string Penalty,
                              const std::string Algorithm, const std::size_t NnzStopNum, const std::size_t G_ncols,
                              const std::size_t G_nrows, const double Lambda2Max, const double Lambda2Min,
-                             const bool PartialSort, const std::size_t MaxIters, const double Tol, const bool ActiveSet,
-                             const std::size_t ActiveSetNum, const std::size_t MaxNumSwaps, const double ScaleDownFactor,
-                             std::size_t ScreenSize, const bool LambdaU, const std::vector< std::vector<double> > Lambdas,
-                             const std::size_t ExcludeFirstK, const bool Intercept, const arma::vec &Lows, const arma::vec &Highs){ 
+                             const bool PartialSort, const std::size_t MaxIters, const double rtol, 
+                             const double atol, const bool ActiveSet, const std::size_t ActiveSetNum, 
+                             const std::size_t MaxNumSwaps, const double ScaleDownFactor,
+                             const std::size_t ScreenSize, const bool LambdaU, 
+                             const std::vector< std::vector<double> > Lambdas,
+                             const std::size_t ExcludeFirstK, const bool Intercept, 
+                             const bool withBounds, const arma::vec &Lows, const arma::vec &Highs){ 
   GridParams<T> PG;
   PG.NnzStopNum = NnzStopNum;
   PG.G_ncols = G_ncols;
@@ -26,13 +29,15 @@ GridParams<T> makeGridParams(const std::string Loss, const std::string Penalty,
   Params<T> P;
   PG.P = P;
   PG.P.MaxIters = MaxIters;
-  PG.P.Tol = Tol;
+  PG.P.rtol = rtol;
+  PG.P.atol = atol;
   PG.P.ActiveSet = ActiveSet;
   PG.P.ActiveSetNum = ActiveSetNum;
   PG.P.MaxNumSwaps = MaxNumSwaps;
   PG.P.ScreenSize = ScreenSize;
   PG.P.NoSelectK = ExcludeFirstK;
   PG.P.intercept = Intercept;
+  PG.P.withBounds = withBounds;
   PG.P.Lows = Lows;
   PG.P.Highs = Highs;
   
@@ -62,40 +67,22 @@ GridParams<T> makeGridParams(const std::string Loss, const std::string Penalty,
   return PG;
 }
 
-// template <typename T>
-// arma::field<arma::sp_mat> betaFromGrid(Grid<T> G, int p){
-//   
-//   arma::field<arma::sp_mat> Bs(G.Lambda12.size());
-//   
-//   for (std::size_t i=0; i<G.Lambda12.size(); ++i) {
-//     // create the px(reg path size) sparse sparseMatrix
-//     auto n = G.Solutions[i].size();
-//     Rcpp::Rcout << "arma::sp_mat B(p, G.Solutions[i].size()): size(" << p << ", " << n << ") \n";
-//     arma::sp_mat B(p, G.Solutions[i].size());
-//     for (std::size_t j=0; j<G.Solutions[i].size(); ++j)
-//       B.col(j) = G.Solutions[i][j];
-//     
-//     // append the sparse matrix
-//     Bs[i] = B;
-//   }
-// }
-
-
-
 
 template <typename T>
 Rcpp::List _L0LearnFit(const T& X, const arma::vec& y, const std::string Loss, const std::string Penalty,
                        const std::string Algorithm, const std::size_t NnzStopNum, const std::size_t G_ncols,
                        const std::size_t G_nrows, const double Lambda2Max, const double Lambda2Min,
-                       const bool PartialSort, const std::size_t MaxIters, const double Tol, const bool ActiveSet,
-                       const std::size_t ActiveSetNum, const std::size_t MaxNumSwaps, const double ScaleDownFactor,
-                       std::size_t ScreenSize, const bool LambdaU, const std::vector< std::vector<double> > Lambdas,
-                       const std::size_t ExcludeFirstK, const bool Intercept, const arma::vec &Lows, const arma::vec &Highs){
+                       const bool PartialSort, const std::size_t MaxIters, const double rtol, const double atol,
+                       const bool ActiveSet, const std::size_t ActiveSetNum, const std::size_t MaxNumSwaps, 
+                       const double ScaleDownFactor, const std::size_t ScreenSize, const bool LambdaU, 
+                       const std::vector< std::vector<double> > Lambdas, const std::size_t ExcludeFirstK, 
+                       const bool Intercept,  const bool withBounds, const arma::vec &Lows, 
+                       const arma::vec &Highs){
   
   GridParams<T> PG = makeGridParams<T>(Loss, Penalty, Algorithm, NnzStopNum, G_ncols, G_nrows, 
-                      Lambda2Max, Lambda2Min, PartialSort, MaxIters, Tol, ActiveSet,
+                      Lambda2Max, Lambda2Min, PartialSort, MaxIters, rtol, atol, ActiveSet,
                       ActiveSetNum, MaxNumSwaps, ScaleDownFactor, ScreenSize,
-                      LambdaU, Lambdas, ExcludeFirstK, Intercept, Lows, Highs);
+                      LambdaU, Lambdas, ExcludeFirstK, Intercept, withBounds, Lows, Highs);
 
   Grid<T> G(X, y, PG);
   G.Fit();
@@ -131,18 +118,27 @@ Rcpp::List _L0LearnFit(const T& X, const arma::vec& y, const std::string Loss, c
 }
 
 template <typename T>
-Rcpp::List _L0LearnCV(const T& X, const arma::vec& y, const std::string Loss, const std::string Penalty,
-                      const std::string Algorithm, const unsigned int NnzStopNum, const unsigned int G_ncols,
-                      const unsigned int G_nrows, const double Lambda2Max, const double Lambda2Min, const bool PartialSort,
-                      const unsigned int MaxIters, const double Tol, const bool ActiveSet, const unsigned int ActiveSetNum,
-                      const unsigned int MaxNumSwaps, const double ScaleDownFactor, unsigned int ScreenSize, const bool LambdaU,
-                      const std::vector< std::vector<double> > Lambdas, const unsigned int nfolds, const double seed,
-                      const unsigned int ExcludeFirstK, const bool Intercept, const arma::vec &Lows, const arma::vec &Highs){
+Rcpp::List _L0LearnCV(const T& X, const arma::vec& y, const std::string Loss, 
+                      const std::string Penalty, const std::string Algorithm, 
+                      const unsigned int NnzStopNum, const unsigned int G_ncols,
+                      const unsigned int G_nrows, const double Lambda2Max, 
+                      const double Lambda2Min, const bool PartialSort,
+                      const unsigned int MaxIters, const double rtol, 
+                      const double atol, const bool ActiveSet, 
+                      const unsigned int ActiveSetNum,
+                      const unsigned int MaxNumSwaps, const double ScaleDownFactor, 
+                      const unsigned int ScreenSize, const bool LambdaU,
+                      const std::vector< std::vector<double> > Lambdas, 
+                      const unsigned int nfolds, const double seed,
+                      const unsigned int ExcludeFirstK, const bool Intercept, 
+                      const bool withBounds, const arma::vec &Lows, 
+                      const arma::vec &Highs){
   
   GridParams<T> PG = makeGridParams<T>(Loss, Penalty, Algorithm, NnzStopNum, G_ncols, G_nrows, 
-                                       Lambda2Max, Lambda2Min, PartialSort, MaxIters, Tol, ActiveSet,
-                                       ActiveSetNum, MaxNumSwaps, ScaleDownFactor, ScreenSize,
-                                       LambdaU, Lambdas, ExcludeFirstK, Intercept, Lows, Highs);
+                                       Lambda2Max, Lambda2Min, PartialSort, MaxIters, rtol, atol,
+                                       ActiveSet,ActiveSetNum, MaxNumSwaps, ScaleDownFactor, 
+                                       ScreenSize,LambdaU, Lambdas, ExcludeFirstK, Intercept, 
+                                       withBounds, Lows, Highs);
   
   Grid<T> G(X, y, PG);
   G.Fit();
@@ -287,67 +283,90 @@ Rcpp::List _L0LearnCV(const T& X, const arma::vec& y, const std::string Loss, co
 }
 
 
-
 // [[Rcpp::export]]
-Rcpp::List L0LearnFit(const SEXP& X, const arma::vec& y, const std::string Loss, const std::string Penalty,
+Rcpp::List L0LearnFit_sparse(const arma::sp_mat& X, const arma::vec& y, const std::string Loss, const std::string Penalty,
                       const std::string Algorithm, const std::size_t NnzStopNum, const std::size_t G_ncols,
                       const std::size_t G_nrows, const double Lambda2Max, const double Lambda2Min,
-                      const bool PartialSort, const std::size_t MaxIters, const double Tol, const bool ActiveSet,
-                      const std::size_t ActiveSetNum, const std::size_t MaxNumSwaps,
-                      const double ScaleDownFactor, std::size_t ScreenSize, const bool LambdaU,
+                      const bool PartialSort, const std::size_t MaxIters, const double rtol, 
+                      const double atol, const bool ActiveSet, const std::size_t ActiveSetNum, 
+                      const std::size_t MaxNumSwaps, const double ScaleDownFactor, 
+                      const std::size_t ScreenSize, const bool LambdaU,
                       const std::vector< std::vector<double> > Lambdas,
                       const std::size_t ExcludeFirstK, const bool Intercept,
-                      const arma::vec &Lows, const arma::vec &Highs) {
+                      const bool withBounds, const arma::vec &Lows, const arma::vec &Highs) {
   
+  return _L0LearnFit(X, y, Loss, Penalty, Algorithm, NnzStopNum, G_ncols, G_nrows, Lambda2Max, Lambda2Min,
+                     PartialSort, MaxIters, rtol, atol, ActiveSet, ActiveSetNum, MaxNumSwaps, ScaleDownFactor, ScreenSize, LambdaU,
+                     Lambdas, ExcludeFirstK, Intercept, withBounds, Lows, Highs);
+}
+
+
+// [[Rcpp::export]]
+Rcpp::List L0LearnFit_dense(const arma::mat& X, const arma::vec& y, const std::string Loss, const std::string Penalty,
+                      const std::string Algorithm, const std::size_t NnzStopNum, const std::size_t G_ncols,
+                      const std::size_t G_nrows, const double Lambda2Max, const double Lambda2Min,
+                      const bool PartialSort, const std::size_t MaxIters, const double rtol, 
+                      const double atol, const bool ActiveSet, const std::size_t ActiveSetNum, 
+                      const std::size_t MaxNumSwaps, const double ScaleDownFactor, 
+                      const std::size_t ScreenSize, const bool LambdaU,
+                      const std::vector< std::vector<double> > Lambdas,
+                      const std::size_t ExcludeFirstK, const bool Intercept,
+                      const bool withBounds, const arma::vec &Lows, const arma::vec &Highs) {
   
-  if (Rf_isS4(X) && Rf_inherits(X, "dgCMatrix")){
-    arma::sp_mat m = Rcpp::as<arma::sp_mat>(X);
-    return _L0LearnFit(m, y, Loss, Penalty, Algorithm, NnzStopNum, G_ncols, G_nrows, Lambda2Max, Lambda2Min,
-                       PartialSort, MaxIters, Tol, ActiveSet, ActiveSetNum, MaxNumSwaps, ScaleDownFactor, ScreenSize, LambdaU,
-                       Lambdas, ExcludeFirstK, Intercept, Lows, Highs);
-  } else if (Rf_isArray(X)){
-    arma::mat m = Rcpp::as<arma::mat>(X);
-    return _L0LearnFit(m, y, Loss, Penalty, Algorithm, NnzStopNum, G_ncols, G_nrows, Lambda2Max, Lambda2Min,
-                       PartialSort, MaxIters, Tol, ActiveSet, ActiveSetNum, MaxNumSwaps, ScaleDownFactor, ScreenSize, LambdaU,
-                       Lambdas, ExcludeFirstK, Intercept, Lows, Highs);
-  } else {
-    to_arma_error();
-    return Rcpp::List::create();
-  }
+      return _L0LearnFit(X, y, Loss, Penalty, Algorithm, NnzStopNum, G_ncols, G_nrows, Lambda2Max, Lambda2Min,
+                       PartialSort, MaxIters, rtol, atol, ActiveSet, ActiveSetNum, MaxNumSwaps, ScaleDownFactor, ScreenSize, LambdaU,
+                       Lambdas, ExcludeFirstK, Intercept, withBounds, Lows, Highs);
 }
   
 
 // [[Rcpp::export]]
-Rcpp::List L0LearnCV(const SEXP& X, const arma::vec& y, const std::string Loss, const std::string Penalty,
+Rcpp::List L0LearnCV_sparse(const arma::sp_mat& X, const arma::vec& y, const std::string Loss, const std::string Penalty,
                      const std::string Algorithm, const std::size_t NnzStopNum, const std::size_t G_ncols,
                      const std::size_t G_nrows, const double Lambda2Max, const double Lambda2Min,
-                     const bool PartialSort, const std::size_t MaxIters, const double Tol, const bool ActiveSet,
-                     const std::size_t ActiveSetNum, const std::size_t MaxNumSwaps, const double ScaleDownFactor,
-                     std::size_t ScreenSize, const bool LambdaU, const std::vector< std::vector<double> > Lambdas,
-                     const std::size_t nfolds, const double seed, const std::size_t ExcludeFirstK,
-                     const bool Intercept, const arma::vec &Lows, const arma::vec &Highs){
+                     const bool PartialSort, const std::size_t MaxIters, const double rtol, const double atol, 
+                     const bool ActiveSet, const std::size_t ActiveSetNum, const std::size_t MaxNumSwaps,
+                     const double ScaleDownFactor, const std::size_t ScreenSize, const bool LambdaU, 
+                     const std::vector< std::vector<double> > Lambdas, const std::size_t nfolds, 
+                     const double seed, const std::size_t ExcludeFirstK, const bool Intercept, 
+                     const bool withBounds, const arma::vec &Lows, const arma::vec &Highs){
   
-  if (Rf_isS4(X) && Rf_inherits(X, "dgCMatrix")){
-    arma::sp_mat m = Rcpp::as<arma::sp_mat>(X);
-    return _L0LearnCV(m, y, Loss, Penalty,
+    return _L0LearnCV(X, y, Loss, Penalty,
                       Algorithm, NnzStopNum, G_ncols, G_nrows,
                       Lambda2Max, Lambda2Min, PartialSort,
-                      MaxIters, Tol, ActiveSet,
+                      MaxIters, rtol,atol, ActiveSet,
                       ActiveSetNum, MaxNumSwaps,
                       ScaleDownFactor, ScreenSize, LambdaU, Lambdas,
-                      nfolds, seed, ExcludeFirstK, Intercept, Lows, Highs);
-    
-  } else if (Rf_isArray(X)) {
-    arma::mat m = Rcpp::as<arma::mat>(X);
-    return _L0LearnCV(m, y, Loss, Penalty,
-                      Algorithm, NnzStopNum, G_ncols, G_nrows,
-                      Lambda2Max, Lambda2Min, PartialSort,
-                      MaxIters, Tol, ActiveSet,
-                      ActiveSetNum, MaxNumSwaps,
-                      ScaleDownFactor, ScreenSize, LambdaU, Lambdas,
-                      nfolds, seed, ExcludeFirstK, Intercept, Lows, Highs);
-  } else {
-    to_arma_error();
-    return Rcpp::List::create();
-  }
+                      nfolds, seed, ExcludeFirstK, Intercept, withBounds, Lows, Highs);
 }
+
+// [[Rcpp::export]]
+Rcpp::List L0LearnCV_dense(const arma::mat& X, const arma::vec& y, const std::string Loss, const std::string Penalty,
+                    const std::string Algorithm, const std::size_t NnzStopNum, const std::size_t G_ncols,
+                    const std::size_t G_nrows, const double Lambda2Max, const double Lambda2Min,
+                    const bool PartialSort, const std::size_t MaxIters, const double rtol, const double atol, 
+                    const bool ActiveSet, const std::size_t ActiveSetNum, const std::size_t MaxNumSwaps,
+                    const double ScaleDownFactor, const std::size_t ScreenSize, const bool LambdaU, 
+                    const std::vector< std::vector<double> > Lambdas, const std::size_t nfolds, 
+                    const double seed, const std::size_t ExcludeFirstK, const bool Intercept, 
+                    const bool withBounds, const arma::vec &Lows, const arma::vec &Highs){
+  
+  return _L0LearnCV(X, y, Loss, Penalty,
+                    Algorithm, NnzStopNum, G_ncols, G_nrows,
+                    Lambda2Max, Lambda2Min, PartialSort,
+                    MaxIters, rtol,atol, ActiveSet,
+                    ActiveSetNum, MaxNumSwaps,
+                    ScaleDownFactor, ScreenSize, LambdaU, Lambdas,
+                    nfolds, seed, ExcludeFirstK, Intercept, withBounds, Lows, Highs);
+}
+
+// [[Rcpp::export]]
+Rcpp::NumericMatrix cor_matrix(const int p, const double base_cor) {
+  Rcpp::NumericMatrix cor(p, p);
+  for (int i = 0; i < p; i++){
+    for (int j = 0; j < p; j++){
+      cor(i, j) = std::pow(base_cor, std::abs(i - j));
+    }
+  }
+  return cor;
+}
+

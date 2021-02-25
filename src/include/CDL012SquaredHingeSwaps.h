@@ -7,6 +7,7 @@
 #include "Params.h"
 #include "FitResult.h"
 #include "utils.h"
+#include "BetaVector.h"
 
 template <class T>
 class CDL012SquaredHingeSwaps : public CDSwaps<T> {
@@ -21,9 +22,11 @@ class CDL012SquaredHingeSwaps : public CDSwaps<T> {
     public:
         CDL012SquaredHingeSwaps(const T& Xi, const arma::vec& yi, const Params<T>& P);
 
-        FitResult<T> Fit() final;
+        FitResult<T> _FitWithBounds() final;
+        
+        FitResult<T> _Fit() final;
 
-        inline double Objective(const arma::vec & r, const arma::sp_mat & B) final;
+        inline double Objective(const arma::vec & r, const beta_vector & B) final;
         
         inline double Objective() final;
 
@@ -31,10 +34,10 @@ class CDL012SquaredHingeSwaps : public CDSwaps<T> {
 };
 
 template <class T>
-inline double CDL012SquaredHingeSwaps<T>::Objective(const arma::vec & onemyxb, const arma::sp_mat & B) {
+inline double CDL012SquaredHingeSwaps<T>::Objective(const arma::vec & onemyxb, const beta_vector & B) {
     auto l2norm = arma::norm(B, 2);
     arma::uvec indices = arma::find(onemyxb > 0);
-    return arma::sum(onemyxb.elem(indices) % onemyxb.elem(indices)) + this->lambda0 * B.n_nonzero + this->lambda1 * arma::norm(B, 1) + this->lambda2 * l2norm * l2norm;
+    return arma::sum(onemyxb.elem(indices) % onemyxb.elem(indices)) + this->lambda0 * n_nonzero(B) + this->lambda1 * arma::norm(B, 1) + this->lambda2 * l2norm * l2norm;
 }
 
 template <class T>

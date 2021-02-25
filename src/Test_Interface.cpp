@@ -89,20 +89,15 @@ Rcpp::List R_matrix_normalize_sparse(arma::sp_mat mat_norm){
 };
 
 // [[Rcpp::export]]
-Rcpp::List R_matrix_center_dense(arma::mat mat, bool intercept){
-    auto martrix_center_return = matrix_center(mat, intercept);
-    arma::mat X_normalized = std::get<0>(martrix_center_return);
-    arma::rowvec meanX = std::get<1>(martrix_center_return);
+Rcpp::List R_matrix_center_dense(const arma::mat mat, arma::mat X_normalized, bool intercept){
+    arma::rowvec meanX = matrix_center(mat, X_normalized, intercept);
     return Rcpp::List::create(Rcpp::Named("mat_norm") = X_normalized,
                               Rcpp::Named("MeanX") = meanX);
 };
 
 // [[Rcpp::export]]
-Rcpp::List R_matrix_center_sparse(arma::sp_mat mat, bool intercept){
-    auto martrix_center_return = matrix_center(mat, intercept);
-    arma::sp_mat X_normalized = std::get<0>(martrix_center_return);
-    arma::rowvec meanX = std::get<1>(martrix_center_return);
-    
+Rcpp::List R_matrix_center_sparse(const arma::sp_mat mat, arma::sp_mat X_normalized,bool intercept){
+    arma::rowvec meanX = matrix_center(mat, X_normalized, intercept);
     return Rcpp::List::create(Rcpp::Named("mat_norm") = X_normalized,
                               Rcpp::Named("MeanX") = meanX);
 };

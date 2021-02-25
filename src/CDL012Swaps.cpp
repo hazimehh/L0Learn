@@ -3,8 +3,14 @@
 template <class T>
 CDL012Swaps<T>::CDL012Swaps(const T& Xi, const arma::vec& yi, const Params<T>& Pi) : CDSwaps<T>(Xi, yi, Pi) {}
 
+
 template <class T>
-FitResult<T> CDL012Swaps<T>::Fit() {
+FitResult<T> CDL012Swaps<T>::_FitWithBounds() {
+    throw "This Error should not happen. Please report it as an issue to https://github.com/hazimehh/L0Learn ";
+}
+
+template <class T>
+FitResult<T> CDL012Swaps<T>::_Fit() {
     auto result = CDL012<T>(*(this->X), *(this->y), this->P).Fit(); // result will be maintained till the end
     this->B = result.B;
     this->b0 = result.b0;
@@ -14,14 +20,10 @@ FitResult<T> CDL012Swaps<T>::Fit() {
     bool foundbetter = false;
     
     for (std::size_t t = 0; t < this->MaxNumSwaps; ++t) {
-        arma::sp_mat::const_iterator start = this->B.begin();
-        arma::sp_mat::const_iterator end   = this->B.end();
-        std::vector<std::size_t> NnzIndices;
-        for(arma::sp_mat::const_iterator it = start; it != end; ++it) {
-            if (it.row() >= this->NoSelectK){
-                NnzIndices.push_back(it.row());
-            }
-        }
+        
+        std::vector<std::size_t> NnzIndices = nnzIndicies(this->B, this->NoSelectK);
+
+        foundbetter = false;
         
         // TODO: shuffle NNz Indices to prevent bias.
         //std::shuffle(std::begin(Order), std::end(Order), engine);
@@ -57,8 +59,6 @@ FitResult<T> CDL012Swaps<T>::Fit() {
                 // Value (without considering bounds are solvable in closed form)
                 // Must be clamped to bounds
                 
-                T old_B = T(this->B); // Copy B if swap needs to be "undone"
-                // arma::vec old_r = P.r;
                 this->B[i] = 0;
                 
                 // Bi with No Bounds (nb);
@@ -69,7 +69,7 @@ FitResult<T> CDL012Swaps<T>::Fit() {
                 // Change initial solution to Swapped value to seed standard CD algorithm.
                 this->P.InitialSol = &(this->B);
                 *this->P.r = *(this->y) - *(this->X) * (this->B) - this->b0;
-                // this->P alread has access to b0.
+                // this->P already has access to b0.
                 
                 // proposed_result object.
                 // Keep tack of previous_best result object
@@ -78,19 +78,10 @@ FitResult<T> CDL012Swaps<T>::Fit() {
                 
                 // Rcpp::Rcout << "Swap Objective  " <<  result.Objective << " \n";
                 // Rcpp::Rcout << "Old Objective  " <<  objective << " \n";
-                if (result.Objective <= objective){
-                    // Accept Swap
-                    this->B = result.B;
-                    objective = result.Objective;
-                    foundbetter = true;
-                    break;
-                } 
-                // else {
-                    // Reject Swap
-                    // TODO: Fully "clear" the proposed swap from r, B0, ...
-                    // this->B = old_B;
-                    //*P.r = old_r;
-                // }
+                this->B = result.B;
+                objective = result.Objective;
+                foundbetter = true;
+                break;
             }
         }
         

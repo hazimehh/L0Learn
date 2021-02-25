@@ -11,7 +11,12 @@ CDL012SquaredHingeSwaps<T>::CDL012SquaredHingeSwaps(const T& Xi, const arma::vec
 }
 
 template <class T>
-FitResult<T> CDL012SquaredHingeSwaps<T>::Fit() {
+FitResult<T> CDL012SquaredHingeSwaps<T>::_FitWithBounds() {
+    throw "This Error should not happen. Please report it as an issue to https://github.com/hazimehh/L0Learn ";
+}
+
+template <class T>
+FitResult<T> CDL012SquaredHingeSwaps<T>::_Fit() {
     auto result = CDL012SquaredHinge<T>(*(this->X), *(this->y), this->P).Fit(); // result will be maintained till the end
     this->b0 = result.b0; // Initialize from previous later....!
     this->B = result.B;
@@ -26,14 +31,12 @@ FitResult<T> CDL012SquaredHingeSwaps<T>::Fit() {
     this->P.Init = 'u';
     
     bool foundbetter;
+    
     for (std::size_t t = 0; t < this->MaxNumSwaps; ++t) {
-        arma::sp_mat::const_iterator start = this->B.begin();
-        arma::sp_mat::const_iterator end   = this->B.end();
-        std::vector<std::size_t> NnzIndices;
-        for(arma::sp_mat::const_iterator it = start; it != end; ++it) {
-            if (it.row() >= this->NoSelectK)
-                NnzIndices.push_back(it.row());
-        }
+        // Rcpp::Rcout << "Swap Number: " << t << "|mean(onemyxb): " << arma::mean(onemyxb) << "\n";
+        
+        std::vector<std::size_t> NnzIndices = nnzIndicies(this->B, this->NoSelectK);
+        
         // TODO: Implement shuffle of NnzIndices Indicies
 
         foundbetter = false;
@@ -60,7 +63,7 @@ FitResult<T> CDL012SquaredHingeSwaps<T>::Fit() {
                         arma::vec onemyxbnoji = onemyxbnoj;
                         
                         std::size_t l = 0;
-                        arma::sp_mat Btemp = this->B;
+                        beta_vector Btemp = this->B;
                         Btemp[j] = 0;
                         //double ObjTemp = Objective(onemyxbnoj,Btemp);
                         //double Biolddescent = 0;
@@ -85,10 +88,9 @@ FitResult<T> CDL012SquaredHingeSwaps<T>::Fit() {
                             
                         }
                         
-                        // Can be made much faster (later)
                         Btemp[i] = Binew;
                         double Fnew = Objective(onemyxbnoji, Btemp);
-                        //std::cout<<"Fnew: "<<Fnew<<"Index: "<<i<<std::endl;
+                        
                         if (Fnew < Fmin) {
                             Fmin = Fnew;
                             maxindex = i;
@@ -118,6 +120,7 @@ FitResult<T> CDL012SquaredHingeSwaps<T>::Fit() {
                 foundbetter = true;
                 break;
             }
+            if (foundbetter){break;}
         }
         
         if(!foundbetter) {

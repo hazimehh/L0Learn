@@ -16,6 +16,13 @@ if (sum(apply(X, 2, sd) == 0)) {
 
 X_sparse <- as(X, "dgCMatrix")
 
+test_that("L0Learn finds the same solution with LOOSE bounds", {
+    x1 <- L0Learn.fit(X, y, lows=-10000, highs=10000)
+    x2 <- L0Learn.fit(X, y)
+    
+    expect_equal(x1, x2)
+})
+
 
 test_that('L0Learn Fails on in-proper Bounds', {
     for (f in c(L0Learn.fit, L0Learn.cvfit)){
