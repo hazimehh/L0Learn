@@ -3,11 +3,10 @@ Type: Package
 Title: Fast Algorithms for Best Subset Selection
 Version: 2.0.0
 Date: 2021-03-01
-Author: Authors@R: c(
+Authors@R: c(
     person("Hussein", "Hazimeh", email = "hazimeh@mit.edu", role = c("aut", "cre")),
     person("Rahul", "Mazumder", email = "rahulmaz@mit.edu", role = "aut"),
-    person("Tim", "Nonet", email = "tim.nonet@gmail.com", role = c("aut", "cre")))
-Maintainer: Hussein Hazimeh <hazimeh@mit.edu>, Tim Nonet <tim.nonet@gmail.com>
+    person("Tim", "Nonet", email = "tim.nonet@gmail.com", role = "aut"))
 Description: Highly optimized toolkit for approximately solving L0-regularized learning problems (a.k.a. best subset selection).
     The algorithms are based on coordinate descent and local combinatorial search.
     For more details, check the paper by Hazimeh and Mazumder (2020);
