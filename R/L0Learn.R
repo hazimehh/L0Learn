@@ -22,5 +22,5 @@
 #' \item{\code{\link[=plot.L0Learn]{plot}}: }{Plots the regularization path or cross-validation error.}
 #' }
 #' @references Hazimeh and Mazumder. Fast Best Subset Selection: Coordinate Descent and Local Combinatorial
-#' Optimization Algorithms. Operations Research (2019). \url{https://arxiv.org/abs/1803.01454}.
+#' Optimization Algorithms. Operations Research (2020). \url{https://pubsonline.informs.org/doi/10.1287/opre.2019.1919}.
 NULL

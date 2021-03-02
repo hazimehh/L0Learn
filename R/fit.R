@@ -33,7 +33,7 @@
 #' for details). Otherwise, full sorting is used.
 #' @param maxIters The maximum number of iterations (full cycles) for CD per grid point.
 #' @param rtol The relative tolerance which decides when to terminate optimization (based on the relative change in the objective between iterations).
-#' @param atol The absolute tolerance which decides when to terminate optimization (based on the absolute L2 norm of the residual).
+#' @param atol The absolute tolerance which decides when to terminate optimization (based on the absolute L2 norm of the residuals).
 #' @param activeSet If TRUE, performs active set updates.
 #' @param activeSetNum The number of consecutive times a support should appear before declaring support stabilization.
 #' @param maxSwaps The maximum number of swaps used by CDPSI for each grid point.

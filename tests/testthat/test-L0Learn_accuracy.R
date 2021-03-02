@@ -25,7 +25,7 @@ test_that('L0Learn recovers coefficients with no error for L0', {
     fit <- L0Learn.fit(X, y, loss="SquaredError", penalty = "L0")
     
     for (j in 1:length(fit$suppSize[[1]])){
-        # With only L0 penalty, therefor, once the support size is 10, all coefficients should be 1.
+        # With only L0 penalty, therefore, once the support size is 10, all coefficients should be 1.
         if (fit$suppSize[[1]][[j]] >= 10){
             expect_equal(norm_vec(fit$beta[[1]][,j] - tmp$B), 0, tolerance=1e-3, info=j)
         }
@@ -41,7 +41,6 @@ test_that('L0Learn seperates data with no error for L0', {
         }
         
         for (j in 1:length(fit$suppSize[[1]])){
-            # With only L0 penalty, therefor, once the support size is 10, all coefficients should be 1.
             if (fit$suppSize[[1]][[j]] >= 10){
                 expect_equal(predict_(j), sign(y))
             }
