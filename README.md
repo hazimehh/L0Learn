@@ -17,10 +17,10 @@ The toolkit is implemented in C++11 and can often run faster than popular sparse
 **NEW: Version 2.0.0 (03/2021) adds support for sparse matrices and box constraints on the coefficients.**
 
 ## R Package Installation
-The latest development version (v2.0.0) can be installed from Github:
+The latest version (v2.0.0) can be installed from Github:
 ```{R}
 library(devtools)
-install_github("hazimehh/L0Learn",ref="v2.0.0dev")
+install_github("hazimehh/L0Learn")
 ```
 L0Learn's changelog can be accessed from [here](https://github.com/hazimehh/L0Learn/blob/master/ChangeLog).
 
