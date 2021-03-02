@@ -1,27 +1,20 @@
 ---
 title: "L0Learn Vignette"
-#author:  "Hussein Hazimeh and Rahul Mazumder"
 author:
 - name: Hussein Hazimeh, Rahul Mazumder, and Tim Nonet
 - name: Massachusetts Institute of Technology (MIT)
 date: "`r Sys.Date()`"
-#output: rmarkdown::html_vignette
-#output:
-#  prettydoc::html_pretty:
-#    theme: cayman
-#    highlight: github
-#    toc: true
 output:
   html_document:
     theme: united
     highlight: tango
-    toc: true
+    toc: yes
     toc_float:
-      collapsed: false
-vignette: >
-  %\VignetteIndexEntry{L0Learn Vignette}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+      collapsed: no
+  pdf_document:
+    toc: yes
+vignette: |
+  %\VignetteIndexEntry{L0Learn Vignette} %\VignetteEngine{knitr::rmarkdown} %\VignetteEncoding{UTF-8}
 ---
 
 ```{r setup, include = FALSE}
@@ -219,7 +212,7 @@ Finally, we note that L0Learn also supports a smoothed version of SVM by using s
 Starting in version 2.0.0, L0Learn supports sparse matrices of type dgCMatrix. If your sparse matrix uses a different storage format, please convert it to dgCMatrix before using it in L0Learn. L0Learn keeps the matrix sparse internally and thus is highly efficient if the matrix is sufficiently sparse. The API for sparse matrices is the same as that of dense matrices, so all the demonstrations in this vignette also apply for sparse matrices. For example, we can fit an L0-regularized model on a sparse matrix as follows:
 ```{r}
 X_sparse <- as(X, "dgCMatrix")
-fit_dense <- L0Learn.fit(X_sparse, y, penalty="L0")
+fit_sparse <- L0Learn.fit(X_sparse, y, penalty="L0")
 ```
 
 ### Selection on Subset of Variables
@@ -235,7 +228,7 @@ plot(fit, gamma=0)
 We can see in the plot above that first 3 variables are included in all the solutions of the path.
 
 ### Coefficient Bounds
-Starting in version 2.0.0, L0Learn supports bounds for CD algorithms for all losses and penalties. (We plan to support bound constraints for the CDPSI algorithm in the future). By default, L0Learn does not apply bounds, i.e., it assumes $-∞ <= \beta_i <= ∞$ for all i. Users can supply the same bounds for all coefficients by setting the parameters `lows` and `highs` to scalar values (these should satisfy: `lows <= 0`, `lows != highs`, and `highs >= 0`). To use different bounds for the coefficients, `lows` and `highs` can be both set to vectors of length `p` (where the i-th entry corresponds to the bound on coefficient i).
+Starting in version 2.0.0, L0Learn supports bounds for CD algorithms for all losses and penalties. (We plan to support bound constraints for the CDPSI algorithm in the future). By default, L0Learn does not apply bounds, i.e., it assumes $-\infty <= \beta_i <= \infty$ for all i. Users can supply the same bounds for all coefficients by setting the parameters `lows` and `highs` to scalar values (these should satisfy: `lows <= 0`, `lows != highs`, and `highs >= 0`). To use different bounds for the coefficients, `lows` and `highs` can be both set to vectors of length `p` (where the i-th entry corresponds to the bound on coefficient i).
 
 All of the following examples are valid.
 ```{r}
