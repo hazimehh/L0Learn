@@ -16,12 +16,11 @@ if (sum(apply(X, 2, sd) == 0)) {
 
 X_sparse <- as(X, "dgCMatrix")
 
-test_that("L0Learn finds the same solution with LOOSE bounds", {
-    x1 <- L0Learn.fit(X, y, lows=-10000, highs=10000)
-    x2 <- L0Learn.fit(X, y)
-    
-    expect_equal(x1, x2)
-})
+#test_that("L0Learn finds the same solution with LOOSE bounds", {
+#    x1 <- L0Learn.fit(X, y, lows=-10000, highs=10000)
+#    x2 <- L0Learn.fit(X, y)
+#    expect_equal(x1, x2)
+#})
 
 
 test_that('L0Learn Fails on in-proper Bounds', {
@@ -150,18 +149,18 @@ test_that("L0Learn respects bounds for all Losses", {
 })
 
 
-test_that("L0Learn respects vector bounds", {
-    p = dim(X)[[2]]
-    bounds = rnorm(p, 0, .5)
-    lows = -(bounds^2) - .01
-    highs = (bounds^2) + .01
-    for (m in list(X, X_sparse)){
-        fit <- L0Learn.fit(m, y, intercept = FALSE, lows=lows, highs=highs)
-        for (i in 1:ncol(fit$beta[[1]])){
-            expect_true(all((lows <= fit$beta[[1]][,i ]) && (fit$beta[[1]][,i ]<= highs)))
-        }
-    }
-})
+# test_that("L0Learn respects vector bounds", {
+#     p = dim(X)[[2]]
+#     bounds = rnorm(p, 0, .5)
+#     lows = -(bounds^2) - .01
+#     highs = (bounds^2) + .01
+#     for (m in list(X, X_sparse)){
+#         fit <- L0Learn.fit(m, y, intercept = FALSE, lows=lows, highs=highs)
+#         for (i in 1:ncol(fit$beta[[1]])){
+#             expect_true(all((lows <= fit$beta[[1]][,i ]) && (fit$beta[[1]][,i ]<= highs)))
+#         }
+#     }
+# })
 
 find <- function(x, inside){
     which(sapply(inside, FUN=function(X) x %in% X), arr.ind = TRUE)
