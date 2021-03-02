@@ -5,8 +5,6 @@
 
 Downloads from Rstudio: [![](https://cranlogs.r-pkg.org/badges/grand-total/L0Learn)](https://cran.rstudio.com/web/packages/L0Learn/index.html)
 
-
-
 ## Introduction
 L0Learn is a highly efficient framework for solving L0-regularized learning problems. It can (approximately) solve the following three problems, where the empirical loss is penalized by combinations of the L0, L1, and L2 norms:
 
