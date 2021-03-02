@@ -2,6 +2,7 @@
 #' @useDynLib L0Learn
 #' @importFrom Rcpp evalCpp
 #' @importFrom methods as
+#' @importFrom methods is
 #' @import Matrix
 
 #' @title Fit an L0-regularized model

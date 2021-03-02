@@ -12,7 +12,7 @@ Description: Highly optimized toolkit for approximately solving L0-regularized l
     The algorithms are based on coordinate descent and local combinatorial search.
     For more details, check the paper by Hazimeh and Mazumder (2020);
     the link is provided in the URL field below.
-URL: https://pubsonline.informs.org/doi/10.1287/opre.2019.1919
+URL: https://pubsonline.informs.org/doi/10.1287/opre.2019.1919 https://github.com/hazimehh
 BugReports: https://github.com/hazimehh/L0Learn/issues
 License: MIT + file LICENSE
 Depends: R (>= 3.3.0)
@@ -23,5 +23,8 @@ RoxygenNote: 7.1.1
 Suggests: 
     knitr,
     rmarkdown,
-    testthat
+    testthat,
+    pracma,
+    raster,
+    tilting
 VignetteBuilder: knitr
