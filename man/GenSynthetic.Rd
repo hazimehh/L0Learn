@@ -4,7 +4,7 @@
 \alias{GenSynthetic}
 \title{Generate Synthetic Data}
 \usage{
-GenSynthetic(n, p, k, seed, rho = 0, b0 = 0)
+GenSynthetic(n, p, k, seed, rho = 0, b0 = 0, error_ratio = 1)
 }
 \arguments{
 \item{n}{Number of samples}
@@ -17,7 +17,9 @@ GenSynthetic(n, p, k, seed, rho = 0, b0 = 0)
 
 \item{rho}{The threshold for setting values to 0.  if |X(i, j)| > rho => X(i, j) <- 0}
 
-\item{b0}{intercept value to scale y by.}
+\item{b0}{intercept value to translate y by.}
+
+\item{error_ratio}{multiplier for the magnitude of the error term 'e'.}
 }
 \value{
 A list containing:

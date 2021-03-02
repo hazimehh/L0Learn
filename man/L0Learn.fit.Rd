@@ -17,7 +17,8 @@ L0Learn.fit(
   gammaMin = 1e-04,
   partialSort = TRUE,
   maxIters = 200,
-  tol = 1e-06,
+  rtol = 1e-06,
+  atol = 1e-09,
   activeSet = TRUE,
   activeSetNum = 3,
   maxSwaps = 100,
@@ -51,10 +52,11 @@ this to a small fraction of min(n,p) (e.g. 0.05 * min(n,p)) as L0 regularization
 portion of non-zeros.}
 
 \item{nLambda}{The number of Lambda values to select (recall that Lambda is the regularization parameter
-corresponding to the L0 norm).}
+corresponding to the L0 norm). This value is ignored if 'lambdaGrid' is supplied.}
 
 \item{nGamma}{The number of Gamma values to select (recall that Gamma is the regularization parameter
-corresponding to L1 or L2, depending on the chosen penalty).}
+corresponding to L1 or L2, depending on the chosen penalty). This value is ignored if 'lambdaGrid' is supplied 
+and will be set to length(lambdaGrid)}
 
 \item{gammaMax}{The maximum value of Gamma when using the L0L2 penalty. For the L0L1 penalty this is
 automatically selected.}
@@ -67,7 +69,9 @@ for details). Otherwise, full sorting is used.}
 
 \item{maxIters}{The maximum number of iterations (full cycles) for CD per grid point.}
 
-\item{tol}{The tolerance which decides when to terminate CD (based on the relative change in the objective).}
+\item{rtol}{The relative tolerance which decides when to terminate optimization (based on the relative change in the objective between iterations).}
+
+\item{atol}{The absolute tolerance which decides when to terminate optimization (based on the absolute L2 norm of the residuals).}
 
 \item{activeSet}{If TRUE, performs active set updates.}
 
