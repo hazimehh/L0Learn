@@ -44,7 +44,7 @@ if test "${GXX}" = yes; then
              ## we know this one is bad
              can_use_openmp="no"
         ;;
-        5.4*|5.5*|5.6*|5.7*|5.8*|5.9*|6.*|7.*|8.*|9.*|10.*)
+        5.4*|5.5*|5.6*|5.7*|5.8*|5.9*|6.*|7.*|8.*|9.*|10.*|11.*|12.*)
              AC_MSG_RESULT([yes, with OpenMP as version ${gxx_version}])
              ## we know this one is good, yay
              can_use_openmp="yes"
@@ -84,7 +84,7 @@ if test x"${RSysinfoName}" == x"Darwin"; then
             clang_version=$(${CXX} -v 2>&1 | awk '/^.*clang version/ {print $3}')
 
             case ${clang_version} in
-                4.*|5.*|6.*|7.*|8.*)
+                4.*|5.*|6.*|7.*|8.*|9.*|10.*|11.*)
                     AC_MSG_RESULT([found and suitable])
                     can_use_openmp="yes"
                 ;;
