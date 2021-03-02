@@ -2,7 +2,7 @@
 title: "L0Learn Vignette"
 #author:  "Hussein Hazimeh and Rahul Mazumder"
 author:
-- name: Hussein Hazimeh and Rahul Mazumder
+- name: Hussein Hazimeh, Rahul Mazumder, and Tim Nonet
 - name: Massachusetts Institute of Technology (MIT)
 date: "`r Sys.Date()`"
 #output: rmarkdown::html_vignette
@@ -73,16 +73,16 @@ where $\ell$ is the loss function, $\beta_0$ is the intercept, $\beta$ is the ve
 
 The parameter $\lambda$ controls the strength of the L0 regularization (larger $\lambda$ leads to less non-zeros). The parameter $\gamma$ controls the strength of the shrinkage component (which is the L1 norm in case of L0L1 or squared L2 norm in case of L0L2); adding a shrinkage term to L0 can be very effective in avoiding overfitting and typically leads to better predictive models. The fitting is done over a grid of $\lambda$ and $\gamma$ values to generate a regularization path. 
 
-The algorithms provided in `L0Learn` are based on cyclic coordinate descent and local combinatorial search. Many computational tricks and heuristics are used to speed up the algorithms and improve the solution quality. These heuristics include warm starts, active set convergence, correlation screening, greedy cycling order, and efficient methods for updating the residuals through exploiting sparsity and problem dimensions. Moreover, we employed a new computationally efficient method for dynamically selecting the regularization parameter $\lambda$ in the path. For more details on the algorithms used, please refer to our paper [Fast Best Subset Selection: Coordinate Descent and Local Combinatorial Optimization Algorithms](https://arxiv.org/abs/1803.01454). 
+The algorithms provided in `L0Learn` are based on cyclic coordinate descent and local combinatorial search. Many computational tricks and heuristics are used to speed up the algorithms and improve the solution quality. These heuristics include warm starts, active set convergence, correlation screening, greedy cycling order, and efficient methods for updating the residuals through exploiting sparsity and problem dimensions. Moreover, we employed a new computationally efficient method for dynamically selecting the regularization parameter $\lambda$ in the path. For more details on the algorithms used, please refer to our paper [Fast Best Subset Selection: Coordinate Descent and Local Combinatorial Optimization Algorithms](https://pubsonline.informs.org/doi/10.1287/opre.2019.1919). 
 
-The toolkit is implemented in C++ along with an easy-to-use R interface. In this vigenette, we provide a short tutorial on using the R interface. Particularly, we will demonstrate how use L0Learn's main functions for fitting models, cross-validation, and visualization.
+The toolkit is implemented in C++ along with an easy-to-use R interface. In this vignette, we provide a tutorial on using the R interface. Particularly, we will demonstrate how use L0Learn's main functions for fitting models, cross-validation, and visualization.
 
 # Installation
 L0Learn can be installed directly from CRAN by executing:
 ```{r, eval=FALSE}
 install.packages("L0Learn")
 ```
-If you face installation issues please refer to the [Intallation Troubleshooting Wiki](https://github.com/hazimehh/L0Learn/wiki/Installation-Troubleshooting). If the issue is not resolved, you can submit an issue on [L0Learn's Github Repo](https://github.com/hazimehh/L0Learn).
+If you face installation issues, please refer to the [Installation Troubleshooting Wiki](https://github.com/hazimehh/L0Learn/wiki/Installation-Troubleshooting). If the issue is not resolved, you can submit an issue on [L0Learn's Github Repo](https://github.com/hazimehh/L0Learn).
 
 # Tutorial
 To demonstrate how `L0Learn` works, we will first generate a synthetic dataset and then proceed to fitting L0-regularized models. The synthetic dataset (y,X) will be generated from a sparse linear model as follows:
@@ -214,6 +214,14 @@ Finally, we note that L0Learn also supports a smoothed version of SVM by using s
 
 
 ## Advanced Options
+
+### Sparse Matrix Support
+Starting in version 2.0.0, L0Learn supports sparse matrices of type dgCMatrix. If your sparse matrix uses a different storage format, please convert it to dgCMatrix before using it in L0Learn. L0Learn keeps the matrix sparse internally and thus is highly efficient if the matrix is sufficiently sparse. The API for sparse matrices is the same as that of dense matrices, so all the demonstrations in this vignette also apply for sparse matrices. For example, we can fit an L0-regularized model on a sparse matrix as follows:
+```{r}
+X_sparse <- as(X, "dgCMatrix")
+fit_dense <- L0Learn.fit(X_sparse, y, penalty="L0")
+```
+
 ### Selection on Subset of Variables
 In certain applications, it is desirable to always include some of the variables in the model and perform variable selection on others. `L0Learn` supports this option through the `excludeFirstK` parameter. Specifically, setting `excludeFirstK = K` (where K is a non-negative integer) instructs `L0Learn` to exclude the first K variables in the data matrix `X` from the L0-norm penalty (those K variables will still be penalized using the L2 or L1 norm penalties.). For example, below we fit an `L0` model and exclude the first 3 variables from selection by setting `excludeFirstK = 3`:
 ```{r}
@@ -226,20 +234,53 @@ plot(fit, gamma=0)
 
 We can see in the plot above that first 3 variables are included in all the solutions of the path.
 
+### Coefficient Bounds
+Starting in version 2.0.0, L0Learn supports bounds for CD algorithms for all losses and penalties. (We plan to support bound constraints for the CDPSI algorithm in the future). By default, L0Learn does not apply bounds, i.e., it assumes $-∞ <= \beta_i <= ∞$ for all i. Users can supply the same bounds for all coefficients by setting the parameters `lows` and `highs` to scalar values (these should satisfy: `lows <= 0`, `lows != highs`, and `highs >= 0`). To use different bounds for the coefficients, `lows` and `highs` can be both set to vectors of length `p` (where the i-th entry corresponds to the bound on coefficient i).
+
+All of the following examples are valid.
+```{r}
+L0Learn.fit(X, y, penalty="L0", lows=-0.5)
+L0Learn.fit(X, y, penalty="L0", highs=0.5)
+L0Learn.fit(X, y, penalty="L0", lows=-0.5, highs=0.5)
+
+low_vector <- c(rep(-0.1, 500), rep(-0.125, 500))
+fit <- L0Learn.fit(X, y, penalty="L0", lows=low_vector, highs=0.25)
+```
+
+We can see the coefficients are subject to the bounds.
+```{r}
+print(max(fit$beta[[1]]))
+print(min(fit$beta[[1]][1:500, ]))
+print(min(fit$beta[[1]][501:1000, ]))
+```
+
 ### User-specified Lambda Grids
-By default, `L0Learn` selects the sequence of lambda values in an efficient manner to avoid wasted computation (since close $\lambda$ values can typically lead to the same solution). Advanced users of the toolkit can change this default behavior and supply their own sequence of $\lambda$ values. This can be done by setting the `autoLambda` parameter to `FALSE` and supplying the $\lambda$ values through the parameter `lambdaGrid`. Specifically, the value assigned to `lambdaGrid` should be a list with the same length as `nGamma` in case of L0L2/L0L1 and of length 1 in case of L0. The ith element in `LambdaGrid` should be a **decreasing** sequence of lambda values which are used by the algorithm for the ith value of gamma. For example, to fit an L0 model with the sequence of user-specified lambda values: 1, 1e-1, 1e-2, 1e-3, 1e-4, we run the following:
+By default, `L0Learn` selects the sequence of lambda values in an efficient manner to avoid wasted computation (since close $\lambda$ values can typically lead to the same solution). Advanced users of the toolkit can change this default behavior and supply their own sequence of $\lambda$ values. This can be done supplying the $\lambda$ values through the parameter `lambdaGrid`. L0Learn versions before 2.0.0 would also require setting the `autoLambda` parameter to `FALSE`. This parameter remains in version 2.0.0 for backwards compatibility, but is no longer needed or used.
+
+Specifically, the value assigned to `lambdaGrid` should be a list of lists of decreasing positive values (doubles). The length of `lambdaGrid` (the number of lists stored) specifies the number of gamma parameters that will fill between `gammaMin`, and `gammaMax`. In the case of L0 penalty, `lambdaGrid` must be a list of length 1. In case of L0L2/L0L1 `lambdaGrid` can have any number of sub-lists stored. The length of `lambdaGrid` (the number of lists stored) specifies the number of gamma parameters that will fill between `gammaMin`, and `gammaMax`. The ith element in `LambdaGrid` should be a **decreasing** sequence of positive lambda values which are used by the algorithm for the ith value of gamma. For example, to fit an L0 model with the sequence of user-specified lambda values: 1, 1e-1, 1e-2, 1e-3, 1e-4, we run the following:
 ```{r}
 userLambda <- list()
 userLambda[[1]] <- c(1, 1e-1, 1e-2, 1e-3, 1e-4)
-fit <- L0Learn.fit(X, y, penalty="L0", autoLambda=FALSE, lambdaGrid=userLambda, maxSuppSize=1000)
+fit <- L0Learn.fit(X, y, penalty="L0", lambdaGrid=userLambda, maxSuppSize=1000)
 ```
 To verify the results we print the fit object:
 ```{r}
 print(fit)
 ```
-Note that the $\lambda$ values above are the desired values. For L0L2 and L0L1 penalties, the same can be done where the lambdaGrid parameter should be assigned a list of size `nGamma`.
+Note that the $\lambda$ values above are the desired values. For L0L2 and L0L1 penalties, the same can be done where the `lambdaGrid` parameter.
+```{r}
+userLambda <- list()
+userLambda[[1]] <- c(1, 1e-1, 1e-2, 1e-3, 1e-4)
+userLambda[[2]] <- c(10, 2, 1, 0.01, 0.002, 0.001, 1e-5) 
+userLambda[[3]] <- c(1e-4, 1e-5) 
+# userLambda[[i]] must be a vector of positive decreasing reals.
+fit <- L0Learn.fit(X, y, penalty="L0L2", lambdaGrid=userLambda, maxSuppSize=1000)
+```
 
+```{r}
+print(fit)
+```
 
 # References
-Hussein Hazimeh and Rahul Mazumder. (2018).
-[Fast Best Subset Selection: Coordinate Descent and Local Combinatorial Optimization Algorithms](https://arxiv.org/abs/1803.01454)
+Hussein Hazimeh and Rahul Mazumder. (2020).
+[Fast Best Subset Selection: Coordinate Descent and Local Combinatorial Optimization Algorithms](https://pubsonline.informs.org/doi/10.1287/opre.2019.1919)

@@ -4,13 +4,33 @@
 \alias{L0Learn.fit}
 \title{Fit an L0-regularized model}
 \usage{
-L0Learn.fit(x, y, loss = "SquaredError", penalty = "L0",
-  algorithm = "CD", maxSuppSize = 100, nLambda = 100, nGamma = 10,
-  gammaMax = 10, gammaMin = 1e-04, partialSort = TRUE,
-  maxIters = 200, tol = 1e-06, activeSet = TRUE, activeSetNum = 3,
-  maxSwaps = 100, scaleDownFactor = 0.8, screenSize = 1000,
-  autoLambda = TRUE, lambdaGrid = list(0), excludeFirstK = 0,
-  intercept = TRUE)
+L0Learn.fit(
+  x,
+  y,
+  loss = "SquaredError",
+  penalty = "L0",
+  algorithm = "CD",
+  maxSuppSize = 100,
+  nLambda = 100,
+  nGamma = 10,
+  gammaMax = 10,
+  gammaMin = 1e-04,
+  partialSort = TRUE,
+  maxIters = 200,
+  rtol = 1e-06,
+  atol = 1e-09,
+  activeSet = TRUE,
+  activeSetNum = 3,
+  maxSwaps = 100,
+  scaleDownFactor = 0.8,
+  screenSize = 1000,
+  autoLambda = NULL,
+  lambdaGrid = list(),
+  excludeFirstK = 0,
+  intercept = TRUE,
+  lows = -Inf,
+  highs = Inf
+)
 }
 \arguments{
 \item{x}{The data matrix.}
@@ -32,10 +52,11 @@ this to a small fraction of min(n,p) (e.g. 0.05 * min(n,p)) as L0 regularization
 portion of non-zeros.}
 
 \item{nLambda}{The number of Lambda values to select (recall that Lambda is the regularization parameter
-corresponding to the L0 norm).}
+corresponding to the L0 norm). This value is ignored if 'lambdaGrid' is supplied.}
 
 \item{nGamma}{The number of Gamma values to select (recall that Gamma is the regularization parameter
-corresponding to L1 or L2, depending on the chosen penalty).}
+corresponding to L1 or L2, depending on the chosen penalty). This value is ignored if 'lambdaGrid' is supplied 
+and will be set to length(lambdaGrid)}
 
 \item{gammaMax}{The maximum value of Gamma when using the L0L2 penalty. For the L0L1 penalty this is
 automatically selected.}
@@ -48,7 +69,9 @@ for details). Otherwise, full sorting is used.}
 
 \item{maxIters}{The maximum number of iterations (full cycles) for CD per grid point.}
 
-\item{tol}{The tolerance which decides when to terminate CD (based on the relative change in the objective).}
+\item{rtol}{The relative tolerance which decides when to terminate optimization (based on the relative change in the objective between iterations).}
+
+\item{atol}{The absolute tolerance which decides when to terminate optimization (based on the absolute L2 norm of the residuals).}
 
 \item{activeSet}{If TRUE, performs active set updates.}
 
@@ -62,17 +85,20 @@ gaps between the support sizes. For details, see our paper - Section 5 on Adapti
 
 \item{screenSize}{The number of coordinates to cycle over when performing initial correlation screening.}
 
-\item{autoLambda}{If FALSE, the user specifies a grid of Lambda values through the lambdaGrid parameter. Otherwise,
-if TRUE, the values of Lambda are automatically selected based on the data.}
+\item{autoLambda}{Ignored parameter. Kept for backwards compatibility.}
 
-\item{lambdaGrid}{A grid of Lambda values to use in computing the regularization path. This is ignored unless autoLambda = FALSE.
-LambdaGrid should be a list, where the ith element (corresponding to the ith gamma) should be a decreasing sequence of lambda values
+\item{lambdaGrid}{A grid of Lambda values to use in computing the regularization path. This is by default an empty list and is ignored.
+When specified, LambdaGrid should be a list of length 'nGamma', where the ith element (corresponding to the ith gamma) should be a decreasing sequence of lambda values
 which are used by the algorithm when fitting for the ith value of gamma (see the vignette for details).}
 
 \item{excludeFirstK}{This parameter takes non-negative integers. The first excludeFirstK features in x will be excluded from variable selection,
 i.e., the first excludeFirstK variables will not be included in the L0-norm penalty (they will still be included in the L1 or L2 norm penalties.).}
 
 \item{intercept}{If FALSE, no intercept term is included in the model.}
+
+\item{lows}{Lower bounds for coefficients. Either a scalar for all coefficients to have the same bound or a vector of size p (number of columns of X) where lows[i] is the lower bound for coefficient i.}
+
+\item{highs}{Upper bounds for coefficients. Either a scalar for all coefficients to have the same bound or a vector of size p (number of columns of X) where highs[i] is the upper bound for coefficient i.}
 }
 \value{
 An S3 object of type "L0Learn" describing the regularization path. The object has the following members.

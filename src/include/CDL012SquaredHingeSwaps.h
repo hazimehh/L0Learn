@@ -1,34 +1,49 @@
 #ifndef CDL012SquredHingeSwaps_H
 #define CDL012SquredHingeSwaps_H
+#include "RcppArmadillo.h"
 #include "CD.h"
+#include "CDSwaps.h"
+#include "CDL012SquaredHinge.h"
+#include "Params.h"
 #include "FitResult.h"
+#include "utils.h"
+#include "BetaVector.h"
 
-class CDL012SquaredHingeSwaps : public CD
-{
+template <class T>
+class CDL012SquaredHingeSwaps : public CDSwaps<T> {
     private:
         const double LipschitzConst = 2;
-        double thr;
         double twolambda2;
         double qp2lamda2;
-        double lambda1;
         double lambda1ol;
-        double b0;
         double stl0Lc;
-        std::vector<double> * Xtr;
-        unsigned int Iter;
-        unsigned int NoSelectK;
-
-        unsigned int MaxNumSwaps;
-        Params P;
-
+        // std::vector<double> * Xtr;
+        
     public:
-        CDL012SquaredHingeSwaps(const arma::mat& Xi, const arma::vec& yi, const Params& P);
+        CDL012SquaredHingeSwaps(const T& Xi, const arma::vec& yi, const Params<T>& P);
 
-        FitResult Fit() final;
+        FitResult<T> _FitWithBounds() final;
+        
+        FitResult<T> _Fit() final;
 
-        inline double Objective(arma::vec & r, arma::sp_mat & B) final;
+        inline double Objective(const arma::vec & r, const beta_vector & B) final;
+        
+        inline double Objective() final;
 
 
 };
+
+template <class T>
+inline double CDL012SquaredHingeSwaps<T>::Objective(const arma::vec & onemyxb, const beta_vector & B) {
+    auto l2norm = arma::norm(B, 2);
+    arma::uvec indices = arma::find(onemyxb > 0);
+    return arma::sum(onemyxb.elem(indices) % onemyxb.elem(indices)) + this->lambda0 * n_nonzero(B) + this->lambda1 * arma::norm(B, 1) + this->lambda2 * l2norm * l2norm;
+}
+
+template <class T>
+inline double CDL012SquaredHingeSwaps<T>::Objective() {
+    throw std::runtime_error("CDL012SquaredHingeSwaps does not have this->onemyxb");
+}
+
 
 #endif
