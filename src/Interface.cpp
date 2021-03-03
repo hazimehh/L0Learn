@@ -1,4 +1,8 @@
-#include "Interface.h" 
+#include "Interface.h"
+#include "GridParams.h"
+#include "RcppArmadillo.h"
+#include "Grid.h"
+#include "utils.h"
 // [[Rcpp::depends(RcppArmadillo)]]
 
 template <typename T>
