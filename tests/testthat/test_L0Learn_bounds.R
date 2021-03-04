@@ -24,6 +24,7 @@ X_sparse <- as(X, "dgCMatrix")
 
 
 test_that('L0Learn Fails on in-proper Bounds', {
+    skip_on_cran()
     for (f in c(L0Learn.fit, L0Learn.cvfit)){
         for (m in list(X, X_sparse)){
             f1 <- function(){
@@ -76,6 +77,7 @@ test_that('L0Learn Fails on in-proper Bounds', {
 })
 
 test_that("L0Learn fit fails on CDPSI with bound", {
+    skip_on_cran()
     f1 <- function(){
         L0Learn.fit(X, y, algorithm = "CDPSI", lows=0)
     }
@@ -91,6 +93,7 @@ test_that("L0Learn fit fails on CDPSI with bound", {
 })
 
 test_that("L0Learn fit respect bounds", {
+    skip_on_cran()
     low = -.04
     high = .05
     for (m in list(X, X_sparse)){
@@ -105,6 +108,7 @@ test_that("L0Learn fit respect bounds", {
 })
 
 test_that("L0Learn cvfit respect bounds", {
+    skip_on_cran()
     low = -.04
     high = .05
     for (m in list(X, X_sparse)){
@@ -119,6 +123,7 @@ test_that("L0Learn cvfit respect bounds", {
 })
 
 test_that("L0Learn respects bounds for all Losses", {
+    skip_on_cran()
     low = -.04
     high = .05
     maxIters = 2
@@ -167,6 +172,7 @@ find <- function(x, inside){
 }
 
 test_that("L0Learn with bounds is better than no-bounds", {
+    skip_on_cran()
     lows = -.02
     highs = .02
     fit_wb <- L0Learn.fit(X, y, intercept = FALSE, lows=lows, highs=highs)

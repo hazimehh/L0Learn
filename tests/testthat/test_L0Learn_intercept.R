@@ -28,6 +28,7 @@ userLambda <- list()
 userLambda[[1]] <- c(logspace(-1, -10, 100))
 
 test_that("Intercepts are supported for all losses, algorithims, penalites, and matrix types", {
+  skip_on_cran()
   # Try all losses
   for (p in c("L0", "L0L1", "L0L2")){
     L0Learn.fit(Xsmall_sparse, ysmall, penalty=p, intercept = TRUE)
@@ -47,6 +48,7 @@ test_that("Intercepts are supported for all losses, algorithims, penalites, and 
 })
 
 test_that("Intercepts for Sparse Matricies are deterministic", {
+  skip_on_cran()
   # Try all losses
   for (p in c("L0", "L0L1", "L0L2")){
     set.seed(1)
@@ -90,6 +92,7 @@ if (sum(apply(X, 2, sd) == 0)) {
 X_sparse <- as(X, "dgCMatrix")
 
 test_that("When lambda0 is large, intecepts should be found similar for both sparse and dense methods", {
+  skip_on_cran()
   BIGuserLambda <- list()
   BIGuserLambda[[1]] <- c(logspace(2, -2, 10))
   
@@ -113,6 +116,7 @@ test_that("When lambda0 is large, intecepts should be found similar for both spa
 })
 
 test_that("Intercepts achieve a lower insample-error", {
+  skip_on_cran()
   
   for (a in c("CD", "CDPSI")){ 
     y_scaled = y*2 + 10

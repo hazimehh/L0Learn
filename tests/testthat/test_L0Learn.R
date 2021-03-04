@@ -14,6 +14,7 @@ if (sum(apply(X, 2, sd) == 0)) {
 X_sparse <- as(X, "dgCMatrix")
 
 test_that('L0Learn Accepts Proper Matricies', {
+    skip_on_cran()
     ignore <- L0Learn.fit(X, y)
     ignore <- L0Learn.cvfit(X, y)
     ignore <- L0Learn.fit(X_sparse, y, intercept = FALSE)
@@ -50,6 +51,7 @@ test_that('L0Learn Accepts Proper Matricies', {
 # })
 
 test_that("L0Learn respects excludeFirstK for large L0", {
+  skip_on_cran()
   BIGuserLambda = list()
   BIGuserLambda[[1]] <- c(10)
   for (k in c(0, 1, 10)){
@@ -61,6 +63,7 @@ test_that("L0Learn respects excludeFirstK for large L0", {
 })
 
 test_that("L0Learn excludeFirstK is still subject to L1 norms", {
+  skip_on_cran()
   K = p =  10
   n = 100
 
@@ -95,6 +98,7 @@ test_that("L0Learn excludeFirstK is still subject to L1 norms", {
 
 
 test_that("L0Learn fit are deterministic for Dense fit", {
+    skip_on_cran()
     for (p in c("L0", "L0L2", "L0L1")){
       set.seed(1)
       x1 <- L0Learn.fit(X, y, penalty=p, intercept = FALSE)
@@ -106,6 +110,7 @@ test_that("L0Learn fit are deterministic for Dense fit", {
 
 
 test_that("L0Learn cvfit are deterministic for Dense cvfit", {
+    skip_on_cran()
     for (p in c("L0", "L0L2", "L0L1")){
       set.seed(1)
       x1 <- L0Learn.cvfit(X, y, penalty=p, intercept = FALSE)
@@ -116,6 +121,7 @@ test_that("L0Learn cvfit are deterministic for Dense cvfit", {
 })
 
 test_that("L0Learn fit and cvfit are deterministic for Dense fit", {
+  skip_on_cran()
   for (p in c("L0", "L0L2", "L0L1")){
     set.seed(1)
     x1 <- L0Learn.fit(X_sparse, y, penalty=p, intercept = FALSE)
@@ -126,6 +132,7 @@ test_that("L0Learn fit and cvfit are deterministic for Dense fit", {
 })
 
 test_that("L0Learn fit and cvfit are deterministic for Dense cvfit", {
+  skip_on_cran()
   for (p in c("L0", "L0L2", "L0L1")){
     set.seed(1)
     x1 <- L0Learn.cvfit(X_sparse, y, penalty=p, intercept = FALSE)
@@ -137,6 +144,7 @@ test_that("L0Learn fit and cvfit are deterministic for Dense cvfit", {
 
 
 test_that("L0Learn fit find same solution for different matrix representations", {
+    skip_on_cran()
     for (p in c("L0", "L0L2", "L0L1")){
       set.seed(1)
       x1 <- L0Learn.fit(X_sparse, y, penalty=p, intercept = FALSE)
@@ -147,6 +155,7 @@ test_that("L0Learn fit find same solution for different matrix representations",
 })
 
 test_that("L0Learn cvfit find same solution for different matrix representations", {
+  skip_on_cran()
   for (p in c("L0", "L0L2", "L0L1")){
     set.seed(1)
     x1 <- L0Learn.cvfit(X_sparse, y, penalty=p, intercept = FALSE)
@@ -158,6 +167,7 @@ test_that("L0Learn cvfit find same solution for different matrix representations
 
 
 test_that("L0Learn fit and cvfit run with sparse X and intercepts", {
+    skip_on_cran()
     L0Learn.fit(X_sparse, y, intercept = TRUE)
     L0Learn.cvfit(X_sparse, y, intercept = TRUE)
     succeed()
@@ -165,6 +175,7 @@ test_that("L0Learn fit and cvfit run with sparse X and intercepts", {
 
 
 test_that("L0Learn matchs for all penalty for Sparse and Dense Matrices", {
+    skip_on_cran()
     for (p in c("L0", "L0L2", "L0L1")){
       for (f in c(L0Learn.cvfit, L0Learn.fit)){
         set.seed(1)
@@ -179,6 +190,7 @@ test_that("L0Learn matchs for all penalty for Sparse and Dense Matrices", {
 
 
 test_that("L0Learn.Fit runs for all Loss for Sparse and Dense Matrices", {
+    skip_on_cran()
     y_bin = matrix(rbinom(dim(y)[1], 1, 0.5))
     for (l in c("Logistic", "SquaredHinge")){
         set.seed(1)
@@ -197,6 +209,7 @@ test_that("L0Learn.Fit runs for all Loss for Sparse and Dense Matrices", {
 
 
 test_that("L0Learn.Fit runs for all algorithm for Sparse and Dense Matrices", {
+    skip_on_cran()
     for (p in c("L0", "L0L2", "L0L1")){
       for (intercept in c(TRUE, FALSE)){
         set.seed(1)

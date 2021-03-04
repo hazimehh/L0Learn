@@ -33,6 +33,7 @@ test_that('L0Learn recovers coefficients with no error for L0', {
 })
 
 test_that('L0Learn seperates data with no error for L0', {
+    skip_on_cran()
     for (l in c("Logisitic", "SquaredHinge")){
         fit <- L0Learn.fit(X, sign(y), loss="Logistic", penalty = "L0")
         
@@ -50,6 +51,7 @@ test_that('L0Learn seperates data with no error for L0', {
     
 
 test_that('L0Learn recovers coefficients with no error for L0L1/L0L2', {
+    skip_on_cran()
     for (p in c("L0L1", "L0L2")){
         fit <- L0Learn.fit(X, y, loss="SquaredError", penalty = p)
 
@@ -72,6 +74,7 @@ test_that('L0Learn recovers coefficients with no error for L0L1/L0L2', {
 
 
 test_that('L0Learn seperates data with no error for L0L1/L0L2', {
+    skip_on_cran()
     for (l in c("Logistic", "SquaredHinge")){
         for (p in c("L0L1", "L0L2")){
             fit <- L0Learn.fit(X, sign(y), loss=l, penalty = p)

@@ -6,6 +6,7 @@ X <- tmp[[1]]
 y <- tmp[[2]]
 
 test_that("L0Learn L0 grid works", {
+  skip_on_cran()
   userLambda = list()
   userLambda[[1]] <- c(10, 1, 0.1, 0.01)
   x1 <- L0Learn.fit(X, y, penalty = "L0",
@@ -25,6 +26,7 @@ test_that("L0Learn L0 grid works", {
 })
 
 test_that("L0Learn L0 fails on bad userLambda", {
+  skip_on_cran()
   userLambda = list()
   userLambda[[1]] <- c(10, 11, 0.1, 0.01)
   f1 <- function(){
@@ -51,6 +53,7 @@ test_that("L0Learn L0 fails on bad userLambda", {
 })
 
 test_that("L0Learn L0 grid ignores nGamma ", {
+  skip_on_cran()
   userLambda = list()
   userLambda[[1]] <- c(10, 1, 0.1, 0.01)
   x1 <- L0Learn.fit(X, y, penalty = "L0", nGamma = 1,
@@ -62,6 +65,7 @@ test_that("L0Learn L0 grid ignores nGamma ", {
 
 
 test_that("L0Learn L0L1/2 grid works", {
+  skip_on_cran()
   userLambda = list()
   userLambda[[1]] <- c(10, 1, 0.1, 0.01)
   userLambda[[2]] <- c(11, 1.1, 0.11, 0.011, 0.0011)
@@ -104,6 +108,7 @@ test_that("L0Learn L0L1/2 grid works", {
 })
 
 test_that("L0Learn L0L1/2 ignores with wrong nGamma in v2.0.0", {
+  skip_on_cran()
   # This changed between v1.2.0 and v2.0.0
   userLambda = list()
   userLambda[[1]] <- c(10, 1, 0.1, 0.01)
@@ -147,6 +152,7 @@ test_that("L0Learn L0L1/2 ignores with wrong nGamma in v2.0.0", {
 })
 
 test_that("L0Learn L0L1/2 grid fails with bad userLambda", {
+  skip_on_cran()
   userLambda = list()
   userLambda[[1]] <- c(10, 1, 0.1, 0.01)
   userLambda[[2]] <- c(11, 12, 0.11, 0.011, 0.0011)
