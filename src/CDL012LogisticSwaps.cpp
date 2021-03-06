@@ -30,8 +30,8 @@ FitResult<T> CDL012LogisticSwaps<T>::_Fit() {
     
     this->P.Init = 'u';
     
-    bool foundbetter;
-    bool foundbetter_i;
+    bool foundbetter = false;
+    bool foundbetter_i = false;
     
     for (std::size_t t = 0; t < this->MaxNumSwaps; ++t) {
         

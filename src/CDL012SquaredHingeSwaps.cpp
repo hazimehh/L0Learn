@@ -30,7 +30,7 @@ FitResult<T> CDL012SquaredHingeSwaps<T>::_Fit() {
     
     this->P.Init = 'u';
     
-    bool foundbetter;
+    bool foundbetter = false;
     
     for (std::size_t t = 0; t < this->MaxNumSwaps; ++t) {
         // Rcpp::Rcout << "Swap Number: " << t << "|mean(onemyxb): " << arma::mean(onemyxb) << "\n";

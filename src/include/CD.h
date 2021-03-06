@@ -35,15 +35,15 @@ class CDBase {
          *  residuals 
          */ 
         double b0 = 0; 
-        double lambda1;
-        double lambda0;
-        double lambda2;
+        const double lambda1;
+        const double lambda0;
+        const double lambda2;
         double thr;
         double thr2; // threshold squared; 
         
         bool isSparse;
-        bool intercept; 
-        bool withBounds;
+        const bool intercept; 
+        const bool withBounds;
 
     public:
         const T * X;
@@ -53,8 +53,8 @@ class CDBase {
         char CyclingOrder;
         std::size_t MaxIters;
         std::size_t CurrentIters; // current number of iterations - maintained by Converged()
-        double rtol;
-        double atol;
+        const double rtol;
+        const double atol;
         arma::vec Lows;
         arma::vec Highs;
         bool ActiveSet;
@@ -344,14 +344,11 @@ bool CD<T, Derived>::UpdateBiCWMinCheckWithBounds(const std::size_t i, const boo
 
 template<class T>
 CDBase<T>::CDBase(const T& Xi, const arma::vec& yi, const Params<T>& P) :
-    ModelParams{P.ModelParams}, CyclingOrder{P.CyclingOrder}, MaxIters{P.MaxIters},
-    rtol{P.rtol}, atol{P.atol}, ActiveSet{P.ActiveSet}, ActiveSetNum{P.ActiveSetNum} 
+    ModelParams{P.ModelParams}, lambda0{P.ModelParams[0]}, lambda1{P.ModelParams[1]},
+    lambda2{P.ModelParams[2]}, CyclingOrder{P.CyclingOrder}, MaxIters{P.MaxIters},
+    intercept{P.intercept}, withBounds{P.withBounds}, rtol{P.rtol}, atol{P.atol}, 
+    ActiveSet{P.ActiveSet}, ActiveSetNum{P.ActiveSetNum}, Lows{P.Lows}, Highs{P.Highs}
     {
-        
-        this->lambda0 = P.ModelParams[0];
-        this->lambda1 = P.ModelParams[1];
-        this->lambda2 = P.ModelParams[2];
-        
         this->result.ModelParams = P.ModelParams; 
         this->NoSelectK = P.NoSelectK;
         
@@ -361,9 +358,6 @@ CDBase<T>::CDBase(const T& Xi, const arma::vec& yi, const Params<T>& P) :
         this->isSparse = std::is_same<T,arma::sp_mat>::value;
         
         this->b0 = P.b0;
-        this->intercept = P.intercept;
-        
-        this->withBounds = P.withBounds;
         
         this->X = &Xi;
         this->y = &yi;
@@ -385,9 +379,6 @@ CDBase<T>::CDBase(const T& Xi, const arma::vec& yi, const Params<T>& P) :
             std::iota(std::begin(cyclic), std::end(cyclic), 0);
             this->Order = cyclic;
         }
-        
-        this->Lows = P.Lows;
-        this->Highs = P.Highs;
         
         this->CurrentIters = 0;
     }
