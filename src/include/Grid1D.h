@@ -24,7 +24,6 @@ class Grid1D {
         std::vector<double> * Xtr;
         arma::rowvec * ytX;
         double LambdaMinFactor;
-        bool Refine;
         bool PartialSort;
         bool XtrAvailable;
         double ytXmax2d;

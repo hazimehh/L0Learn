@@ -18,7 +18,6 @@ struct GridParams
     double Lambda2Min = 0.001;
     std::string Type = "L0";
     bool PartialSort = true;
-    bool Refine = false;
     bool XtrAvailable = false;
     double ytXmax;
     std::vector<double> * Xtr;
