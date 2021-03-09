@@ -13,6 +13,6 @@ addons:
 after_success:
   - R -e "install.packages('${PKG_TARBALL}', repos=NULL, type='source')"
   - cd tests
-  - travis_wait 300 R -d "valgrind --tool=memcheck --leak-check=full --track-origins=yes"  --vanilla < testthat.R
+  - travis_wait 300 R CMD check --use-valgrind ${PKG_TARBALL}
   - cd ..
 
