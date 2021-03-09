@@ -11,8 +11,4 @@ addons:
     packages:
       - valgrind
 after_success:
-  - R -e "install.packages('${PKG_TARBALL}', repos=NULL, type='source')"
-  - cd tests
-  - travis_wait 300 R CMD check --use-valgrind ${PKG_TARBALL}
-  - cd ..
-
+  - travis_wait 300 R -d "valgrind --track-origins=yes" CMD check --use-valgrind --no-stop-on-test-error ${PKG_TARBALL}'
