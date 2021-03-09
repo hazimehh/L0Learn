@@ -11,4 +11,4 @@ addons:
     packages:
       - valgrind
 after_success:
-  - travis_wait 300 R -d "valgrind --track-origins=yes" CMD check --use-valgrind --no-stop-on-test-error ${PKG_TARBALL}
+  - travis_wait 300 R -d "valgrind --track-origins=yes" CMD check --as-cran --use-valgrind --no-stop-on-test-error ${PKG_TARBALL}
