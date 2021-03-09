@@ -1,18 +1,18 @@
 language: R
-	r:
-	  - devel
-	sudo: false
-	cache: packages
-	warnings_are_errors: false
-	after_failure:
-	  - cat /home/travis/build/hazimehh/L0Learn/L0Learn.Rcheck/00check.log
-	addons:
-	  apt:
-	    packages:
-	      - valgrind
-	after_success:
-	  - R -e "install.packages('${PKG_TARBALL}', repos=NULL, type='source')"
-	  - cd tests
-	  - travis_wait 300 R -d "valgrind --tool=memcheck --leak-check=full --track-origins=yes"  --vanilla < testthat.R
-	  - cd ..
+r:
+  - devel
+sudo: false
+cache: packages
+warnings_are_errors: false
+after_failure:
+  - cat /home/travis/build/hazimehh/L0Learn/L0Learn.Rcheck/00check.log
+addons:
+  apt:
+    packages:
+      - valgrind
+after_success:
+  - R -e "install.packages('${PKG_TARBALL}', repos=NULL, type='source')"
+  - cd tests
+  - travis_wait 300 R -d "valgrind --tool=memcheck --leak-check=full --track-origins=yes"  --vanilla < testthat.R
+  - cd ..
 
