@@ -430,8 +430,18 @@ void CD<T, Derived>::RestrictSupport() {
         
         if (this->SameSuppCounter == this->ActiveSetNum - 1) {
             std::vector<std::size_t> NewOrder = nnzIndicies(this->B);
+    
+            /// Map m of {Order[i] -> i}:
+            std::unordered_map<std::size_t, std::size_t> m;
             
-            std::sort(NewOrder.begin(), NewOrder.end(), [this](std::size_t i, std::size_t j) {return this->Order[i] <  this->Order[j] ;});
+            std::size_t index = 0;
+            for (const auto &i : this->Order){
+                m.insert(std::make_pair(i, index));
+                index++;
+            }
+                
+            std::sort(NewOrder.begin(), NewOrder.end(),
+                      [this, &m](std::size_t i, std::size_t j) {return m[i] <  m[j] ;});
             
             this->OldOrder = this->Order;
             this->Order = NewOrder;
