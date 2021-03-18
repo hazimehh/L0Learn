@@ -1,8 +1,8 @@
 Package: L0Learn
 Type: Package
 Title: Fast Algorithms for Best Subset Selection
-Version: 2.0.1
-Date: 2021-03-17
+Version: 2.0.2
+Date: 2021-03-18
 Authors@R: c(
     person("Hussein", "Hazimeh", email = "hazimeh@mit.edu", role = c("aut", "cre")),
     person("Rahul", "Mazumder", email = "rahulmaz@mit.edu", role = "aut"),
