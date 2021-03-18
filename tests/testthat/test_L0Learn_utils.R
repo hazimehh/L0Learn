@@ -1,7 +1,6 @@
 library("Matrix")
 library("testthat")
 library("L0Learn")
-library("tilting")
 
 tmp <-  L0Learn::GenSynthetic(n=500, p=1000, k=10, seed=1, rho=1)
 X <- tmp[[1]] + rnorm(1000)
@@ -106,6 +105,10 @@ center_colmeans <- function(x) {
     x - rep(xcenter, rep.int(nrow(x), ncol(x)))
 }
 
+colNorms <- function(x){
+    apply(x, 2, function(x){sqrt(sum(x^2))})
+}
+
 test_that('matrix_normalize dense', {
     for (norm in c(TRUE, FALSE)){
         if (norm){
@@ -121,8 +124,8 @@ test_that('matrix_normalize dense', {
         
         expect_equal(X_norm, X_norm_copy) # R should not modify X_norm
         
-        expect_equal(col.norm(X_norm), as.vector(x1$ScaleX))
-        expect_equal(X_norm %*% diag(1/col.norm(X_norm)), x1$mat_norm)
+        expect_equal(colNorms(X_norm), as.vector(x1$ScaleX))
+        expect_equal(X_norm %*% diag(1/colNorms(X_norm)), x1$mat_norm)
     }
 })
 
@@ -136,8 +139,8 @@ test_that('matrix_normalize sparse', {
     
     expect_equal(X_norm, X_norm_copy) # R should not modify X_norm
     
-    expect_equal(col.norm(X_sparse), as.vector(x1$ScaleX))
-    expect_equal(as.matrix(X_norm %*% diag(1/col.norm(X_sparse))), as.matrix(x1$mat_norm))
+    expect_equal(colNorms(X_sparse), as.vector(x1$ScaleX))
+    expect_equal(as.matrix(X_norm %*% diag(1/colNorms(X_sparse))), as.matrix(x1$mat_norm))
 })
 
 test_that('matrix_center dense', {
