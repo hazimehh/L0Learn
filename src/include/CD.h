@@ -34,9 +34,9 @@ class CDBase {
          *  the columns of X and thus b0 must be updated iteraveily from the 
          *  residuals 
          */ 
-        double b0 = 0; 
-        const double lambda1;
+        double b0 = 0;
         const double lambda0;
+        const double lambda1;
         const double lambda2;
         double thr;
         double thr2; // threshold squared; 
@@ -344,10 +344,11 @@ bool CD<T, Derived>::UpdateBiCWMinCheckWithBounds(const std::size_t i, const boo
 
 template<class T>
 CDBase<T>::CDBase(const T& Xi, const arma::vec& yi, const Params<T>& P) :
-    ModelParams{P.ModelParams}, lambda0{P.ModelParams[0]}, lambda1{P.ModelParams[1]},
-    lambda2{P.ModelParams[2]}, CyclingOrder{P.CyclingOrder}, MaxIters{P.MaxIters},
-    intercept{P.intercept}, withBounds{P.withBounds}, rtol{P.rtol}, atol{P.atol}, 
-    ActiveSet{P.ActiveSet}, ActiveSetNum{P.ActiveSetNum}, Lows{P.Lows}, Highs{P.Highs}
+    lambda0{P.ModelParams[0]}, lambda1{P.ModelParams[1]},
+    lambda2{P.ModelParams[2]}, intercept{P.intercept}, withBounds{P.withBounds},
+    ModelParams{P.ModelParams}, CyclingOrder{P.CyclingOrder}, MaxIters{P.MaxIters},
+    rtol{P.rtol}, atol{P.atol}, Lows{P.Lows}, Highs{P.Highs}, ActiveSet{P.ActiveSet},
+    ActiveSetNum{P.ActiveSetNum}
     {
         this->result.ModelParams = P.ModelParams; 
         this->NoSelectK = P.NoSelectK;
@@ -441,7 +442,7 @@ void CD<T, Derived>::RestrictSupport() {
             }
                 
             std::sort(NewOrder.begin(), NewOrder.end(),
-                      [this, &m](std::size_t i, std::size_t j) {return m[i] <  m[j] ;});
+                      [&m](std::size_t i, std::size_t j) {return m[i] <  m[j] ;});
             
             this->OldOrder = this->Order;
             this->Order = NewOrder;
