@@ -77,6 +77,7 @@ test_that("Intercepts for Sparse Matricies are deterministic", {
 })
 
 test_that("Intercepts are passed between Swap iterations", {
+  skip_on_cran()
   # TODO : Implement test case
 })
 
@@ -179,6 +180,7 @@ test_that("Intercepts achieve a lower insample-error", {
 })
 
 test_that("Intercepts are learned close to real values", {
+  skip_on_cran()
   fineuserLambda <- list()
   fineuserLambda[[1]] <- c(logspace(-1, -10, 100))
   
