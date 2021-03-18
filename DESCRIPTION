@@ -24,6 +24,5 @@ Suggests:
     rmarkdown,
     testthat,
     pracma,
-    raster,
-    tilting
+    raster
 VignetteBuilder: knitr
