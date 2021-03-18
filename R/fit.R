@@ -153,7 +153,7 @@ L0Learn.fit <- function(x, y, loss="SquaredError", penalty="L0", algorithm="CD",
     # Handle Lambda Grids:
     if (length(lambdaGrid) != 0){
         if (!is.null(autoLambda) && !autoLambda){
-            warning("In L0Learn V2.0.0, autoLambda is ignored and inferred if 'lambdaGrid' is supplied", call.=FALSE)
+            warning("In L0Learn V2+, autoLambda is ignored and inferred if 'lambdaGrid' is supplied", call.=FALSE)
         }
         autoLambda = FALSE
     } else {
@@ -191,7 +191,7 @@ L0Learn.fit <- function(x, y, loss="SquaredError", penalty="L0", algorithm="CD",
         # Covers L0L1, L0L2 cases
         bad_lambdaGrid = FALSE
         if (length(lambdaGrid) != nGamma){
-            warning("In L0Learn V2.0.0, nGamma is ignored and replaced with length(lambdaGrid)", call.=FALSE)
+            warning("In L0Learn V2+, nGamma is ignored and replaced with length(lambdaGrid)", call.=FALSE)
             nGamma = length(lambdaGrid)
             # bad_lambdaGrid = TRUE # Remove in V2.0,0
         }
