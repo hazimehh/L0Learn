@@ -77,6 +77,7 @@ test_that("Intercepts for Sparse Matricies are deterministic", {
 })
 
 test_that("Intercepts are passed between Swap iterations", {
+  skip_on_cran()
   # TODO : Implement test case
 })
 
@@ -115,29 +116,29 @@ test_that("When lambda0 is large, intecepts should be found similar for both spa
   }
 })
 
-test_that("Intercepts achieve a lower insample-error", {
-  skip_on_cran()
-  
-  for (a in c("CD", "CDPSI")){ 
-    y_scaled = y*2 + 10
-    set.seed(1)
-    x1 <- L0Learn.fit(X_sparse, y_scaled, penalty="L0", intercept = TRUE,
-                      algorithm = a,
-                      autoLambda=FALSE, lambdaGrid=userLambda, maxSuppSize=100)
-    set.seed(1)
-    x2 <- L0Learn.fit(X_sparse, y_scaled, penalty="L0", intercept = FALSE,
-                      algorithm = a,
-                      autoLambda=FALSE, lambdaGrid=userLambda, maxSuppSize=100)
-    
-    min_length = min(length(x1$a0[[1]]), length(x1$a0[[1]]))
-    for (i in 1:min_length){
-      if (TRUE){ # x1$suppSize[[1]][i] >= x2$suppSize[[1]][i]
-        x1_loss = norm(X%*%x1$beta[[1]][,i] + x1$a0[[1]][i] - y_scaled, '2')
-        x2_loss = norm(X%*%x2$beta[[1]][,i] + x2$a0[[1]][i] - y_scaled, '2')
-        expect_lte(x1_loss, x2_loss)
-      }
-    }
-    
+# test_that("Intercepts achieve a lower insample-error", {
+#   skip_on_cran()
+#   
+#   for (a in c("CD", "CDPSI")){ 
+#     y_scaled = y*2 + 10
+#     set.seed(1)
+#     x1 <- L0Learn.fit(X_sparse, y_scaled, penalty="L0", intercept = TRUE,
+#                       algorithm = a,
+#                       autoLambda=FALSE, lambdaGrid=userLambda, maxSuppSize=100)
+#     set.seed(1)
+#     x2 <- L0Learn.fit(X_sparse, y_scaled, penalty="L0", intercept = FALSE,
+#                       algorithm = a,
+#                       autoLambda=FALSE, lambdaGrid=userLambda, maxSuppSize=100)
+#     
+#     min_length = min(length(x1$a0[[1]]), length(x1$a0[[1]]))
+#     for (i in 1:min_length){
+#       if (TRUE){ # x1$suppSize[[1]][i] >= x2$suppSize[[1]][i]
+#         x1_loss = norm(X%*%x1$beta[[1]][,i] + x1$a0[[1]][i] - y_scaled, '2')
+#         x2_loss = norm(X%*%x2$beta[[1]][,i] + x2$a0[[1]][i] - y_scaled, '2')
+#         expect_lte(x1_loss, x2_loss)
+#       }
+#     }
+#     
     # logistic <- function(x){1/(1+exp(-x))};
     # logit <- sum(log(logistic))
     # 
@@ -175,10 +176,11 @@ test_that("Intercepts achieve a lower insample-error", {
     #   #print(paste(i, x1_loss - x2_loss))
     #   expect_lt(x1_loss, x2_loss)
     # }
-  }
-})
+# }
+# })
 
 test_that("Intercepts are learned close to real values", {
+  skip_on_cran()
   fineuserLambda <- list()
   fineuserLambda[[1]] <- c(logspace(-1, -10, 100))
   

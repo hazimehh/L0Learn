@@ -14,10 +14,10 @@ We support both regression (using squared error loss) and classification (using 
 
 The toolkit is implemented in C++11 and can often run faster than popular sparse learning toolkits (see our experiments in the paper above). We also provide an easy-to-use R interface; see the section below for installation and usage of the R package.
 
-**NEW: Version 2.0.0 (03/2021) adds support for sparse matrices and box constraints on the coefficients.**
+**NEW: Version 2 (03/2021) adds support for sparse matrices and box constraints on the coefficients.**
 
 ## R Package Installation
-The latest version (v2.0.0) can be installed from Github:
+The latest version (v2.0.2) can be installed from Github:
 ```{R}
 library(devtools)
 install_github("hazimehh/L0Learn")

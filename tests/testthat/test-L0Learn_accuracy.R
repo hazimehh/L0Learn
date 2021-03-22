@@ -22,6 +22,7 @@ if(0 %in% y){
 norm_vec <- function(x) {Norm(as.matrix(x), p = Inf)}
 
 test_that('L0Learn recovers coefficients with no error for L0', {
+    skip_on_cran()
     fit <- L0Learn.fit(X, y, loss="SquaredError", penalty = "L0")
     
     for (j in 1:length(fit$suppSize[[1]])){

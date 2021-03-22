@@ -14,36 +14,42 @@ if (sum(apply(X, 2, sd) == 0)) {
 X_sparse <- as(X, "dgCMatrix")
 
 test_that('matrix_column_get dense', {
+    skip_on_cran()
     x1 <- as.matrix(X[, 1])
     x2 <- .Call('_L0Learn_R_matrix_column_get_dense', X, 0) # C++ and R use different indexes
     expect_equal(x1, x2)
 })
 
 test_that('matrix_column_get sparse', {
+    skip_on_cran()
     x1 <- as.matrix(X_sparse[, 1])
     x2 <- .Call('_L0Learn_R_matrix_column_get_sparse', X_sparse, 0) # C++ and R use different indexes
     expect_equal(x1, x2)
 })
 
 test_that('matrix_rows_get dense', {
+    skip_on_cran()
     x1 <- X[1:4, ]
     x2 <- .Call("_L0Learn_R_matrix_rows_get_dense", X, 0:3)
     expect_equal(x1, x2)
 })
 
 test_that('matrix_rows_get sparse', {
+    skip_on_cran()
     x1 <- X_sparse[1:4, ]
     x2 <- .Call("_L0Learn_R_matrix_rows_get_sparse", X_sparse, 0:3)
     expect_equal(x1, x2)
 })
 
 test_that('matrix_vector_schur_produce dense', {
+    skip_on_cran()
     x1 <- X*as.vector(y)
     x2 <- .Call('_L0Learn_R_matrix_vector_schur_product_dense', X, y)
     expect_equal(x1, x2)
 })
 
 test_that('matrix_vector_schur_produce sparse', {
+    skip_on_cran()
     x1 <- X_sparse*as.vector(y)
     x2 <- .Call('_L0Learn_R_matrix_vector_schur_product_sparse', X_sparse, y)
     expect_equal(x1, x2)
@@ -51,42 +57,49 @@ test_that('matrix_vector_schur_produce sparse', {
 
 
 test_that('matrix_vector_divide dense', {
+    skip_on_cran()
     x1 <- X/as.vector(y)
     x2 <- .Call('_L0Learn_R_matrix_vector_divide_dense', X, y)
     expect_equal(x1, x2)
 })
 
 test_that('matrix_vector_divide sparse', {
+    skip_on_cran()
     x1 <- X_sparse/as.vector(y)
     x2 <- .Call('_L0Learn_R_matrix_vector_divide_sparse', X_sparse, y)
     expect_equal(x1, x2)
 })
 
 test_that('matrix_column_sums dense', {
+    skip_on_cran()
     x1 <- colSums(X)
     x2 <- as.vector(.Call('_L0Learn_R_matrix_column_sums_dense', X))
     expect_equal(x1, x2)
 })
 
 test_that('matrix_column_sums sparse', {
+    skip_on_cran()
     x1 <- colSums(X_sparse)
     x2 <- as.vector(.Call('_L0Learn_R_matrix_column_sums_sparse', X_sparse))
     expect_equal(x1, x2)
 })
 
 test_that('matrix_column_dot dense', {
+    skip_on_cran()
     x1 <- X[,1]%*%y
     x2 <- .Call('_L0Learn_R_matrix_column_dot_dense', X, 0, y)
     expect_equal(as.double(x1), as.double(x2))
 })
 
 test_that('matrix_column_dot sparse', {
+    skip_on_cran()
     x1 <- X_sparse[,1]%*%y
     x2 <- .Call('_L0Learn_R_matrix_column_dot_sparse', X_sparse, 0, y)
     expect_equal(as.double(x1), as.double(x2))
 })
 
 test_that('matrix_column_mult dense', {
+    skip_on_cran()
     c = 3.14
     x1 <- X[,1]*c
     x2 <- .Call('_L0Learn_R_matrix_column_mult_dense', X, 0, c)
@@ -94,6 +107,7 @@ test_that('matrix_column_mult dense', {
 })
 
 test_that('matrix_column_mult sparse', {
+    skip_on_cran()
     c = 3.14
     x1 <- X_sparse[,1]*c
     x2 <- .Call('_L0Learn_R_matrix_column_mult_sparse', X_sparse, 0, c)
@@ -101,6 +115,7 @@ test_that('matrix_column_mult sparse', {
 })
 
 center_colmeans <- function(x) {
+    skip_on_cran()
     xcenter = colMeans(x)
     x - rep(xcenter, rep.int(nrow(x), ncol(x)))
 }
@@ -110,6 +125,7 @@ colNorms <- function(x){
 }
 
 test_that('matrix_normalize dense', {
+    skip_on_cran()
     for (norm in c(TRUE, FALSE)){
         if (norm){
             X_norm <- center_colmeans(X)
@@ -130,6 +146,7 @@ test_that('matrix_normalize dense', {
 })
 
 test_that('matrix_normalize sparse', {
+    skip_on_cran()
     X_norm <- as(X, "dgCMatrix")
     X_norm_copy = as(X, "dgCMatrix")
     
@@ -144,6 +161,7 @@ test_that('matrix_normalize sparse', {
 })
 
 test_that('matrix_center dense', {
+    skip_on_cran()
     for (intercept in c(TRUE, FALSE)){
         x_norm <- 0*X
         x1 <- .Call("_L0Learn_R_matrix_center_dense", X, x_norm, intercept)
@@ -160,6 +178,7 @@ test_that('matrix_center dense', {
 
 
 test_that('matrix_center sparse', {
+    skip_on_cran()
     for (intercept in c(TRUE, FALSE)){
         x_norm = 0*X_sparse
         x1 <- .Call("_L0Learn_R_matrix_center_sparse", X_sparse, x_norm, intercept)
