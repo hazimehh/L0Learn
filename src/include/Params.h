@@ -31,7 +31,7 @@ struct Params {
     T * Xy; // used for classification.
     std::size_t NoSelectK = 0;
     bool intercept = false;
-    bool withBounds;
+    bool withBounds = false;
     arma::vec Lows;
     arma::vec Highs;
 
