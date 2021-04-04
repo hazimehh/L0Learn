@@ -10,7 +10,7 @@ Authors@R: c(
 Description: Highly optimized toolkit for approximately solving L0-regularized learning problems (a.k.a. best subset selection).
     The algorithms are based on coordinate descent and local combinatorial search.
     For more details, check the paper by Hazimeh and Mazumder (2020) <10.1287/opre.2019.1919>.
-URL: https://pubsonline.informs.org/doi/10.1287/opre.2019.1919 https://github.com/hazimehh
+URL: https://pubsonline.informs.org/doi/10.1287/opre.2019.1919 https://github.com/hazimehh/L0Learn
 BugReports: https://github.com/hazimehh/L0Learn/issues
 License: MIT + file LICENSE
 Depends: R (>= 3.3.0)
