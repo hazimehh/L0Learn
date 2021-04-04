@@ -1,4 +1,4 @@
-# L0Learn: Fast Best Subset Selection [![Build Status](https://travis-ci.org/hazimehh/L0Learn.svg?branch=master)](https://travis-ci.org/hazimehh/L0Learn) 
+# L0Learn: Fast Best Subset Selection [![Build Status](https://travis-ci.org/hazimehh/L0Learn.svg?branch=master)](https://travis-ci.org/hazimehh/L0Learn) [![CRAN](https://www.r-pkg.org/badges/version/L0Learn)](https://cran.r-project.org/package=L0Learn)
 
 ### Hussein Hazimeh, Rahul Mazumder, and Tim Nonet
 ### Massachusetts Institute of Technology
@@ -17,7 +17,11 @@ The toolkit is implemented in C++11 and can often run faster than popular sparse
 **NEW: Version 2 (03/2021) adds support for sparse matrices and box constraints on the coefficients.**
 
 ## R Package Installation
-The latest version (v2.0.2) can be installed from Github:
+The latest version (v2.0.3) can be installed from CRAN as follows:
+```{R}
+install.packages("L0Learn", repos = "http://cran.rstudio.com")
+```
+Alternatively, L0Learn can also be installed from Github as follows:
 ```{R}
 library(devtools)
 install_github("hazimehh/L0Learn")
