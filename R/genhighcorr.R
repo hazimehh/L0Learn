@@ -1,7 +1,7 @@
 #' @importFrom stats rnorm 
 #' @importFrom MASS mvrnorm
 #' @importFrom Rcpp cppFunction
-#' @title Generate Expoententiall Correlated Synthetic Data
+#' @title Generate Expoentential Correlated Synthetic Data
 #'
 #' @description Generates a synthetic dataset as follows: 1) Generate a correlation matrix, SIG,  where item [i, j] = A^|i-j|.
 #' 2) Draw from a Multivariate Normal Distribution using (mu and SIG) to generate X. 3) Generate a vector B with every ~p/k entry set to 1 and the rest are zeros.
