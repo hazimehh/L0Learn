@@ -8,4 +8,3 @@ after_failure:
   - cat /home/travis/build/hazimehh/L0Learn/L0Learn.Rcheck/00check.log
 after_success:
   - cat /home/travis/build/hazimehh/L0Learn/L0Learn.Rcheck/00check.log
-  - Rscript -e 'covr::codecov()'
