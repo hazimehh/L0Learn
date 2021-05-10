@@ -1,4 +1,4 @@
-# L0Learn: Fast Best Subset Selection [![Build Status](https://travis-ci.org/hazimehh/L0Learn.svg?branch=master)](https://travis-ci.org/hazimehh/L0Learn) [![CRAN](https://www.r-pkg.org/badges/version/L0Learn)](https://cran.r-project.org/package=L0Learn)
+# L0Learn: Fast Best Subset Selection [![Build Status](https://travis-ci.org/hazimehh/L0Learn.svg?branch=master)](https://travis-ci.org/hazimehh/L0Learn) [![CRAN](https://www.r-pkg.org/badges/version/L0Learn)](https://cran.r-project.org/package=L0Learn) [![Codacy Badge](https://app.codacy.com/project/badge/Grade/7fd68c533fd1493288e7986df3cc6f6d)](https://www.codacy.com/gh/hazimehh/L0Learn/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=hazimehh/L0Learn&amp;utm_campaign=Badge_Grade)
 
 ### Hussein Hazimeh, Rahul Mazumder, and Tim Nonet
 ### Massachusetts Institute of Technology
