@@ -23,5 +23,6 @@ Suggests:
     rmarkdown,
     testthat,
     pracma,
-    raster
+    raster,
+    covr
 VignetteBuilder: knitr
