@@ -174,7 +174,7 @@ test_that("L0Learn fit and cvfit run with sparse X and intercepts", {
 })
 
 
-test_that("L0Learn matchs for all penalty for Sparse and Dense Matrices", {
+test_that("L0Learn matches for all penalty for Sparse and Dense Matrices", {
     skip_on_cran()
     for (p in c("L0", "L0L2", "L0L1")){
       for (f in c(L0Learn.cvfit, L0Learn.fit)){
@@ -220,3 +220,40 @@ test_that("L0Learn.Fit runs for all algorithm for Sparse and Dense Matrices", {
       }
     }
 })
+
+
+
+test_that('Utilities for processing fit objects run', {
+  skip_on_cran()
+  # Test utils for L0Learn.fit
+  fit <- L0Learn.fit(X, y)
+  print(fit)
+  coef(fit, lambda=0.01);
+  coef(fit, lambda=0.01, gamma=0);
+  coef(fit);
+  plot(fit)
+  predict(fit, newx=X, lambda=0.01);
+  predict(fit, newx=X, lambda=0.01, gamma=0);
+  
+  # Test utils for L0Learn.cvfit
+  fit <- L0Learn.cvfit(X, y)
+  print(fit)
+  coef(fit, lambda=0.01);
+  coef(fit, lambda=0.01, gamma=0);
+  coef(fit);
+  plot(fit)
+  predict(fit, newx=X, lambda=0.01);
+  predict(fit, newx=X, lambda=0.01, gamma=0);
+  succeed()
+})
+
+
+test_that('The CDPSI algorithm runs for different losses.', {
+  skip_on_cran()
+  # Test utils for L0Learn.fit
+  L0Learn.fit(X, y, algorithm = "CDPSI", loss = "SquaredError", maxSuppSize=5);
+  L0Learn.fit(X, sign(y), algorithm = "CDPSI", loss = "Logistic", maxSuppSize=5);
+  L0Learn.fit(X, sign(y), algorithm = "CDPSI", loss = "SquaredHinge", maxSuppSize=5);
+  succeed()
+})
+
