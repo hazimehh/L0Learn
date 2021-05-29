@@ -61,6 +61,7 @@ URL = {https://doi.org/10.1287/opre.2019.1919},
 eprint = {https://doi.org/10.1287/opre.2019.1919}
 }
 ```
+
 **Paper 2 (to appear in JMLR):**
 ```
 @article{dedieu2020learning,
