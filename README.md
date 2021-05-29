@@ -44,7 +44,9 @@ While for many challenging statistical instances L0Learn leads to optimal soluti
 
 
 ## Citing L0Learn
-If you find L0Learn useful in your research, please consider citing the following paper:
+If you find L0Learn useful in your research, please consider citing the following two papers.
+
+**Paper 1:**
 ```
 @article{doi:10.1287/opre.2019.1919,
 author = {Hazimeh, Hussein and Mazumder, Rahul},
@@ -57,5 +59,14 @@ year = {2020},
 doi = {10.1287/opre.2019.1919},
 URL = {https://doi.org/10.1287/opre.2019.1919},
 eprint = {https://doi.org/10.1287/opre.2019.1919}
+}
+```
+**Paper 2 (to appear in JMLR):**
+```
+@article{dedieu2020learning,
+  title={Learning sparse classifiers: Continuous and mixed integer optimization perspectives},
+  author={Dedieu, Antoine and Hazimeh, Hussein and Mazumder, Rahul},
+  journal={arXiv preprint arXiv:2001.06471},
+  year={2020}
 }
 ```
