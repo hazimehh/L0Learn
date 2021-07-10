@@ -85,10 +85,8 @@ inline double CDL012Logistic<T>::Objective(const arma::vec & expyXB, const beta_
 }
 
 template <class T>
-inline double CDL012Logistic<T>::Objective() {  // hint inline
-    const auto l2norm = arma::norm(this->B, 2);
-    // arma::sum(arma::log(1 + 1 / ExpyXB)) is the negative log-likelihood
-    return arma::sum(arma::log(1 + 1 / ExpyXB)) + this->lambda0 * n_nonzero(this->B) + this->lambda1 * arma::norm(this->B, 1) + this->lambda2 * l2norm * l2norm;
+inline double CDL012Logistic<T>::Objective() {
+    return this->Objective(ExpyXB, this->B);
 }
 
 template <class T>
