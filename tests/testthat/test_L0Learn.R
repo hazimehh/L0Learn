@@ -223,7 +223,7 @@ test_that("L0Learn.Fit runs for all algorithm for Sparse and Dense Matrices", {
 
 
 
-test_that('Utilities for processing fit objects run', {
+test_that('Utilities for processing regression fit and cv objects run', {
   skip_on_cran()
   # Test utils for L0Learn.fit
   fit <- L0Learn.fit(X, y)
@@ -247,6 +247,30 @@ test_that('Utilities for processing fit objects run', {
   succeed()
 })
 
+test_that('Utilities for processing logistic fit and cv objects run', {
+  skip_on_cran()
+  # Test utils for L0Learn.fit
+  fit <- L0Learn.fit(X, sign(y), loss="Logistic")
+  print(fit)
+  coef(fit, lambda=0.01);
+  coef(fit, lambda=0.01, gamma=0);
+  coef(fit);
+  plot(fit)
+  predict(fit, newx=X, lambda=0.01);
+  predict(fit, newx=X, lambda=0.01, gamma=0);
+  
+  # Test utils for L0Learn.cvfit
+  fit <- L0Learn.cvfit(X, sign(y), loss="Logistic")
+  print(fit)
+  coef(fit, lambda=0.01);
+  coef(fit, lambda=0.01, gamma=0);
+  coef(fit);
+  plot(fit)
+  predict(fit, newx=X, lambda=0.01);
+  predict(fit, newx=X, lambda=0.01, gamma=0);
+  succeed()
+})
+
 
 test_that('The CDPSI algorithm runs for different losses.', {
   skip_on_cran()
@@ -257,3 +281,136 @@ test_that('The CDPSI algorithm runs for different losses.', {
   succeed()
 })
 
+test_that('The fit and cvfit gracefully error on bad rtol.', {
+  skip_on_cran()
+  
+  f1 <- function(){L0Learn.fit(X, y, rtol=1.1);}
+  f2 <- function(){L0Learn.fit(X, y, rtol=-.1);}
+  f3 <- function(){L0Learn.fit(X, y, atol=-.1);}
+  f4 <- function(){L0Learn.cvfit(X, y, rtol=1.1);}
+  f5 <- function(){L0Learn.cvfit(X, y, rtol=-.1);}
+  f6 <- function(){L0Learn.cvfit(X, y, atol=-.1);}
+
+  expect_error(f1())
+  expect_error(f2())
+  expect_error(f3())
+  expect_error(f4())
+  expect_error(f5())
+  expect_error(f6())
+
+})
+
+test_that('The fit and cvfit gracefully error on bad loss specifications', {
+  skip_on_cran()
+  
+  f1 <- function(){L0Learn.fit(X, y, loss="NOT A LOSS");}
+  f2 <- function(){L0Learn.cvfit(X, y, loss="NOT A LOSS");}
+  
+  expect_error(f1())
+  expect_error(f2())
+})
+
+test_that('The fit and cvfit gracefully error on bad penalty specifications', {
+  skip_on_cran()
+  
+  f1 <- function(){L0Learn.fit(X, y, penalty="NOT A PENALTY");}
+  f2 <- function(){L0Learn.cvfit(X, y, penalty="NOT A PENALTY");}
+  
+  expect_error(f1())
+  expect_error(f2())
+})
+
+test_that('The fit and cvfit gracefully error on bad algorithim specifications', {
+  skip_on_cran()
+  
+  f1 <- function(){L0Learn.fit(X, y, algorithm="NOT A ALGO");}
+  f2 <- function(){L0Learn.cvfit(X, y, algorithm="NOT A ALGO");}
+  
+  expect_error(f1())
+  expect_error(f2())
+})
+
+test_that('The fit and cvfit gracefully error on non classifcation y when for classicaiton', {
+  skip_on_cran()
+  
+  f1 <- function(){L0Learn.fit(X, y, loss="Logistic");}
+  f2 <- function(){L0Learn.fit(X, y, loss="SquaredHinge");}
+  f1 <- function(){L0Learn.cvfit(X, y, loss="Logistic");}
+  f2 <- function(){L0Learn.cvfit(X, y, loss="SquaredHinge");}
+  
+  expect_error(f1())
+  expect_error(f2())
+  expect_error(f3())
+  expect_error(f4())
+})
+
+
+test_that('The fit and cvfit gracefully error on L0 classifcation when lambdagrid is the wrong size', {
+  skip_on_cran()
+  
+  lambda_grid <- list()
+  lambda_grid[[1]] <- c(10:1)
+  lambda_grid[[2]] <- c(10:1)
+  f1 <- function(){L0Learn.fit(X, sign(y), loss="Logistic", penalty="L0", lambdaGrid=lambda_grid);}
+  f2 <- function(){L0Learn.fit(X, sign(y), loss="SquaredHinge", penalty="L0", lambdaGrid=lambda_grid);}
+  f1 <- function(){L0Learn.cvfit(X, sign(y), loss="Logistic", penalty="L0", lambdaGrid=lambda_grid);}
+  f2 <- function(){L0Learn.cvfit(X, sign(y), loss="SquaredHinge", penalty="L0", lambdaGrid=lambda_grid);}
+  
+  expect_error(f1())
+  expect_error(f2())
+  expect_error(f3())
+  expect_error(f4())
+})
+
+test_that('The fit and cvfit gracefully error on L0 when lambdagrid is the wrong size', {
+  skip_on_cran()
+  
+  lambda_grid <- list()
+  lambda_grid[[1]] <- c(10:1)
+  lambda_grid[[2]] <- c(10:1)
+  f1 <- function(){L0Learn.fit(X, y, penalty="L0", lambdaGrid=lambda_grid);}
+  f2 <- function(){L0Learn.cvfit(X, y, penalty="L0", lambdaGrid=lambda_grid);}
+  
+  expect_error(f1())
+  expect_error(f2())
+})
+
+test_that('The fit and cvfit gracefully error on L0 when lambdagrid has not decreasing values', {
+  skip_on_cran()
+  
+  lambda_grid <- list()
+  lambda_grid[[1]] <- c(1:10)
+  f1 <- function(){L0Learn.fit(X, y, penalty="L0", lambdaGrid=lambda_grid);}
+  f2 <- function(){L0Learn.cvfit(X, y, penalty="L0", lambdaGrid=lambda_grid);}
+  
+  expect_error(f1())
+  expect_error(f2())
+})
+
+test_that('The fit and cvfit gracefully error on L0LX when lambdagrid has not decreasing values', {
+  skip_on_cran()
+  
+  lambda_grid <- list()
+  lambda_grid[[1]] <- c(10:1)
+  lambda_grid[[1]] <- c(1:10)
+  f1 <- function(){L0Learn.fit(X, y, penalty="L0L1", lambdaGrid=lambda_grid);}
+  f2 <- function(){L0Learn.cvfit(X, y, penalty="L0L1", lambdaGrid=lambda_grid);}
+  f3 <- function(){L0Learn.fit(X, y, penalty="L0L2", lambdaGrid=lambda_grid);}
+  f4 <- function(){L0Learn.cvfit(X, y, penalty="L0L2", lambdaGrid=lambda_grid);}
+  
+  expect_error(f1())
+  expect_error(f2())  
+  expect_error(f3())
+  expect_error(f4())
+})
+
+test_that('The fit and cvfit gracefully error on CDPSI when bounds are supplied', {
+  skip_on_cran()
+  
+
+  f1 <- function(){L0Learn.fit(X, y, algorithm="CDPSI", lows=0);}
+  f2 <- function(){L0Learn.cvfit(X, y, algorithm="CDPSI", lows=0);}
+  
+  expect_error(f1())
+  expect_error(f2())  
+})
