@@ -12,7 +12,8 @@
 #' @param seed The seed used for randomly generating the data
 #' @param rho The threshold for setting values to 0.  if |X(i, j)| > rho => X(i, j) <- 0
 #' @param b0 intercept value to scale y by.
-#' @param noise_ratio The multiplier of noise to apply when calculating e. e[i] = noise_ratio*N(0, 1).
+#' @param snr desired Signal-to-Noise ratio. This sets the magnitude of the error term 'e'. 
+#' SNR is defined as  SNR = Var(XB)/Var(e)
 #' @param mu The mean for drawing from the Multivariate Normal Distribution. A scalar of vector of length p.
 #' @param base_cor The base correlation, A in [i, j] = A^|i-j|.
 #' @return A list containing:
@@ -26,7 +27,7 @@
 #' X = data$X
 #' y = data$y
 #' @export
-GenSyntheticHighCorr <- function(n, p, k, seed, rho=0, b0=0, noise_ratio=1, mu=0, base_cor=.9)
+GenSyntheticHighCorr <- function(n, p, k, seed, rho=0, b0=0, snr=1, mu=0, base_cor=.9)
 {
     set.seed(seed) # fix the seed to get a reproducible result
     cor <- .Call("_L0Learn_cor_matrix", p, base_cor)
@@ -47,7 +48,8 @@ GenSyntheticHighCorr <- function(n, p, k, seed, rho=0, b0=0, noise_ratio=1, mu=0
         B[i] = 1
     }
     
-    e = noise_ratio*rnorm(n)
+    sd_e = sqrt(var(X %*% B)/snr)
+    e = rnorm(n, sd = sd_e)
     y = X%*%B + e + b0
     list(X=X, y = y, B=B, e=e, b0=b0)
 }
