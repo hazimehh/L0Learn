@@ -1,4 +1,5 @@
-# L0Learn: Fast Best Subset Selection [![Build Status](https://travis-ci.org/hazimehh/L0Learn.svg?branch=master)](https://travis-ci.org/hazimehh/L0Learn) 
+# L0Learn: Fast Best Subset Selection 
+[![Build Status](https://travis-ci.org/hazimehh/L0Learn.svg?branch=master)](https://travis-ci.org/hazimehh/L0Learn) [![CRAN](https://www.r-pkg.org/badges/version/L0Learn)](https://cran.r-project.org/package=L0Learn) [![Codacy Badge](https://app.codacy.com/project/badge/Grade/7fd68c533fd1493288e7986df3cc6f6d)](https://www.codacy.com/gh/hazimehh/L0Learn/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=hazimehh/L0Learn&amp;utm_campaign=Badge_Grade) [![codecov](https://codecov.io/gh/hazimehh/L0Learn/branch/master/graph/badge.svg?token=QYDNA400OI)](https://codecov.io/gh/hazimehh/L0Learn)
 
 ### Hussein Hazimeh, Rahul Mazumder, and Tim Nonet
 ### Massachusetts Institute of Technology
@@ -17,7 +18,11 @@ The toolkit is implemented in C++11 and can often run faster than popular sparse
 **NEW: Version 2 (03/2021) adds support for sparse matrices and box constraints on the coefficients.**
 
 ## R Package Installation
-The latest version (v2.0.2) can be installed from Github:
+The latest version (v2.0.3) can be installed from CRAN as follows:
+```{R}
+install.packages("L0Learn", repos = "http://cran.rstudio.com")
+```
+Alternatively, L0Learn can also be installed from Github as follows:
 ```{R}
 library(devtools)
 install_github("hazimehh/L0Learn")
@@ -39,7 +44,9 @@ While for many challenging statistical instances L0Learn leads to optimal soluti
 
 
 ## Citing L0Learn
-If you find L0Learn useful in your research, please consider citing the following paper:
+If you find L0Learn useful in your research, please consider citing the following two papers.
+
+**Paper 1:**
 ```
 @article{doi:10.1287/opre.2019.1919,
 author = {Hazimeh, Hussein and Mazumder, Rahul},
@@ -52,5 +59,15 @@ year = {2020},
 doi = {10.1287/opre.2019.1919},
 URL = {https://doi.org/10.1287/opre.2019.1919},
 eprint = {https://doi.org/10.1287/opre.2019.1919}
+}
+```
+
+**Paper 2 (to appear in JMLR):**
+```
+@article{dedieu2020learning,
+  title={Learning sparse classifiers: Continuous and mixed integer optimization perspectives},
+  author={Dedieu, Antoine and Hazimeh, Hussein and Mazumder, Rahul},
+  journal={arXiv preprint arXiv:2001.06471},
+  year={2020}
 }
 ```

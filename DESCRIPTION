@@ -1,17 +1,16 @@
 Package: L0Learn
 Type: Package
 Title: Fast Algorithms for Best Subset Selection
-Version: 2.0.2
-Date: 2021-03-18
+Version: 2.0.4
+Date: 2021-05-11
 Authors@R: c(
     person("Hussein", "Hazimeh", email = "hazimeh@mit.edu", role = c("aut", "cre")),
     person("Rahul", "Mazumder", email = "rahulmaz@mit.edu", role = "aut"),
     person("Tim", "Nonet", email = "tim.nonet@gmail.com", role = "aut"))
 Description: Highly optimized toolkit for approximately solving L0-regularized learning problems (a.k.a. best subset selection).
     The algorithms are based on coordinate descent and local combinatorial search.
-    For more details, check the paper by Hazimeh and Mazumder (2020);
-    the link is provided in the URL field below.
-URL: https://pubsonline.informs.org/doi/10.1287/opre.2019.1919 https://github.com/hazimehh
+    For more details, check the paper by Hazimeh and Mazumder (2020) <10.1287/opre.2019.1919>.
+URL: https://github.com/hazimehh/L0Learn https://pubsonline.informs.org/doi/10.1287/opre.2019.1919
 BugReports: https://github.com/hazimehh/L0Learn/issues
 License: MIT + file LICENSE
 Depends: R (>= 3.3.0)
@@ -24,5 +23,6 @@ Suggests:
     rmarkdown,
     testthat,
     pracma,
-    raster
+    raster,
+    covr
 VignetteBuilder: knitr

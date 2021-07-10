@@ -15,8 +15,8 @@ output:
     toc: yes
 vignette: >
   %\VignetteIndexEntry{L0Learn Vignette}
-  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
 ---
 
 ```{r setup, include = FALSE}
@@ -213,8 +213,20 @@ Finally, we note that L0Learn also supports a smoothed version of SVM by using s
 ### Sparse Matrix Support
 Starting in version 2.0.0, L0Learn supports sparse matrices of type dgCMatrix. If your sparse matrix uses a different storage format, please convert it to dgCMatrix before using it in L0Learn. L0Learn keeps the matrix sparse internally and thus is highly efficient if the matrix is sufficiently sparse. The API for sparse matrices is the same as that of dense matrices, so all the demonstrations in this vignette also apply for sparse matrices. For example, we can fit an L0-regularized model on a sparse matrix as follows:
 ```{r}
-X_sparse <- as(X, "dgCMatrix")
-fit_sparse <- L0Learn.fit(X_sparse, y, penalty="L0")
+
+# As an example, we generate a random, sparse matrix with 
+# 500 samples, 1000 features, and 10% nonzero entries.
+X_sparse <- Matrix::rsparsematrix(nrow=500, ncol=1000, density=0.1, rand.x = rnorm)
+# Below we generate the response using the same linear model as before,
+# but with the sparse data matrix X_sparse.
+y_sparseX <- as.vector(X_sparse%*%B + e)
+
+# Call L0Learn.
+fit_sparse <- L0Learn.fit(X_sparse, y_sparseX, penalty="L0")
+
+# Note: In the setup above, X_sparse is of type dgCMatrix.
+# If your sparse matrix is of a different type, convert it 
+# to dgCMatrix before calling L0Learn, e.g., using: X_sparse <- as(X_sparse, "dgCMatrix").
 ```
 
 ### Selection on Subset of Variables
@@ -277,5 +289,6 @@ print(fit)
 ```
 
 # References
-Hussein Hazimeh and Rahul Mazumder. (2020).
-[Fast Best Subset Selection: Coordinate Descent and Local Combinatorial Optimization Algorithms](https://pubsonline.informs.org/doi/10.1287/opre.2019.1919)
+Hussein Hazimeh and Rahul Mazumder. [Fast Best Subset Selection: Coordinate Descent and Local Combinatorial Optimization Algorithms](https://pubsonline.informs.org/doi/10.1287/opre.2019.1919). Operations Research (2020).
+
+Antoine Dedieu, Hussein Hazimeh, and Rahul Mazumder. [Learning Sparse Classifiers: Continuous and Mixed Integer Optimization Perspectives](https://arxiv.org/abs/2001.06471). JMLR (to appear).
