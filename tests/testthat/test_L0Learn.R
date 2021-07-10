@@ -254,6 +254,7 @@ test_that('Utilities for processing regression fit and cv objects run', {
   coef(fit, lambda=0.01, gamma=0);
   coef(fit);
   plot(fit)
+  plot(fit, showlines=FALSE)
   predict(fit, newx=X, lambda=0.01);
   predict(fit, newx=X, lambda=0.01, gamma=0);
   
@@ -264,6 +265,7 @@ test_that('Utilities for processing regression fit and cv objects run', {
   coef(fit, lambda=0.01, gamma=0);
   coef(fit);
   plot(fit)
+  plot(fit, showlines=FALSE)
   predict(fit, newx=X, lambda=0.01);
   predict(fit, newx=X, lambda=0.01, gamma=0);
   succeed()
@@ -278,6 +280,7 @@ test_that('Utilities for processing logistic fit and cv objects run', {
   coef(fit, lambda=0.01, gamma=0);
   coef(fit);
   plot(fit)
+  plot(fit, showlines=FALSE)
   predict(fit, newx=X, lambda=0.01);
   predict(fit, newx=X, lambda=0.01, gamma=0);
   
@@ -288,6 +291,33 @@ test_that('Utilities for processing logistic fit and cv objects run', {
   coef(fit, lambda=0.01, gamma=0);
   coef(fit);
   plot(fit)
+  plot(fit, showlines=FALSE)
+  predict(fit, newx=X, lambda=0.01);
+  predict(fit, newx=X, lambda=0.01, gamma=0);
+  succeed()
+})
+
+test_that('Utilities for processing non-intercept fit and cv objects run', {
+  skip_on_cran()
+  # Test utils for L0Learn.fit
+  fit <- L0Learn.fit(X, y, intercept=FALSE)
+  print(fit)
+  coef(fit, lambda=0.01);
+  coef(fit, lambda=0.01, gamma=0);
+  coef(fit);
+  plot(fit)
+  plot(fit, showlines=FALSE)
+  predict(fit, newx=X, lambda=0.01);
+  predict(fit, newx=X, lambda=0.01, gamma=0);
+  
+  # Test utils for L0Learn.cvfit
+  fit <- L0Learn.cvfit(X, y, intercept=FALSE)
+  print(fit)
+  coef(fit, lambda=0.01);
+  coef(fit, lambda=0.01, gamma=0);
+  coef(fit);
+  plot(fit)
+  plot(fit, showlines=FALSE)
   predict(fit, newx=X, lambda=0.01);
   predict(fit, newx=X, lambda=0.01, gamma=0);
   succeed()
