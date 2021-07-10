@@ -146,12 +146,27 @@ test_that("L0Learn fit and cvfit are deterministic for Dense cvfit", {
 test_that("L0Learn fit find same solution for different matrix representations", {
     skip_on_cran()
     for (p in c("L0", "L0L2", "L0L1")){
-      set.seed(1)
-      x1 <- L0Learn.fit(X_sparse, y, penalty=p, intercept = FALSE)
-      set.seed(1)
-      x2 <- L0Learn.fit(X, y, penalty=p, intercept = FALSE)
-      expect_equal(x1, x2, info=p)
+        set.seed(1)
+        x1 <- L0Learn.fit(X_sparse, y, penalty=p, intercept = FALSE)
+        set.seed(1)
+        x2 <- L0Learn.fit(X, y, penalty=p, intercept = FALSE)
+        expect_equal(x1, x2, info=p)
     }
+})
+
+test_that("L0Learn fit find same solution for different matrix representations", {
+  skip_on_cran()
+  for (p in c("L0", "L0L2", "L0L1")){
+    if (p != "L0L2"){ # TODO: Slight difference in results wtih penalty = "L0L2"
+      for (lows in (c(-Inf, 0))){
+        set.seed(1)
+        x1 <- L0Learn.fit(X_sparse, y, penalty=p, intercept = FALSE, lows=lows)
+        set.seed(1)
+        x2 <- L0Learn.fit(X, y, penalty=p, intercept = FALSE, lows=lows)
+        expect_equal(x1, x2, info=p)
+      }
+    }
+  }
 })
 
 test_that("L0Learn cvfit find same solution for different matrix representations", {
@@ -171,6 +186,13 @@ test_that("L0Learn fit and cvfit run with sparse X and intercepts", {
     L0Learn.fit(X_sparse, y, intercept = TRUE)
     L0Learn.cvfit(X_sparse, y, intercept = TRUE)
     succeed()
+})
+
+test_that("L0Learn fit and cvfit run with sparse X and intercepts and CDPSI", {
+  skip_on_cran()
+  L0Learn.fit(X_sparse, y, intercept = TRUE, algorithm = "CDPSI", maxSwaps = 2);
+  L0Learn.cvfit(X_sparse, y, intercept = TRUE, algorithm = "CDPSI", maxSwaps = 2);
+  succeed()
 })
 
 
