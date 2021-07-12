@@ -2,7 +2,7 @@
 % Please edit documentation in R/genhighcorr.R
 \name{GenSyntheticHighCorr}
 \alias{GenSyntheticHighCorr}
-\title{Generate Expoententiall Correlated Synthetic Data}
+\title{Generate Expoentential Correlated Synthetic Data}
 \usage{
 GenSyntheticHighCorr(
   n,

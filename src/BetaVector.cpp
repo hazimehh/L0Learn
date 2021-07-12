@@ -10,17 +10,17 @@ std::vector<std::size_t> nnzIndicies(const arma::vec& B){
     return arma::conv_to<std::vector<std::size_t>>::from(nnzs_indicies); 
 }
 
-std::vector<std::size_t> nnzIndicies(const arma::sp_mat& B){
-    // Returns a vector of the Non Zero Indicies of B
-    std::vector<std::size_t> S;
-    arma::sp_mat::const_iterator it;
-    const arma::sp_mat::const_iterator it_end = B.end();
-    for(it = B.begin(); it != it_end; ++it)
-    {
-        S.push_back(it.row());
-    }
-    return S; 
-}
+// std::vector<std::size_t> nnzIndicies(const arma::sp_mat& B){
+//     // Returns a vector of the Non Zero Indicies of B
+//     std::vector<std::size_t> S;
+//     arma::sp_mat::const_iterator it;
+//     const arma::sp_mat::const_iterator it_end = B.end();
+//     for(it = B.begin(); it != it_end; ++it)
+//     {
+//         S.push_back(it.row());
+//     }
+//     return S; 
+// }
 
 std::vector<std::size_t> nnzIndicies(const arma::vec& B, const std::size_t low){
     // Returns a vector of the Non Zero Indicies of a slice of B starting at low
@@ -30,23 +30,23 @@ std::vector<std::size_t> nnzIndicies(const arma::vec& B, const std::size_t low){
     return arma::conv_to<std::vector<std::size_t>>::from(nnzs_indicies); 
 }
 
-std::vector<std::size_t> nnzIndicies(const arma::sp_mat& B, const std::size_t low){
-    // Returns a vector of the Non Zero Indicies of B
-    std::vector<std::size_t> S;
-    
-    
-    arma::sp_mat::const_iterator it;
-    const arma::sp_mat::const_iterator it_end = B.end();
-    
-    
-    for(it = B.begin(); it != it_end; ++it)
-    {
-        if (it.row() >= low){
-            S.push_back(it.row());
-        }
-    }
-    return S; 
-}
+// std::vector<std::size_t> nnzIndicies(const arma::sp_mat& B, const std::size_t low){
+//     // Returns a vector of the Non Zero Indicies of B
+//     std::vector<std::size_t> S;
+//     
+//     
+//     arma::sp_mat::const_iterator it;
+//     const arma::sp_mat::const_iterator it_end = B.end();
+//     
+//     
+//     for(it = B.begin(); it != it_end; ++it)
+//     {
+//         if (it.row() >= low){
+//             S.push_back(it.row());
+//         }
+//     }
+//     return S; 
+// }
 
 
 std::size_t n_nonzero(const arma::vec& B){
@@ -55,10 +55,10 @@ std::size_t n_nonzero(const arma::vec& B){
     
 }
 
-std::size_t n_nonzero(const arma::sp_mat& B){
-    return B.n_nonzero;
-    
-}
+// std::size_t n_nonzero(const arma::sp_mat& B){
+//     return B.n_nonzero;
+//     
+// }
 
 bool has_same_support(const arma::vec& B1, const arma::vec& B2){
     if (B1.size() != B2.size()){
@@ -73,23 +73,23 @@ bool has_same_support(const arma::vec& B1, const arma::vec& B2){
     return same_support;
 }
 
-bool has_same_support(const arma::sp_mat& B1, const arma::sp_mat& B2){
-    
-    if (B1.n_nonzero != B2.n_nonzero) {
-        return false;
-    } else {  // same number of nnz and Supp is sorted
-        arma::sp_mat::const_iterator i1, i2;
-        const arma::sp_mat::const_iterator i1_end = B1.end();
-        
-        
-        for(i1 = B1.begin(), i2 = B2.begin(); i1 != i1_end; ++i1, ++i2)
-        {
-            if(i1.row() != i2.row())
-            {
-                return false;
-            }
-        }
-        return true;
-    }
-}
+// bool has_same_support(const arma::sp_mat& B1, const arma::sp_mat& B2){
+//     
+//     if (B1.n_nonzero != B2.n_nonzero) {
+//         return false;
+//     } else {  // same number of nnz and Supp is sorted
+//         arma::sp_mat::const_iterator i1, i2;
+//         const arma::sp_mat::const_iterator i1_end = B1.end();
+//         
+//         
+//         for(i1 = B1.begin(), i2 = B2.begin(); i1 != i1_end; ++i1, ++i2)
+//         {
+//             if(i1.row() != i2.row())
+//             {
+//                 return false;
+//             }
+//         }
+//         return true;
+//     }
+// }
 
