@@ -48,7 +48,12 @@ GenSyntheticHighCorr <- function(n, p, k, seed, rho=0, b0=0, snr=1, mu=0, base_c
         B[i] = 1
     }
     
-    sd_e = sqrt(var(X %*% B)/snr)
+    sd_e = NULL
+    if (snr == +Inf){
+        sd_e = 0
+    } else {
+        sd_e = sqrt(var(X %*% B)/snr)
+    }
     e = rnorm(n, sd = sd_e)
     y = X%*%B + e + b0
     list(X=X, y = y, B=B, e=e, b0=b0)
