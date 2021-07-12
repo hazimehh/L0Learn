@@ -8,7 +8,7 @@ test_that("CDPSI recovers true support when the correlation is high.", {
   p = 1000
   k = 25
 
-  tmp <- L0Learn::GenSyntheticHighCorr(n, p, k, seed=1, noise_ratio = 0, base_cor=.95)
+  tmp <- L0Learn::GenSyntheticHighCorr(n, p, k, seed=1, snr = +Inf, base_cor=.95)
   
   X <- tmp$X
   y <- tmp$y
