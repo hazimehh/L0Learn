@@ -11,7 +11,7 @@ GenSyntheticHighCorr(
   seed,
   rho = 0,
   b0 = 0,
-  noise_ratio = 1,
+  snr = 1,
   mu = 0,
   base_cor = 0.9
 )
@@ -29,7 +29,8 @@ GenSyntheticHighCorr(
 
 \item{b0}{intercept value to scale y by.}
 
-\item{noise_ratio}{The multiplier of noise to apply when calculating e. e[i] = noise_ratio*N(0, 1).}
+\item{snr}{desired Signal-to-Noise ratio. This sets the magnitude of the error term 'e'. 
+SNR is defined as  SNR = Var(XB)/Var(e)}
 
 \item{mu}{The mean for drawing from the Multivariate Normal Distribution. A scalar of vector of length p.}
 

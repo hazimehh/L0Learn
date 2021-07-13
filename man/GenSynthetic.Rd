@@ -4,7 +4,7 @@
 \alias{GenSynthetic}
 \title{Generate Synthetic Data}
 \usage{
-GenSynthetic(n, p, k, seed, rho = 0, b0 = 0, snr = 1, shuffle_B = FALSE)
+GenSynthetic(n, p, k, seed, rho = 0, b0 = 0, snr = 1)
 }
 \arguments{
 \item{n}{Number of samples}

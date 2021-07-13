@@ -26,7 +26,7 @@ GenSyntheticLogistic(
 
 \item{rho}{The threshold for setting values to 0.  if |X(i, j)| > rho => X(i, j) <- 0}
 
-\item{s}{Signal-to-noise parameter. As s -> +Inf, the data generated becomes linearly separable.}
+\item{s}{Signal-to-noise parameter. As s -> +Inf, the data generated becomes linearly separable. If s ==}
 
 \item{sigma}{Correlation matrix, defaults to I.}
 }
