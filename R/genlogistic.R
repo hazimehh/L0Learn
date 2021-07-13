@@ -1,5 +1,5 @@
 #' @importFrom stats rnorm 
-#' @importFrom MASS mvrnorm
+#' @importFrom MASS mvnorm
 #' @title Generate Logistic Synthetic Data
 #'
 #' @description Generates a synthetic dataset as follows: 1) Generate a data matrix, 
