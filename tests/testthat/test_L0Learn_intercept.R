@@ -14,7 +14,7 @@ library("pracma")
 #     list(X=X, y = y)
 # }
 
-tmp <-  L0Learn::GenSynthetic(n=50, p=200, k=10, seed=1, rho=1, b0=0)
+tmp <-  L0Learn::GenSynthetic(n=50, p=200, k=10, seed=1, rho=0.5, b0=0, snr=+Inf)
 Xsmall <- tmp[[1]]
 ysmall <- tmp[[2]]
 tol = 1e-4

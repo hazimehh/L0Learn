@@ -5,7 +5,7 @@ library("pracma")
 
 K = 10
 
-tmp <-  L0Learn::GenSynthetic(n=100, p=1000, k=K, seed=1, rho=.5, error_ratio=0)
+tmp <-  L0Learn::GenSynthetic(n=100, p=1000, k=K, seed=1, rho=.5, snr=+Inf)
 X <- tmp[[1]]
 y <- tmp[[2]]
 tol = 1e-4
