@@ -24,13 +24,12 @@
 #' data <- GenSyntheticLogistic(n=500,p=1000,k=10,seed=1)
 #' X = data$X
 #' y = data$y
-#' @export
 GenSyntheticLogistic <- function(n, p, k, seed, rho=0, s=1, sigma=NULL, shuffle_B=FALSE) 
 {
     if (s < 0){
         stop("s must be fall in the interval [0, +Inf)")   
     }
-        
+
     X = NULL
     set.seed(seed) 
     
@@ -50,5 +49,4 @@ GenSyntheticLogistic <- function(n, p, k, seed, rho=0, s=1, sigma=NULL, shuffle_
     y = rbinom(n, 1, 1/(1 + exp(-s*X%*%B)))    
     
     return(list(X=X, B=B, y=y, s=s))
-    
 }

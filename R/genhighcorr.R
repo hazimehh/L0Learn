@@ -26,7 +26,6 @@
 #' data <- GenSyntheticHighCorr(n=500,p=1000,k=10,seed=1)
 #' X = data$X
 #' y = data$y
-#' @export
 GenSyntheticHighCorr <- function(n, p, k, seed, rho=0, b0=0, snr=1, mu=0, base_cor=.9)
 {
     set.seed(seed) # fix the seed to get a reproducible result
