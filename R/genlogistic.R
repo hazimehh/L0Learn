@@ -1,5 +1,5 @@
 #' @importFrom stats rnorm 
-#' @importFrom MASS mvnorm
+#' @importFrom MASS mvrnorm
 #' @title Generate Logistic Synthetic Data
 #'
 #' @description Generates a synthetic dataset as follows: 1) Generate a data matrix, 
@@ -36,7 +36,7 @@ GenSyntheticLogistic <- function(n, p, k, seed, rho=0, s=1, sigma=NULL, shuffle_
     if (is.null(sigma)){
         X = matrix(rnorm(n*p), n, p)
     } else {
-        X = mvnorm(n, mu=0, Sigma=sigma)
+        X = mvrnorm(n, mu=0, Sigma=sigma)
     }
     
     X[abs(X) < rho] <- 0.
