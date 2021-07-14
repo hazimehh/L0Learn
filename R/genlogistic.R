@@ -4,8 +4,8 @@
 #'
 #' @description Generates a synthetic dataset as follows: 1) Generate a data matrix, 
 #' X, drawn from a multivariate Gaussian distribution with mean = 0, sigma = Sigma
-#' 2) Generate a vector B with every ~p/k entry set to 1 and the rest are zeros.
-#' 3)  Every coordinate yi of the outcome vector y ∈ {−1, 1}^n is sampled 
+#' 2) Generate a vector B with k entries set to 1 and the rest are zeros.
+#' 3) Every coordinate yi of the outcome vector y ∈ {−1, 1}^n is sampled 
 #' independently from a Bernoulli distribution with success probability: 
 #' P(yi = 1|xi) = 1/(1 + exp(−s<xi, B>))
 #' Source https://arxiv.org/pdf/2001.06471.pdf Section 5.1 Data Generation
@@ -14,8 +14,10 @@
 #' @param k Number of non-zeros in true vector of coefficients
 #' @param seed The seed used for randomly generating the data
 #' @param rho The threshold for setting values to 0.  if |X(i, j)| > rho => X(i, j) <- 0
-#' @param s Signal-to-noise parameter. As s -> +Inf, the data generated becomes linearly separable. If s == 
+#' @param s Signal-to-noise parameter. As s -> +Inf, the data generated becomes linearly separable. 
 #' @param sigma Correlation matrix, defaults to I.
+#' @param shuffle_B A boolean flag for whether or not to randomly shuffle the Beta vector, B.
+#'  If FALSE, the first k entries in B are set to 1.
 #' @return A list containing:
 #'  the data matrix X,
 #'  the response vector y,
