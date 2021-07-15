@@ -4,11 +4,11 @@ library("L0Learn")
 
 test_that("CDPSI recovers true support when the correlation is high.", {
   skip_on_cran()
-  n = 500
+  n = 2000
   p = 1000
   k = 25
 
-  tmp <- L0Learn::GenSyntheticHighCorr(n, p, k, seed=1, snr = +Inf, base_cor=.95)
+  tmp <- L0Learn:::GenSyntheticHighCorr(n, p, k, seed=1, snr = +Inf, base_cor=.93)
   
   X <- tmp$X
   y <- tmp$y
@@ -25,10 +25,10 @@ test_that("CDPSI recovers true support when the correlation is high.", {
   
   fitCD_k <- k_support_index(fitCD, k)
   # Expected to fail
-  all.equal(which(B != 0, arr.ind = TRUE),
-            which(fitCD$beta[[1]][, fitCD_k] != 0, arr.ind = TRUE))
+  expect_equal(which(B != 0, arr.ind = TRUE),
+               which(fitCD$beta[[1]][, fitCD_k] != 0, arr.ind = TRUE))
   
   fitSWAPS_k <- k_support_index(fitSWAPS, k)
-  all.equal(which(B != 0, arr.ind = TRUE),
-            which(fitSWAPS$beta[[1]][, fitSWAPS_k] != 0, arr.ind = TRUE))
+  expect_equal(which(B != 0, arr.ind = TRUE),
+                which(fitSWAPS$beta[[1]][, fitSWAPS_k] != 0, arr.ind = TRUE))
 })
