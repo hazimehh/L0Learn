@@ -6,7 +6,7 @@ library("raster")
 tmp <-  L0Learn::GenSynthetic(n=100, p=5000, k=10, seed=1, rho=1.5)
 X <- tmp[[1]]
 y <- tmp[[2]]
-y_bin <- sign(y)
+y_bin <- sign(y + rnorm(100))
 tol = 1e-4
 epsilon = 1e-12
 
@@ -154,18 +154,18 @@ test_that("L0Learn respects bounds for all Losses", {
 })
 
 
-# test_that("L0Learn respects vector bounds", {
-#     p = dim(X)[[2]]
-#     bounds = rnorm(p, 0, .5)
-#     lows = -(bounds^2) - .01
-#     highs = (bounds^2) + .01
-#     for (m in list(X, X_sparse)){
-#         fit <- L0Learn.fit(m, y, intercept = FALSE, lows=lows, highs=highs)
-#         for (i in 1:ncol(fit$beta[[1]])){
-#             expect_true(all((lows <= fit$beta[[1]][,i ]) && (fit$beta[[1]][,i ]<= highs)))
-#         }
-#     }
-# })
+test_that("L0Learn respects vector bounds", {
+    p = dim(X)[[2]]
+    bounds = rnorm(p, 0, .5)
+    lows = -(bounds^2) - .01
+    highs = (bounds^2) + .01
+    for (m in list(X, X_sparse)){
+        fit <- L0Learn.fit(m, y, intercept = FALSE, lows=lows, highs=highs)
+        for (i in 1:ncol(fit$beta[[1]])){
+            expect_true(all((lows <= fit$beta[[1]][,i ]) && (fit$beta[[1]][,i ]<= highs)))
+        }
+    }
+})
 
 find <- function(x, inside){
     which(sapply(inside, FUN=function(X) x %in% X), arr.ind = TRUE)
