@@ -2,7 +2,7 @@ library("Matrix")
 library("testthat")
 library("L0Learn")
 
-tmp <-  L0Learn::GenSynthetic(n=100, p=1000, k=10, seed=1, rho=1.5)
+tmp <-  L0Learn::GenSynthetic(n=100, p=1000, k=20, seed=1, rho=.5)
 X <- tmp[[1]]
 y <- tmp[[2]]
 tol = 1e-4

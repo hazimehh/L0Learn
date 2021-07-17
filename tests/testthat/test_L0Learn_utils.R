@@ -2,9 +2,9 @@ library("Matrix")
 library("testthat")
 library("L0Learn")
 
-tmp <-  L0Learn::GenSynthetic(n=500, p=1000, k=10, seed=1, rho=1)
-X <- tmp[[1]] + rnorm(1000)
-y <- tmp[[2]]
+tmp <-  L0Learn::GenSynthetic(n=1000, p=500, k=10, seed=1, rho=1)
+X <- tmp[[1]] 
+y <- tmp[[2]] + 1
 tol = 1e-4
 
 if (sum(apply(X, 2, sd) == 0)) {
