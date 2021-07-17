@@ -162,7 +162,8 @@ test_that("L0Learn respects vector bounds", {
     for (m in list(X, X_sparse)){
         fit <- L0Learn.fit(m, y, intercept = FALSE, lows=lows, highs=highs)
         for (i in 1:ncol(fit$beta[[1]])){
-            expect_true(all((lows <= fit$beta[[1]][,i ]) && (fit$beta[[1]][,i ]<= highs)))
+            expect_true(all(lows - 1e-9 <= fit$beta[[1]][,i ]))
+            expect_true(all(fit$beta[[1]][,i ] <= highs + 1e-9))
         }
     }
 })
