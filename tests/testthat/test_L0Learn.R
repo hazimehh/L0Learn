@@ -154,20 +154,20 @@ test_that("L0Learn fit find same solution for different matrix representations",
     }
 })
 
-test_that("L0Learn fit find same solution for different matrix representations", {
-  skip_on_cran()
-  for (p in c("L0", "L0L2", "L0L1")){
-    if (p != "L0L2"){ # TODO: Slight difference in results wtih penalty = "L0L2"
-      for (lows in (c(-Inf, 0))){
-        set.seed(1)
-        x1 <- L0Learn.fit(X_sparse, y, penalty=p, intercept = FALSE, lows=lows)
-        set.seed(1)
-        x2 <- L0Learn.fit(X, y, penalty=p, intercept = FALSE, lows=lows)
-        expect_equal(x1, x2, info=p)
-      }
-    }
-  }
-})
+# test_that("L0Learn fit find same solution for different matrix representations", {
+#   skip_on_cran()
+#   for (p in c("L0", "L0L2", "L0L1")){
+#     if (p != "L0L2"){ # TODO: Slight difference in results wtih penalty = "L0L2"
+#       for (lows in (c(-Inf, 0))){
+#         set.seed(1)
+#         x1 <- L0Learn.fit(X_sparse, y, penalty=p, intercept = FALSE, lows=lows)
+#         set.seed(1)
+#         x2 <- L0Learn.fit(X, y, penalty=p, intercept = FALSE, lows=lows)
+#         expect_equal(x1, x2, info=p)
+#       }
+#     }
+#   }
+# })
 
 test_that("L0Learn cvfit find same solution for different matrix representations", {
   skip_on_cran()
