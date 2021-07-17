@@ -47,7 +47,7 @@ class CDBase {
 
     public:
         const T * X;
-        const arma::vec * y;
+        const arma::vec y;
         std::vector<double> ModelParams;
 
         char CyclingOrder;
@@ -345,7 +345,7 @@ bool CD<T, Derived>::UpdateBiCWMinCheckWithBounds(const std::size_t i, const boo
 template<class T>
 CDBase<T>::CDBase(const T& Xi, const arma::vec& yi, const Params<T>& P) :
     lambda0{P.ModelParams[0]}, lambda1{P.ModelParams[1]},
-    lambda2{P.ModelParams[2]}, intercept{P.intercept}, withBounds{P.withBounds},
+    lambda2{P.ModelParams[2]}, intercept{P.intercept}, withBounds{P.withBounds}, y{yi},
     ModelParams{P.ModelParams}, CyclingOrder{P.CyclingOrder}, MaxIters{P.MaxIters},
     rtol{P.rtol}, atol{P.atol}, Lows{P.Lows}, Highs{P.Highs}, ActiveSet{P.ActiveSet},
     ActiveSetNum{P.ActiveSetNum}
@@ -361,7 +361,6 @@ CDBase<T>::CDBase(const T& Xi, const arma::vec& yi, const Params<T>& P) :
         this->b0 = P.b0;
         
         this->X = &Xi;
-        this->y = &yi;
         
         this->n = X->n_rows;
         this->p = X->n_cols;

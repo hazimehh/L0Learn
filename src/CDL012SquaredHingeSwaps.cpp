@@ -17,7 +17,7 @@ FitResult<T> CDL012SquaredHingeSwaps<T>::_FitWithBounds() {
 
 template <class T>
 FitResult<T> CDL012SquaredHingeSwaps<T>::_Fit() {
-    auto result = CDL012SquaredHinge<T>(*(this->X), *(this->y), this->P).Fit(); // result will be maintained till the end
+    auto result = CDL012SquaredHinge<T>(*(this->X), this->y, this->P).Fit(); // result will be maintained till the end
     this->b0 = result.b0; // Initialize from previous later....!
     this->B = result.B;
     
@@ -43,7 +43,7 @@ FitResult<T> CDL012SquaredHingeSwaps<T>::_Fit() {
         
         for (auto& j : NnzIndices) {
            
-            arma::vec onemyxbnoj = onemyxb + this->B[j] * *(this->y) % matrix_column_get(*(this->X), j);
+            arma::vec onemyxbnoj = onemyxb + this->B[j] * this->y % matrix_column_get(*(this->X), j);
             arma::uvec indices = arma::find(onemyxbnoj > 0);
             
             
@@ -54,7 +54,7 @@ FitResult<T> CDL012SquaredHingeSwaps<T>::_Fit() {
                     double Binew;
                     
                     
-                    double partial_i = arma::sum(2 * onemyxbnoj.elem(indices) % (- (this->y)->elem(indices) % matrix_column_get(*(this->X), i).elem(indices)));
+                    double partial_i = arma::sum(2 * onemyxbnoj.elem(indices) % (- (this->y.elem(indices) % matrix_column_get(*(this->X), i).elem(indices))));
                     
                     bool converged = false;
                     if (std::abs(partial_i) >= this->lambda1 + stl0Lc){
@@ -74,10 +74,10 @@ FitResult<T> CDL012SquaredHingeSwaps<T>::_Fit() {
                             Binew = std::copysign(z, x);
                             
                             // Binew = clamp(std::copysign(z, x), this->Lows[i], this->Highs[i]); // no need to check if >= sqrt(2lambda_0/Lc)
-                            onemyxbnoji += (Biold - Binew) * *(this->y) % matrix_column_get(*(this->X), i);
+                            onemyxbnoji += (Biold - Binew) * this->y % matrix_column_get(*(this->X), i);
                             
                             arma::uvec indicesi = arma::find(onemyxbnoji > 0);
-                            partial_i = arma::sum(2 * onemyxbnoji.elem(indicesi) % (- (this->y)->elem(indicesi) % matrix_column_get(*(this->X), i).elem(indicesi)));
+                            partial_i = arma::sum(2 * onemyxbnoji.elem(indicesi) % (- this->y.elem(indicesi) % matrix_column_get(*(this->X), i).elem(indicesi)));
                             
                             if (std::abs((Binew - Biold) / Biold) < 0.0001){
                                 converged = true;   
@@ -109,7 +109,7 @@ FitResult<T> CDL012SquaredHingeSwaps<T>::_Fit() {
                 // TODO: Check if this line is needed. P should already have b0.
                 this->P.b0 = this->b0;
                 
-                result = CDL012SquaredHinge<T>(*(this->X), *(this->y), this->P).Fit();
+                result = CDL012SquaredHinge<T>(*(this->X), this->y, this->P).Fit();
                 
                 this->B = result.B;
                 this->b0 = result.b0;
