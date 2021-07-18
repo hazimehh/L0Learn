@@ -2,7 +2,7 @@ library("Matrix")
 library("testthat")
 library("L0Learn")
 
-tmp <-  L0Learn::GenSynthetic(n=100, p=1000, k=20, seed=1, rho=.5)
+tmp <-  L0Learn::GenSynthetic(n=100, p=1000, k=20, seed=1, snr = 10, rho=.5)
 X <- tmp[[1]]
 y <- tmp[[2]]
 tol = 1e-4
@@ -21,34 +21,6 @@ test_that('L0Learn Accepts Proper Matricies', {
     ignore <- L0Learn.cvfit(X_sparse, y, intercept = FALSE)
     succeed()
 })
-
-# test_that("L0Learn fails on CDPSI and SquaredHinge", {
-#    f1 <- function(){
-#      L0Learn.fit(X, sign(y), algorithm = "CDPSI", loss = "SquaredHinge")
-#    }
-#    
-#    f1 <- function(){
-#      L0Learn.cvfit(X, sign(y), algorithm = "CDPSI", loss = "SquaredHinge")
-#    }
-#    
-#    expect_failure(f1())
-#    expect_failure(f2())
-#    
-#    f2 <- function(){
-#      L0Learn.fit(X, sign(y), algorithm = "CD", loss = "SquaredHinge")
-#      L0Learn.cvfit(X, sign(y), algorithm = "CD", loss = "SquaredHinge")
-#    }
-#    
-#    f2()
-#    succeed()
-#    
-#    f3 <- function(){
-#      L0Learn.fit(X, sign(y), algorithm = "CDPSI", loss = "Logistic")
-#      L0Learn.cvfit(X, sign(y), algorithm = "CDPSI", loss = "Logistic")
-#    }
-#    f3()
-#    succeed()
-# })
 
 test_that("L0Learn respects excludeFirstK for large L0", {
   skip_on_cran()
@@ -154,17 +126,30 @@ test_that("L0Learn fit find same solution for different matrix representations",
     }
 })
 
-# test_that("L0Learn fit find same solution for different matrix representations", {
+test_that("L0Learn fit find same solution for different matrix representations", {
+  skip_on_cran()
+  for (p in c("L0", "L0L2", "L0L1")){
+      set.seed(1)
+      x1 <- L0Learn.fit(X_sparse, y, penalty=p, intercept = FALSE)
+      set.seed(1)
+      x2 <- L0Learn.fit(X, y, penalty=p, intercept = FALSE)
+      expect_equal(x1, x2, info=paste(p, lows))
+  }
+})
+
+# test_that("L0Learn fit find similar solution for different matrix representations with bounds", {
 #   skip_on_cran()
 #   for (p in c("L0", "L0L2", "L0L1")){
-#     if (p != "L0L2"){ # TODO: Slight difference in results wtih penalty = "L0L2"
-#       for (lows in (c(-Inf, 0))){
+#       for (lows in (c(0, -10000, -.1))){
 #         set.seed(1)
 #         x1 <- L0Learn.fit(X_sparse, y, penalty=p, intercept = FALSE, lows=lows)
 #         set.seed(1)
 #         x2 <- L0Learn.fit(X, y, penalty=p, intercept = FALSE, lows=lows)
-#         expect_equal(x1, x2, info=p)
-#       }
+#         # TODO: Investigate why X_sparse is missing a solution
+#         for (i in 1:length(x1$beta)){
+#           expect_equal(x1$beta[[i]], x2$beta[[i]][, 2:ncol(x2$beta[[i]])], info=paste(p, lows, i))
+#         }
+# 
 #     }
 #   }
 # })
