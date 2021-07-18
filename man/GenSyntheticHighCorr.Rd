@@ -50,7 +50,7 @@ Generates a synthetic dataset as follows: 1) Generate a correlation matrix, SIG,
 4) Sample every element in the noise vector e from N(0,1). 4) Set y = XB + b0 + e.
 }
 \examples{
-data <- GenSyntheticHighCorr(n=500,p=1000,k=10,seed=1)
+data <- L0Learn:::GenSyntheticHighCorr(n=500,p=1000,k=10,seed=1)
 X = data$X
 y = data$y
 }

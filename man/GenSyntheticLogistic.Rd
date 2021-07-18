@@ -43,13 +43,13 @@ A list containing:
 Generates a synthetic dataset as follows: 1) Generate a data matrix, 
 X, drawn from a multivariate Gaussian distribution with mean = 0, sigma = Sigma
 2) Generate a vector B with k entries set to 1 and the rest are zeros.
-3) Every coordinate yi of the outcome vector y ∈ {−1, 1}^n is sampled 
+3) Every coordinate yi of the outcome vector y \in {-1, 1}^n is sampled 
 independently from a Bernoulli distribution with success probability: 
-P(yi = 1|xi) = 1/(1 + exp(−s<xi, B>))
+P(yi = 1|xi) = 1/(1 + exp(-s<xi, B>))
 Source https://arxiv.org/pdf/2001.06471.pdf Section 5.1 Data Generation
 }
 \examples{
-data <- GenSyntheticLogistic(n=500,p=1000,k=10,seed=1)
+data <- L0Learn:::GenSyntheticLogistic(n=500,p=1000,k=10,seed=1)
 X = data$X
 y = data$y
 }
