@@ -1,4 +1,4 @@
-#' @importFrom stats rnorm
+#' @importFrom stats rnorm var
 #' @title Generate Synthetic Data
 #'
 #' @description Generates a synthetic dataset as follows: 1) Sample every element in data matrix X from N(0,1).

@@ -1,4 +1,4 @@
-#' @importFrom stats rnorm 
+#' @importFrom stats rnorm var
 #' @importFrom MASS mvrnorm
 #' @importFrom Rcpp cppFunction
 #' @title Generate Expoentential Correlated Synthetic Data
