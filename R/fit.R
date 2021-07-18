@@ -152,7 +152,7 @@ L0Learn.fit <- function(x, y, loss="SquaredError", penalty="L0", algorithm="CD",
     
     # Handle Lambda Grids:
     if (length(lambdaGrid) != 0){
-        if (!is.null(autoLambda) && !autoLambda){
+        if (!is.null(autoLambda)){
             warning("In L0Learn V2+, autoLambda is ignored and inferred if 'lambdaGrid' is supplied", call.=FALSE)
         }
         autoLambda = FALSE
@@ -285,8 +285,7 @@ L0Learn.fit <- function(x, y, loss="SquaredError", penalty="L0", algorithm="CD",
 			last = length(M$SuppSize[[i]])
 			if (M$SuppSize[[i]][last] > maxSuppSize){
 					if (last == 1){
-							print("Warning! Only 1 element in path with support size > maxSuppSize.")
-							print("Try increasing maxSuppSize to resolve the issue.")
+							warning("Warning! Only 1 element in path with support size > maxSuppSize. \n Try increasing maxSuppSize to resolve the issue.")
 					} else{
 							M$SuppSize[[i]] = M$SuppSize[[i]][-last]
 							M$Converged[[i]] = M$Converged[[i]][-last]
