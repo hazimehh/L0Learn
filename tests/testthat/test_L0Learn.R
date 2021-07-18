@@ -22,6 +22,77 @@ test_that('L0Learn Accepts Proper Matricies', {
     succeed()
 })
 
+test_that("L0Learn V2+ raises warning on autolambda usage", {
+  fit_user_grid = list()
+  fit_user_grid[[1]] = c(10:1)
+  expect_warning(L0Learn.fit(X, y, lambdaGrid=fit_user_grid, autoLambda = FALSE))
+  
+  expect_warning(L0Learn.cvfit(X, y, lambdaGrid=fit_user_grid, autoLambda = FALSE))
+  
+  expect_silent(L0Learn.fit(X, y, lambdaGrid=fit_user_grid, penalty = "L0L2", nGamma=1))
+  expect_silent(L0Learn.cvfit(X, y, lambdaGrid=fit_user_grid, penalty = "L0L2", nGamma=1))
+})
+
+test_that("L0Learn V2+ raises error on negative user_grid values", {
+  fit_user_grid = list()
+  fit_user_grid[[1]] = c(-2:-10)
+  
+  for (p in c("L0", "L0L1", "L0L2")){
+    expect_error(L0Learn.fit(X, y, lambdaGrid=fit_user_grid, penalty = p))
+    expect_error(L0Learn.cvfit(X, y, lambdaGrid=fit_user_grid, penalty = p)) 
+  }
+})
+
+test_that("L0Learn respect colnames on X data matrix", {
+  X_with_names <- matrix(X, nrow=nrow(X), ncol=ncol(X))
+  names = c()
+  for (i in 1:1000){
+    names[i] = paste("F", i)
+  }
+  colnames(X_with_names) <- names
+  fit <- L0Learn.fit(X_with_names, y)
+  
+  # TODO: Add colnames to beta
+  expect_equal(colnames(X_with_names), fit$varnames)
+  fit <- L0Learn.cvfit(X_with_names, y)
+  expect_equal(colnames(X_with_names), fit$fit$varnames)
+})
+
+test_that("L0Learn raises error when classification has 3 or more values in y.", {
+  
+  y_bin_bad = sign(y)
+  y_bin_bad[[1]] = 2
+  
+  for (loss in c("Logistic", "SquaredHinge")){
+    expect_error(L0Learn.fit(X, y_bin_bad, loss=loss))
+    expect_error(L0Learn.cvfit(X, y_bin_bad, loss=loss))
+    
+  }
+})
+
+test_that("L0Learn raises error when L0 classification has too large of a lambda grid", {
+  # This is tricky. See implementation of L0 classification penalty in fit.R and cvfit.R
+  
+  lambda_grid = list()
+  lambda_grid[[1]] = c(10e-8, 10e-9)
+  lambda_grid[[2]] = c(10e-8, 10e-9)
+  
+  for (loss in c("Logistic", "SquaredHinge")){
+    expect_error(L0Learn.fit(X, sign(y), loss=loss, lambdaGrid=lambda_grid))
+    expect_error(L0Learn.cvfit(X, sign(y), loss=loss, lambdaGrid=lambda_grid))
+    
+  }
+})
+
+test_that("L0Learn raises warning on degenerate solution path", {
+  lambda_grid = list()
+  lambda_grid[[1]] = c(10e-8, 10e-9)
+
+  expect_warning(L0Learn.fit(X, y, lambdaGrid=lambda_grid))
+  expect_warning(L0Learn.cvfit(X, y,lambdaGrid=lambda_grid))
+
+})
+
 test_that("L0Learn respects excludeFirstK for large L0", {
   skip_on_cran()
   BIGuserLambda = list()
