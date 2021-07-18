@@ -38,7 +38,10 @@ GenSyntheticLogistic <- function(n, p, k, seed, rho=0, s=1, sigma=NULL, shuffle_
     if (is.null(sigma)){
         X = matrix(rnorm(n*p), n, p)
     } else {
-        X = mvrnorm(n, mu=0, Sigma=sigma)
+        if ((ncol(sigma) != p) || (nrow(sigma) != p)){
+            stop("sigma must be a semi positive definite matrix of side length p")
+        }
+        X = mvrnorm(n, mu=rep(0, p), Sigma=sigma)
     }
     
     X[abs(X) < rho] <- 0.
