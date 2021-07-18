@@ -23,7 +23,7 @@
 #'  the response vector y,
 #'  the coefficients B,
 #' @examples
-#' data <- GenSyntheticLogistic(n=500,p=1000,k=10,seed=1)
+#' data <- L0Learn:::GenSyntheticLogistic(n=500,p=1000,k=10,seed=1)
 #' X = data$X
 #' y = data$y
 GenSyntheticLogistic <- function(n, p, k, seed, rho=0, s=1, sigma=NULL, shuffle_B=FALSE) 
