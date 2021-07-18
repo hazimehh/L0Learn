@@ -7,27 +7,27 @@ void clamp_by_vector(arma::vec &B, const arma::vec& lows, const arma::vec& highs
     }
 }
 
-void clamp_by_vector(arma::sp_mat &B, const arma::vec& lows, const arma::vec& highs){
-    // See above implementation without filter for error.
-    auto begin = B.begin();
-    auto end = B.end();
-    
-    std::vector<std::size_t> inds;
-    for (; begin != end; ++begin)
-        inds.push_back(begin.row());
-
-    auto n = B.size();
-    inds.erase(std::remove_if(inds.begin(),
-                              inds.end(),
-                              [n](size_t x){return (x > n) && (x < 0);}),
-                              inds.end());
-    for (auto& it : inds) { 
-        double B_item = B(it, 0);
-        const double low = lows(it);
-        const double high = highs(it);
-        B(it, 0) = clamp(B_item, low, high);
-    }
-}
+// void clamp_by_vector(arma::sp_mat &B, const arma::vec& lows, const arma::vec& highs){
+//     // See above implementation without filter for error.
+//     auto begin = B.begin();
+//     auto end = B.end();
+//     
+//     std::vector<std::size_t> inds;
+//     for (; begin != end; ++begin)
+//         inds.push_back(begin.row());
+// 
+//     auto n = B.size();
+//     inds.erase(std::remove_if(inds.begin(),
+//                               inds.end(),
+//                               [n](size_t x){return (x > n) && (x < 0);}),
+//                               inds.end());
+//     for (auto& it : inds) { 
+//         double B_item = B(it, 0);
+//         const double low = lows(it);
+//         const double high = highs(it);
+//         B(it, 0) = clamp(B_item, low, high);
+//     }
+// }
 
 arma::rowvec matrix_normalize(arma::sp_mat &mat_norm){
     auto p = mat_norm.n_cols;
