@@ -62,12 +62,16 @@ eprint = {https://doi.org/10.1287/opre.2019.1919}
 }
 ```
 
-**Paper 2 (to appear in JMLR):**
+**Paper 2:**
 ```
-@article{dedieu2020learning,
-  title={Learning sparse classifiers: Continuous and mixed integer optimization perspectives},
-  author={Dedieu, Antoine and Hazimeh, Hussein and Mazumder, Rahul},
-  journal={arXiv preprint arXiv:2001.06471},
-  year={2020}
+@article{JMLR:v22:19-1049,
+  author  = {Antoine Dedieu and Hussein Hazimeh and Rahul Mazumder},
+  title   = {Learning Sparse Classifiers: Continuous and Mixed Integer Optimization Perspectives},
+  journal = {Journal of Machine Learning Research},
+  year    = {2021},
+  volume  = {22},
+  number  = {135},
+  pages   = {1-47},
+  url     = {http://jmlr.org/papers/v22/19-1049.html}
 }
 ```
