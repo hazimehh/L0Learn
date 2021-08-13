@@ -1,4 +1,4 @@
-#' @importFrom stats rnorm
+#' @importFrom stats rnorm var
 #' @title Generate Synthetic Data
 #'
 #' @description Generates a synthetic dataset as follows: 1) Sample every element in data matrix X from N(0,1).
@@ -23,16 +23,18 @@
 #' X = data$X
 #' y = data$y
 #' @export
-GenSynthetic <- function(n, p, k, seed, rho=0, b0=0, snr=1, shuffle_B=FALSE)
+GenSynthetic <- function(n, p, k, seed, rho=0, b0=0, snr=1)
 {
     set.seed(seed) # fix the seed to get a reproducible result
     X = matrix(rnorm(n*p),nrow=n,ncol=p)
     X[abs(X) < rho] <- 0.
     B = c(rep(1,k),rep(0,p-k))
-    if (shuffle_B){
-        B = sample(B)
+    sd_e = NULL
+    if (snr == +Inf){
+        sd_e = sqrt(var(X %*% B)/snr)
+    } else {
+        sd_e = 0
     }
-    sd_e = sqrt(var(X %*% B)/snr)
     e = rnorm(n, sd = sd_e)
     y = X%*%B + e + b0
     list(X=X, y=y, B=B, e=e, b0=b0)

@@ -97,7 +97,7 @@ CDL012Logistic<T>::CDL012Logistic(const T& Xi, const arma::vec& yi, const Params
     this->thr = std::sqrt(this->thr2);
     lambda1ol = this->lambda1 / qp2lamda2;
     
-    ExpyXB = arma::exp(*this->y % (*(this->X) * this->B + this->b0)); // Maintained throughout the algorithm
+    ExpyXB = arma::exp(this->y % (*(this->X) * this->B + this->b0)); // Maintained throughout the algorithm
     Xy = P.Xy;
 }
 
@@ -115,9 +115,9 @@ FitResult<T> CDL012Logistic<T>::_Fit() {
         if (this->intercept){
             const double b0old = this->b0;
             // const double partial_b0 = - arma::sum( *(this->y) / (1 + ExpyXB) );
-            const double partial_b0 = - arma::dot( *(this->y) , 1/(1 + ExpyXB) );
+            const double partial_b0 = - arma::dot( (this->y) , 1/(1 + ExpyXB) );
             this->b0 -= partial_b0 / (this->n * LipschitzConst); // intercept is not regularized
-            ExpyXB %= arma::exp( (this->b0 - b0old) * *(this->y));
+            ExpyXB %= arma::exp( (this->b0 - b0old) * (this->y));
         }
         
         for (auto& i : this->Order) {
@@ -160,9 +160,9 @@ FitResult<T> CDL012Logistic<T>::_FitWithBounds() { // always uses active sets
         if (this->intercept){
             const double b0old = this->b0;
             // const double partial_b0 = - arma::sum( *(this->y) / (1 + ExpyXB) );
-            const double partial_b0 = - arma::dot( *(this->y) , 1/(1 + ExpyXB) );
+            const double partial_b0 = - arma::dot( (this->y) , 1/(1 + ExpyXB) );
             this->b0 -= partial_b0 / (this->n * LipschitzConst); // intercept is not regularized
-            ExpyXB %= arma::exp( (this->b0 - b0old) * *(this->y));
+            ExpyXB %= arma::exp( (this->b0 - b0old) * (this->y));
         }
         
         for (auto& i : this->Order) {

@@ -18,7 +18,7 @@ FitResult<T> CDL012LogisticSwaps<T>::_FitWithBounds() {
 
 template <class T>
 FitResult<T> CDL012LogisticSwaps<T>::_Fit() {
-    auto result = CDL012Logistic<T>(*(this->X), *(this->y), this->P).Fit(); // result will be maintained till the end
+    auto result = CDL012Logistic<T>(*(this->X), this->y, this->P).Fit(); // result will be maintained till the end
     this->b0 = result.b0; // Initialize from previous later....!
     this->B = result.B;
     ExpyXB = result.ExpyXB; // Maintained throughout the algorithm
@@ -133,7 +133,7 @@ FitResult<T> CDL012LogisticSwaps<T>::_Fit() {
                     // TODO: Check if this line is necessary. P should already have b0.
                     this->P.b0 = this->b0;
                     
-                    result = CDL012Logistic<T>(*(this->X), *(this->y), this->P).Fit();
+                    result = CDL012Logistic<T>(*(this->X), this->y, this->P).Fit();
                     
                     ExpyXB = result.ExpyXB;
                     this->B = result.B;

@@ -103,7 +103,7 @@ CDL012SquaredHinge<T>::CDL012SquaredHinge(const T& Xi, const arma::vec& yi, cons
     
     // TODO: Review this line
     // TODO: Pass work from previous solution.
-    onemyxb = 1 - *(this->y) % (*(this->X) * this->B + this->b0);
+    onemyxb = 1 - this->y % (*(this->X) * this->B + this->b0);
     
     // TODO: Add comment for purpose of 'indices'
     indices = arma::find(onemyxb > 0);
@@ -127,9 +127,9 @@ FitResult<T> CDL012SquaredHinge<T>::_Fit() {
         // Update the intercept
         if (this->intercept) {
             const double b0old = this->b0;
-            const double partial_b0 = arma::sum(2 * onemyxb.elem(indices) % (- (this->y)->elem(indices) ) );
+            const double partial_b0 = arma::sum(2 * onemyxb.elem(indices) % -this->y.elem(indices));
             this->b0 -= partial_b0 / (this->n * LipschitzConst); // intercept is not regularized
-            onemyxb += *(this->y) * (b0old - this->b0);
+            onemyxb += this->y * (b0old - this->b0);
             indices = arma::find(onemyxb > 0);
         }
         
@@ -173,9 +173,9 @@ FitResult<T> CDL012SquaredHinge<T>::_FitWithBounds() {
         // Update the intercept
         if (this->intercept) {
             const double b0old = this->b0;
-            const double partial_b0 = arma::sum(2 * onemyxb.elem(indices) % (- (this->y)->elem(indices) ) );
+            const double partial_b0 = arma::sum(2 * onemyxb.elem(indices) % -this->y.elem(indices));
             this->b0 -= partial_b0 / (this->n * LipschitzConst); // intercept is not regularized
-            onemyxb += *(this->y) * (b0old - this->b0);
+            onemyxb += this->y * (b0old - this->b0);
             indices = arma::find(onemyxb > 0);
         }
         

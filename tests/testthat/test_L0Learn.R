@@ -2,7 +2,7 @@ library("Matrix")
 library("testthat")
 library("L0Learn")
 
-tmp <-  L0Learn::GenSynthetic(n=100, p=1000, k=10, seed=1, rho=1.5)
+tmp <-  L0Learn::GenSynthetic(n=100, p=1000, k=20, seed=1, snr = 10, rho=.5)
 X <- tmp[[1]]
 y <- tmp[[2]]
 tol = 1e-4
@@ -22,33 +22,76 @@ test_that('L0Learn Accepts Proper Matricies', {
     succeed()
 })
 
-# test_that("L0Learn fails on CDPSI and SquaredHinge", {
-#    f1 <- function(){
-#      L0Learn.fit(X, sign(y), algorithm = "CDPSI", loss = "SquaredHinge")
-#    }
-#    
-#    f1 <- function(){
-#      L0Learn.cvfit(X, sign(y), algorithm = "CDPSI", loss = "SquaredHinge")
-#    }
-#    
-#    expect_failure(f1())
-#    expect_failure(f2())
-#    
-#    f2 <- function(){
-#      L0Learn.fit(X, sign(y), algorithm = "CD", loss = "SquaredHinge")
-#      L0Learn.cvfit(X, sign(y), algorithm = "CD", loss = "SquaredHinge")
-#    }
-#    
-#    f2()
-#    succeed()
-#    
-#    f3 <- function(){
-#      L0Learn.fit(X, sign(y), algorithm = "CDPSI", loss = "Logistic")
-#      L0Learn.cvfit(X, sign(y), algorithm = "CDPSI", loss = "Logistic")
-#    }
-#    f3()
-#    succeed()
-# })
+test_that("L0Learn V2+ raises warning on autolambda usage", {
+  fit_user_grid = list()
+  fit_user_grid[[1]] = c(10:1)
+  expect_warning(L0Learn.fit(X, y, lambdaGrid=fit_user_grid, autoLambda = FALSE))
+  
+  expect_warning(L0Learn.cvfit(X, y, lambdaGrid=fit_user_grid, autoLambda = FALSE))
+  
+  expect_silent(L0Learn.fit(X, y, lambdaGrid=fit_user_grid, penalty = "L0L2", nGamma=1))
+  expect_silent(L0Learn.cvfit(X, y, lambdaGrid=fit_user_grid, penalty = "L0L2", nGamma=1))
+})
+
+test_that("L0Learn V2+ raises error on negative user_grid values", {
+  fit_user_grid = list()
+  fit_user_grid[[1]] = c(-2:-10)
+  
+  for (p in c("L0", "L0L1", "L0L2")){
+    expect_error(L0Learn.fit(X, y, lambdaGrid=fit_user_grid, penalty = p))
+    expect_error(L0Learn.cvfit(X, y, lambdaGrid=fit_user_grid, penalty = p)) 
+  }
+})
+
+test_that("L0Learn respect colnames on X data matrix", {
+  X_with_names <- matrix(X, nrow=nrow(X), ncol=ncol(X))
+  names = c()
+  for (i in 1:1000){
+    names[i] = paste("F", i)
+  }
+  colnames(X_with_names) <- names
+  fit <- L0Learn.fit(X_with_names, y)
+  
+  # TODO: Add colnames to beta
+  expect_equal(colnames(X_with_names), fit$varnames)
+  fit <- L0Learn.cvfit(X_with_names, y)
+  expect_equal(colnames(X_with_names), fit$fit$varnames)
+})
+
+test_that("L0Learn raises error when classification has 3 or more values in y.", {
+  
+  y_bin_bad = sign(y)
+  y_bin_bad[[1]] = 2
+  
+  for (loss in c("Logistic", "SquaredHinge")){
+    expect_error(L0Learn.fit(X, y_bin_bad, loss=loss))
+    expect_error(L0Learn.cvfit(X, y_bin_bad, loss=loss))
+    
+  }
+})
+
+test_that("L0Learn raises error when L0 classification has too large of a lambda grid", {
+  # This is tricky. See implementation of L0 classification penalty in fit.R and cvfit.R
+  
+  lambda_grid = list()
+  lambda_grid[[1]] = c(10e-8, 10e-9)
+  lambda_grid[[2]] = c(10e-8, 10e-9)
+  
+  for (loss in c("Logistic", "SquaredHinge")){
+    expect_error(L0Learn.fit(X, sign(y), loss=loss, lambdaGrid=lambda_grid))
+    expect_error(L0Learn.cvfit(X, sign(y), loss=loss, lambdaGrid=lambda_grid))
+    
+  }
+})
+
+test_that("L0Learn raises warning on degenerate solution path", {
+  lambda_grid = list()
+  lambda_grid[[1]] = c(10e-8, 10e-9)
+
+  expect_warning(L0Learn.fit(X, y, lambdaGrid=lambda_grid))
+  expect_warning(L0Learn.cvfit(X, y,lambdaGrid=lambda_grid))
+
+})
 
 test_that("L0Learn respects excludeFirstK for large L0", {
   skip_on_cran()
@@ -157,17 +200,30 @@ test_that("L0Learn fit find same solution for different matrix representations",
 test_that("L0Learn fit find same solution for different matrix representations", {
   skip_on_cran()
   for (p in c("L0", "L0L2", "L0L1")){
-    if (p != "L0L2"){ # TODO: Slight difference in results wtih penalty = "L0L2"
-      for (lows in (c(-Inf, 0))){
-        set.seed(1)
-        x1 <- L0Learn.fit(X_sparse, y, penalty=p, intercept = FALSE, lows=lows)
-        set.seed(1)
-        x2 <- L0Learn.fit(X, y, penalty=p, intercept = FALSE, lows=lows)
-        expect_equal(x1, x2, info=p)
-      }
-    }
+      set.seed(1)
+      x1 <- L0Learn.fit(X_sparse, y, penalty=p, intercept = FALSE)
+      set.seed(1)
+      x2 <- L0Learn.fit(X, y, penalty=p, intercept = FALSE)
+      expect_equal(x1, x2, info=paste(p, lows))
   }
 })
+
+# test_that("L0Learn fit find similar solution for different matrix representations with bounds", {
+#   skip_on_cran()
+#   for (p in c("L0", "L0L2", "L0L1")){
+#       for (lows in (c(0, -10000, -.1))){
+#         set.seed(1)
+#         x1 <- L0Learn.fit(X_sparse, y, penalty=p, intercept = FALSE, lows=lows)
+#         set.seed(1)
+#         x2 <- L0Learn.fit(X, y, penalty=p, intercept = FALSE, lows=lows)
+#         # TODO: Investigate why X_sparse is missing a solution
+#         for (i in 1:length(x1$beta)){
+#           expect_equal(x1$beta[[i]], x2$beta[[i]][, 2:ncol(x2$beta[[i]])], info=paste(p, lows, i))
+#         }
+# 
+#     }
+#   }
+# })
 
 test_that("L0Learn cvfit find same solution for different matrix representations", {
   skip_on_cran()

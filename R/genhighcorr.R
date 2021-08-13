@@ -1,4 +1,4 @@
-#' @importFrom stats rnorm 
+#' @importFrom stats rnorm var
 #' @importFrom MASS mvrnorm
 #' @importFrom Rcpp cppFunction
 #' @title Generate Expoentential Correlated Synthetic Data
@@ -23,10 +23,9 @@
 #'  the error vector e,
 #'  the intercept term b0.
 #' @examples
-#' data <- GenSyntheticHighCorr(n=500,p=1000,k=10,seed=1)
+#' data <- L0Learn:::GenSyntheticHighCorr(n=500,p=1000,k=10,seed=1)
 #' X = data$X
 #' y = data$y
-#' @export
 GenSyntheticHighCorr <- function(n, p, k, seed, rho=0, b0=0, snr=1, mu=0, base_cor=.9)
 {
     set.seed(seed) # fix the seed to get a reproducible result
@@ -48,7 +47,12 @@ GenSyntheticHighCorr <- function(n, p, k, seed, rho=0, b0=0, snr=1, mu=0, base_c
         B[i] = 1
     }
     
-    sd_e = sqrt(var(X %*% B)/snr)
+    sd_e = NULL
+    if (snr == +Inf){
+        sd_e = 0
+    } else {
+        sd_e = sqrt(var(X %*% B)/snr)
+    }
     e = rnorm(n, sd = sd_e)
     y = X%*%B + e + b0
     list(X=X, y = y, B=B, e=e, b0=b0)
