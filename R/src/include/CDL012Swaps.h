@@ -1,14 +1,14 @@
 #ifndef CDL012SWAPS_H
 #define CDL012SWAPS_H
 #include <map>
-#include <armadillo>
-#include "CD.hpp"
-#include "CDSwaps.hpp"
-#include "CDL012.hpp"
-#include "FitResult.hpp"
-#include "Params.hpp"
-#include "utils.hpp"
-#include "BetaVector.hpp"
+#include "RcppArmadillo.h"
+#include "CD.h"
+#include "CDSwaps.h"
+#include "CDL012.h"
+#include "FitResult.h"
+#include "Params.h"
+#include "utils.h"
+#include "BetaVector.h"
 
 template <class T>
 class CDL012Swaps : public CDSwaps<T> { 

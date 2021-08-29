@@ -5,10 +5,10 @@
 #include <vector>
 #include <string>
 #include <tuple>
-#include <armadillo>
-#include "FitResult.hpp"
-#include "Grid.hpp"
-#include "GridParams.hpp"
+#include "RcppArmadillo.h"
+#include "FitResult.h"
+#include "Grid.h"
+#include "GridParams.h"
 
 #include <chrono>
 #include <thread>
@@ -131,37 +131,24 @@ GridParams<T> makeGridParams(const std::string Loss, const std::string Penalty,
 
 
 template <typename T>
-void L0LearnFit(const T& X, const arma::vec& y, const std::string Loss, const std::string Penalty,
+fitmodel L0LearnFit(const T& X, const arma::vec& y, const std::string Loss, const std::string Penalty,
                      const std::string Algorithm, const std::size_t NnzStopNum, const std::size_t G_ncols,
                      const std::size_t G_nrows, const double Lambda2Max, const double Lambda2Min,
                      const bool PartialSort, const std::size_t MaxIters, const double rtol, const double atol,
                      const bool ActiveSet, const std::size_t ActiveSetNum, const std::size_t MaxNumSwaps,
                      const double ScaleDownFactor, const std::size_t ScreenSize, const bool LambdaU,
-                     const std::vector< std::vector<double> > Lambdas, const std::size_t ExcludeFirstK,
+                     const std::vector< std::vector<double> >& Lambdas, const std::size_t ExcludeFirstK,
                      const bool Intercept,  const bool withBounds, const arma::vec &Lows,
                      const arma::vec &Highs){
-    
-    Rcpp::Rcout << "makeGridParams Start\n";
-    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
     GridParams<T> PG = makeGridParams<T>(Loss, Penalty, Algorithm, NnzStopNum, G_ncols, G_nrows,
                                          Lambda2Max, Lambda2Min, PartialSort, MaxIters, rtol, atol, ActiveSet,
                                          ActiveSetNum, MaxNumSwaps, ScaleDownFactor, ScreenSize,
                                          LambdaU, Lambdas, ExcludeFirstK, Intercept, withBounds, Lows, Highs);
-    Rcpp::Rcout << "makeGridParams End\n";
-    Rcpp::Rcout << "makeGridParams Grid<T>(...) start\n";
-    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     
     Grid<T> G(X, y, PG);
-    Rcpp::Rcout << "makeGridParams Grid<T>(...)\n";
-    Rcpp::Rcout << "makeGridParams Grid.fit() start\n";
-    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     G.Fit();
     
-    Rcpp::Rcout << "makeGridParams Grid.fit() end\n";
-    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-    
-
     // Next Construct the list of Sparse Beta Matrices.
 
     auto p = X.n_cols;
@@ -178,7 +165,7 @@ void L0LearnFit(const T& X, const arma::vec& y, const std::string Loss, const st
         Bs[i] = B;
     }
 
-    //return fitmodel(G.Lambda0, G.Lambda12, G.NnzCount, Bs, G.Intercepts, G.Converged);
+    return fitmodel(G.Lambda0, G.Lambda12, G.NnzCount, Bs, G.Intercepts, G.Converged);
 
 }
 

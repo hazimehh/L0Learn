@@ -1,5 +1,5 @@
 #ifndef CDSWAPS_H
 #define CDSWAPS_H
-#include "CD.hpp"
+#include "CD.h"
 
 #endif

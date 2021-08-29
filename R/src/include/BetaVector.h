@@ -1,7 +1,7 @@
 #ifndef BETA_VECTOR_H
 #define BETA_VECTOR_H
 #include <vector>
-#include <armadillo>
+#include "RcppArmadillo.h"
 
 /*
  * arma::vec implementation

@@ -1,4 +1,3 @@
-/*
 #include "Test_Interface.h"
 // [[Rcpp::depends(RcppArmadillo)]]
 
@@ -17,7 +16,7 @@ arma::vec R_matrix_column_get_sparse(const arma::sp_mat &mat, int col) {
 arma::mat R_matrix_rows_get_dense(const arma::mat &mat, const arma::ucolvec rows){
     return matrix_rows_get(mat, rows);
 }
-    
+
 // [[Rcpp::export]]
 arma::sp_mat R_matrix_rows_get_sparse(const arma::sp_mat &mat, const arma::ucolvec rows){
     return matrix_rows_get(mat, rows);
@@ -101,4 +100,4 @@ Rcpp::List R_matrix_center_sparse(const arma::sp_mat mat, arma::sp_mat X_normali
     arma::rowvec meanX = matrix_center(mat, X_normalized, intercept);
     return Rcpp::List::create(Rcpp::Named("mat_norm") = X_normalized,
                               Rcpp::Named("MeanX") = meanX);
-};*/
+};

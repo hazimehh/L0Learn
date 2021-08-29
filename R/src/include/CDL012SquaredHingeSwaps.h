@@ -1,13 +1,13 @@
 #ifndef CDL012SquredHingeSwaps_H
 #define CDL012SquredHingeSwaps_H
-#include <armadillo>
-#include "CD.hpp"
-#include "CDSwaps.hpp"
-#include "CDL012SquaredHinge.hpp"
-#include "Params.hpp"
-#include "FitResult.hpp"
-#include "utils.hpp"
-#include "BetaVector.hpp"
+#include "RcppArmadillo.h"
+#include "CD.h"
+#include "CDSwaps.h"
+#include "CDL012SquaredHinge.h"
+#include "Params.h"
+#include "FitResult.h"
+#include "utils.h"
+#include "BetaVector.h"
 
 template <class T>
 class CDL012SquaredHingeSwaps : public CDSwaps<T> {

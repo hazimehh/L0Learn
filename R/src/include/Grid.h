@@ -3,12 +3,12 @@
 #include <tuple>
 #include <set>
 #include <memory>
-#include <armadillo>
-#include "GridParams.hpp"
-#include "FitResult.hpp"
-#include "Grid1D.hpp"
-#include "Grid2D.hpp"
-#include "Normalize.hpp"
+#include "RcppArmadillo.h"
+#include "GridParams.h"
+#include "FitResult.h"
+#include "Grid1D.h"
+#include "Grid2D.h"
+#include "Normalize.h"
 
 template <class T>
 class Grid {

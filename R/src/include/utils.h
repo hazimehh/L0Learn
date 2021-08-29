@@ -1,8 +1,8 @@
 #ifndef L0LEARN_UTILS_HPP
 #define L0LEARN_UTILS_HPP
 #include <vector>
-#include <armadillo>
-#include "BetaVector.hpp"
+#include "RcppArmadillo.h"
+#include "BetaVector.h"
 
 
 template <typename T>

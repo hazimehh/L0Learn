@@ -1,7 +1,7 @@
 #ifndef FITRESULT_H
 #define FITRESULT_H
-#include <armadillo>
-#include "BetaVector.hpp"
+#include "RcppArmadillo.h"
+#include "BetaVector.h"
 
 template <class T> // Forward Reference to prevent circular dependencies
 class CDBase;

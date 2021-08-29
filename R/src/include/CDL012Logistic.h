@@ -1,11 +1,11 @@
 #ifndef CDL012Logistic_H
 #define CDL012Logistic_H
-#include <armadillo>
-#include "CD.hpp"
-#include "FitResult.hpp"
-#include "Params.hpp"
-#include "utils.hpp"
-#include "BetaVector.hpp"
+#include "RcppArmadillo.h"
+#include "CD.h"
+#include "FitResult.h"
+#include "Params.h"
+#include "utils.h"
+#include "BetaVector.h"
 
 template <class T>
 class CDL012Logistic : public CD<T, CDL012Logistic<T>> {

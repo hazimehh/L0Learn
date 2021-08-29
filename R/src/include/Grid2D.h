@@ -1,12 +1,12 @@
 #ifndef GRID2D_H
 #define GRID2D_H
 #include <memory>
-#include <armadillo>
-#include "GridParams.hpp"
-#include "Params.hpp"
-#include "FitResult.hpp"
-#include "Grid1D.hpp"
-#include "utils.hpp"
+#include "RcppArmadillo.h"
+#include "GridParams.h"
+#include "Params.h"
+#include "FitResult.h"
+#include "Grid1D.h"
+#include "utils.h"
 
 template<class T>
 class Grid2D

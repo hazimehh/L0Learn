@@ -3,11 +3,11 @@
 #include <memory>
 #include <algorithm>
 #include <map>
-#include <armadillo>
-#include "Params.hpp"
-#include "GridParams.hpp"
-#include "FitResult.hpp"
-#include "MakeCD.hpp"
+#include "RcppArmadillo.h"
+#include "Params.h"
+#include "GridParams.h"
+#include "FitResult.h"
+#include "MakeCD.h"
 
 template <class T>
 class Grid1D {

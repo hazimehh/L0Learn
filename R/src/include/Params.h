@@ -1,9 +1,9 @@
 #ifndef PARAMS_H
 #define PARAMS_H
 #include <map>
-#include <armadillo>
-#include "Model.hpp"
-#include "BetaVector.hpp"
+#include "RcppArmadillo.h"
+#include "Model.h"
+#include "BetaVector.h"
 
 template <typename T>
 struct Params {

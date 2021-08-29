@@ -1,4 +1,4 @@
-#include "Grid2D.hpp"
+#include "Grid2D.h"
 
 template <class T>
 Grid2D<T>::Grid2D(const T& Xi, const arma::vec& yi, const GridParams<T>& PGi)

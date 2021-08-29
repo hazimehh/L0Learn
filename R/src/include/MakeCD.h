@@ -1,15 +1,15 @@
 #ifndef MAKECD_H
 #define MAKECD_H
-#include <armadillo>
-#include "Params.hpp"
-#include "CD.hpp"
-#include "CDL0.hpp"
-#include "CDL012.hpp"
-#include "CDL012Swaps.hpp"
-#include "CDL012Logistic.hpp"
-#include "CDL012SquaredHinge.hpp"
-#include "CDL012LogisticSwaps.hpp"
-#include "CDL012SquaredHingeSwaps.hpp"
+#include "RcppArmadillo.h"
+#include "Params.h"
+#include "CD.h"
+#include "CDL0.h"
+#include "CDL012.h"
+#include "CDL012Swaps.h"
+#include "CDL012Logistic.h"
+#include "CDL012SquaredHinge.h"
+#include "CDL012LogisticSwaps.h"
+#include "CDL012SquaredHingeSwaps.h"
 
 
 template <class T>

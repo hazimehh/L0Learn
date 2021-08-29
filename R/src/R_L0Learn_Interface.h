@@ -6,12 +6,12 @@
 #include <string>
 #include <tuple>
 #include "RcppArmadillo.h"
-#include "L0Learn.hpp"
+#include "L0LearnCore.h"
 #include <chrono>
 #include <thread>
 
 // [[Rcpp::export]]
-void L0LearnFit_sparse(const arma::sp_mat& X, const arma::vec& y, const std::string Loss, const std::string Penalty,
+Rcpp::List L0LearnFit_sparse(const arma::sp_mat& X, const arma::vec& y, const std::string Loss, const std::string Penalty,
                              const std::string Algorithm, const std::size_t NnzStopNum, const std::size_t G_ncols,
                              const std::size_t G_nrows, const double Lambda2Max, const double Lambda2Min,
                              const bool PartialSort, const std::size_t MaxIters, const double rtol,
@@ -21,26 +21,23 @@ void L0LearnFit_sparse(const arma::sp_mat& X, const arma::vec& y, const std::str
                              const std::vector< std::vector<double> > Lambdas,
                              const std::size_t ExcludeFirstK, const bool Intercept,
                              const bool withBounds, const arma::vec &Lows, const arma::vec &Highs) {
-    L0LearnFit(X, y, Loss, Penalty, Algorithm, NnzStopNum, G_ncols, G_nrows, Lambda2Max, Lambda2Min,
-               PartialSort, MaxIters, rtol, atol, ActiveSet, ActiveSetNum, MaxNumSwaps, ScaleDownFactor, ScreenSize, LambdaU,
-               Lambdas, ExcludeFirstK, Intercept, withBounds, Lows, Highs);
     
-    // fitmodel l = L0LearnFit(X, y, Loss, Penalty, Algorithm, NnzStopNum, G_ncols, G_nrows, Lambda2Max, Lambda2Min,
-    //                         PartialSort, MaxIters, rtol, atol, ActiveSet, ActiveSetNum, MaxNumSwaps, ScaleDownFactor, ScreenSize, LambdaU,
-    //                         Lambdas, ExcludeFirstK, Intercept, withBounds, Lows, Highs);
-    // 
-    // return Rcpp::List::create(Rcpp::Named("lambda") = l.Lambda0,
-    //                           Rcpp::Named("gamma") = l.Lambda12,
-    //                           Rcpp::Named("SuppSize") = l.NnzCount,
-    //                           Rcpp::Named("beta") = l.Beta,
-    //                           Rcpp::Named("a0") = l.Intercept,
-    //                           Rcpp::Named("Converged") = l.Converged);
+    fitmodel l = L0LearnFit(X, y, Loss, Penalty, Algorithm, NnzStopNum, G_ncols, G_nrows, Lambda2Max, Lambda2Min,
+                            PartialSort, MaxIters, rtol, atol, ActiveSet, ActiveSetNum, MaxNumSwaps, ScaleDownFactor, ScreenSize, LambdaU,
+                            Lambdas, ExcludeFirstK, Intercept, withBounds, Lows, Highs);
+
+    return Rcpp::List::create(Rcpp::Named("lambda") = l.Lambda0,
+                              Rcpp::Named("gamma") = l.Lambda12,
+                              Rcpp::Named("SuppSize") = l.NnzCount,
+                              Rcpp::Named("beta") = l.Beta,
+                              Rcpp::Named("a0") = l.Intercept,
+                              Rcpp::Named("Converged") = l.Converged);
 
 }
 
 
 // [[Rcpp::export]]
-void L0LearnFit_dense(const arma::mat& X, const arma::vec& y, const std::string Loss, const std::string Penalty,
+Rcpp::List L0LearnFit_dense(const arma::mat& X, const arma::vec& y, const std::string Loss, const std::string Penalty,
                             const std::string Algorithm, const std::size_t NnzStopNum, const std::size_t G_ncols,
                             const std::size_t G_nrows, const double Lambda2Max, const double Lambda2Min,
                             const bool PartialSort, const std::size_t MaxIters, const double rtol,
@@ -51,33 +48,21 @@ void L0LearnFit_dense(const arma::mat& X, const arma::vec& y, const std::string 
                             const std::size_t ExcludeFirstK, const bool Intercept,
                             const bool withBounds, const arma::vec &Lows, const arma::vec &Highs) {
     
-    Rcpp::Rcout << "L0LearnFit_dense Start\n";
-    Rcpp::Rcout << "Lambdas: \n";
-    for (std::vector<std::vector<double>>::const_iterator i = Lambdas.begin(); i != Lambdas.end(); ++i){
-        for (std::vector<double>::const_iterator j = (*i).begin(); j != (*i).end(); ++j)
-            Rcpp::Rcout << *j << ' ';
-    }
-    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-    
-    L0LearnFit(X, y, Loss, Penalty, Algorithm, NnzStopNum, G_ncols, G_nrows, Lambda2Max, Lambda2Min,
-               PartialSort, MaxIters, rtol, atol, ActiveSet, ActiveSetNum, MaxNumSwaps, ScaleDownFactor,
-               ScreenSize, LambdaU, Lambdas, ExcludeFirstK, Intercept, withBounds, Lows, Highs);
-    
-    // fitmodel l = L0LearnFit(X, y, Loss, Penalty, Algorithm, NnzStopNum, G_ncols, G_nrows, Lambda2Max, Lambda2Min,
-    //                         PartialSort, MaxIters, rtol, atol, ActiveSet, ActiveSetNum, MaxNumSwaps, ScaleDownFactor,
-    //                         ScreenSize, LambdaU, Lambdas, ExcludeFirstK, Intercept, withBounds, Lows, Highs);
-    
-    // return Rcpp::List::create(Rcpp::Named("lambda") = l.Lambda0,
-    //                           Rcpp::Named("gamma") = l.Lambda12,
-    //                           Rcpp::Named("SuppSize") = l.NnzCount,
-    //                           Rcpp::Named("beta") = l.Beta,
-    //                           Rcpp::Named("a0") = l.Intercept,
-    //                           Rcpp::Named("Converged") = l.Converged);
+    fitmodel l = L0LearnFit(X, y, Loss, Penalty, Algorithm, NnzStopNum, G_ncols, G_nrows, Lambda2Max, Lambda2Min,
+                            PartialSort, MaxIters, rtol, atol, ActiveSet, ActiveSetNum, MaxNumSwaps, ScaleDownFactor,
+                            ScreenSize, LambdaU, Lambdas, ExcludeFirstK, Intercept, withBounds, Lows, Highs);
+
+    return Rcpp::List::create(Rcpp::Named("lambda") = l.Lambda0,
+                              Rcpp::Named("gamma") = l.Lambda12,
+                              Rcpp::Named("SuppSize") = l.NnzCount,
+                              Rcpp::Named("beta") = l.Beta,
+                              Rcpp::Named("a0") = l.Intercept,
+                              Rcpp::Named("Converged") = l.Converged);
 }
 
 
 // [[Rcpp::export]]
-void L0LearnCV_sparse(const arma::sp_mat& X, const arma::vec& y, const std::string Loss, const std::string Penalty,
+Rcpp::List L0LearnCV_sparse(const arma::sp_mat& X, const arma::vec& y, const std::string Loss, const std::string Penalty,
                             const std::string Algorithm, const std::size_t NnzStopNum, const std::size_t G_ncols,
                             const std::size_t G_nrows, const double Lambda2Max, const double Lambda2Min,
                             const bool PartialSort, const std::size_t MaxIters, const double rtol, const double atol,
@@ -86,33 +71,26 @@ void L0LearnCV_sparse(const arma::sp_mat& X, const arma::vec& y, const std::stri
                             const std::vector< std::vector<double> > Lambdas, const std::size_t nfolds,
                             const double seed, const std::size_t ExcludeFirstK, const bool Intercept,
                             const bool withBounds, const arma::vec &Lows, const arma::vec &Highs){
-
-    L0LearnCV(X, y, Loss, Penalty, Algorithm, NnzStopNum, G_ncols,
-                                       G_nrows, Lambda2Max, Lambda2Min, PartialSort,
-                                       MaxIters, rtol, atol, ActiveSet, ActiveSetNum,
-                                       MaxNumSwaps, ScaleDownFactor, ScreenSize, LambdaU,
-                                       Lambdas, nfolds, seed, ExcludeFirstK, Intercept,
-                                       withBounds, Lows, Highs);
     
-    // cvfitmodel l = L0LearnCV(X, y, Loss, Penalty, Algorithm, NnzStopNum, G_ncols,
-    //                          G_nrows, Lambda2Max, Lambda2Min, PartialSort,
-    //                          MaxIters, rtol, atol, ActiveSet, ActiveSetNum,
-    //                          MaxNumSwaps, ScaleDownFactor, ScreenSize, LambdaU,
-    //                          Lambdas, nfolds, seed, ExcludeFirstK, Intercept,
-    //                          withBounds, Lows, Highs);
-    // 
-    // return Rcpp::List::create(Rcpp::Named("lambda") = l.Lambda0,
-    //                           Rcpp::Named("gamma") = l.Lambda12,
-    //                           Rcpp::Named("SuppSize") = l.NnzCount,
-    //                           Rcpp::Named("beta") = l.Beta,
-    //                           Rcpp::Named("a0") = l.Intercept,
-    //                           Rcpp::Named("Converged") = l.Converged,
-    //                           Rcpp::Named("CVMeans") = l.CVMeans,
-    //                           Rcpp::Named("CVSDs") = l.CVSDs);
+    cvfitmodel l = L0LearnCV(X, y, Loss, Penalty, Algorithm, NnzStopNum, G_ncols,
+                             G_nrows, Lambda2Max, Lambda2Min, PartialSort,
+                             MaxIters, rtol, atol, ActiveSet, ActiveSetNum,
+                             MaxNumSwaps, ScaleDownFactor, ScreenSize, LambdaU,
+                             Lambdas, nfolds, seed, ExcludeFirstK, Intercept,
+                             withBounds, Lows, Highs);
+
+    return Rcpp::List::create(Rcpp::Named("lambda") = l.Lambda0,
+                              Rcpp::Named("gamma") = l.Lambda12,
+                              Rcpp::Named("SuppSize") = l.NnzCount,
+                              Rcpp::Named("beta") = l.Beta,
+                              Rcpp::Named("a0") = l.Intercept,
+                              Rcpp::Named("Converged") = l.Converged,
+                              Rcpp::Named("CVMeans") = l.CVMeans,
+                              Rcpp::Named("CVSDs") = l.CVSDs);
 }
 
 // [[Rcpp::export]]
-void L0LearnCV_dense(const arma::mat& X, const arma::vec& y, const std::string Loss, const std::string Penalty,
+Rcpp::List L0LearnCV_dense(const arma::mat& X, const arma::vec& y, const std::string Loss, const std::string Penalty,
                            const std::string Algorithm, const std::size_t NnzStopNum, const std::size_t G_ncols,
                            const std::size_t G_nrows, const double Lambda2Max, const double Lambda2Min,
                            const bool PartialSort, const std::size_t MaxIters, const double rtol, const double atol,
@@ -122,27 +100,21 @@ void L0LearnCV_dense(const arma::mat& X, const arma::vec& y, const std::string L
                            const double seed, const std::size_t ExcludeFirstK, const bool Intercept,
                            const bool withBounds, const arma::vec &Lows, const arma::vec &Highs){
 
-    L0LearnCV(X, y, Loss, Penalty, Algorithm, NnzStopNum, G_ncols,
-              G_nrows, Lambda2Max, Lambda2Min, PartialSort,
-               MaxIters, rtol, atol, ActiveSet, ActiveSetNum,
-               MaxNumSwaps, ScaleDownFactor, ScreenSize, LambdaU,
-               Lambdas, nfolds, seed, ExcludeFirstK, Intercept,
-               withBounds, Lows, Highs);
-    // cvfitmodel l = L0LearnCV(X, y, Loss, Penalty, Algorithm, NnzStopNum, G_ncols,
-    //                          G_nrows, Lambda2Max, Lambda2Min, PartialSort,
-    //                          MaxIters, rtol, atol, ActiveSet, ActiveSetNum,
-    //                          MaxNumSwaps, ScaleDownFactor, ScreenSize, LambdaU,
-    //                          Lambdas, nfolds, seed, ExcludeFirstK, Intercept,
-    //                          withBounds, Lows, Highs);
-    // 
-    // return Rcpp::List::create(Rcpp::Named("lambda") = l.Lambda0,
-    //                           Rcpp::Named("gamma") = l.Lambda12,
-    //                           Rcpp::Named("SuppSize") = l.NnzCount,
-    //                           Rcpp::Named("beta") = l.Beta,
-    //                           Rcpp::Named("a0") = l.Intercept,
-    //                           Rcpp::Named("Converged") = l.Converged,
-    //                           Rcpp::Named("CVMeans") = l.CVMeans,
-    //                           Rcpp::Named("CVSDs") = l.CVSDs);
+    cvfitmodel l = L0LearnCV(X, y, Loss, Penalty, Algorithm, NnzStopNum, G_ncols,
+                             G_nrows, Lambda2Max, Lambda2Min, PartialSort,
+                             MaxIters, rtol, atol, ActiveSet, ActiveSetNum,
+                             MaxNumSwaps, ScaleDownFactor, ScreenSize, LambdaU,
+                             Lambdas, nfolds, seed, ExcludeFirstK, Intercept,
+                             withBounds, Lows, Highs);
+
+    return Rcpp::List::create(Rcpp::Named("lambda") = l.Lambda0,
+                              Rcpp::Named("gamma") = l.Lambda12,
+                              Rcpp::Named("SuppSize") = l.NnzCount,
+                              Rcpp::Named("beta") = l.Beta,
+                              Rcpp::Named("a0") = l.Intercept,
+                              Rcpp::Named("Converged") = l.Converged,
+                              Rcpp::Named("CVMeans") = l.CVMeans,
+                              Rcpp::Named("CVSDs") = l.CVSDs);
 }
 
 

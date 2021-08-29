@@ -2,9 +2,9 @@
 #define NORMALIZE_H
 
 #include <tuple>
-#include <armadillo>
-#include "utils.hpp"
-#include "BetaVector.hpp"
+#include "RcppArmadillo.h"
+#include "utils.h"
+#include "BetaVector.h"
 
 std::tuple<beta_vector, double> DeNormalize(beta_vector & B_scaled, 
                                              arma::vec & BetaMultiplier, 

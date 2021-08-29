@@ -1,7 +1,7 @@
 #ifndef GRIDPARAMS_H
 #define GRIDPARAMS_H
-#include <armadillo>
-#include "Params.hpp"
+#include "RcppArmadillo.h"
+#include "Params.h"
 
 template <typename T>
 struct GridParams

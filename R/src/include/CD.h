@@ -2,12 +2,12 @@
 #define CD_H
 #include <algorithm>
 #include <unordered_map>
-#include <armadillo>
-#include "BetaVector.hpp"
-#include "FitResult.hpp"
-#include "Params.hpp"
-#include "Model.hpp"
-#include "utils.hpp"
+#include "RcppArmadillo.h"
+#include "BetaVector.h"
+#include "FitResult.h"
+#include "Params.h"
+#include "Model.h"
+#include "utils.h"
 
 constexpr double lambda1_fudge_factor = 1e-15;
 
@@ -490,12 +490,8 @@ bool CD<T, Derived>::CWMinCheck() {
     
     bool Cwmin = true;
     for (auto& i : Sc) {
-        // Rcpp::Rcout << "CW Iteration: " << i << "\n";
-        // std::this_thread::sleep_for(std::chrono::milliseconds(100));
         Cwmin = this->UpdateBiCWMinCheck(i, Cwmin);
     }
-    
-    // Rcpp::Rcout << "CWMinCheckL " << Cwmin << "\n";
     
     return Cwmin;
 }

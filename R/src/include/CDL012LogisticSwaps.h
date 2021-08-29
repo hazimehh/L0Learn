@@ -1,13 +1,13 @@
 #ifndef CDL012LogisticSwaps_H
 #define CDL012LogisticSwaps_H
-#include <armadillo>
-#include "CD.hpp"
-#include "CDSwaps.hpp"
-#include "CDL012Logistic.hpp"
-#include "FitResult.hpp"
-#include "Params.hpp"
-#include "utils.hpp"
-#include "BetaVector.hpp"
+#include "RcppArmadillo.h"
+#include "CD.h"
+#include "CDSwaps.h"
+#include "CDL012Logistic.h"
+#include "FitResult.h"
+#include "Params.h"
+#include "utils.h"
+#include "BetaVector.h"
 
 template <class T>
 class CDL012LogisticSwaps : public CDSwaps<T> {

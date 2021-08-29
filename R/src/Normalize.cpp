@@ -1,4 +1,4 @@
-#include "Normalize.hpp"
+#include "Normalize.h"
 
 std::tuple<beta_vector, double> DeNormalize(beta_vector & B_scaled, 
                                              arma::vec & BetaMultiplier, 
