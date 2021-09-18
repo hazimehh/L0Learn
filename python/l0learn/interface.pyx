@@ -1,27 +1,16 @@
-cimport numpy
-cimport numpy as np
 from libcpp.vector cimport vector
 from libcpp.string cimport string
 from libcpp cimport bool as cppbool
 import numpy as np
 from scipy.sparse import csc_matrix
+from warnings import warn
 
 from typing import Union, Optional, List
 
 from l0learn.cyarma cimport dmat, sp_dmat, numpy_to_sp_dmat_d, numpy_to_dmat_d, dvec, numpy_to_dvec_d, \
     sp_dmat_field_to_list, dvec_field_to_list
 
-# def gen_synthetic():
-#     raise NotImplementedError
-#
-#
-# def gen_synthetic_high_corr():
-#     raise NotImplementedError
-#
-#
-# def gen_synthetic_logistic():
-#     raise NotImplementedError
-
+from l0learn.utils import FitModel, CVFitModel
 
 def np_to_arma_check(arr):
     # TODO: Add checks for Behaved and OwnsData
@@ -58,7 +47,6 @@ CLASSIFICATION_LOSS = SUPPORTED_LOSS[1], SUPPORTED_LOSS[2]
 SUPPORTED_PENALTY = ("L0", "L0L1", "L0L2")
 SUPPORTED_ALGORITHM = ("CD", "CDPSI")
 
-
 def fit(X: Union[np.ndarray, csc_matrix],
         y: np.ndarray,
         loss: str = "SquaredHinge",
@@ -90,59 +78,154 @@ def fit(X: Union[np.ndarray, csc_matrix],
     ----------
     X : np.ndarray or csc_matrix of shape (N, P)
         Data Matrix where rows of X are observations and columns of X are features
+
     y : np.ndarray of shape (P)
         The response vector where y[i] corresponds to X[i, :]
         For classification, a binary vector (-1, 1) is requried .
+
     loss : str
         The loss function. Currently supports the choices:
             "SquaredError" (for regression),
             "Logistic" (for logistic regression), and
             "SquaredHinge" (for smooth SVM).
+
     penalty : str
         The type of regularization.
         This can take either one of the following choices:
             "L0",
             "L0L2", and
             "L0L1"
+
     algorithm : str
         The type of algorithm used to minimize the objective function. Currently "CD" and "CDPSI" are are supported.
         "CD" is a variant of cyclic coordinate descent and runs very fast. "CDPSI" performs local combinatorial search
         on top of CD and typically achieves higher quality solutions (at the expense of increased running time).
-    max_support_size
-    num_lambda
-    num_gamma
-    gamma_max
-    gamma_min
-    partial_sort
-    max_iter
-    rtol
-    atol
-    active_set
-    active_set_num
-    max_swaps
-    scale_down_factor
-    screen_size
-    lambda_grid
-    exclude_first_k
-    intercept
-    lows
-    highs
+
+    max_support_size : int
+        Must be greater than 0.
+        The maximum support size at which to terminate the regularization path. We recommend setting this to a small
+        fraction of min(n,p) (e.g. 0.05 * min(n,p)) as L0 regularization typically selects a small portion of non-zeros.
+
+    num_lambda : int, optional
+        The number of lambda values to select in the regularization path.
+        This value must be None if lambda_grid is supplied.When supplied, must be greater than 0.
+        Note: lambda is the regularization parameter corresponding to the L0 norm.
+
+    num_gamma: int, optional
+        The number of gamma values to select in the regularization path.
+        This value must be None if lambda_grid is supplied. When supplied, must be greater than 0.
+        Note:  gamma is the regularization parameter corresponding to L1 or L2, depending on the chosen penalty).
+
+    gamma_max : float
+        The maximum value of gamma when using the L0L2 penalty.
+        This value must be greater than 0.
+
+        Note: For the L0L1 penalty this is automatically selected.
+
+    gamma_min : float
+        The minimum value of Gamma when using the L0L2 penalty.
+        This value must be greater than 0 but less than gamma_max.
+        Note: For the L0L1 penalty, the minimum value of gamma in the grid is set to gammaMin * gammaMax.
+
+    partial_sort : bool
+        If TRUE partial sorting will be used for sorting the coordinates to do greedy cycling (see our paper for
+        for details). Otherwise, full sorting is used. #TODO: Add link for paper
+
+    max_iter : int
+        The maximum number of iterations (full cycles) for CD per grid point. The algorithm may not use the full number
+        of iteration per grid point if convergence is found (defined by rtol and atol parameter)
+        Must be greater than 0
+
+    rtol : float
+        The relative tolerance which decides when to terminate optimization as based on the relative change in the
+        objective between iterations.
+        Must be greater than 0 and less than 1.
+
+    atol : float
+        The absolute tolerance which decides when to terminate optimization as based on the absolute L2 norm of the
+        residuals
+        Must be greater than 0
+
+    active_set : bool
+        If TRUE, performs active set updates. (see our paper for for details). #TODO: Add link for paper
+
+    active_set_num : int
+        The number of consecutive times a support should appear before declaring support stabilization.
+        (see our paper for for details). #TODO: Add link for paper
+
+        Must be greater than 0.
+
+    max_swaps : int
+        The maximum number of swaps used by CDPSI for each grid point.
+        Must be greater than 0. Ignored by CD algorithims.
+
+    scale_down_factor : float
+        Roughly amount each lambda value is scaled by between grid points. Larger values lead to closer lambdas and
+        typically to smaller gaps between the support sizes.
+
+        For details, see our paper - Section 5 on Adaptive Selection of Tuning Parameters). #TODO: Add link for paper
+
+        Must be greater than 0 and less than 1 (strictly for both.)
+
+    screen_size : int
+        The number of coordinates to cycle over when performing initial correlation screening. #TODO: Add link for paper
+
+        Must be greater than 0 and less than number of columns of X.
+
+    lambda_grid : list of list of floats
+        A grid of lambda values to use in computing the regularization path. This is by default an empty list
+        and is ignored. When specified, lambda_grid should be a list of list of floats, where the ith element
+         (corresponding to the ith gamma) should be a decreasing sequence of lambda values. The length of this sequence
+         is directly the number of lambdas to be tried for that gamma.
+
+        In the the "L0" penalty case, lambda_grid should be a list of 1.
+        In the "L0LX" penalty cases, lambda_grid can be a list of any length. The length of lambda_grid will be the
+        number of gamma values tried.
+
+        See the example notebook for more details.
+
+        Note: When lambda_grid is supplied, num_gamma and num_lambda must be None.
+
+    exclude_first_k : int
+        The first exclude_first_k features in X will be excluded from variable selection. In other words, the first
+        exclude_first_k variables will not be included in the L0-norm penalty however they will  be included in the
+        L1 or L2 norm penalties, if they are specified.
+
+        Must be a positive integer less than the columns of X.
+
+    intercept : bool
+        If False, no intercept term is included or fit in the regularization path
+        Intercept terms are not regularized by L0 or L1/L2.
+
+    lows : np array or float
+        Lower bounds for coefficients. Either a scalar for all coefficients to have the same bound or a vector of
+        size p (number of columns of X) where lows[i] is the lower bound for coefficient i.
+
+        Lower bounds can not be above 0 (i.e. we can not specify that all coefficients must be larger than a > 0).
+        Lower bounds can be set to 0 iff the corresponding upper bound for that coefficient is also not 0.
+
+    highs : np array or float
+        Upper bounds for coefficients. Either a scalar for all coefficients to have the same bound or a vector of
+        size p (number of columns of X) where highs[i] is the upper bound for coefficient i.
+
+        Upper bounds can not be below 0 (i.e. we can not specify that all coefficients must be smaller than a < 0).
+        Upper bounds can be set to 0 iff the corresponding looer bound for that coefficient is also not 0.
 
     Returns
     -------
 
+
+    Examples
+    --------
     """
 
     if not isinstance(X, (np.ndarray, csc_matrix)) or not np.isrealobj(X) or X.ndim != 2 or not np.product(X.shape):
         raise ValueError(f"expected X to be a 2D non-degenerate real numpy or csc_matrix, but got {X}.")
-
     n, p = X.shape
     if not isinstance(y, np.ndarray) or not np.isrealobj(y) or y.ndim != 1 or len(y) != n:
         raise ValueError(f"expected y to be a 1D real numpy, but got {y}.")
-
     if loss not in SUPPORTED_LOSS:
         raise ValueError(f"expected loss parameter to be on of {SUPPORTED_LOSS}, but got {loss}")
-
     if penalty not in SUPPORTED_PENALTY:
         raise ValueError(f"expected penalty parameter to be on of {SUPPORTED_PENALTY}, but got {penalty}")
     if algorithm not in SUPPORTED_ALGORITHM:
@@ -171,8 +254,9 @@ def fit(X: Union[np.ndarray, csc_matrix],
         raise ValueError(f"expected max_swaps parameter to be a positive integer, but got {max_swaps}")
     if not (0 < scale_down_factor < 1):
         raise ValueError(f"expected scale_down_factor parameter to exist in (0, 1), but got {scale_down_factor}")
-    if not isinstance(screen_size, int) or screen_size < 1:
-        raise ValueError(f"expected screen_size parameter to be a positive integer, but got {screen_size}")
+    if not isinstance(screen_size, int) or screen_size < 1 or screen_size > p:
+        raise ValueError(f"expected screen_size parameter to be a positive integer less than {p},"
+                         f" but got {screen_size}")
     if not isinstance(exclude_first_k, int) or not (0 <= exclude_first_k <= p):
         raise ValueError(f"expected exclude_first_k parameter to be a positive integer less than {p}, "
                          f"but got {exclude_first_k}")
@@ -181,16 +265,21 @@ def fit(X: Union[np.ndarray, csc_matrix],
                  f"but got {intercept}")
 
     if loss in CLASSIFICATION_LOSS:
-        if sorted(np.unique(y)) != [-1, 1]:
-            raise ValueError(f"expected y vector to only have two unique values (-1 and 1) (Binary Classification), "
-                             f"but got {np.unique(y)}")
+        unique_items = sorted(np.unique(y))
+        if 0 >= len(unique_items) > 2:
+            raise ValueError(f"expected y vector to only have two unique values (Binary Classification), "
+                             f"but got {unique_items}")
+        else:
+            a, *_ = unique_items # a is the lower value
+            y = np.copy(y)
+            y[y==a] = -1
+            y[y!=a] = 1
 
         if penalty == "L0":
-            # TODO: Must be corrected in R code:  https://github.com/hazimehh/L0Learn/blob/7a65474dfdb01489a0c263d7b24fbafad56fba61/R/fit.R#L136
             # Pure L0 is not supported for classification
             # Below we add a small L2 component.
 
-            if len(lambda_grid) != 1:
+            if lambda_grid is not None and len(lambda_grid) != 1:
                 # If this error checking was left to the lower section, it would confuse users as
                 # we are converting L0 to L0L2 with small L2 penalty.
                 # Here we must check if lambdaGrid is supplied (And thus use 'autolambda')
@@ -200,6 +289,8 @@ def fit(X: Union[np.ndarray, csc_matrix],
         penalty = "L0L2"
         gamma_max = 1e-7
         gamma_min = 1e-7
+    elif penalty != "L0" and num_gamma == 1:
+        warn(f"num_gamma set to 1 with {penalty} penalty. Only one {penalty[2:]} penalty value will be fit.")
 
     if lambda_grid is None:
         lambda_grid = [[0.]]
@@ -284,68 +375,71 @@ def fit(X: Union[np.ndarray, csc_matrix],
     cdef string c_penalty = penalty.encode('UTF-8')
     cdef string c_algorithim = algorithm.encode('UTF-8')
 
-    cdef fitmodel results
+    cdef fitmodel c_results
     if isinstance(X, np.ndarray):
-        results = _L0LearnFit_dense(X=numpy_to_dmat_d(X),
-                                    y=numpy_to_dvec_d(y),
-                                    Loss=c_loss,
-                                    Penalty=c_penalty,
-                                    Algorithm=c_algorithim,
-                                    NnzStopNum=max_support_size,
-                                    G_ncols=num_lambda,
-                                    G_nrows=num_gamma,
-                                    Lambda2Max=gamma_max,
-                                    Lambda2Min=gamma_min,
-                                    PartialSort=partial_sort,
-                                    MaxIters=max_iter,
-                                    rtol=rtol,
-                                    atol=atol,
-                                    ActiveSet=active_set,
-                                    ActiveSetNum=active_set_num,
-                                    MaxNumSwaps=max_swaps,
-                                    ScaleDownFactor=scale_down_factor,
-                                    ScreenSize=screen_size,
-                                    LambdaU=not auto_lambda,
-                                    Lambdas=c_lambda_grid,
-                                    ExcludeFirstK=exclude_first_k,
-                                    Intercept=intercept,
-                                    withBounds=with_bounds,
-                                    Lows=numpy_to_dvec_d(lows),
-                                    Highs=numpy_to_dvec_d(highs))
+        c_results = _L0LearnFit_dense(X=numpy_to_dmat_d(X),
+                                      y=numpy_to_dvec_d(y),
+                                      Loss=c_loss,
+                                      Penalty=c_penalty,
+                                      Algorithm=c_algorithim,
+                                      NnzStopNum=max_support_size,
+                                      G_ncols=num_lambda,
+                                      G_nrows=num_gamma,
+                                      Lambda2Max=gamma_max,
+                                      Lambda2Min=gamma_min,
+                                      PartialSort=partial_sort,
+                                      MaxIters=max_iter,
+                                      rtol=rtol,
+                                      atol=atol,
+                                      ActiveSet=active_set,
+                                      ActiveSetNum=active_set_num,
+                                      MaxNumSwaps=max_swaps,
+                                      ScaleDownFactor=scale_down_factor,
+                                      ScreenSize=screen_size,
+                                      LambdaU=not auto_lambda,
+                                      Lambdas=c_lambda_grid,
+                                      ExcludeFirstK=exclude_first_k,
+                                      Intercept=intercept,
+                                      withBounds=with_bounds,
+                                      Lows=numpy_to_dvec_d(lows),
+                                      Highs=numpy_to_dvec_d(highs))
     else: # isinstance(X, csc_matrix)
-        results = _L0LearnFit_sparse(X=numpy_to_sp_dmat_d(X),
-                                     y=numpy_to_dvec_d(y),
-                                     Loss=c_loss,
-                                     Penalty=c_penalty,
-                                     Algorithm=c_algorithim,
-                                     NnzStopNum=max_support_size,
-                                     G_ncols=num_lambda,
-                                     G_nrows=num_gamma,
-                                     Lambda2Max=gamma_max,
-                                     Lambda2Min=gamma_min,
-                                     PartialSort=partial_sort,
-                                     MaxIters=max_iter,
-                                     rtol=rtol,
-                                     atol=atol,
-                                     ActiveSet=active_set,
-                                     ActiveSetNum=active_set_num,
-                                     MaxNumSwaps=max_swaps,
-                                     ScaleDownFactor=scale_down_factor,
-                                     ScreenSize=screen_size,
-                                     LambdaU=not auto_lambda,
-                                     Lambdas=c_lambda_grid,
-                                     ExcludeFirstK=exclude_first_k,
-                                     Intercept=intercept,
-                                     withBounds=with_bounds,
-                                     Lows=numpy_to_dvec_d(lows),
-                                     Highs=numpy_to_dvec_d(highs))
+        c_results = _L0LearnFit_sparse(X=numpy_to_sp_dmat_d(X),
+                                       y=numpy_to_dvec_d(y),
+                                       Loss=c_loss,
+                                       Penalty=c_penalty,
+                                       Algorithm=c_algorithim,
+                                       NnzStopNum=max_support_size,
+                                       G_ncols=num_lambda,
+                                       G_nrows=num_gamma,
+                                       Lambda2Max=gamma_max,
+                                       Lambda2Min=gamma_min,
+                                       PartialSort=partial_sort,
+                                       MaxIters=max_iter,
+                                       rtol=rtol,
+                                       atol=atol,
+                                       ActiveSet=active_set,
+                                       ActiveSetNum=active_set_num,
+                                       MaxNumSwaps=max_swaps,
+                                       ScaleDownFactor=scale_down_factor,
+                                       ScreenSize=screen_size,
+                                       LambdaU=not auto_lambda,
+                                       Lambdas=c_lambda_grid,
+                                       ExcludeFirstK=exclude_first_k,
+                                       Intercept=intercept,
+                                       withBounds=with_bounds,
+                                       Lows=numpy_to_dvec_d(lows),
+                                       Highs=numpy_to_dvec_d(highs))
 
-    return {"NnzCount": results.NnzCount,
-            "Lambda0": results.Lambda0,
-            "Lambda12": results.Lambda12,
-            "Beta": sp_dmat_field_to_list(results.Beta),
-            "Intercept": results.Intercept,
-            "Converged": results.Converged}
+    results = FitModel(settings={'loss': loss, 'intercept': intercept, 'penalty': penalty},
+                       lambda_0=c_results.Lambda0,
+                       gamma=c_results.Lambda12,
+                       support_size=c_results.NnzCount,
+                       coeffs=sp_dmat_field_to_list(c_results.Beta),
+                       intercepts=c_results.Intercept,
+                       converged=c_results.Converged)
+    return results
+
 
 def cvfit(X: Union[np.ndarray, csc_matrix],
           y: np.ndarray,
@@ -425,16 +519,21 @@ def cvfit(X: Union[np.ndarray, csc_matrix],
                  f"but got {intercept}")
 
     if loss in CLASSIFICATION_LOSS:
-        if sorted(np.unique(y)) != [-1, 1]:
-            raise ValueError(f"expected y vector to only have two unique values (-1 and 1) (Binary Classification), "
-                             f"but got {np.unique(y)}")
+        unique_items = sorted(np.unique(y))
+        if 0 >= len(unique_items) > 2:
+            raise ValueError(f"expected y vector to only have two unique values (Binary Classification), "
+                             f"but got {unique_items}")
+        else:
+            a, *_ = unique_items # a is the lower value
+            y = np.copy(y)
+            y[y==a] = -1
+            y[y!=a] = 1
 
         if penalty == "L0":
-            # TODO: Must be corrected in R code:  https://github.com/hazimehh/L0Learn/blob/7a65474dfdb01489a0c263d7b24fbafad56fba61/R/fit.R#L136
             # Pure L0 is not supported for classification
             # Below we add a small L2 component.
 
-            if len(lambda_grid) != 1:
+            if lambda_grid is not None and len(lambda_grid) != 1:
                 # If this error checking was left to the lower section, it would confuse users as
                 # we are converting L0 to L0L2 with small L2 penalty.
                 # Here we must check if lambdaGrid is supplied (And thus use 'autolambda')
@@ -444,6 +543,8 @@ def cvfit(X: Union[np.ndarray, csc_matrix],
         penalty = "L0L2"
         gamma_max = 1e-7
         gamma_min = 1e-7
+    elif penalty != "L0" and num_gamma == 1:
+        warn(f"num_gamma set to 1 with {penalty} penalty. Only one {penalty[2:]} penalty value will be fit.")
 
     if lambda_grid is None:
         lambda_grid = [[0.]]
@@ -528,9 +629,9 @@ def cvfit(X: Union[np.ndarray, csc_matrix],
     cdef string c_penalty = penalty.encode('UTF-8')
     cdef string c_algorithim = algorithm.encode('UTF-8')
 
-    cdef cvfitmodel results
+    cdef cvfitmodel c_results
     if isinstance(X, np.ndarray):
-        results = _L0LearnCV_dense(X=numpy_to_dmat_d(X),
+        c_results = _L0LearnCV_dense(X=numpy_to_dmat_d(X),
                                     y=numpy_to_dvec_d(y),
                                     Loss=c_loss,
                                     Penalty=c_penalty,
@@ -559,7 +660,7 @@ def cvfit(X: Union[np.ndarray, csc_matrix],
                                     Lows=numpy_to_dvec_d(lows),
                                     Highs=numpy_to_dvec_d(highs))
     else: # isinstance(X, csc_matrix)
-        results = _L0LearnCV_sparse(X=numpy_to_sp_dmat_d(X),
+        c_results = _L0LearnCV_sparse(X=numpy_to_sp_dmat_d(X),
                                      y=numpy_to_dvec_d(y),
                                      Loss=c_loss,
                                      Penalty=c_penalty,
@@ -588,14 +689,16 @@ def cvfit(X: Union[np.ndarray, csc_matrix],
                                      Lows=numpy_to_dvec_d(lows),
                                      Highs=numpy_to_dvec_d(highs))
 
-    return {"NnzCount": results.NnzCount,
-            "Lambda0": results.Lambda0,
-            "Lambda12": results.Lambda12,
-            "Beta": sp_dmat_field_to_list(results.Beta),
-            "Intercept": results.Intercept,
-            "Converged": results.Converged,
-            "CVMeans": dvec_field_to_list(results.CVMeans)[0],
-            "CVSDs": dvec_field_to_list(results.CVSDs)[0]}
+    results = CVFitModel(settings={'loss': loss, 'intercept': intercept, 'penalty': penalty},
+                         lambda_0=c_results.Lambda0,
+                         gamma=c_results.Lambda12,
+                         support_size=c_results.NnzCount,
+                         coeffs=sp_dmat_field_to_list(c_results.Beta),
+                         intercepts=c_results.Intercept,
+                         converged=c_results.Converged,
+                         cv_means=dvec_field_to_list(c_results.CVMeans),
+                         cv_sds=dvec_field_to_list(c_results.CVSDs))
+    return results
 
 
 cdef fitmodel _L0LearnFit_dense(const dmat& X,
