@@ -10,7 +10,7 @@ from typing import Union, Optional, List
 from l0learn.cyarma cimport dmat, sp_dmat, numpy_to_sp_dmat_d, numpy_to_dmat_d, dvec, numpy_to_dvec_d, \
     sp_dmat_field_to_list, dvec_field_to_list
 
-from l0learn.utils import FitModel, CVFitModel
+from l0learn.models import FitModel, CVFitModel
 
 def np_to_arma_check(arr):
     # TODO: Add checks for Behaved and OwnsData

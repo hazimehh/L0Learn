@@ -83,21 +83,25 @@ cdef extern from "armadillo" namespace "arma" nogil:
 ## TODO: refactor to return pointer, but other function derefed.
 
 ##### Tools to convert numpy arrays to armadillo arrays ######
+@cython.boundscheck(False)
 cdef field[sp_dmat] list_to_sp_dmat_field(list values):
     cdef field[sp_dmat] f = field[sp_dmat](len(values))
     for i, value in enumerate(values):
-        if not isinstance(value, csc_matrix) or value.ndim != 2 or np.isreal(value):
+        if not isinstance(value, csc_matrix) or value.ndim != 2 or not np.isrealobj(value):
             raise TypeError(f"expected each value in values to be a 2D real csc_matrix, but got {value}")
         f[i] = numpy_to_sp_dmat_d(value)
     return f
 
+
+@cython.boundscheck(False)
 cdef field[dvec] list_to_dvec_field(list values):
     cdef field[dvec] f = field[dvec](len(values))
     for i, value in enumerate(values):
-        if not isinstance(value, np.ndarray) or value.ndim != 1 or not np.isreal(value):
+        if not isinstance(value, np.ndarray) or value.ndim != 1 or not np.isrealobj(value):
             raise TypeError(f"expected each value in values to be a 1D real numpy matrix, but got {value}")
         f[i] = numpy_to_dvec_d(value)
     return f
+
 
 cdef dmat * numpy_to_dmat(np.ndarray[np.double_t, ndim=2] X):
     # TODO: Add checks on X (Size, ...)
@@ -139,6 +143,7 @@ cdef uvec numpy_to_uvec_d(np.ndarray[np.uint64_t, ndim=1] x):
     del ar_p
     return ar
 
+
 cdef sp_dmat * numpy_to_sp_dmat(x):
     if not isinstance(x, csc_matrix):
         raise ValueError(f"expected x to be of type {csc_matrix}, but got {type(x)}")
@@ -156,6 +161,7 @@ cdef sp_dmat * numpy_to_sp_dmat(x):
 
     return ar
 
+
 cdef sp_dmat numpy_to_sp_dmat_d(x):
     cdef sp_dmat *ar_p = numpy_to_sp_dmat(x)
     cdef sp_dmat ar = deref(ar_p)
@@ -166,12 +172,14 @@ cdef sp_dmat numpy_to_sp_dmat_d(x):
 # all data will be copied since numpy doesn't own the data and can't clean up
 # otherwise. Maybe this can be improved. #######
 
+
 @cython.boundscheck(False)
 cdef list sp_dmat_field_to_list(field[sp_dmat] f):
     cdef list lst = []
     for i in range(f.n_elem):
         lst.append(sp_dmat_to_numpy(f[i], None, None, None))
     return lst
+
 
 @cython.boundscheck(False)
 cdef list dvec_field_to_list(field[dvec] f):

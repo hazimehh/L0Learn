@@ -1,6 +1,7 @@
 import warnings
 from dataclasses import dataclass, field
-from typing import List, Dict, Any, Optional, Tuple, Union
+from functools import wraps
+from typing import List, Dict, Any, Optional, Tuple, Union, Sequence, Callable
 
 import numpy as np
 import pandas as pd
@@ -10,43 +11,129 @@ from scipy.stats import multivariate_normal, binom
 
 
 def regularization_loss(coeffs: csc_matrix,
-                        l0: float = 0,
-                        l1: float = 0,
-                        l2: float = 0,
-                        sum_all_paths: bool = True) -> Union[float, np.ndarray]:
+                        l0: Union[float, Sequence[float]] = 0,
+                        l1: Union[float, Sequence[float]] = 0,
+                        l2: Union[float, Sequence[float]] = 0, ) -> Union[float, np.ndarray]:
+    """
+    Calculates the regularization loss for a path of (or individual) solution(s).
+
+    Parameters
+    ----------
+    coeffs
+    l0:
+    l1
+    l2
+
+    Returns
+    -------
+    loss : float or np.ndarray of shape (K,) where K is the number of solutions in coeffs
+        Let the shape of coeffs be (P, K) and l0, l1, and l2 by either a float or a sequence of length K
+            Then loss will be of shape: (K, ) with the following layout:
+                loss[i] = l0[i]*||coeffs[:, i||_0 + l1[i]*||coeffs[:, i||_1 + l2[i]*||coeffs[:, i||_2
+
+    Notes
+    -----
+
+    """
     if coeffs.ndim != 2:
         raise NotImplementedError("expected coeffs to be a 2D array")
 
-    if sum_all_paths or coeffs.shape[1] == 1:
+    l0 = np.asarray(l0)
+    l1 = np.asarray(l1)
+    l2 = np.asarray(l2)
+
+    _, num_solutions = coeffs.shape
+
+    infer_penalties = l0 + l1 + l2
+
+    if infer_penalties.ndim == 0:
+        num_penalties = num_solutions
+    elif infer_penalties.ndim == 1:
+        num_penalties = len(infer_penalties)
+    else:
+        raise ValueError(f"expected penalties l0, l1, and l2 mutually broadcast to a float or a 1D array,"
+                         f" but got {infer_penalties.ndim}D array.")
+
+    if num_penalties != num_solutions:
+        raise ValueError(f"expected number of penalties to be equal to the number of solutions if multiple penalties "
+                         f"are provided, but got {num_penalties} penalties and {num_solutions} solutions.")
+
+    l0 = np.broadcast_to(l0, [num_penalties])
+    l1 = np.broadcast_to(l1, [num_penalties])
+    l2 = np.broadcast_to(l2, [num_penalties])
+
+    if num_solutions == 1:
         _, _, values = find(coeffs)
-        loss = (l0 * len(values)
-                + l1 * sum(abs(values))
-                + l2 * sum(values ** 2))
-    else:  # TODO: Implement this regularization loss better than a for loop over rows and cols!
-        rows, cols = coeffs.shape
-        loss = np.zeros(cols)
-        for col in range(cols):
-            loss[col] = regularization_loss(coeffs[:, col], l0=l0, l1=l1, l2=l2, sum_all_paths=True)
+
+        return float(l0 * len(values) + l1 * sum(abs(values)) + sum((np.sqrt(l2) * values) ** 2))
+    else:  # TODO: Implement this regularization loss better than a for loop over num_solutions!
+        _, num_solutions = coeffs.shape
+        loss = np.zeros(num_solutions)
+
+        for solution_index in range(num_solutions):
+            loss[solution_index] = regularization_loss(coeffs[:, solution_index],
+                                                       l0=l0[solution_index],
+                                                       l1=l1[solution_index],
+                                                       l2=l2[solution_index])
 
     return loss
+
+
+# def broadcast_with_regularization_loss(
+#         metric_func: Callable[[Any], Tuple[np.ndarray, np.ndarray]]) -> Callable[[Any], np.ndarray]:
+#     @wraps(metric_func)
+#     def reshape_metric_loss(*args, **kwargs) -> np.ndarray:
+#         metric_loss, reg_loss = metric_func(*args, **kwargs)
+#
+#         if reg_loss.ndim == 0:
+#             return metric_loss + reg_loss
+#         elif reg_loss.ndim == 2 and metric_loss.ndim == 2:
+#             # reg_loss of shape (l, k)
+#             # metric_loss of shape (m, k)
+#             return metric_loss[:, np.newaxis, :] + reg_loss  # result of shape (m, l, k)
+#         elif reg_loss.ndim == 1 and metric_loss.ndim == 1:
+#             # reg_loss of shape (l,)
+#             # squared_residuals of shape (m, )
+#             return metric_loss[:, np.newaxis] + reg_loss
+#         else:
+#             raise ValueError("This should not happen")
+#
+#     return reshape_metric_loss
 
 
 def squared_error(y_true: np.ndarray,
                   y_pred: np.ndarray,
                   coeffs: Optional[csc_matrix] = None,
-                  l0: float = 0,
-                  l1: float = 0,
-                  l2: float = 0,
-                  sum_all_paths: bool = True) -> Union[float, np.ndarray]:
-    loss = 0
-    if coeffs:
-        loss = regularization_loss(coeffs=coeffs, l0=l0, l1=l1, l2=l2, sum_all_paths=sum_all_paths)
+                  l0: Union[float, Sequence[float]] = 0,
+                  l1: Union[float, Sequence[float]] = 0,
+                  l2: Union[float, Sequence[float]] = 0) -> Tuple[np.ndarray, np.ndarray]:
+    """
+    Calculates Squared Error loss of solution with optional regularization
+
+    Parameters
+    ----------
+    y_true : np.ndarray of shape (m, )
+    y_pred : np.ndarray of shape (m, ) or (m, k)
+    coeffs : np.ndarray of shape (p, k), optional
+    l0 : float or sequence of floats of shape (l)
+    l1 : float or sequence of floats of shape (l)
+    l2 : float or sequence of floats of shape (l)
+
+    Returns
+    -------
+    squared_error = (m, k)
+
+    """
+    reg_loss = 0
+    if coeffs is not None:
+        reg_loss = regularization_loss(coeffs=coeffs, l0=l0, l1=l1, l2=l2)
+
+    if y_pred.ndim == 2:
+        y_true = y_true[:, np.newaxis]
 
     squared_residuals = 0.5 * np.square(y_true - y_pred)
-    if sum_all_paths:
-        return squared_residuals.sum() + loss
-    else:
-        return squared_residuals.sum(axis=0) + loss
+
+    return squared_residuals + reg_loss
 
 
 def logistic_loss(y_true: np.ndarray,
@@ -54,13 +141,12 @@ def logistic_loss(y_true: np.ndarray,
                   coeffs: Optional[csc_matrix] = None,
                   l0: float = 0,
                   l1: float = 0,
-                  l2: float = 0,
-                  sum_all_paths: bool = True) -> Union[float, np.ndarray]:
+                  l2: float = 0, ) -> Union[float, np.ndarray]:
     # TODO: Check this formula. If there is an error here, there might be an error in the C++ code for Logistic.
 
-    loss = 0
-    if coeffs:
-        loss += regularization_loss(coeffs=coeffs, l0=l0, l1=l1, l2=l2, sum_all_paths=sum_all_paths)
+    reg_loss = 0
+    if coeffs is not None:
+        reg_loss = regularization_loss(coeffs=coeffs, l0=l0, l1=l1, l2=l2)
 
     # C++ Src Code:
     # ExpyXB = arma::exp(this->y % (*(this->X) * this->B + this->b0));
@@ -69,10 +155,7 @@ def logistic_loss(y_true: np.ndarray,
     exp_y_XB = np.exp(y_true * np.log(y_pred))
     log_loss = np.log(1 + 1 / exp_y_XB)
 
-    if sum_all_paths:
-        return log_loss.sum() + loss
-    else:
-        return log_loss.sum(axis=0) + loss
+    return log_loss + reg_loss
 
 
 def squared_hinge_loss(y_true: np.ndarray,
@@ -80,13 +163,12 @@ def squared_hinge_loss(y_true: np.ndarray,
                        coeffs: Optional[csc_matrix] = None,
                        l0: float = 0,
                        l1: float = 0,
-                       l2: float = 0,
-                       sum_all_paths: bool = True) -> Union[float, np.ndarray]:
+                       l2: float = 0, ) -> Union[float, np.ndarray]:
     # TODO: Check this formula. If there is an error here, there might be an error in the C++ code for Logistic.
 
-    loss = 0
-    if coeffs:
-        loss += regularization_loss(coeffs=coeffs, l0=l0, l1=l1, l2=l2, sum_all_paths=sum_all_paths)
+    reg_loss = 0
+    if coeffs is not None:
+        reg_loss = regularization_loss(coeffs=coeffs, l0=l0, l1=l1, l2=l2)
 
     # C++ Src Code:
     # onemyxb = 1 - this->y % (*(this->X) * this->B + this->b0);
@@ -95,13 +177,10 @@ def squared_hinge_loss(y_true: np.ndarray,
     #     B) + this->lambda1 * arma::norm(B, 1) + this->lambda2 * l2norm * l2norm;
 
     square_one_minus_y_XB = np.square(np.max(1 - y_true * y_pred, 0))
-    if sum_all_paths:
-        return square_one_minus_y_XB.sum() + loss
-    else:
-        return square_one_minus_y_XB.sum(axis=0) + loss
+    return square_one_minus_y_XB + reg_loss
 
 
-@dataclass(frozen=True, repr=False)
+@dataclass(frozen=True, repr=False, eq=False)
 class FitModel:
     settings: Dict[str, Any]
     lambda_0: List[List[float]] = field(repr=False)
@@ -197,19 +276,18 @@ class FitModel:
                 intercepts = [self.intercepts[gamma_index][lambda_index]]
 
         if include_intercept:
-            solutions = vstack([intercepts[0], solutions])
+            solutions = csc_matrix(vstack([intercepts[0], solutions]))
 
         return solutions
 
     def characteristics(self,
                         lambda_0: Optional[float] = None,
-                        gamma: Optional[float] = None,
-                        include_intercept: bool = True) -> pd.DataFrame:
+                        gamma: Optional[float] = None) -> pd.DataFrame:
 
         if gamma is None:
             if lambda_0 is None:
                 # Return all solutions
-                intercepts = [[intercept for intercept_list in self.intercepts for intercept in intercept_list]]
+                intercepts = self.intercepts
                 lambda_0 = self.lambda_0
                 gamma = self.gamma
                 support_size = self.support_size
@@ -217,8 +295,7 @@ class FitModel:
             else:
                 # Return solution with closest lambda in first gamma
                 return self.characteristics(gamma=self.gamma[0],
-                                            lambda_0=lambda_0,
-                                            include_intercept=include_intercept)
+                                            lambda_0=lambda_0)
         else:
             gamma_index = int(np.argmin(np.abs(np.asarray(self.gamma) - gamma)))
             if lambda_0 is None:
@@ -231,11 +308,11 @@ class FitModel:
             else:
                 # Return solution with closest lambda in gamma_index
                 lambda_index = int(np.argmin(np.abs(np.asarray(self.lambda_0[gamma_index]) - lambda_0)))
-                intercepts = [self.intercepts[gamma_index][lambda_index]]
-                lambda_0 = [self.lambda_0[gamma_index][lambda_index]]
+                intercepts = [[self.intercepts[gamma_index][lambda_index]]]
+                lambda_0 = [[self.lambda_0[gamma_index][lambda_index]]]
                 gamma = [self.gamma[gamma_index]]
-                support_size = [self.support_size[gamma_index][lambda_index]]
-                converged = [self.converged[gamma_index][lambda_index]]
+                support_size = [[self.support_size[gamma_index][lambda_index]]]
+                converged = [[self.converged[gamma_index][lambda_index]]]
 
         return self.characteristics_as_pandas_table(new_data=(gamma, lambda_0, support_size, intercepts, converged))
 
@@ -321,9 +398,9 @@ class FitModel:
 
         if training:
             coeffs = self.coeff(lambda_0=lambda_0, gamma=gamma)
-            l0 = characteristics.get('l0')
-            l1 = characteristics.get('l1')
-            l2 = characteristics.get('l2')
+            l0 = characteristics.get('l0', 0)
+            l1 = characteristics.get('l1', 0)
+            l2 = characteristics.get('l2', 0)
         else:
             coeffs = None
             l0 = 0
@@ -331,14 +408,11 @@ class FitModel:
             l2 = 0
 
         if self.settings['loss'] == "SquaredError":
-            score = squared_error(y_true=y, y_pred=predictions, coeffs=coeffs, l0=l0, l1=l1, l2=l2,
-                                  sum_all_paths=False)
+            score = squared_error(y_true=y, y_pred=predictions, coeffs=coeffs, l0=l0, l1=l1, l2=l2, )
         elif self.settings['loss'] == "Logistic":
-            score = logistic_loss(y_true=y, y_pred=predictions, coeffs=coeffs, l0=l0, l1=l1, l2=l2,
-                                  sum_all_paths=False)
+            score = logistic_loss(y_true=y, y_pred=predictions, coeffs=coeffs, l0=l0, l1=l1, l2=l2, )
         else:
-            score = squared_hinge_loss(y_true=y, y_pred=predictions, coeffs=coeffs, l0=l0, l1=l1, l2=l2,
-                                       sum_all_paths=False)
+            score = squared_hinge_loss(y_true=y, y_pred=predictions, coeffs=coeffs, l0=l0, l1=l1, l2=l2, )
 
         if include_characteristics:
             characteristics[self.settings['loss']] = score
@@ -387,7 +461,7 @@ class FitModel:
         if self.settings['intercept']:
             x = np.hstack([np.ones((n, 1)), x])
 
-        activations = x@coeffs
+        activations = x @ coeffs
 
         if self.settings['loss'] == "Logistic":
             return 1 / (1 + np.exp(-activations))
@@ -395,7 +469,7 @@ class FitModel:
             return activations
 
 
-@dataclass(frozen=True, repr=False)
+@dataclass(frozen=True, repr=False, eq=False)
 class CVFitModel(FitModel):
     cv_means: List[np.ndarray] = field(repr=False)
     cv_sds: List[np.ndarray] = field(repr=False)

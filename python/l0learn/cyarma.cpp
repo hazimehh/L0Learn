@@ -1804,13 +1804,13 @@ static const char __pyx_k_astype[] = "astype";
 static const char __pyx_k_double[] = "double";
 static const char __pyx_k_import[] = "__import__";
 static const char __pyx_k_indptr[] = "indptr";
-static const char __pyx_k_isreal[] = "isreal";
 static const char __pyx_k_uint64[] = "uint64";
 static const char __pyx_k_but_got[] = ", but got ";
 static const char __pyx_k_indices[] = "indices";
 static const char __pyx_k_owndata[] = "owndata";
 static const char __pyx_k_TypeError[] = "TypeError";
 static const char __pyx_k_enumerate[] = "enumerate";
+static const char __pyx_k_isrealobj[] = "isrealobj";
 static const char __pyx_k_ValueError[] = "ValueError";
 static const char __pyx_k_csc_matrix[] = "csc_matrix";
 static const char __pyx_k_ImportError[] = "ImportError";
@@ -1844,7 +1844,7 @@ static PyObject *__pyx_n_s_flags;
 static PyObject *__pyx_n_s_import;
 static PyObject *__pyx_n_s_indices;
 static PyObject *__pyx_n_s_indptr;
-static PyObject *__pyx_n_s_isreal;
+static PyObject *__pyx_n_s_isrealobj;
 static PyObject *__pyx_n_s_main;
 static PyObject *__pyx_n_s_name;
 static PyObject *__pyx_n_s_ndim;
@@ -1865,9 +1865,9 @@ static PyObject *__pyx_tuple_;
 static PyObject *__pyx_tuple__2;
 /* Late includes */
 
-/* "l0learn/cyarma.pyx":86
- * 
+/* "l0learn/cyarma.pyx":87
  * ##### Tools to convert numpy arrays to armadillo arrays ######
+ * @cython.boundscheck(False)
  * cdef field[sp_dmat] list_to_sp_dmat_field(list values):             # <<<<<<<<<<<<<<
  *     cdef field[sp_dmat] f = field[sp_dmat](len(values))
  *     for i, value in enumerate(values):
@@ -1893,25 +1893,25 @@ static arma::field<arma::sp_dmat>  __pyx_f_7l0learn_6cyarma_list_to_sp_dmat_fiel
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("list_to_sp_dmat_field", 0);
 
-  /* "l0learn/cyarma.pyx":87
- * ##### Tools to convert numpy arrays to armadillo arrays ######
+  /* "l0learn/cyarma.pyx":88
+ * @cython.boundscheck(False)
  * cdef field[sp_dmat] list_to_sp_dmat_field(list values):
  *     cdef field[sp_dmat] f = field[sp_dmat](len(values))             # <<<<<<<<<<<<<<
  *     for i, value in enumerate(values):
- *         if not isinstance(value, csc_matrix) or value.ndim != 2 or np.isreal(value):
+ *         if not isinstance(value, csc_matrix) or value.ndim != 2 or not np.isrealobj(value):
  */
   if (unlikely(__pyx_v_values == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
-    __PYX_ERR(0, 87, __pyx_L1_error)
+    __PYX_ERR(0, 88, __pyx_L1_error)
   }
-  __pyx_t_1 = PyList_GET_SIZE(__pyx_v_values); if (unlikely(__pyx_t_1 == ((Py_ssize_t)-1))) __PYX_ERR(0, 87, __pyx_L1_error)
+  __pyx_t_1 = PyList_GET_SIZE(__pyx_v_values); if (unlikely(__pyx_t_1 == ((Py_ssize_t)-1))) __PYX_ERR(0, 88, __pyx_L1_error)
   __pyx_v_f = arma::field<arma::sp_dmat> (__pyx_t_1);
 
-  /* "l0learn/cyarma.pyx":88
+  /* "l0learn/cyarma.pyx":89
  * cdef field[sp_dmat] list_to_sp_dmat_field(list values):
  *     cdef field[sp_dmat] f = field[sp_dmat](len(values))
  *     for i, value in enumerate(values):             # <<<<<<<<<<<<<<
- *         if not isinstance(value, csc_matrix) or value.ndim != 2 or np.isreal(value):
+ *         if not isinstance(value, csc_matrix) or value.ndim != 2 or not np.isrealobj(value):
  *             raise TypeError(f"expected each value in values to be a 2D real csc_matrix, but got {value}")
  */
   __pyx_t_1 = 0;
@@ -1919,9 +1919,9 @@ static arma::field<arma::sp_dmat>  __pyx_f_7l0learn_6cyarma_list_to_sp_dmat_fiel
   for (;;) {
     if (__pyx_t_3 >= PyList_GET_SIZE(__pyx_t_2)) break;
     #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-    __pyx_t_4 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_4); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 88, __pyx_L1_error)
+    __pyx_t_4 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_4); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 89, __pyx_L1_error)
     #else
-    __pyx_t_4 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 88, __pyx_L1_error)
+    __pyx_t_4 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 89, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     #endif
     __Pyx_XDECREF_SET(__pyx_v_value, __pyx_t_4);
@@ -1929,16 +1929,16 @@ static arma::field<arma::sp_dmat>  __pyx_f_7l0learn_6cyarma_list_to_sp_dmat_fiel
     __pyx_v_i = __pyx_t_1;
     __pyx_t_1 = (__pyx_t_1 + 1);
 
-    /* "l0learn/cyarma.pyx":89
+    /* "l0learn/cyarma.pyx":90
  *     cdef field[sp_dmat] f = field[sp_dmat](len(values))
  *     for i, value in enumerate(values):
- *         if not isinstance(value, csc_matrix) or value.ndim != 2 or np.isreal(value):             # <<<<<<<<<<<<<<
+ *         if not isinstance(value, csc_matrix) or value.ndim != 2 or not np.isrealobj(value):             # <<<<<<<<<<<<<<
  *             raise TypeError(f"expected each value in values to be a 2D real csc_matrix, but got {value}")
  *         f[i] = numpy_to_sp_dmat_d(value)
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_csc_matrix); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 89, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_csc_matrix); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 90, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_6 = PyObject_IsInstance(__pyx_v_value, __pyx_t_4); if (unlikely(__pyx_t_6 == ((int)-1))) __PYX_ERR(0, 89, __pyx_L1_error)
+    __pyx_t_6 = PyObject_IsInstance(__pyx_v_value, __pyx_t_4); if (unlikely(__pyx_t_6 == ((int)-1))) __PYX_ERR(0, 90, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __pyx_t_7 = ((!(__pyx_t_6 != 0)) != 0);
     if (!__pyx_t_7) {
@@ -1946,21 +1946,21 @@ static arma::field<arma::sp_dmat>  __pyx_f_7l0learn_6cyarma_list_to_sp_dmat_fiel
       __pyx_t_5 = __pyx_t_7;
       goto __pyx_L6_bool_binop_done;
     }
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_value, __pyx_n_s_ndim); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 89, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_value, __pyx_n_s_ndim); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 90, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_8 = __Pyx_PyInt_NeObjC(__pyx_t_4, __pyx_int_2, 2, 0); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 89, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_PyInt_NeObjC(__pyx_t_4, __pyx_int_2, 2, 0); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 90, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_7 = __Pyx_PyObject_IsTrue(__pyx_t_8); if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 89, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyObject_IsTrue(__pyx_t_8); if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 90, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     if (!__pyx_t_7) {
     } else {
       __pyx_t_5 = __pyx_t_7;
       goto __pyx_L6_bool_binop_done;
     }
-    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 89, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 90, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_isreal); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 89, __pyx_L1_error)
+    __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_isrealobj); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 90, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __pyx_t_4 = NULL;
@@ -1975,45 +1975,46 @@ static arma::field<arma::sp_dmat>  __pyx_f_7l0learn_6cyarma_list_to_sp_dmat_fiel
     }
     __pyx_t_8 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_9, __pyx_t_4, __pyx_v_value) : __Pyx_PyObject_CallOneArg(__pyx_t_9, __pyx_v_value);
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 89, __pyx_L1_error)
+    if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 90, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-    __pyx_t_7 = __Pyx_PyObject_IsTrue(__pyx_t_8); if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 89, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyObject_IsTrue(__pyx_t_8); if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 90, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-    __pyx_t_5 = __pyx_t_7;
+    __pyx_t_6 = ((!__pyx_t_7) != 0);
+    __pyx_t_5 = __pyx_t_6;
     __pyx_L6_bool_binop_done:;
     if (unlikely(__pyx_t_5)) {
 
-      /* "l0learn/cyarma.pyx":90
+      /* "l0learn/cyarma.pyx":91
  *     for i, value in enumerate(values):
- *         if not isinstance(value, csc_matrix) or value.ndim != 2 or np.isreal(value):
+ *         if not isinstance(value, csc_matrix) or value.ndim != 2 or not np.isrealobj(value):
  *             raise TypeError(f"expected each value in values to be a 2D real csc_matrix, but got {value}")             # <<<<<<<<<<<<<<
  *         f[i] = numpy_to_sp_dmat_d(value)
  *     return f
  */
-      __pyx_t_8 = __Pyx_PyObject_FormatSimple(__pyx_v_value, __pyx_empty_unicode); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 90, __pyx_L1_error)
+      __pyx_t_8 = __Pyx_PyObject_FormatSimple(__pyx_v_value, __pyx_empty_unicode); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 91, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_8);
-      __pyx_t_9 = __Pyx_PyUnicode_Concat(__pyx_kp_u_expected_each_value_in_values_to, __pyx_t_8); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 90, __pyx_L1_error)
+      __pyx_t_9 = __Pyx_PyUnicode_Concat(__pyx_kp_u_expected_each_value_in_values_to, __pyx_t_8); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 91, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_9);
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-      __pyx_t_8 = __Pyx_PyObject_CallOneArg(__pyx_builtin_TypeError, __pyx_t_9); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 90, __pyx_L1_error)
+      __pyx_t_8 = __Pyx_PyObject_CallOneArg(__pyx_builtin_TypeError, __pyx_t_9); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 91, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_8);
       __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
       __Pyx_Raise(__pyx_t_8, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-      __PYX_ERR(0, 90, __pyx_L1_error)
+      __PYX_ERR(0, 91, __pyx_L1_error)
 
-      /* "l0learn/cyarma.pyx":89
+      /* "l0learn/cyarma.pyx":90
  *     cdef field[sp_dmat] f = field[sp_dmat](len(values))
  *     for i, value in enumerate(values):
- *         if not isinstance(value, csc_matrix) or value.ndim != 2 or np.isreal(value):             # <<<<<<<<<<<<<<
+ *         if not isinstance(value, csc_matrix) or value.ndim != 2 or not np.isrealobj(value):             # <<<<<<<<<<<<<<
  *             raise TypeError(f"expected each value in values to be a 2D real csc_matrix, but got {value}")
  *         f[i] = numpy_to_sp_dmat_d(value)
  */
     }
 
-    /* "l0learn/cyarma.pyx":91
- *         if not isinstance(value, csc_matrix) or value.ndim != 2 or np.isreal(value):
+    /* "l0learn/cyarma.pyx":92
+ *         if not isinstance(value, csc_matrix) or value.ndim != 2 or not np.isrealobj(value):
  *             raise TypeError(f"expected each value in values to be a 2D real csc_matrix, but got {value}")
  *         f[i] = numpy_to_sp_dmat_d(value)             # <<<<<<<<<<<<<<
  *     return f
@@ -2021,29 +2022,29 @@ static arma::field<arma::sp_dmat>  __pyx_f_7l0learn_6cyarma_list_to_sp_dmat_fiel
  */
     (__pyx_v_f[__pyx_v_i]) = __pyx_f_7l0learn_6cyarma_numpy_to_sp_dmat_d(__pyx_v_value);
 
-    /* "l0learn/cyarma.pyx":88
+    /* "l0learn/cyarma.pyx":89
  * cdef field[sp_dmat] list_to_sp_dmat_field(list values):
  *     cdef field[sp_dmat] f = field[sp_dmat](len(values))
  *     for i, value in enumerate(values):             # <<<<<<<<<<<<<<
- *         if not isinstance(value, csc_matrix) or value.ndim != 2 or np.isreal(value):
+ *         if not isinstance(value, csc_matrix) or value.ndim != 2 or not np.isrealobj(value):
  *             raise TypeError(f"expected each value in values to be a 2D real csc_matrix, but got {value}")
  */
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "l0learn/cyarma.pyx":92
+  /* "l0learn/cyarma.pyx":93
  *             raise TypeError(f"expected each value in values to be a 2D real csc_matrix, but got {value}")
  *         f[i] = numpy_to_sp_dmat_d(value)
  *     return f             # <<<<<<<<<<<<<<
  * 
- * cdef field[dvec] list_to_dvec_field(list values):
+ * 
  */
   __pyx_r = __pyx_v_f;
   goto __pyx_L0;
 
-  /* "l0learn/cyarma.pyx":86
- * 
+  /* "l0learn/cyarma.pyx":87
  * ##### Tools to convert numpy arrays to armadillo arrays ######
+ * @cython.boundscheck(False)
  * cdef field[sp_dmat] list_to_sp_dmat_field(list values):             # <<<<<<<<<<<<<<
  *     cdef field[sp_dmat] f = field[sp_dmat](len(values))
  *     for i, value in enumerate(values):
@@ -2063,9 +2064,9 @@ static arma::field<arma::sp_dmat>  __pyx_f_7l0learn_6cyarma_list_to_sp_dmat_fiel
   return __pyx_r;
 }
 
-/* "l0learn/cyarma.pyx":94
- *     return f
+/* "l0learn/cyarma.pyx":97
  * 
+ * @cython.boundscheck(False)
  * cdef field[dvec] list_to_dvec_field(list values):             # <<<<<<<<<<<<<<
  *     cdef field[dvec] f = field[dvec](len(values))
  *     for i, value in enumerate(values):
@@ -2091,25 +2092,25 @@ static arma::field<arma::dvec>  __pyx_f_7l0learn_6cyarma_list_to_dvec_field(PyOb
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("list_to_dvec_field", 0);
 
-  /* "l0learn/cyarma.pyx":95
- * 
+  /* "l0learn/cyarma.pyx":98
+ * @cython.boundscheck(False)
  * cdef field[dvec] list_to_dvec_field(list values):
  *     cdef field[dvec] f = field[dvec](len(values))             # <<<<<<<<<<<<<<
  *     for i, value in enumerate(values):
- *         if not isinstance(value, np.ndarray) or value.ndim != 1 or not np.isreal(value):
+ *         if not isinstance(value, np.ndarray) or value.ndim != 1 or not np.isrealobj(value):
  */
   if (unlikely(__pyx_v_values == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
-    __PYX_ERR(0, 95, __pyx_L1_error)
+    __PYX_ERR(0, 98, __pyx_L1_error)
   }
-  __pyx_t_1 = PyList_GET_SIZE(__pyx_v_values); if (unlikely(__pyx_t_1 == ((Py_ssize_t)-1))) __PYX_ERR(0, 95, __pyx_L1_error)
+  __pyx_t_1 = PyList_GET_SIZE(__pyx_v_values); if (unlikely(__pyx_t_1 == ((Py_ssize_t)-1))) __PYX_ERR(0, 98, __pyx_L1_error)
   __pyx_v_f = arma::field<arma::dvec> (__pyx_t_1);
 
-  /* "l0learn/cyarma.pyx":96
+  /* "l0learn/cyarma.pyx":99
  * cdef field[dvec] list_to_dvec_field(list values):
  *     cdef field[dvec] f = field[dvec](len(values))
  *     for i, value in enumerate(values):             # <<<<<<<<<<<<<<
- *         if not isinstance(value, np.ndarray) or value.ndim != 1 or not np.isreal(value):
+ *         if not isinstance(value, np.ndarray) or value.ndim != 1 or not np.isrealobj(value):
  *             raise TypeError(f"expected each value in values to be a 1D real numpy matrix, but got {value}")
  */
   __pyx_t_1 = 0;
@@ -2117,9 +2118,9 @@ static arma::field<arma::dvec>  __pyx_f_7l0learn_6cyarma_list_to_dvec_field(PyOb
   for (;;) {
     if (__pyx_t_3 >= PyList_GET_SIZE(__pyx_t_2)) break;
     #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-    __pyx_t_4 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_4); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 96, __pyx_L1_error)
+    __pyx_t_4 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_4); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 99, __pyx_L1_error)
     #else
-    __pyx_t_4 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 96, __pyx_L1_error)
+    __pyx_t_4 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 99, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     #endif
     __Pyx_XDECREF_SET(__pyx_v_value, __pyx_t_4);
@@ -2127,10 +2128,10 @@ static arma::field<arma::dvec>  __pyx_f_7l0learn_6cyarma_list_to_dvec_field(PyOb
     __pyx_v_i = __pyx_t_1;
     __pyx_t_1 = (__pyx_t_1 + 1);
 
-    /* "l0learn/cyarma.pyx":97
+    /* "l0learn/cyarma.pyx":100
  *     cdef field[dvec] f = field[dvec](len(values))
  *     for i, value in enumerate(values):
- *         if not isinstance(value, np.ndarray) or value.ndim != 1 or not np.isreal(value):             # <<<<<<<<<<<<<<
+ *         if not isinstance(value, np.ndarray) or value.ndim != 1 or not np.isrealobj(value):             # <<<<<<<<<<<<<<
  *             raise TypeError(f"expected each value in values to be a 1D real numpy matrix, but got {value}")
  *         f[i] = numpy_to_dvec_d(value)
  */
@@ -2141,21 +2142,21 @@ static arma::field<arma::dvec>  __pyx_f_7l0learn_6cyarma_list_to_dvec_field(PyOb
       __pyx_t_5 = __pyx_t_7;
       goto __pyx_L6_bool_binop_done;
     }
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_value, __pyx_n_s_ndim); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 97, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_value, __pyx_n_s_ndim); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 100, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_8 = __Pyx_PyInt_NeObjC(__pyx_t_4, __pyx_int_1, 1, 0); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 97, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_PyInt_NeObjC(__pyx_t_4, __pyx_int_1, 1, 0); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 100, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_7 = __Pyx_PyObject_IsTrue(__pyx_t_8); if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 97, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyObject_IsTrue(__pyx_t_8); if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 100, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     if (!__pyx_t_7) {
     } else {
       __pyx_t_5 = __pyx_t_7;
       goto __pyx_L6_bool_binop_done;
     }
-    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 97, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 100, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_isreal); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 97, __pyx_L1_error)
+    __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_isrealobj); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 100, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __pyx_t_4 = NULL;
@@ -2170,77 +2171,77 @@ static arma::field<arma::dvec>  __pyx_f_7l0learn_6cyarma_list_to_dvec_field(PyOb
     }
     __pyx_t_8 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_9, __pyx_t_4, __pyx_v_value) : __Pyx_PyObject_CallOneArg(__pyx_t_9, __pyx_v_value);
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 97, __pyx_L1_error)
+    if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 100, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-    __pyx_t_7 = __Pyx_PyObject_IsTrue(__pyx_t_8); if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 97, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyObject_IsTrue(__pyx_t_8); if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 100, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     __pyx_t_6 = ((!__pyx_t_7) != 0);
     __pyx_t_5 = __pyx_t_6;
     __pyx_L6_bool_binop_done:;
     if (unlikely(__pyx_t_5)) {
 
-      /* "l0learn/cyarma.pyx":98
+      /* "l0learn/cyarma.pyx":101
  *     for i, value in enumerate(values):
- *         if not isinstance(value, np.ndarray) or value.ndim != 1 or not np.isreal(value):
+ *         if not isinstance(value, np.ndarray) or value.ndim != 1 or not np.isrealobj(value):
  *             raise TypeError(f"expected each value in values to be a 1D real numpy matrix, but got {value}")             # <<<<<<<<<<<<<<
  *         f[i] = numpy_to_dvec_d(value)
  *     return f
  */
-      __pyx_t_8 = __Pyx_PyObject_FormatSimple(__pyx_v_value, __pyx_empty_unicode); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 98, __pyx_L1_error)
+      __pyx_t_8 = __Pyx_PyObject_FormatSimple(__pyx_v_value, __pyx_empty_unicode); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 101, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_8);
-      __pyx_t_9 = __Pyx_PyUnicode_Concat(__pyx_kp_u_expected_each_value_in_values_to_2, __pyx_t_8); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 98, __pyx_L1_error)
+      __pyx_t_9 = __Pyx_PyUnicode_Concat(__pyx_kp_u_expected_each_value_in_values_to_2, __pyx_t_8); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 101, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_9);
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-      __pyx_t_8 = __Pyx_PyObject_CallOneArg(__pyx_builtin_TypeError, __pyx_t_9); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 98, __pyx_L1_error)
+      __pyx_t_8 = __Pyx_PyObject_CallOneArg(__pyx_builtin_TypeError, __pyx_t_9); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 101, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_8);
       __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
       __Pyx_Raise(__pyx_t_8, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-      __PYX_ERR(0, 98, __pyx_L1_error)
+      __PYX_ERR(0, 101, __pyx_L1_error)
 
-      /* "l0learn/cyarma.pyx":97
+      /* "l0learn/cyarma.pyx":100
  *     cdef field[dvec] f = field[dvec](len(values))
  *     for i, value in enumerate(values):
- *         if not isinstance(value, np.ndarray) or value.ndim != 1 or not np.isreal(value):             # <<<<<<<<<<<<<<
+ *         if not isinstance(value, np.ndarray) or value.ndim != 1 or not np.isrealobj(value):             # <<<<<<<<<<<<<<
  *             raise TypeError(f"expected each value in values to be a 1D real numpy matrix, but got {value}")
  *         f[i] = numpy_to_dvec_d(value)
  */
     }
 
-    /* "l0learn/cyarma.pyx":99
- *         if not isinstance(value, np.ndarray) or value.ndim != 1 or not np.isreal(value):
+    /* "l0learn/cyarma.pyx":102
+ *         if not isinstance(value, np.ndarray) or value.ndim != 1 or not np.isrealobj(value):
  *             raise TypeError(f"expected each value in values to be a 1D real numpy matrix, but got {value}")
  *         f[i] = numpy_to_dvec_d(value)             # <<<<<<<<<<<<<<
  *     return f
  * 
  */
-    if (!(likely(((__pyx_v_value) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_value, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 99, __pyx_L1_error)
+    if (!(likely(((__pyx_v_value) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_value, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 102, __pyx_L1_error)
     (__pyx_v_f[__pyx_v_i]) = __pyx_f_7l0learn_6cyarma_numpy_to_dvec_d(((PyArrayObject *)__pyx_v_value));
 
-    /* "l0learn/cyarma.pyx":96
+    /* "l0learn/cyarma.pyx":99
  * cdef field[dvec] list_to_dvec_field(list values):
  *     cdef field[dvec] f = field[dvec](len(values))
  *     for i, value in enumerate(values):             # <<<<<<<<<<<<<<
- *         if not isinstance(value, np.ndarray) or value.ndim != 1 or not np.isreal(value):
+ *         if not isinstance(value, np.ndarray) or value.ndim != 1 or not np.isrealobj(value):
  *             raise TypeError(f"expected each value in values to be a 1D real numpy matrix, but got {value}")
  */
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "l0learn/cyarma.pyx":100
+  /* "l0learn/cyarma.pyx":103
  *             raise TypeError(f"expected each value in values to be a 1D real numpy matrix, but got {value}")
  *         f[i] = numpy_to_dvec_d(value)
  *     return f             # <<<<<<<<<<<<<<
  * 
- * cdef dmat * numpy_to_dmat(np.ndarray[np.double_t, ndim=2] X):
+ * 
  */
   __pyx_r = __pyx_v_f;
   goto __pyx_L0;
 
-  /* "l0learn/cyarma.pyx":94
- *     return f
+  /* "l0learn/cyarma.pyx":97
  * 
+ * @cython.boundscheck(False)
  * cdef field[dvec] list_to_dvec_field(list values):             # <<<<<<<<<<<<<<
  *     cdef field[dvec] f = field[dvec](len(values))
  *     for i, value in enumerate(values):
@@ -2260,8 +2261,8 @@ static arma::field<arma::dvec>  __pyx_f_7l0learn_6cyarma_list_to_dvec_field(PyOb
   return __pyx_r;
 }
 
-/* "l0learn/cyarma.pyx":102
- *     return f
+/* "l0learn/cyarma.pyx":106
+ * 
  * 
  * cdef dmat * numpy_to_dmat(np.ndarray[np.double_t, ndim=2] X):             # <<<<<<<<<<<<<<
  *     # TODO: Add checks on X (Size, ...)
@@ -2295,58 +2296,58 @@ static arma::dmat *__pyx_f_7l0learn_6cyarma_numpy_to_dmat(PyArrayObject *__pyx_v
   __pyx_pybuffernd_X.rcbuffer = &__pyx_pybuffer_X;
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_X.rcbuffer->pybuffer, (PyObject*)__pyx_v_X, &__Pyx_TypeInfo_nn___pyx_t_5numpy_double_t, PyBUF_FORMAT| PyBUF_STRIDES, 2, 0, __pyx_stack) == -1)) __PYX_ERR(0, 102, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_X.rcbuffer->pybuffer, (PyObject*)__pyx_v_X, &__Pyx_TypeInfo_nn___pyx_t_5numpy_double_t, PyBUF_FORMAT| PyBUF_STRIDES, 2, 0, __pyx_stack) == -1)) __PYX_ERR(0, 106, __pyx_L1_error)
   }
   __pyx_pybuffernd_X.diminfo[0].strides = __pyx_pybuffernd_X.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_X.diminfo[0].shape = __pyx_pybuffernd_X.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_X.diminfo[1].strides = __pyx_pybuffernd_X.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_X.diminfo[1].shape = __pyx_pybuffernd_X.rcbuffer->pybuffer.shape[1];
 
-  /* "l0learn/cyarma.pyx":107
+  /* "l0learn/cyarma.pyx":111
  *     #  mat(ptr_aux_mem, n_rows, n_cols, copy_aux_mem = true, strict = false)
  *     # TODO: raise Warning on copy or replication of data
  *     if not (X.flags.f_contiguous or X.flags.owndata):             # <<<<<<<<<<<<<<
  *         X = X.copy(order="F")
  *     cdef dmat *aR_p  = new dmat(<double*> X.data, X.shape[0], X.shape[1], False, True)
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_X), __pyx_n_s_flags); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 107, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_X), __pyx_n_s_flags); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 111, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_f_contiguous); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 107, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_f_contiguous); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 111, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 107, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 111, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   if (!__pyx_t_4) {
   } else {
     __pyx_t_1 = __pyx_t_4;
     goto __pyx_L4_bool_binop_done;
   }
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_X), __pyx_n_s_flags); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 107, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_X), __pyx_n_s_flags); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 111, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_owndata); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 107, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_owndata); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 111, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 107, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 111, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_t_1 = __pyx_t_4;
   __pyx_L4_bool_binop_done:;
   __pyx_t_4 = ((!__pyx_t_1) != 0);
   if (__pyx_t_4) {
 
-    /* "l0learn/cyarma.pyx":108
+    /* "l0learn/cyarma.pyx":112
  *     # TODO: raise Warning on copy or replication of data
  *     if not (X.flags.f_contiguous or X.flags.owndata):
  *         X = X.copy(order="F")             # <<<<<<<<<<<<<<
  *     cdef dmat *aR_p  = new dmat(<double*> X.data, X.shape[0], X.shape[1], False, True)
  *     return aR_p
  */
-    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_X), __pyx_n_s_copy); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 108, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_X), __pyx_n_s_copy); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 112, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_3 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 108, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 112, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_order, __pyx_n_u_F) < 0) __PYX_ERR(0, 108, __pyx_L1_error)
-    __pyx_t_5 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_empty_tuple, __pyx_t_3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 108, __pyx_L1_error)
+    if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_order, __pyx_n_u_F) < 0) __PYX_ERR(0, 112, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_empty_tuple, __pyx_t_3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 112, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (!(likely(((__pyx_t_5) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_5, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 108, __pyx_L1_error)
+    if (!(likely(((__pyx_t_5) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_5, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 112, __pyx_L1_error)
     __pyx_t_6 = ((PyArrayObject *)__pyx_t_5);
     {
       __Pyx_BufFmt_StackElem __pyx_stack[1];
@@ -2363,13 +2364,13 @@ static arma::dmat *__pyx_f_7l0learn_6cyarma_numpy_to_dmat(PyArrayObject *__pyx_v
         __pyx_t_8 = __pyx_t_9 = __pyx_t_10 = 0;
       }
       __pyx_pybuffernd_X.diminfo[0].strides = __pyx_pybuffernd_X.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_X.diminfo[0].shape = __pyx_pybuffernd_X.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_X.diminfo[1].strides = __pyx_pybuffernd_X.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_X.diminfo[1].shape = __pyx_pybuffernd_X.rcbuffer->pybuffer.shape[1];
-      if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 108, __pyx_L1_error)
+      if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 112, __pyx_L1_error)
     }
     __pyx_t_6 = 0;
     __Pyx_DECREF_SET(__pyx_v_X, ((PyArrayObject *)__pyx_t_5));
     __pyx_t_5 = 0;
 
-    /* "l0learn/cyarma.pyx":107
+    /* "l0learn/cyarma.pyx":111
  *     #  mat(ptr_aux_mem, n_rows, n_cols, copy_aux_mem = true, strict = false)
  *     # TODO: raise Warning on copy or replication of data
  *     if not (X.flags.f_contiguous or X.flags.owndata):             # <<<<<<<<<<<<<<
@@ -2378,7 +2379,7 @@ static arma::dmat *__pyx_f_7l0learn_6cyarma_numpy_to_dmat(PyArrayObject *__pyx_v
  */
   }
 
-  /* "l0learn/cyarma.pyx":109
+  /* "l0learn/cyarma.pyx":113
  *     if not (X.flags.f_contiguous or X.flags.owndata):
  *         X = X.copy(order="F")
  *     cdef dmat *aR_p  = new dmat(<double*> X.data, X.shape[0], X.shape[1], False, True)             # <<<<<<<<<<<<<<
@@ -2387,7 +2388,7 @@ static arma::dmat *__pyx_f_7l0learn_6cyarma_numpy_to_dmat(PyArrayObject *__pyx_v
  */
   __pyx_v_aR_p = new arma::dmat(((double *)__pyx_v_X->data), (__pyx_v_X->dimensions[0]), (__pyx_v_X->dimensions[1]), 0, 1);
 
-  /* "l0learn/cyarma.pyx":110
+  /* "l0learn/cyarma.pyx":114
  *         X = X.copy(order="F")
  *     cdef dmat *aR_p  = new dmat(<double*> X.data, X.shape[0], X.shape[1], False, True)
  *     return aR_p             # <<<<<<<<<<<<<<
@@ -2397,8 +2398,8 @@ static arma::dmat *__pyx_f_7l0learn_6cyarma_numpy_to_dmat(PyArrayObject *__pyx_v
   __pyx_r = __pyx_v_aR_p;
   goto __pyx_L0;
 
-  /* "l0learn/cyarma.pyx":102
- *     return f
+  /* "l0learn/cyarma.pyx":106
+ * 
  * 
  * cdef dmat * numpy_to_dmat(np.ndarray[np.double_t, ndim=2] X):             # <<<<<<<<<<<<<<
  *     # TODO: Add checks on X (Size, ...)
@@ -2427,7 +2428,7 @@ static arma::dmat *__pyx_f_7l0learn_6cyarma_numpy_to_dmat(PyArrayObject *__pyx_v
   return __pyx_r;
 }
 
-/* "l0learn/cyarma.pyx":112
+/* "l0learn/cyarma.pyx":116
  *     return aR_p
  * 
  * cdef dmat numpy_to_dmat_d(np.ndarray[np.double_t, ndim=2] X):             # <<<<<<<<<<<<<<
@@ -2452,11 +2453,11 @@ static arma::dmat __pyx_f_7l0learn_6cyarma_numpy_to_dmat_d(PyArrayObject *__pyx_
   __pyx_pybuffernd_X.rcbuffer = &__pyx_pybuffer_X;
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_X.rcbuffer->pybuffer, (PyObject*)__pyx_v_X, &__Pyx_TypeInfo_nn___pyx_t_5numpy_double_t, PyBUF_FORMAT| PyBUF_STRIDES, 2, 0, __pyx_stack) == -1)) __PYX_ERR(0, 112, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_X.rcbuffer->pybuffer, (PyObject*)__pyx_v_X, &__Pyx_TypeInfo_nn___pyx_t_5numpy_double_t, PyBUF_FORMAT| PyBUF_STRIDES, 2, 0, __pyx_stack) == -1)) __PYX_ERR(0, 116, __pyx_L1_error)
   }
   __pyx_pybuffernd_X.diminfo[0].strides = __pyx_pybuffernd_X.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_X.diminfo[0].shape = __pyx_pybuffernd_X.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_X.diminfo[1].strides = __pyx_pybuffernd_X.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_X.diminfo[1].shape = __pyx_pybuffernd_X.rcbuffer->pybuffer.shape[1];
 
-  /* "l0learn/cyarma.pyx":113
+  /* "l0learn/cyarma.pyx":117
  * 
  * cdef dmat numpy_to_dmat_d(np.ndarray[np.double_t, ndim=2] X):
  *     cdef dmat * aR_p = numpy_to_dmat(X)             # <<<<<<<<<<<<<<
@@ -2465,7 +2466,7 @@ static arma::dmat __pyx_f_7l0learn_6cyarma_numpy_to_dmat_d(PyArrayObject *__pyx_
  */
   __pyx_v_aR_p = __pyx_f_7l0learn_6cyarma_numpy_to_dmat(((PyArrayObject *)__pyx_v_X));
 
-  /* "l0learn/cyarma.pyx":114
+  /* "l0learn/cyarma.pyx":118
  * cdef dmat numpy_to_dmat_d(np.ndarray[np.double_t, ndim=2] X):
  *     cdef dmat * aR_p = numpy_to_dmat(X)
  *     cdef dmat aR = deref(aR_p)             # <<<<<<<<<<<<<<
@@ -2474,7 +2475,7 @@ static arma::dmat __pyx_f_7l0learn_6cyarma_numpy_to_dmat_d(PyArrayObject *__pyx_
  */
   __pyx_v_aR = (*__pyx_v_aR_p);
 
-  /* "l0learn/cyarma.pyx":115
+  /* "l0learn/cyarma.pyx":119
  *     cdef dmat * aR_p = numpy_to_dmat(X)
  *     cdef dmat aR = deref(aR_p)
  *     del aR_p             # <<<<<<<<<<<<<<
@@ -2483,7 +2484,7 @@ static arma::dmat __pyx_f_7l0learn_6cyarma_numpy_to_dmat_d(PyArrayObject *__pyx_
  */
   delete __pyx_v_aR_p;
 
-  /* "l0learn/cyarma.pyx":116
+  /* "l0learn/cyarma.pyx":120
  *     cdef dmat aR = deref(aR_p)
  *     del aR_p
  *     return aR             # <<<<<<<<<<<<<<
@@ -2493,7 +2494,7 @@ static arma::dmat __pyx_f_7l0learn_6cyarma_numpy_to_dmat_d(PyArrayObject *__pyx_
   __pyx_r = __pyx_v_aR;
   goto __pyx_L0;
 
-  /* "l0learn/cyarma.pyx":112
+  /* "l0learn/cyarma.pyx":116
  *     return aR_p
  * 
  * cdef dmat numpy_to_dmat_d(np.ndarray[np.double_t, ndim=2] X):             # <<<<<<<<<<<<<<
@@ -2519,7 +2520,7 @@ static arma::dmat __pyx_f_7l0learn_6cyarma_numpy_to_dmat_d(PyArrayObject *__pyx_
   return __pyx_r;
 }
 
-/* "l0learn/cyarma.pyx":118
+/* "l0learn/cyarma.pyx":122
  *     return aR
  * 
  * cdef dvec * numpy_to_dvec(np.ndarray[np.double_t, ndim=1] x):             # <<<<<<<<<<<<<<
@@ -2554,49 +2555,49 @@ static arma::dvec *__pyx_f_7l0learn_6cyarma_numpy_to_dvec(PyArrayObject *__pyx_v
   __pyx_pybuffernd_x.rcbuffer = &__pyx_pybuffer_x;
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_x.rcbuffer->pybuffer, (PyObject*)__pyx_v_x, &__Pyx_TypeInfo_nn___pyx_t_5numpy_double_t, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 118, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_x.rcbuffer->pybuffer, (PyObject*)__pyx_v_x, &__Pyx_TypeInfo_nn___pyx_t_5numpy_double_t, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 122, __pyx_L1_error)
   }
   __pyx_pybuffernd_x.diminfo[0].strides = __pyx_pybuffernd_x.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_x.diminfo[0].shape = __pyx_pybuffernd_x.rcbuffer->pybuffer.shape[0];
 
-  /* "l0learn/cyarma.pyx":119
+  /* "l0learn/cyarma.pyx":123
  * 
  * cdef dvec * numpy_to_dvec(np.ndarray[np.double_t, ndim=1] x):
  *     if not (x.flags.f_contiguous or x.flags.owndata):             # <<<<<<<<<<<<<<
  *         x = x.copy()
  *     cdef dvec *ar_p = new dvec(<double*> x.data, x.shape[0], False, True)
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_x), __pyx_n_s_flags); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 119, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_x), __pyx_n_s_flags); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 123, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_f_contiguous); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 119, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_f_contiguous); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 123, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 119, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 123, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   if (!__pyx_t_4) {
   } else {
     __pyx_t_1 = __pyx_t_4;
     goto __pyx_L4_bool_binop_done;
   }
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_x), __pyx_n_s_flags); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 119, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_x), __pyx_n_s_flags); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 123, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_owndata); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 119, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_owndata); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 123, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 119, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 123, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_t_1 = __pyx_t_4;
   __pyx_L4_bool_binop_done:;
   __pyx_t_4 = ((!__pyx_t_1) != 0);
   if (__pyx_t_4) {
 
-    /* "l0learn/cyarma.pyx":120
+    /* "l0learn/cyarma.pyx":124
  * cdef dvec * numpy_to_dvec(np.ndarray[np.double_t, ndim=1] x):
  *     if not (x.flags.f_contiguous or x.flags.owndata):
  *         x = x.copy()             # <<<<<<<<<<<<<<
  *     cdef dvec *ar_p = new dvec(<double*> x.data, x.shape[0], False, True)
  *     return ar_p
  */
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_x), __pyx_n_s_copy); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 120, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_x), __pyx_n_s_copy); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 124, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_t_5 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
@@ -2610,10 +2611,10 @@ static arma::dvec *__pyx_f_7l0learn_6cyarma_numpy_to_dvec(PyArrayObject *__pyx_v
     }
     __pyx_t_2 = (__pyx_t_5) ? __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_5) : __Pyx_PyObject_CallNoArg(__pyx_t_3);
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 120, __pyx_L1_error)
+    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 124, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (!(likely(((__pyx_t_2) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_2, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 120, __pyx_L1_error)
+    if (!(likely(((__pyx_t_2) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_2, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 124, __pyx_L1_error)
     __pyx_t_6 = ((PyArrayObject *)__pyx_t_2);
     {
       __Pyx_BufFmt_StackElem __pyx_stack[1];
@@ -2630,13 +2631,13 @@ static arma::dvec *__pyx_f_7l0learn_6cyarma_numpy_to_dvec(PyArrayObject *__pyx_v
         __pyx_t_8 = __pyx_t_9 = __pyx_t_10 = 0;
       }
       __pyx_pybuffernd_x.diminfo[0].strides = __pyx_pybuffernd_x.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_x.diminfo[0].shape = __pyx_pybuffernd_x.rcbuffer->pybuffer.shape[0];
-      if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 120, __pyx_L1_error)
+      if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 124, __pyx_L1_error)
     }
     __pyx_t_6 = 0;
     __Pyx_DECREF_SET(__pyx_v_x, ((PyArrayObject *)__pyx_t_2));
     __pyx_t_2 = 0;
 
-    /* "l0learn/cyarma.pyx":119
+    /* "l0learn/cyarma.pyx":123
  * 
  * cdef dvec * numpy_to_dvec(np.ndarray[np.double_t, ndim=1] x):
  *     if not (x.flags.f_contiguous or x.flags.owndata):             # <<<<<<<<<<<<<<
@@ -2645,7 +2646,7 @@ static arma::dvec *__pyx_f_7l0learn_6cyarma_numpy_to_dvec(PyArrayObject *__pyx_v
  */
   }
 
-  /* "l0learn/cyarma.pyx":121
+  /* "l0learn/cyarma.pyx":125
  *     if not (x.flags.f_contiguous or x.flags.owndata):
  *         x = x.copy()
  *     cdef dvec *ar_p = new dvec(<double*> x.data, x.shape[0], False, True)             # <<<<<<<<<<<<<<
@@ -2654,7 +2655,7 @@ static arma::dvec *__pyx_f_7l0learn_6cyarma_numpy_to_dvec(PyArrayObject *__pyx_v
  */
   __pyx_v_ar_p = new arma::dvec(((double *)__pyx_v_x->data), (__pyx_v_x->dimensions[0]), 0, 1);
 
-  /* "l0learn/cyarma.pyx":122
+  /* "l0learn/cyarma.pyx":126
  *         x = x.copy()
  *     cdef dvec *ar_p = new dvec(<double*> x.data, x.shape[0], False, True)
  *     return ar_p             # <<<<<<<<<<<<<<
@@ -2664,7 +2665,7 @@ static arma::dvec *__pyx_f_7l0learn_6cyarma_numpy_to_dvec(PyArrayObject *__pyx_v
   __pyx_r = __pyx_v_ar_p;
   goto __pyx_L0;
 
-  /* "l0learn/cyarma.pyx":118
+  /* "l0learn/cyarma.pyx":122
  *     return aR
  * 
  * cdef dvec * numpy_to_dvec(np.ndarray[np.double_t, ndim=1] x):             # <<<<<<<<<<<<<<
@@ -2694,7 +2695,7 @@ static arma::dvec *__pyx_f_7l0learn_6cyarma_numpy_to_dvec(PyArrayObject *__pyx_v
   return __pyx_r;
 }
 
-/* "l0learn/cyarma.pyx":124
+/* "l0learn/cyarma.pyx":128
  *     return ar_p
  * 
  * cdef dvec numpy_to_dvec_d(np.ndarray[np.double_t, ndim=1] x):             # <<<<<<<<<<<<<<
@@ -2719,11 +2720,11 @@ static arma::dvec __pyx_f_7l0learn_6cyarma_numpy_to_dvec_d(PyArrayObject *__pyx_
   __pyx_pybuffernd_x.rcbuffer = &__pyx_pybuffer_x;
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_x.rcbuffer->pybuffer, (PyObject*)__pyx_v_x, &__Pyx_TypeInfo_nn___pyx_t_5numpy_double_t, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 124, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_x.rcbuffer->pybuffer, (PyObject*)__pyx_v_x, &__Pyx_TypeInfo_nn___pyx_t_5numpy_double_t, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 128, __pyx_L1_error)
   }
   __pyx_pybuffernd_x.diminfo[0].strides = __pyx_pybuffernd_x.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_x.diminfo[0].shape = __pyx_pybuffernd_x.rcbuffer->pybuffer.shape[0];
 
-  /* "l0learn/cyarma.pyx":125
+  /* "l0learn/cyarma.pyx":129
  * 
  * cdef dvec numpy_to_dvec_d(np.ndarray[np.double_t, ndim=1] x):
  *     cdef dvec *ar_p = numpy_to_dvec(x)             # <<<<<<<<<<<<<<
@@ -2732,7 +2733,7 @@ static arma::dvec __pyx_f_7l0learn_6cyarma_numpy_to_dvec_d(PyArrayObject *__pyx_
  */
   __pyx_v_ar_p = __pyx_f_7l0learn_6cyarma_numpy_to_dvec(((PyArrayObject *)__pyx_v_x));
 
-  /* "l0learn/cyarma.pyx":126
+  /* "l0learn/cyarma.pyx":130
  * cdef dvec numpy_to_dvec_d(np.ndarray[np.double_t, ndim=1] x):
  *     cdef dvec *ar_p = numpy_to_dvec(x)
  *     cdef dvec ar = deref(ar_p)             # <<<<<<<<<<<<<<
@@ -2741,7 +2742,7 @@ static arma::dvec __pyx_f_7l0learn_6cyarma_numpy_to_dvec_d(PyArrayObject *__pyx_
  */
   __pyx_v_ar = (*__pyx_v_ar_p);
 
-  /* "l0learn/cyarma.pyx":127
+  /* "l0learn/cyarma.pyx":131
  *     cdef dvec *ar_p = numpy_to_dvec(x)
  *     cdef dvec ar = deref(ar_p)
  *     del ar_p             # <<<<<<<<<<<<<<
@@ -2750,7 +2751,7 @@ static arma::dvec __pyx_f_7l0learn_6cyarma_numpy_to_dvec_d(PyArrayObject *__pyx_
  */
   delete __pyx_v_ar_p;
 
-  /* "l0learn/cyarma.pyx":128
+  /* "l0learn/cyarma.pyx":132
  *     cdef dvec ar = deref(ar_p)
  *     del ar_p
  *     return ar             # <<<<<<<<<<<<<<
@@ -2760,7 +2761,7 @@ static arma::dvec __pyx_f_7l0learn_6cyarma_numpy_to_dvec_d(PyArrayObject *__pyx_
   __pyx_r = __pyx_v_ar;
   goto __pyx_L0;
 
-  /* "l0learn/cyarma.pyx":124
+  /* "l0learn/cyarma.pyx":128
  *     return ar_p
  * 
  * cdef dvec numpy_to_dvec_d(np.ndarray[np.double_t, ndim=1] x):             # <<<<<<<<<<<<<<
@@ -2786,7 +2787,7 @@ static arma::dvec __pyx_f_7l0learn_6cyarma_numpy_to_dvec_d(PyArrayObject *__pyx_
   return __pyx_r;
 }
 
-/* "l0learn/cyarma.pyx":130
+/* "l0learn/cyarma.pyx":134
  *     return ar
  * 
  * cdef uvec * numpy_to_uvec(np.ndarray[np.uint64_t, ndim=1] x):             # <<<<<<<<<<<<<<
@@ -2821,49 +2822,49 @@ static arma::uvec *__pyx_f_7l0learn_6cyarma_numpy_to_uvec(PyArrayObject *__pyx_v
   __pyx_pybuffernd_x.rcbuffer = &__pyx_pybuffer_x;
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_x.rcbuffer->pybuffer, (PyObject*)__pyx_v_x, &__Pyx_TypeInfo_nn___pyx_t_5numpy_uint64_t, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 130, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_x.rcbuffer->pybuffer, (PyObject*)__pyx_v_x, &__Pyx_TypeInfo_nn___pyx_t_5numpy_uint64_t, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 134, __pyx_L1_error)
   }
   __pyx_pybuffernd_x.diminfo[0].strides = __pyx_pybuffernd_x.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_x.diminfo[0].shape = __pyx_pybuffernd_x.rcbuffer->pybuffer.shape[0];
 
-  /* "l0learn/cyarma.pyx":131
+  /* "l0learn/cyarma.pyx":135
  * 
  * cdef uvec * numpy_to_uvec(np.ndarray[np.uint64_t, ndim=1] x):
  *     if not (x.flags.f_contiguous or x.flags.owndata):             # <<<<<<<<<<<<<<
  *         x = x.copy()
  *     cdef uvec *ar_p = new uvec(<unsigned long long *> x.data, x.shape[0], False, True)
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_x), __pyx_n_s_flags); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 131, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_x), __pyx_n_s_flags); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 135, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_f_contiguous); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 131, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_f_contiguous); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 135, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 131, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 135, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   if (!__pyx_t_4) {
   } else {
     __pyx_t_1 = __pyx_t_4;
     goto __pyx_L4_bool_binop_done;
   }
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_x), __pyx_n_s_flags); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 131, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_x), __pyx_n_s_flags); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 135, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_owndata); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 131, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_owndata); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 135, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 131, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 135, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_t_1 = __pyx_t_4;
   __pyx_L4_bool_binop_done:;
   __pyx_t_4 = ((!__pyx_t_1) != 0);
   if (__pyx_t_4) {
 
-    /* "l0learn/cyarma.pyx":132
+    /* "l0learn/cyarma.pyx":136
  * cdef uvec * numpy_to_uvec(np.ndarray[np.uint64_t, ndim=1] x):
  *     if not (x.flags.f_contiguous or x.flags.owndata):
  *         x = x.copy()             # <<<<<<<<<<<<<<
  *     cdef uvec *ar_p = new uvec(<unsigned long long *> x.data, x.shape[0], False, True)
  *     return ar_p
  */
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_x), __pyx_n_s_copy); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 132, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_x), __pyx_n_s_copy); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 136, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_t_5 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
@@ -2877,10 +2878,10 @@ static arma::uvec *__pyx_f_7l0learn_6cyarma_numpy_to_uvec(PyArrayObject *__pyx_v
     }
     __pyx_t_2 = (__pyx_t_5) ? __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_5) : __Pyx_PyObject_CallNoArg(__pyx_t_3);
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 132, __pyx_L1_error)
+    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 136, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (!(likely(((__pyx_t_2) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_2, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 132, __pyx_L1_error)
+    if (!(likely(((__pyx_t_2) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_2, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 136, __pyx_L1_error)
     __pyx_t_6 = ((PyArrayObject *)__pyx_t_2);
     {
       __Pyx_BufFmt_StackElem __pyx_stack[1];
@@ -2897,13 +2898,13 @@ static arma::uvec *__pyx_f_7l0learn_6cyarma_numpy_to_uvec(PyArrayObject *__pyx_v
         __pyx_t_8 = __pyx_t_9 = __pyx_t_10 = 0;
       }
       __pyx_pybuffernd_x.diminfo[0].strides = __pyx_pybuffernd_x.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_x.diminfo[0].shape = __pyx_pybuffernd_x.rcbuffer->pybuffer.shape[0];
-      if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 132, __pyx_L1_error)
+      if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 136, __pyx_L1_error)
     }
     __pyx_t_6 = 0;
     __Pyx_DECREF_SET(__pyx_v_x, ((PyArrayObject *)__pyx_t_2));
     __pyx_t_2 = 0;
 
-    /* "l0learn/cyarma.pyx":131
+    /* "l0learn/cyarma.pyx":135
  * 
  * cdef uvec * numpy_to_uvec(np.ndarray[np.uint64_t, ndim=1] x):
  *     if not (x.flags.f_contiguous or x.flags.owndata):             # <<<<<<<<<<<<<<
@@ -2912,7 +2913,7 @@ static arma::uvec *__pyx_f_7l0learn_6cyarma_numpy_to_uvec(PyArrayObject *__pyx_v
  */
   }
 
-  /* "l0learn/cyarma.pyx":133
+  /* "l0learn/cyarma.pyx":137
  *     if not (x.flags.f_contiguous or x.flags.owndata):
  *         x = x.copy()
  *     cdef uvec *ar_p = new uvec(<unsigned long long *> x.data, x.shape[0], False, True)             # <<<<<<<<<<<<<<
@@ -2921,7 +2922,7 @@ static arma::uvec *__pyx_f_7l0learn_6cyarma_numpy_to_uvec(PyArrayObject *__pyx_v
  */
   __pyx_v_ar_p = new arma::uvec(((unsigned PY_LONG_LONG *)__pyx_v_x->data), (__pyx_v_x->dimensions[0]), 0, 1);
 
-  /* "l0learn/cyarma.pyx":134
+  /* "l0learn/cyarma.pyx":138
  *         x = x.copy()
  *     cdef uvec *ar_p = new uvec(<unsigned long long *> x.data, x.shape[0], False, True)
  *     return ar_p             # <<<<<<<<<<<<<<
@@ -2931,7 +2932,7 @@ static arma::uvec *__pyx_f_7l0learn_6cyarma_numpy_to_uvec(PyArrayObject *__pyx_v
   __pyx_r = __pyx_v_ar_p;
   goto __pyx_L0;
 
-  /* "l0learn/cyarma.pyx":130
+  /* "l0learn/cyarma.pyx":134
  *     return ar
  * 
  * cdef uvec * numpy_to_uvec(np.ndarray[np.uint64_t, ndim=1] x):             # <<<<<<<<<<<<<<
@@ -2961,7 +2962,7 @@ static arma::uvec *__pyx_f_7l0learn_6cyarma_numpy_to_uvec(PyArrayObject *__pyx_v
   return __pyx_r;
 }
 
-/* "l0learn/cyarma.pyx":136
+/* "l0learn/cyarma.pyx":140
  *     return ar_p
  * 
  * cdef uvec numpy_to_uvec_d(np.ndarray[np.uint64_t, ndim=1] x):             # <<<<<<<<<<<<<<
@@ -2986,11 +2987,11 @@ static arma::uvec __pyx_f_7l0learn_6cyarma_numpy_to_uvec_d(PyArrayObject *__pyx_
   __pyx_pybuffernd_x.rcbuffer = &__pyx_pybuffer_x;
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_x.rcbuffer->pybuffer, (PyObject*)__pyx_v_x, &__Pyx_TypeInfo_nn___pyx_t_5numpy_uint64_t, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 136, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_x.rcbuffer->pybuffer, (PyObject*)__pyx_v_x, &__Pyx_TypeInfo_nn___pyx_t_5numpy_uint64_t, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 140, __pyx_L1_error)
   }
   __pyx_pybuffernd_x.diminfo[0].strides = __pyx_pybuffernd_x.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_x.diminfo[0].shape = __pyx_pybuffernd_x.rcbuffer->pybuffer.shape[0];
 
-  /* "l0learn/cyarma.pyx":137
+  /* "l0learn/cyarma.pyx":141
  * 
  * cdef uvec numpy_to_uvec_d(np.ndarray[np.uint64_t, ndim=1] x):
  *     cdef uvec *ar_p = numpy_to_uvec(x)             # <<<<<<<<<<<<<<
@@ -2999,7 +3000,7 @@ static arma::uvec __pyx_f_7l0learn_6cyarma_numpy_to_uvec_d(PyArrayObject *__pyx_
  */
   __pyx_v_ar_p = __pyx_f_7l0learn_6cyarma_numpy_to_uvec(((PyArrayObject *)__pyx_v_x));
 
-  /* "l0learn/cyarma.pyx":138
+  /* "l0learn/cyarma.pyx":142
  * cdef uvec numpy_to_uvec_d(np.ndarray[np.uint64_t, ndim=1] x):
  *     cdef uvec *ar_p = numpy_to_uvec(x)
  *     cdef uvec ar = deref(ar_p)             # <<<<<<<<<<<<<<
@@ -3008,7 +3009,7 @@ static arma::uvec __pyx_f_7l0learn_6cyarma_numpy_to_uvec_d(PyArrayObject *__pyx_
  */
   __pyx_v_ar = (*__pyx_v_ar_p);
 
-  /* "l0learn/cyarma.pyx":139
+  /* "l0learn/cyarma.pyx":143
  *     cdef uvec *ar_p = numpy_to_uvec(x)
  *     cdef uvec ar = deref(ar_p)
  *     del ar_p             # <<<<<<<<<<<<<<
@@ -3017,17 +3018,17 @@ static arma::uvec __pyx_f_7l0learn_6cyarma_numpy_to_uvec_d(PyArrayObject *__pyx_
  */
   delete __pyx_v_ar_p;
 
-  /* "l0learn/cyarma.pyx":140
+  /* "l0learn/cyarma.pyx":144
  *     cdef uvec ar = deref(ar_p)
  *     del ar_p
  *     return ar             # <<<<<<<<<<<<<<
  * 
- * cdef sp_dmat * numpy_to_sp_dmat(x):
+ * 
  */
   __pyx_r = __pyx_v_ar;
   goto __pyx_L0;
 
-  /* "l0learn/cyarma.pyx":136
+  /* "l0learn/cyarma.pyx":140
  *     return ar_p
  * 
  * cdef uvec numpy_to_uvec_d(np.ndarray[np.uint64_t, ndim=1] x):             # <<<<<<<<<<<<<<
@@ -3053,8 +3054,8 @@ static arma::uvec __pyx_f_7l0learn_6cyarma_numpy_to_uvec_d(PyArrayObject *__pyx_
   return __pyx_r;
 }
 
-/* "l0learn/cyarma.pyx":142
- *     return ar
+/* "l0learn/cyarma.pyx":147
+ * 
  * 
  * cdef sp_dmat * numpy_to_sp_dmat(x):             # <<<<<<<<<<<<<<
  *     if not isinstance(x, csc_matrix):
@@ -3107,28 +3108,28 @@ static arma::sp_dmat *__pyx_f_7l0learn_6cyarma_numpy_to_sp_dmat(PyObject *__pyx_
   __pyx_pybuffernd_indices.data = NULL;
   __pyx_pybuffernd_indices.rcbuffer = &__pyx_pybuffer_indices;
 
-  /* "l0learn/cyarma.pyx":143
+  /* "l0learn/cyarma.pyx":148
  * 
  * cdef sp_dmat * numpy_to_sp_dmat(x):
  *     if not isinstance(x, csc_matrix):             # <<<<<<<<<<<<<<
  *         raise ValueError(f"expected x to be of type {csc_matrix}, but got {type(x)}")
  * 
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_csc_matrix); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 143, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_csc_matrix); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 148, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = PyObject_IsInstance(__pyx_v_x, __pyx_t_1); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 143, __pyx_L1_error)
+  __pyx_t_2 = PyObject_IsInstance(__pyx_v_x, __pyx_t_1); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 148, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_3 = ((!(__pyx_t_2 != 0)) != 0);
   if (unlikely(__pyx_t_3)) {
 
-    /* "l0learn/cyarma.pyx":144
+    /* "l0learn/cyarma.pyx":149
  * cdef sp_dmat * numpy_to_sp_dmat(x):
  *     if not isinstance(x, csc_matrix):
  *         raise ValueError(f"expected x to be of type {csc_matrix}, but got {type(x)}")             # <<<<<<<<<<<<<<
  * 
  *     cdef np.ndarray[np.double_t, ndim=1] data = x.data
  */
-    __pyx_t_1 = PyTuple_New(4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 144, __pyx_L1_error)
+    __pyx_t_1 = PyTuple_New(4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 149, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __pyx_t_4 = 0;
     __pyx_t_5 = 127;
@@ -3136,9 +3137,9 @@ static arma::sp_dmat *__pyx_f_7l0learn_6cyarma_numpy_to_sp_dmat(PyObject *__pyx_
     __pyx_t_4 += 25;
     __Pyx_GIVEREF(__pyx_kp_u_expected_x_to_be_of_type);
     PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_kp_u_expected_x_to_be_of_type);
-    __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_csc_matrix); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 144, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_csc_matrix); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 149, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
-    __pyx_t_7 = __Pyx_PyObject_FormatSimple(__pyx_t_6, __pyx_empty_unicode); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 144, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyObject_FormatSimple(__pyx_t_6, __pyx_empty_unicode); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 149, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __pyx_t_5 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_7) > __pyx_t_5) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_7) : __pyx_t_5;
@@ -3150,24 +3151,24 @@ static arma::sp_dmat *__pyx_f_7l0learn_6cyarma_numpy_to_sp_dmat(PyObject *__pyx_
     __pyx_t_4 += 10;
     __Pyx_GIVEREF(__pyx_kp_u_but_got);
     PyTuple_SET_ITEM(__pyx_t_1, 2, __pyx_kp_u_but_got);
-    __pyx_t_7 = __Pyx_PyObject_FormatSimple(((PyObject *)Py_TYPE(__pyx_v_x)), __pyx_empty_unicode); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 144, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyObject_FormatSimple(((PyObject *)Py_TYPE(__pyx_v_x)), __pyx_empty_unicode); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 149, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     __pyx_t_5 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_7) > __pyx_t_5) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_7) : __pyx_t_5;
     __pyx_t_4 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_7);
     __Pyx_GIVEREF(__pyx_t_7);
     PyTuple_SET_ITEM(__pyx_t_1, 3, __pyx_t_7);
     __pyx_t_7 = 0;
-    __pyx_t_7 = __Pyx_PyUnicode_Join(__pyx_t_1, 4, __pyx_t_4, __pyx_t_5); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 144, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyUnicode_Join(__pyx_t_1, 4, __pyx_t_4, __pyx_t_5); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 149, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_builtin_ValueError, __pyx_t_7); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 144, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_builtin_ValueError, __pyx_t_7); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 149, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     __Pyx_Raise(__pyx_t_1, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __PYX_ERR(0, 144, __pyx_L1_error)
+    __PYX_ERR(0, 149, __pyx_L1_error)
 
-    /* "l0learn/cyarma.pyx":143
+    /* "l0learn/cyarma.pyx":148
  * 
  * cdef sp_dmat * numpy_to_sp_dmat(x):
  *     if not isinstance(x, csc_matrix):             # <<<<<<<<<<<<<<
@@ -3176,22 +3177,22 @@ static arma::sp_dmat *__pyx_f_7l0learn_6cyarma_numpy_to_sp_dmat(PyObject *__pyx_
  */
   }
 
-  /* "l0learn/cyarma.pyx":146
+  /* "l0learn/cyarma.pyx":151
  *         raise ValueError(f"expected x to be of type {csc_matrix}, but got {type(x)}")
  * 
  *     cdef np.ndarray[np.double_t, ndim=1] data = x.data             # <<<<<<<<<<<<<<
  *     cdef dvec values = numpy_to_dvec_d(data)
  * 
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_x, __pyx_n_s_data); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 146, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_x, __pyx_n_s_data); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 151, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 146, __pyx_L1_error)
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 151, __pyx_L1_error)
   __pyx_t_8 = ((PyArrayObject *)__pyx_t_1);
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_data.rcbuffer->pybuffer, (PyObject*)__pyx_t_8, &__Pyx_TypeInfo_nn___pyx_t_5numpy_double_t, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack) == -1)) {
       __pyx_v_data = ((PyArrayObject *)Py_None); __Pyx_INCREF(Py_None); __pyx_pybuffernd_data.rcbuffer->pybuffer.buf = NULL;
-      __PYX_ERR(0, 146, __pyx_L1_error)
+      __PYX_ERR(0, 151, __pyx_L1_error)
     } else {__pyx_pybuffernd_data.diminfo[0].strides = __pyx_pybuffernd_data.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_data.diminfo[0].shape = __pyx_pybuffernd_data.rcbuffer->pybuffer.shape[0];
     }
   }
@@ -3199,7 +3200,7 @@ static arma::sp_dmat *__pyx_f_7l0learn_6cyarma_numpy_to_sp_dmat(PyObject *__pyx_
   __pyx_v_data = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "l0learn/cyarma.pyx":147
+  /* "l0learn/cyarma.pyx":152
  * 
  *     cdef np.ndarray[np.double_t, ndim=1] data = x.data
  *     cdef dvec values = numpy_to_dvec_d(data)             # <<<<<<<<<<<<<<
@@ -3208,21 +3209,21 @@ static arma::sp_dmat *__pyx_f_7l0learn_6cyarma_numpy_to_sp_dmat(PyObject *__pyx_
  */
   __pyx_v_values = __pyx_f_7l0learn_6cyarma_numpy_to_dvec_d(((PyArrayObject *)__pyx_v_data));
 
-  /* "l0learn/cyarma.pyx":149
+  /* "l0learn/cyarma.pyx":154
  *     cdef dvec values = numpy_to_dvec_d(data)
  * 
  *     cdef np.ndarray[np.uint64_t, ndim=1] indptr = x.indptr.astype(np.uint64)             # <<<<<<<<<<<<<<
  *     cdef uvec colptr = numpy_to_uvec_d(indptr)
  * 
  */
-  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_v_x, __pyx_n_s_indptr); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 149, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_v_x, __pyx_n_s_indptr); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 154, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_7, __pyx_n_s_astype); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 149, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_7, __pyx_n_s_astype); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 154, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-  __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_n_s_np); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 149, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_n_s_np); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 154, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_t_7, __pyx_n_s_uint64); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 149, __pyx_L1_error)
+  __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_t_7, __pyx_n_s_uint64); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 154, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_9);
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   __pyx_t_7 = NULL;
@@ -3238,16 +3239,16 @@ static arma::sp_dmat *__pyx_f_7l0learn_6cyarma_numpy_to_sp_dmat(PyObject *__pyx_
   __pyx_t_1 = (__pyx_t_7) ? __Pyx_PyObject_Call2Args(__pyx_t_6, __pyx_t_7, __pyx_t_9) : __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_t_9);
   __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
   __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 149, __pyx_L1_error)
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 154, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 149, __pyx_L1_error)
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 154, __pyx_L1_error)
   __pyx_t_10 = ((PyArrayObject *)__pyx_t_1);
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_indptr.rcbuffer->pybuffer, (PyObject*)__pyx_t_10, &__Pyx_TypeInfo_nn___pyx_t_5numpy_uint64_t, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack) == -1)) {
       __pyx_v_indptr = ((PyArrayObject *)Py_None); __Pyx_INCREF(Py_None); __pyx_pybuffernd_indptr.rcbuffer->pybuffer.buf = NULL;
-      __PYX_ERR(0, 149, __pyx_L1_error)
+      __PYX_ERR(0, 154, __pyx_L1_error)
     } else {__pyx_pybuffernd_indptr.diminfo[0].strides = __pyx_pybuffernd_indptr.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_indptr.diminfo[0].shape = __pyx_pybuffernd_indptr.rcbuffer->pybuffer.shape[0];
     }
   }
@@ -3255,7 +3256,7 @@ static arma::sp_dmat *__pyx_f_7l0learn_6cyarma_numpy_to_sp_dmat(PyObject *__pyx_
   __pyx_v_indptr = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "l0learn/cyarma.pyx":150
+  /* "l0learn/cyarma.pyx":155
  * 
  *     cdef np.ndarray[np.uint64_t, ndim=1] indptr = x.indptr.astype(np.uint64)
  *     cdef uvec colptr = numpy_to_uvec_d(indptr)             # <<<<<<<<<<<<<<
@@ -3264,21 +3265,21 @@ static arma::sp_dmat *__pyx_f_7l0learn_6cyarma_numpy_to_sp_dmat(PyObject *__pyx_
  */
   __pyx_v_colptr = __pyx_f_7l0learn_6cyarma_numpy_to_uvec_d(((PyArrayObject *)__pyx_v_indptr));
 
-  /* "l0learn/cyarma.pyx":152
+  /* "l0learn/cyarma.pyx":157
  *     cdef uvec colptr = numpy_to_uvec_d(indptr)
  * 
  *     cdef np.ndarray[np.uint64_t, ndim=1] indices = x.indices.astype(np.uint64)             # <<<<<<<<<<<<<<
  *     cdef uvec rowind = numpy_to_uvec_d(indices)
  * 
  */
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_x, __pyx_n_s_indices); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 152, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_x, __pyx_n_s_indices); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 157, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_astype); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 152, __pyx_L1_error)
+  __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_astype); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 157, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_9);
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_np); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 152, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_np); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 157, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_uint64); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 152, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_uint64); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 157, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   __pyx_t_6 = NULL;
@@ -3294,16 +3295,16 @@ static arma::sp_dmat *__pyx_f_7l0learn_6cyarma_numpy_to_sp_dmat(PyObject *__pyx_
   __pyx_t_1 = (__pyx_t_6) ? __Pyx_PyObject_Call2Args(__pyx_t_9, __pyx_t_6, __pyx_t_7) : __Pyx_PyObject_CallOneArg(__pyx_t_9, __pyx_t_7);
   __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 152, __pyx_L1_error)
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 157, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 152, __pyx_L1_error)
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 157, __pyx_L1_error)
   __pyx_t_11 = ((PyArrayObject *)__pyx_t_1);
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_indices.rcbuffer->pybuffer, (PyObject*)__pyx_t_11, &__Pyx_TypeInfo_nn___pyx_t_5numpy_uint64_t, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack) == -1)) {
       __pyx_v_indices = ((PyArrayObject *)Py_None); __Pyx_INCREF(Py_None); __pyx_pybuffernd_indices.rcbuffer->pybuffer.buf = NULL;
-      __PYX_ERR(0, 152, __pyx_L1_error)
+      __PYX_ERR(0, 157, __pyx_L1_error)
     } else {__pyx_pybuffernd_indices.diminfo[0].strides = __pyx_pybuffernd_indices.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_indices.diminfo[0].shape = __pyx_pybuffernd_indices.rcbuffer->pybuffer.shape[0];
     }
   }
@@ -3311,7 +3312,7 @@ static arma::sp_dmat *__pyx_f_7l0learn_6cyarma_numpy_to_sp_dmat(PyObject *__pyx_
   __pyx_v_indices = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "l0learn/cyarma.pyx":153
+  /* "l0learn/cyarma.pyx":158
  * 
  *     cdef np.ndarray[np.uint64_t, ndim=1] indices = x.indices.astype(np.uint64)
  *     cdef uvec rowind = numpy_to_uvec_d(indices)             # <<<<<<<<<<<<<<
@@ -3320,41 +3321,41 @@ static arma::sp_dmat *__pyx_f_7l0learn_6cyarma_numpy_to_sp_dmat(PyObject *__pyx_
  */
   __pyx_v_rowind = __pyx_f_7l0learn_6cyarma_numpy_to_uvec_d(((PyArrayObject *)__pyx_v_indices));
 
-  /* "l0learn/cyarma.pyx":155
+  /* "l0learn/cyarma.pyx":160
  *     cdef uvec rowind = numpy_to_uvec_d(indices)
  * 
  *     cdef sp_dmat * ar = new sp_dmat(rowind, colptr, values, x.shape[0], x.shape[1])             # <<<<<<<<<<<<<<
  * 
  *     return ar
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_x, __pyx_n_s_shape); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 155, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_x, __pyx_n_s_shape); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_9 = __Pyx_GetItemInt(__pyx_t_1, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 155, __pyx_L1_error)
+  __pyx_t_9 = __Pyx_GetItemInt(__pyx_t_1, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_9);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_12 = __Pyx_PyInt_As_int(__pyx_t_9); if (unlikely((__pyx_t_12 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 155, __pyx_L1_error)
+  __pyx_t_12 = __Pyx_PyInt_As_int(__pyx_t_9); if (unlikely((__pyx_t_12 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-  __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_v_x, __pyx_n_s_shape); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 155, __pyx_L1_error)
+  __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_v_x, __pyx_n_s_shape); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_9);
-  __pyx_t_1 = __Pyx_GetItemInt(__pyx_t_9, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 155, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetItemInt(__pyx_t_9, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-  __pyx_t_13 = __Pyx_PyInt_As_int(__pyx_t_1); if (unlikely((__pyx_t_13 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 155, __pyx_L1_error)
+  __pyx_t_13 = __Pyx_PyInt_As_int(__pyx_t_1); if (unlikely((__pyx_t_13 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 160, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_ar = new arma::sp_dmat(__pyx_v_rowind, __pyx_v_colptr, __pyx_v_values, __pyx_t_12, __pyx_t_13);
 
-  /* "l0learn/cyarma.pyx":157
+  /* "l0learn/cyarma.pyx":162
  *     cdef sp_dmat * ar = new sp_dmat(rowind, colptr, values, x.shape[0], x.shape[1])
  * 
  *     return ar             # <<<<<<<<<<<<<<
  * 
- * cdef sp_dmat numpy_to_sp_dmat_d(x):
+ * 
  */
   __pyx_r = __pyx_v_ar;
   goto __pyx_L0;
 
-  /* "l0learn/cyarma.pyx":142
- *     return ar
+  /* "l0learn/cyarma.pyx":147
+ * 
  * 
  * cdef sp_dmat * numpy_to_sp_dmat(x):             # <<<<<<<<<<<<<<
  *     if not isinstance(x, csc_matrix):
@@ -3390,8 +3391,8 @@ static arma::sp_dmat *__pyx_f_7l0learn_6cyarma_numpy_to_sp_dmat(PyObject *__pyx_
   return __pyx_r;
 }
 
-/* "l0learn/cyarma.pyx":159
- *     return ar
+/* "l0learn/cyarma.pyx":165
+ * 
  * 
  * cdef sp_dmat numpy_to_sp_dmat_d(x):             # <<<<<<<<<<<<<<
  *     cdef sp_dmat *ar_p = numpy_to_sp_dmat(x)
@@ -3405,7 +3406,7 @@ static arma::sp_dmat __pyx_f_7l0learn_6cyarma_numpy_to_sp_dmat_d(PyObject *__pyx
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("numpy_to_sp_dmat_d", 0);
 
-  /* "l0learn/cyarma.pyx":160
+  /* "l0learn/cyarma.pyx":166
  * 
  * cdef sp_dmat numpy_to_sp_dmat_d(x):
  *     cdef sp_dmat *ar_p = numpy_to_sp_dmat(x)             # <<<<<<<<<<<<<<
@@ -3414,7 +3415,7 @@ static arma::sp_dmat __pyx_f_7l0learn_6cyarma_numpy_to_sp_dmat_d(PyObject *__pyx
  */
   __pyx_v_ar_p = __pyx_f_7l0learn_6cyarma_numpy_to_sp_dmat(__pyx_v_x);
 
-  /* "l0learn/cyarma.pyx":161
+  /* "l0learn/cyarma.pyx":167
  * cdef sp_dmat numpy_to_sp_dmat_d(x):
  *     cdef sp_dmat *ar_p = numpy_to_sp_dmat(x)
  *     cdef sp_dmat ar = deref(ar_p)             # <<<<<<<<<<<<<<
@@ -3423,7 +3424,7 @@ static arma::sp_dmat __pyx_f_7l0learn_6cyarma_numpy_to_sp_dmat_d(PyObject *__pyx
  */
   __pyx_v_ar = (*__pyx_v_ar_p);
 
-  /* "l0learn/cyarma.pyx":162
+  /* "l0learn/cyarma.pyx":168
  *     cdef sp_dmat *ar_p = numpy_to_sp_dmat(x)
  *     cdef sp_dmat ar = deref(ar_p)
  *     del ar_p             # <<<<<<<<<<<<<<
@@ -3432,7 +3433,7 @@ static arma::sp_dmat __pyx_f_7l0learn_6cyarma_numpy_to_sp_dmat_d(PyObject *__pyx
  */
   delete __pyx_v_ar_p;
 
-  /* "l0learn/cyarma.pyx":163
+  /* "l0learn/cyarma.pyx":169
  *     cdef sp_dmat ar = deref(ar_p)
  *     del ar_p
  *     return ar             # <<<<<<<<<<<<<<
@@ -3442,8 +3443,8 @@ static arma::sp_dmat __pyx_f_7l0learn_6cyarma_numpy_to_sp_dmat_d(PyObject *__pyx
   __pyx_r = __pyx_v_ar;
   goto __pyx_L0;
 
-  /* "l0learn/cyarma.pyx":159
- *     return ar
+  /* "l0learn/cyarma.pyx":165
+ * 
  * 
  * cdef sp_dmat numpy_to_sp_dmat_d(x):             # <<<<<<<<<<<<<<
  *     cdef sp_dmat *ar_p = numpy_to_sp_dmat(x)
@@ -3456,7 +3457,7 @@ static arma::sp_dmat __pyx_f_7l0learn_6cyarma_numpy_to_sp_dmat_d(PyObject *__pyx
   return __pyx_r;
 }
 
-/* "l0learn/cyarma.pyx":170
+/* "l0learn/cyarma.pyx":177
  * 
  * @cython.boundscheck(False)
  * cdef list sp_dmat_field_to_list(field[sp_dmat] f):             # <<<<<<<<<<<<<<
@@ -3479,19 +3480,19 @@ static PyObject *__pyx_f_7l0learn_6cyarma_sp_dmat_field_to_list(arma::field<arma
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("sp_dmat_field_to_list", 0);
 
-  /* "l0learn/cyarma.pyx":171
+  /* "l0learn/cyarma.pyx":178
  * @cython.boundscheck(False)
  * cdef list sp_dmat_field_to_list(field[sp_dmat] f):
  *     cdef list lst = []             # <<<<<<<<<<<<<<
  *     for i in range(f.n_elem):
  *         lst.append(sp_dmat_to_numpy(f[i], None, None, None))
  */
-  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 171, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 178, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_lst = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "l0learn/cyarma.pyx":172
+  /* "l0learn/cyarma.pyx":179
  * cdef list sp_dmat_field_to_list(field[sp_dmat] f):
  *     cdef list lst = []
  *     for i in range(f.n_elem):             # <<<<<<<<<<<<<<
@@ -3503,32 +3504,32 @@ static PyObject *__pyx_f_7l0learn_6cyarma_sp_dmat_field_to_list(arma::field<arma
   for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
     __pyx_v_i = __pyx_t_4;
 
-    /* "l0learn/cyarma.pyx":173
+    /* "l0learn/cyarma.pyx":180
  *     cdef list lst = []
  *     for i in range(f.n_elem):
  *         lst.append(sp_dmat_to_numpy(f[i], None, None, None))             # <<<<<<<<<<<<<<
  *     return lst
  * 
  */
-    __pyx_t_1 = __pyx_f_7l0learn_6cyarma_sp_dmat_to_numpy((__pyx_v_f[__pyx_v_i]), ((PyArrayObject *)Py_None), ((PyArrayObject *)Py_None), ((PyArrayObject *)Py_None)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 173, __pyx_L1_error)
+    __pyx_t_1 = __pyx_f_7l0learn_6cyarma_sp_dmat_to_numpy((__pyx_v_f[__pyx_v_i]), ((PyArrayObject *)Py_None), ((PyArrayObject *)Py_None), ((PyArrayObject *)Py_None)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 180, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_5 = __Pyx_PyList_Append(__pyx_v_lst, __pyx_t_1); if (unlikely(__pyx_t_5 == ((int)-1))) __PYX_ERR(0, 173, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyList_Append(__pyx_v_lst, __pyx_t_1); if (unlikely(__pyx_t_5 == ((int)-1))) __PYX_ERR(0, 180, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   }
 
-  /* "l0learn/cyarma.pyx":174
+  /* "l0learn/cyarma.pyx":181
  *     for i in range(f.n_elem):
  *         lst.append(sp_dmat_to_numpy(f[i], None, None, None))
  *     return lst             # <<<<<<<<<<<<<<
  * 
- * @cython.boundscheck(False)
+ * 
  */
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(__pyx_v_lst);
   __pyx_r = __pyx_v_lst;
   goto __pyx_L0;
 
-  /* "l0learn/cyarma.pyx":170
+  /* "l0learn/cyarma.pyx":177
  * 
  * @cython.boundscheck(False)
  * cdef list sp_dmat_field_to_list(field[sp_dmat] f):             # <<<<<<<<<<<<<<
@@ -3548,7 +3549,7 @@ static PyObject *__pyx_f_7l0learn_6cyarma_sp_dmat_field_to_list(arma::field<arma
   return __pyx_r;
 }
 
-/* "l0learn/cyarma.pyx":177
+/* "l0learn/cyarma.pyx":185
  * 
  * @cython.boundscheck(False)
  * cdef list dvec_field_to_list(field[dvec] f):             # <<<<<<<<<<<<<<
@@ -3571,19 +3572,19 @@ static PyObject *__pyx_f_7l0learn_6cyarma_dvec_field_to_list(arma::field<arma::d
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("dvec_field_to_list", 0);
 
-  /* "l0learn/cyarma.pyx":178
+  /* "l0learn/cyarma.pyx":186
  * @cython.boundscheck(False)
  * cdef list dvec_field_to_list(field[dvec] f):
  *     cdef list lst = []             # <<<<<<<<<<<<<<
  *     for i in range(f.n_elem):
  *         lst.append(dvec_to_numpy(f[i], None))
  */
-  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 178, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 186, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_lst = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "l0learn/cyarma.pyx":179
+  /* "l0learn/cyarma.pyx":187
  * cdef list dvec_field_to_list(field[dvec] f):
  *     cdef list lst = []
  *     for i in range(f.n_elem):             # <<<<<<<<<<<<<<
@@ -3595,20 +3596,20 @@ static PyObject *__pyx_f_7l0learn_6cyarma_dvec_field_to_list(arma::field<arma::d
   for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
     __pyx_v_i = __pyx_t_4;
 
-    /* "l0learn/cyarma.pyx":180
+    /* "l0learn/cyarma.pyx":188
  *     cdef list lst = []
  *     for i in range(f.n_elem):
  *         lst.append(dvec_to_numpy(f[i], None))             # <<<<<<<<<<<<<<
  *     return lst
  * 
  */
-    __pyx_t_1 = ((PyObject *)__pyx_f_7l0learn_6cyarma_dvec_to_numpy((__pyx_v_f[__pyx_v_i]), ((PyArrayObject *)Py_None))); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 180, __pyx_L1_error)
+    __pyx_t_1 = ((PyObject *)__pyx_f_7l0learn_6cyarma_dvec_to_numpy((__pyx_v_f[__pyx_v_i]), ((PyArrayObject *)Py_None))); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 188, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_5 = __Pyx_PyList_Append(__pyx_v_lst, __pyx_t_1); if (unlikely(__pyx_t_5 == ((int)-1))) __PYX_ERR(0, 180, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyList_Append(__pyx_v_lst, __pyx_t_1); if (unlikely(__pyx_t_5 == ((int)-1))) __PYX_ERR(0, 188, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   }
 
-  /* "l0learn/cyarma.pyx":181
+  /* "l0learn/cyarma.pyx":189
  *     for i in range(f.n_elem):
  *         lst.append(dvec_to_numpy(f[i], None))
  *     return lst             # <<<<<<<<<<<<<<
@@ -3620,7 +3621,7 @@ static PyObject *__pyx_f_7l0learn_6cyarma_dvec_field_to_list(arma::field<arma::d
   __pyx_r = __pyx_v_lst;
   goto __pyx_L0;
 
-  /* "l0learn/cyarma.pyx":177
+  /* "l0learn/cyarma.pyx":185
  * 
  * @cython.boundscheck(False)
  * cdef list dvec_field_to_list(field[dvec] f):             # <<<<<<<<<<<<<<
@@ -3640,7 +3641,7 @@ static PyObject *__pyx_f_7l0learn_6cyarma_dvec_field_to_list(arma::field<arma::d
   return __pyx_r;
 }
 
-/* "l0learn/cyarma.pyx":184
+/* "l0learn/cyarma.pyx":192
  * 
  * @cython.boundscheck(False)
  * cdef np.ndarray[np.double_t, ndim=2] dmat_to_numpy(const dmat & X, np.ndarray[np.double_t, ndim=2] D):             # <<<<<<<<<<<<<<
@@ -3681,11 +3682,11 @@ static PyArrayObject *__pyx_f_7l0learn_6cyarma_dmat_to_numpy(arma::dmat const &_
   __pyx_pybuffernd_D.rcbuffer = &__pyx_pybuffer_D;
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_D.rcbuffer->pybuffer, (PyObject*)__pyx_v_D, &__Pyx_TypeInfo_nn___pyx_t_5numpy_double_t, PyBUF_FORMAT| PyBUF_STRIDES, 2, 0, __pyx_stack) == -1)) __PYX_ERR(0, 184, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_D.rcbuffer->pybuffer, (PyObject*)__pyx_v_D, &__Pyx_TypeInfo_nn___pyx_t_5numpy_double_t, PyBUF_FORMAT| PyBUF_STRIDES, 2, 0, __pyx_stack) == -1)) __PYX_ERR(0, 192, __pyx_L1_error)
   }
   __pyx_pybuffernd_D.diminfo[0].strides = __pyx_pybuffernd_D.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_D.diminfo[0].shape = __pyx_pybuffernd_D.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_D.diminfo[1].strides = __pyx_pybuffernd_D.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_D.diminfo[1].shape = __pyx_pybuffernd_D.rcbuffer->pybuffer.shape[1];
 
-  /* "l0learn/cyarma.pyx":186
+  /* "l0learn/cyarma.pyx":194
  * cdef np.ndarray[np.double_t, ndim=2] dmat_to_numpy(const dmat & X, np.ndarray[np.double_t, ndim=2] D):
  *     # TODO: Check order of X and D
  *     cdef const double * Xptr = X.memptr()             # <<<<<<<<<<<<<<
@@ -3694,7 +3695,7 @@ static PyArrayObject *__pyx_f_7l0learn_6cyarma_dmat_to_numpy(arma::dmat const &_
  */
   __pyx_v_Xptr = __pyx_v_X.memptr();
 
-  /* "l0learn/cyarma.pyx":188
+  /* "l0learn/cyarma.pyx":196
  *     cdef const double * Xptr = X.memptr()
  * 
  *     if D is None:             # <<<<<<<<<<<<<<
@@ -3705,23 +3706,23 @@ static PyArrayObject *__pyx_f_7l0learn_6cyarma_dmat_to_numpy(arma::dmat const &_
   __pyx_t_2 = (__pyx_t_1 != 0);
   if (__pyx_t_2) {
 
-    /* "l0learn/cyarma.pyx":189
+    /* "l0learn/cyarma.pyx":197
  * 
  *     if D is None:
  *         D = np.empty((X.n_rows, X.n_cols), dtype=np.double, order="F")             # <<<<<<<<<<<<<<
  *     cdef double * Dptr = <double*> D.data
  *     for i in range(X.n_rows*X.n_cols):
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 189, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 197, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_empty); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 189, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_empty); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 197, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_X.n_rows); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 189, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_X.n_rows); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 197, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_v_X.n_cols); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 189, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_v_X.n_cols); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 197, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    __pyx_t_6 = PyTuple_New(2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 189, __pyx_L1_error)
+    __pyx_t_6 = PyTuple_New(2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 197, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_GIVEREF(__pyx_t_3);
     PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_3);
@@ -3729,27 +3730,27 @@ static PyArrayObject *__pyx_f_7l0learn_6cyarma_dmat_to_numpy(arma::dmat const &_
     PyTuple_SET_ITEM(__pyx_t_6, 1, __pyx_t_5);
     __pyx_t_3 = 0;
     __pyx_t_5 = 0;
-    __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 189, __pyx_L1_error)
+    __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 197, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_GIVEREF(__pyx_t_6);
     PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_6);
     __pyx_t_6 = 0;
-    __pyx_t_6 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 189, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 197, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
-    __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 189, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 197, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_double); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 189, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_double); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 197, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (PyDict_SetItem(__pyx_t_6, __pyx_n_s_dtype, __pyx_t_7) < 0) __PYX_ERR(0, 189, __pyx_L1_error)
+    if (PyDict_SetItem(__pyx_t_6, __pyx_n_s_dtype, __pyx_t_7) < 0) __PYX_ERR(0, 197, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-    if (PyDict_SetItem(__pyx_t_6, __pyx_n_s_order, __pyx_n_u_F) < 0) __PYX_ERR(0, 189, __pyx_L1_error)
-    __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_5, __pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 189, __pyx_L1_error)
+    if (PyDict_SetItem(__pyx_t_6, __pyx_n_s_order, __pyx_n_u_F) < 0) __PYX_ERR(0, 197, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_5, __pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 197, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    if (!(likely(((__pyx_t_7) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_7, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 189, __pyx_L1_error)
+    if (!(likely(((__pyx_t_7) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_7, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 197, __pyx_L1_error)
     __pyx_t_8 = ((PyArrayObject *)__pyx_t_7);
     {
       __Pyx_BufFmt_StackElem __pyx_stack[1];
@@ -3766,13 +3767,13 @@ static PyArrayObject *__pyx_f_7l0learn_6cyarma_dmat_to_numpy(arma::dmat const &_
         __pyx_t_10 = __pyx_t_11 = __pyx_t_12 = 0;
       }
       __pyx_pybuffernd_D.diminfo[0].strides = __pyx_pybuffernd_D.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_D.diminfo[0].shape = __pyx_pybuffernd_D.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_D.diminfo[1].strides = __pyx_pybuffernd_D.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_D.diminfo[1].shape = __pyx_pybuffernd_D.rcbuffer->pybuffer.shape[1];
-      if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 189, __pyx_L1_error)
+      if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 197, __pyx_L1_error)
     }
     __pyx_t_8 = 0;
     __Pyx_DECREF_SET(__pyx_v_D, ((PyArrayObject *)__pyx_t_7));
     __pyx_t_7 = 0;
 
-    /* "l0learn/cyarma.pyx":188
+    /* "l0learn/cyarma.pyx":196
  *     cdef const double * Xptr = X.memptr()
  * 
  *     if D is None:             # <<<<<<<<<<<<<<
@@ -3781,7 +3782,7 @@ static PyArrayObject *__pyx_f_7l0learn_6cyarma_dmat_to_numpy(arma::dmat const &_
  */
   }
 
-  /* "l0learn/cyarma.pyx":190
+  /* "l0learn/cyarma.pyx":198
  *     if D is None:
  *         D = np.empty((X.n_rows, X.n_cols), dtype=np.double, order="F")
  *     cdef double * Dptr = <double*> D.data             # <<<<<<<<<<<<<<
@@ -3790,7 +3791,7 @@ static PyArrayObject *__pyx_f_7l0learn_6cyarma_dmat_to_numpy(arma::dmat const &_
  */
   __pyx_v_Dptr = ((double *)__pyx_v_D->data);
 
-  /* "l0learn/cyarma.pyx":191
+  /* "l0learn/cyarma.pyx":199
  *         D = np.empty((X.n_rows, X.n_cols), dtype=np.double, order="F")
  *     cdef double * Dptr = <double*> D.data
  *     for i in range(X.n_rows*X.n_cols):             # <<<<<<<<<<<<<<
@@ -3802,7 +3803,7 @@ static PyArrayObject *__pyx_f_7l0learn_6cyarma_dmat_to_numpy(arma::dmat const &_
   for (__pyx_t_14 = 0; __pyx_t_14 < __pyx_t_13; __pyx_t_14+=1) {
     __pyx_v_i = __pyx_t_14;
 
-    /* "l0learn/cyarma.pyx":192
+    /* "l0learn/cyarma.pyx":200
  *     cdef double * Dptr = <double*> D.data
  *     for i in range(X.n_rows*X.n_cols):
  *         Dptr[i] = Xptr[i]             # <<<<<<<<<<<<<<
@@ -3812,7 +3813,7 @@ static PyArrayObject *__pyx_f_7l0learn_6cyarma_dmat_to_numpy(arma::dmat const &_
     (__pyx_v_Dptr[__pyx_v_i]) = (__pyx_v_Xptr[__pyx_v_i]);
   }
 
-  /* "l0learn/cyarma.pyx":193
+  /* "l0learn/cyarma.pyx":201
  *     for i in range(X.n_rows*X.n_cols):
  *         Dptr[i] = Xptr[i]
  *     return D             # <<<<<<<<<<<<<<
@@ -3824,7 +3825,7 @@ static PyArrayObject *__pyx_f_7l0learn_6cyarma_dmat_to_numpy(arma::dmat const &_
   __pyx_r = ((PyArrayObject *)__pyx_v_D);
   goto __pyx_L0;
 
-  /* "l0learn/cyarma.pyx":184
+  /* "l0learn/cyarma.pyx":192
  * 
  * @cython.boundscheck(False)
  * cdef np.ndarray[np.double_t, ndim=2] dmat_to_numpy(const dmat & X, np.ndarray[np.double_t, ndim=2] D):             # <<<<<<<<<<<<<<
@@ -3857,7 +3858,7 @@ static PyArrayObject *__pyx_f_7l0learn_6cyarma_dmat_to_numpy(arma::dmat const &_
   return __pyx_r;
 }
 
-/* "l0learn/cyarma.pyx":196
+/* "l0learn/cyarma.pyx":204
  * 
  * @cython.boundscheck(False)
  * cdef np.ndarray[np.double_t, ndim=1] dvec_to_numpy(const dvec & X, np.ndarray[np.double_t, ndim=1] D):             # <<<<<<<<<<<<<<
@@ -3898,11 +3899,11 @@ static PyArrayObject *__pyx_f_7l0learn_6cyarma_dvec_to_numpy(arma::dvec const &_
   __pyx_pybuffernd_D.rcbuffer = &__pyx_pybuffer_D;
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_D.rcbuffer->pybuffer, (PyObject*)__pyx_v_D, &__Pyx_TypeInfo_nn___pyx_t_5numpy_double_t, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 196, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_D.rcbuffer->pybuffer, (PyObject*)__pyx_v_D, &__Pyx_TypeInfo_nn___pyx_t_5numpy_double_t, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 204, __pyx_L1_error)
   }
   __pyx_pybuffernd_D.diminfo[0].strides = __pyx_pybuffernd_D.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_D.diminfo[0].shape = __pyx_pybuffernd_D.rcbuffer->pybuffer.shape[0];
 
-  /* "l0learn/cyarma.pyx":197
+  /* "l0learn/cyarma.pyx":205
  * @cython.boundscheck(False)
  * cdef np.ndarray[np.double_t, ndim=1] dvec_to_numpy(const dvec & X, np.ndarray[np.double_t, ndim=1] D):
  *     cdef const double * Xptr = X.memptr()             # <<<<<<<<<<<<<<
@@ -3911,7 +3912,7 @@ static PyArrayObject *__pyx_f_7l0learn_6cyarma_dvec_to_numpy(arma::dvec const &_
  */
   __pyx_v_Xptr = __pyx_v_X.memptr();
 
-  /* "l0learn/cyarma.pyx":199
+  /* "l0learn/cyarma.pyx":207
  *     cdef const double * Xptr = X.memptr()
  * 
  *     if D is None:             # <<<<<<<<<<<<<<
@@ -3922,40 +3923,40 @@ static PyArrayObject *__pyx_f_7l0learn_6cyarma_dvec_to_numpy(arma::dvec const &_
   __pyx_t_2 = (__pyx_t_1 != 0);
   if (__pyx_t_2) {
 
-    /* "l0learn/cyarma.pyx":200
+    /* "l0learn/cyarma.pyx":208
  * 
  *     if D is None:
  *         D = np.empty(X.n_elem, dtype=np.double)             # <<<<<<<<<<<<<<
  *     cdef double * Dptr = <double*> D.data
  *     for i in range(X.n_elem):
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 200, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 208, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_empty); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 200, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_empty); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 208, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_X.n_elem); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 200, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_X.n_elem); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 208, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 200, __pyx_L1_error)
+    __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 208, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_GIVEREF(__pyx_t_3);
     PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_3);
     __pyx_t_3 = 0;
-    __pyx_t_3 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 200, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 208, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_np); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 200, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_np); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 208, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
-    __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_double); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 200, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_double); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 208, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_dtype, __pyx_t_7) < 0) __PYX_ERR(0, 200, __pyx_L1_error)
+    if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_dtype, __pyx_t_7) < 0) __PYX_ERR(0, 208, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-    __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_5, __pyx_t_3); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 200, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_5, __pyx_t_3); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 208, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (!(likely(((__pyx_t_7) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_7, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 200, __pyx_L1_error)
+    if (!(likely(((__pyx_t_7) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_7, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 208, __pyx_L1_error)
     __pyx_t_8 = ((PyArrayObject *)__pyx_t_7);
     {
       __Pyx_BufFmt_StackElem __pyx_stack[1];
@@ -3972,13 +3973,13 @@ static PyArrayObject *__pyx_f_7l0learn_6cyarma_dvec_to_numpy(arma::dvec const &_
         __pyx_t_10 = __pyx_t_11 = __pyx_t_12 = 0;
       }
       __pyx_pybuffernd_D.diminfo[0].strides = __pyx_pybuffernd_D.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_D.diminfo[0].shape = __pyx_pybuffernd_D.rcbuffer->pybuffer.shape[0];
-      if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 200, __pyx_L1_error)
+      if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 208, __pyx_L1_error)
     }
     __pyx_t_8 = 0;
     __Pyx_DECREF_SET(__pyx_v_D, ((PyArrayObject *)__pyx_t_7));
     __pyx_t_7 = 0;
 
-    /* "l0learn/cyarma.pyx":199
+    /* "l0learn/cyarma.pyx":207
  *     cdef const double * Xptr = X.memptr()
  * 
  *     if D is None:             # <<<<<<<<<<<<<<
@@ -3987,7 +3988,7 @@ static PyArrayObject *__pyx_f_7l0learn_6cyarma_dvec_to_numpy(arma::dvec const &_
  */
   }
 
-  /* "l0learn/cyarma.pyx":201
+  /* "l0learn/cyarma.pyx":209
  *     if D is None:
  *         D = np.empty(X.n_elem, dtype=np.double)
  *     cdef double * Dptr = <double*> D.data             # <<<<<<<<<<<<<<
@@ -3996,7 +3997,7 @@ static PyArrayObject *__pyx_f_7l0learn_6cyarma_dvec_to_numpy(arma::dvec const &_
  */
   __pyx_v_Dptr = ((double *)__pyx_v_D->data);
 
-  /* "l0learn/cyarma.pyx":202
+  /* "l0learn/cyarma.pyx":210
  *         D = np.empty(X.n_elem, dtype=np.double)
  *     cdef double * Dptr = <double*> D.data
  *     for i in range(X.n_elem):             # <<<<<<<<<<<<<<
@@ -4008,7 +4009,7 @@ static PyArrayObject *__pyx_f_7l0learn_6cyarma_dvec_to_numpy(arma::dvec const &_
   for (__pyx_t_14 = 0; __pyx_t_14 < __pyx_t_13; __pyx_t_14+=1) {
     __pyx_v_i = __pyx_t_14;
 
-    /* "l0learn/cyarma.pyx":203
+    /* "l0learn/cyarma.pyx":211
  *     cdef double * Dptr = <double*> D.data
  *     for i in range(X.n_elem):
  *         Dptr[i] = Xptr[i]             # <<<<<<<<<<<<<<
@@ -4018,7 +4019,7 @@ static PyArrayObject *__pyx_f_7l0learn_6cyarma_dvec_to_numpy(arma::dvec const &_
     (__pyx_v_Dptr[__pyx_v_i]) = (__pyx_v_Xptr[__pyx_v_i]);
   }
 
-  /* "l0learn/cyarma.pyx":204
+  /* "l0learn/cyarma.pyx":212
  *     for i in range(X.n_elem):
  *         Dptr[i] = Xptr[i]
  *     return D             # <<<<<<<<<<<<<<
@@ -4030,7 +4031,7 @@ static PyArrayObject *__pyx_f_7l0learn_6cyarma_dvec_to_numpy(arma::dvec const &_
   __pyx_r = ((PyArrayObject *)__pyx_v_D);
   goto __pyx_L0;
 
-  /* "l0learn/cyarma.pyx":196
+  /* "l0learn/cyarma.pyx":204
  * 
  * @cython.boundscheck(False)
  * cdef np.ndarray[np.double_t, ndim=1] dvec_to_numpy(const dvec & X, np.ndarray[np.double_t, ndim=1] D):             # <<<<<<<<<<<<<<
@@ -4063,7 +4064,7 @@ static PyArrayObject *__pyx_f_7l0learn_6cyarma_dvec_to_numpy(arma::dvec const &_
   return __pyx_r;
 }
 
-/* "l0learn/cyarma.pyx":208
+/* "l0learn/cyarma.pyx":216
  * 
  * @cython.boundscheck(False)
  * cdef np.ndarray[np.uint64_t, ndim=1] uvec_to_numpy(const uvec & X, np.ndarray[np.uint64_t, ndim=1] D):             # <<<<<<<<<<<<<<
@@ -4104,11 +4105,11 @@ static PyArrayObject *__pyx_f_7l0learn_6cyarma_uvec_to_numpy(arma::uvec const &_
   __pyx_pybuffernd_D.rcbuffer = &__pyx_pybuffer_D;
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_D.rcbuffer->pybuffer, (PyObject*)__pyx_v_D, &__Pyx_TypeInfo_nn___pyx_t_5numpy_uint64_t, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 208, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_D.rcbuffer->pybuffer, (PyObject*)__pyx_v_D, &__Pyx_TypeInfo_nn___pyx_t_5numpy_uint64_t, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 216, __pyx_L1_error)
   }
   __pyx_pybuffernd_D.diminfo[0].strides = __pyx_pybuffernd_D.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_D.diminfo[0].shape = __pyx_pybuffernd_D.rcbuffer->pybuffer.shape[0];
 
-  /* "l0learn/cyarma.pyx":209
+  /* "l0learn/cyarma.pyx":217
  * @cython.boundscheck(False)
  * cdef np.ndarray[np.uint64_t, ndim=1] uvec_to_numpy(const uvec & X, np.ndarray[np.uint64_t, ndim=1] D):
  *     cdef const unsigned long long * Xptr = X.memptr()             # <<<<<<<<<<<<<<
@@ -4117,7 +4118,7 @@ static PyArrayObject *__pyx_f_7l0learn_6cyarma_uvec_to_numpy(arma::uvec const &_
  */
   __pyx_v_Xptr = __pyx_v_X.memptr();
 
-  /* "l0learn/cyarma.pyx":211
+  /* "l0learn/cyarma.pyx":219
  *     cdef const unsigned long long * Xptr = X.memptr()
  * 
  *     if D is None:             # <<<<<<<<<<<<<<
@@ -4128,40 +4129,40 @@ static PyArrayObject *__pyx_f_7l0learn_6cyarma_uvec_to_numpy(arma::uvec const &_
   __pyx_t_2 = (__pyx_t_1 != 0);
   if (__pyx_t_2) {
 
-    /* "l0learn/cyarma.pyx":212
+    /* "l0learn/cyarma.pyx":220
  * 
  *     if D is None:
  *         D = np.empty(X.n_elem, dtype=np.uint64)             # <<<<<<<<<<<<<<
  *     cdef unsigned long long * Dptr = <unsigned long long *> D.data
  *     for i in range(X.n_elem):
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 212, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 220, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_empty); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 212, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_empty); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 220, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_X.n_elem); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 212, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_X.n_elem); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 220, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 212, __pyx_L1_error)
+    __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 220, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_GIVEREF(__pyx_t_3);
     PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_3);
     __pyx_t_3 = 0;
-    __pyx_t_3 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 212, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 220, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_np); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 212, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_np); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 220, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
-    __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_uint64); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 212, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_uint64); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 220, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_dtype, __pyx_t_7) < 0) __PYX_ERR(0, 212, __pyx_L1_error)
+    if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_dtype, __pyx_t_7) < 0) __PYX_ERR(0, 220, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-    __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_5, __pyx_t_3); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 212, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_5, __pyx_t_3); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 220, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (!(likely(((__pyx_t_7) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_7, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 212, __pyx_L1_error)
+    if (!(likely(((__pyx_t_7) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_7, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 220, __pyx_L1_error)
     __pyx_t_8 = ((PyArrayObject *)__pyx_t_7);
     {
       __Pyx_BufFmt_StackElem __pyx_stack[1];
@@ -4178,13 +4179,13 @@ static PyArrayObject *__pyx_f_7l0learn_6cyarma_uvec_to_numpy(arma::uvec const &_
         __pyx_t_10 = __pyx_t_11 = __pyx_t_12 = 0;
       }
       __pyx_pybuffernd_D.diminfo[0].strides = __pyx_pybuffernd_D.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_D.diminfo[0].shape = __pyx_pybuffernd_D.rcbuffer->pybuffer.shape[0];
-      if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 212, __pyx_L1_error)
+      if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 220, __pyx_L1_error)
     }
     __pyx_t_8 = 0;
     __Pyx_DECREF_SET(__pyx_v_D, ((PyArrayObject *)__pyx_t_7));
     __pyx_t_7 = 0;
 
-    /* "l0learn/cyarma.pyx":211
+    /* "l0learn/cyarma.pyx":219
  *     cdef const unsigned long long * Xptr = X.memptr()
  * 
  *     if D is None:             # <<<<<<<<<<<<<<
@@ -4193,7 +4194,7 @@ static PyArrayObject *__pyx_f_7l0learn_6cyarma_uvec_to_numpy(arma::uvec const &_
  */
   }
 
-  /* "l0learn/cyarma.pyx":213
+  /* "l0learn/cyarma.pyx":221
  *     if D is None:
  *         D = np.empty(X.n_elem, dtype=np.uint64)
  *     cdef unsigned long long * Dptr = <unsigned long long *> D.data             # <<<<<<<<<<<<<<
@@ -4202,7 +4203,7 @@ static PyArrayObject *__pyx_f_7l0learn_6cyarma_uvec_to_numpy(arma::uvec const &_
  */
   __pyx_v_Dptr = ((unsigned PY_LONG_LONG *)__pyx_v_D->data);
 
-  /* "l0learn/cyarma.pyx":214
+  /* "l0learn/cyarma.pyx":222
  *         D = np.empty(X.n_elem, dtype=np.uint64)
  *     cdef unsigned long long * Dptr = <unsigned long long *> D.data
  *     for i in range(X.n_elem):             # <<<<<<<<<<<<<<
@@ -4214,7 +4215,7 @@ static PyArrayObject *__pyx_f_7l0learn_6cyarma_uvec_to_numpy(arma::uvec const &_
   for (__pyx_t_14 = 0; __pyx_t_14 < __pyx_t_13; __pyx_t_14+=1) {
     __pyx_v_i = __pyx_t_14;
 
-    /* "l0learn/cyarma.pyx":215
+    /* "l0learn/cyarma.pyx":223
  *     cdef unsigned long long * Dptr = <unsigned long long *> D.data
  *     for i in range(X.n_elem):
  *         Dptr[i] = Xptr[i]             # <<<<<<<<<<<<<<
@@ -4224,7 +4225,7 @@ static PyArrayObject *__pyx_f_7l0learn_6cyarma_uvec_to_numpy(arma::uvec const &_
     (__pyx_v_Dptr[__pyx_v_i]) = (__pyx_v_Xptr[__pyx_v_i]);
   }
 
-  /* "l0learn/cyarma.pyx":216
+  /* "l0learn/cyarma.pyx":224
  *     for i in range(X.n_elem):
  *         Dptr[i] = Xptr[i]
  *     return D             # <<<<<<<<<<<<<<
@@ -4236,7 +4237,7 @@ static PyArrayObject *__pyx_f_7l0learn_6cyarma_uvec_to_numpy(arma::uvec const &_
   __pyx_r = ((PyArrayObject *)__pyx_v_D);
   goto __pyx_L0;
 
-  /* "l0learn/cyarma.pyx":208
+  /* "l0learn/cyarma.pyx":216
  * 
  * @cython.boundscheck(False)
  * cdef np.ndarray[np.uint64_t, ndim=1] uvec_to_numpy(const uvec & X, np.ndarray[np.uint64_t, ndim=1] D):             # <<<<<<<<<<<<<<
@@ -4269,7 +4270,7 @@ static PyArrayObject *__pyx_f_7l0learn_6cyarma_uvec_to_numpy(arma::uvec const &_
   return __pyx_r;
 }
 
-/* "l0learn/cyarma.pyx":220
+/* "l0learn/cyarma.pyx":228
  * 
  * @cython.boundscheck(False)
  * cdef sp_dmat_to_numpy(const sp_dmat & X, np.ndarray[np.uint64_t, ndim=1] rowind,             # <<<<<<<<<<<<<<
@@ -4327,21 +4328,21 @@ static PyObject *__pyx_f_7l0learn_6cyarma_sp_dmat_to_numpy(arma::sp_dmat const &
   __pyx_pybuffernd_values.rcbuffer = &__pyx_pybuffer_values;
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_rowind.rcbuffer->pybuffer, (PyObject*)__pyx_v_rowind, &__Pyx_TypeInfo_nn___pyx_t_5numpy_uint64_t, PyBUF_FORMAT| PyBUF_STRIDES| PyBUF_WRITABLE, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 220, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_rowind.rcbuffer->pybuffer, (PyObject*)__pyx_v_rowind, &__Pyx_TypeInfo_nn___pyx_t_5numpy_uint64_t, PyBUF_FORMAT| PyBUF_STRIDES| PyBUF_WRITABLE, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 228, __pyx_L1_error)
   }
   __pyx_pybuffernd_rowind.diminfo[0].strides = __pyx_pybuffernd_rowind.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_rowind.diminfo[0].shape = __pyx_pybuffernd_rowind.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_colind.rcbuffer->pybuffer, (PyObject*)__pyx_v_colind, &__Pyx_TypeInfo_nn___pyx_t_5numpy_uint64_t, PyBUF_FORMAT| PyBUF_STRIDES| PyBUF_WRITABLE, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 220, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_colind.rcbuffer->pybuffer, (PyObject*)__pyx_v_colind, &__Pyx_TypeInfo_nn___pyx_t_5numpy_uint64_t, PyBUF_FORMAT| PyBUF_STRIDES| PyBUF_WRITABLE, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 228, __pyx_L1_error)
   }
   __pyx_pybuffernd_colind.diminfo[0].strides = __pyx_pybuffernd_colind.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_colind.diminfo[0].shape = __pyx_pybuffernd_colind.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_values.rcbuffer->pybuffer, (PyObject*)__pyx_v_values, &__Pyx_TypeInfo_nn___pyx_t_5numpy_double_t, PyBUF_FORMAT| PyBUF_STRIDES| PyBUF_WRITABLE, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 220, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_values.rcbuffer->pybuffer, (PyObject*)__pyx_v_values, &__Pyx_TypeInfo_nn___pyx_t_5numpy_double_t, PyBUF_FORMAT| PyBUF_STRIDES| PyBUF_WRITABLE, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 228, __pyx_L1_error)
   }
   __pyx_pybuffernd_values.diminfo[0].strides = __pyx_pybuffernd_values.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_values.diminfo[0].shape = __pyx_pybuffernd_values.rcbuffer->pybuffer.shape[0];
 
-  /* "l0learn/cyarma.pyx":223
+  /* "l0learn/cyarma.pyx":231
  *                        np.ndarray[np.uint64_t, ndim=1] colind, np.ndarray[np.double_t, ndim=1] values):
  *     # TODO: Check order of X and D
  *     if rowind is None:             # <<<<<<<<<<<<<<
@@ -4352,40 +4353,40 @@ static PyObject *__pyx_f_7l0learn_6cyarma_sp_dmat_to_numpy(arma::sp_dmat const &
   __pyx_t_2 = (__pyx_t_1 != 0);
   if (__pyx_t_2) {
 
-    /* "l0learn/cyarma.pyx":224
+    /* "l0learn/cyarma.pyx":232
  *     # TODO: Check order of X and D
  *     if rowind is None:
  *         rowind = np.empty(X.n_nonzero, dtype=np.uint64)             # <<<<<<<<<<<<<<
  *     if colind is None:
  *         colind = np.empty(X.n_nonzero, dtype=np.uint64)
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 224, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 232, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_empty); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 224, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_empty); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 232, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_X.n_nonzero); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 224, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_X.n_nonzero); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 232, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 224, __pyx_L1_error)
+    __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 232, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_GIVEREF(__pyx_t_3);
     PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_3);
     __pyx_t_3 = 0;
-    __pyx_t_3 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 224, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 232, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_np); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 224, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_np); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 232, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
-    __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_uint64); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 224, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_uint64); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 232, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_dtype, __pyx_t_7) < 0) __PYX_ERR(0, 224, __pyx_L1_error)
+    if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_dtype, __pyx_t_7) < 0) __PYX_ERR(0, 232, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-    __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_5, __pyx_t_3); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 224, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_5, __pyx_t_3); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 232, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (!(likely(((__pyx_t_7) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_7, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 224, __pyx_L1_error)
+    if (!(likely(((__pyx_t_7) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_7, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 232, __pyx_L1_error)
     __pyx_t_8 = ((PyArrayObject *)__pyx_t_7);
     {
       __Pyx_BufFmt_StackElem __pyx_stack[1];
@@ -4402,13 +4403,13 @@ static PyObject *__pyx_f_7l0learn_6cyarma_sp_dmat_to_numpy(arma::sp_dmat const &
         __pyx_t_10 = __pyx_t_11 = __pyx_t_12 = 0;
       }
       __pyx_pybuffernd_rowind.diminfo[0].strides = __pyx_pybuffernd_rowind.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_rowind.diminfo[0].shape = __pyx_pybuffernd_rowind.rcbuffer->pybuffer.shape[0];
-      if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 224, __pyx_L1_error)
+      if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 232, __pyx_L1_error)
     }
     __pyx_t_8 = 0;
     __Pyx_DECREF_SET(__pyx_v_rowind, ((PyArrayObject *)__pyx_t_7));
     __pyx_t_7 = 0;
 
-    /* "l0learn/cyarma.pyx":223
+    /* "l0learn/cyarma.pyx":231
  *                        np.ndarray[np.uint64_t, ndim=1] colind, np.ndarray[np.double_t, ndim=1] values):
  *     # TODO: Check order of X and D
  *     if rowind is None:             # <<<<<<<<<<<<<<
@@ -4417,7 +4418,7 @@ static PyObject *__pyx_f_7l0learn_6cyarma_sp_dmat_to_numpy(arma::sp_dmat const &
  */
   }
 
-  /* "l0learn/cyarma.pyx":225
+  /* "l0learn/cyarma.pyx":233
  *     if rowind is None:
  *         rowind = np.empty(X.n_nonzero, dtype=np.uint64)
  *     if colind is None:             # <<<<<<<<<<<<<<
@@ -4428,40 +4429,40 @@ static PyObject *__pyx_f_7l0learn_6cyarma_sp_dmat_to_numpy(arma::sp_dmat const &
   __pyx_t_1 = (__pyx_t_2 != 0);
   if (__pyx_t_1) {
 
-    /* "l0learn/cyarma.pyx":226
+    /* "l0learn/cyarma.pyx":234
  *         rowind = np.empty(X.n_nonzero, dtype=np.uint64)
  *     if colind is None:
  *         colind = np.empty(X.n_nonzero, dtype=np.uint64)             # <<<<<<<<<<<<<<
  *     if values is None:
  *         values = np.empty(X.n_nonzero, dtype=np.double)
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_n_s_np); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 226, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_n_s_np); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 234, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_7, __pyx_n_s_empty); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 226, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_7, __pyx_n_s_empty); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 234, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-    __pyx_t_7 = __Pyx_PyInt_From_int(__pyx_v_X.n_nonzero); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 226, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyInt_From_int(__pyx_v_X.n_nonzero); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 234, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 226, __pyx_L1_error)
+    __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 234, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_GIVEREF(__pyx_t_7);
     PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_7);
     __pyx_t_7 = 0;
-    __pyx_t_7 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 226, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 234, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
-    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 226, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 234, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_uint64); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 226, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_uint64); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 234, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_dtype, __pyx_t_6) < 0) __PYX_ERR(0, 226, __pyx_L1_error)
+    if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_dtype, __pyx_t_6) < 0) __PYX_ERR(0, 234, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    __pyx_t_6 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_5, __pyx_t_7); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 226, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_5, __pyx_t_7); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 234, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-    if (!(likely(((__pyx_t_6) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_6, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 226, __pyx_L1_error)
+    if (!(likely(((__pyx_t_6) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_6, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 234, __pyx_L1_error)
     __pyx_t_13 = ((PyArrayObject *)__pyx_t_6);
     {
       __Pyx_BufFmt_StackElem __pyx_stack[1];
@@ -4478,13 +4479,13 @@ static PyObject *__pyx_f_7l0learn_6cyarma_sp_dmat_to_numpy(arma::sp_dmat const &
         __pyx_t_12 = __pyx_t_11 = __pyx_t_10 = 0;
       }
       __pyx_pybuffernd_colind.diminfo[0].strides = __pyx_pybuffernd_colind.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_colind.diminfo[0].shape = __pyx_pybuffernd_colind.rcbuffer->pybuffer.shape[0];
-      if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 226, __pyx_L1_error)
+      if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 234, __pyx_L1_error)
     }
     __pyx_t_13 = 0;
     __Pyx_DECREF_SET(__pyx_v_colind, ((PyArrayObject *)__pyx_t_6));
     __pyx_t_6 = 0;
 
-    /* "l0learn/cyarma.pyx":225
+    /* "l0learn/cyarma.pyx":233
  *     if rowind is None:
  *         rowind = np.empty(X.n_nonzero, dtype=np.uint64)
  *     if colind is None:             # <<<<<<<<<<<<<<
@@ -4493,7 +4494,7 @@ static PyObject *__pyx_f_7l0learn_6cyarma_sp_dmat_to_numpy(arma::sp_dmat const &
  */
   }
 
-  /* "l0learn/cyarma.pyx":227
+  /* "l0learn/cyarma.pyx":235
  *     if colind is None:
  *         colind = np.empty(X.n_nonzero, dtype=np.uint64)
  *     if values is None:             # <<<<<<<<<<<<<<
@@ -4504,40 +4505,40 @@ static PyObject *__pyx_f_7l0learn_6cyarma_sp_dmat_to_numpy(arma::sp_dmat const &
   __pyx_t_2 = (__pyx_t_1 != 0);
   if (__pyx_t_2) {
 
-    /* "l0learn/cyarma.pyx":228
+    /* "l0learn/cyarma.pyx":236
  *         colind = np.empty(X.n_nonzero, dtype=np.uint64)
  *     if values is None:
  *         values = np.empty(X.n_nonzero, dtype=np.double)             # <<<<<<<<<<<<<<
  * 
  *     cdef sp_dmat.const_iterator it = X.begin()
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_np); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 228, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_np); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 236, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
-    __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_empty); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 228, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_empty); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 236, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    __pyx_t_6 = __Pyx_PyInt_From_int(__pyx_v_X.n_nonzero); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 228, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyInt_From_int(__pyx_v_X.n_nonzero); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 236, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
-    __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 228, __pyx_L1_error)
+    __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 236, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_GIVEREF(__pyx_t_6);
     PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_6);
     __pyx_t_6 = 0;
-    __pyx_t_6 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 228, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 236, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
-    __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 228, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 236, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_double); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 228, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_double); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 236, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (PyDict_SetItem(__pyx_t_6, __pyx_n_s_dtype, __pyx_t_4) < 0) __PYX_ERR(0, 228, __pyx_L1_error)
+    if (PyDict_SetItem(__pyx_t_6, __pyx_n_s_dtype, __pyx_t_4) < 0) __PYX_ERR(0, 236, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_7, __pyx_t_5, __pyx_t_6); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 228, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_7, __pyx_t_5, __pyx_t_6); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 236, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    if (!(likely(((__pyx_t_4) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_4, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 228, __pyx_L1_error)
+    if (!(likely(((__pyx_t_4) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_4, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 236, __pyx_L1_error)
     __pyx_t_14 = ((PyArrayObject *)__pyx_t_4);
     {
       __Pyx_BufFmt_StackElem __pyx_stack[1];
@@ -4554,13 +4555,13 @@ static PyObject *__pyx_f_7l0learn_6cyarma_sp_dmat_to_numpy(arma::sp_dmat const &
         __pyx_t_10 = __pyx_t_11 = __pyx_t_12 = 0;
       }
       __pyx_pybuffernd_values.diminfo[0].strides = __pyx_pybuffernd_values.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_values.diminfo[0].shape = __pyx_pybuffernd_values.rcbuffer->pybuffer.shape[0];
-      if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 228, __pyx_L1_error)
+      if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 236, __pyx_L1_error)
     }
     __pyx_t_14 = 0;
     __Pyx_DECREF_SET(__pyx_v_values, ((PyArrayObject *)__pyx_t_4));
     __pyx_t_4 = 0;
 
-    /* "l0learn/cyarma.pyx":227
+    /* "l0learn/cyarma.pyx":235
  *     if colind is None:
  *         colind = np.empty(X.n_nonzero, dtype=np.uint64)
  *     if values is None:             # <<<<<<<<<<<<<<
@@ -4569,7 +4570,7 @@ static PyObject *__pyx_f_7l0learn_6cyarma_sp_dmat_to_numpy(arma::sp_dmat const &
  */
   }
 
-  /* "l0learn/cyarma.pyx":230
+  /* "l0learn/cyarma.pyx":238
  *         values = np.empty(X.n_nonzero, dtype=np.double)
  * 
  *     cdef sp_dmat.const_iterator it = X.begin()             # <<<<<<<<<<<<<<
@@ -4578,7 +4579,7 @@ static PyObject *__pyx_f_7l0learn_6cyarma_sp_dmat_to_numpy(arma::sp_dmat const &
  */
   __pyx_v_it = __pyx_v_X.begin();
 
-  /* "l0learn/cyarma.pyx":232
+  /* "l0learn/cyarma.pyx":240
  *     cdef sp_dmat.const_iterator it = X.begin()
  * 
  *     for i in range(X.n_nonzero):             # <<<<<<<<<<<<<<
@@ -4590,7 +4591,7 @@ static PyObject *__pyx_f_7l0learn_6cyarma_sp_dmat_to_numpy(arma::sp_dmat const &
   for (__pyx_t_16 = 0; __pyx_t_16 < __pyx_t_15; __pyx_t_16+=1) {
     __pyx_v_i = __pyx_t_16;
 
-    /* "l0learn/cyarma.pyx":235
+    /* "l0learn/cyarma.pyx":243
  *         # TODO: Double check the following comment...
  *         # Arma is column major so rows are columns and columns are rows when converting back to l0learn (row major)
  *         rowind[i] = it.col()             # <<<<<<<<<<<<<<
@@ -4601,7 +4602,7 @@ static PyObject *__pyx_f_7l0learn_6cyarma_sp_dmat_to_numpy(arma::sp_dmat const &
     if (__pyx_t_17 < 0) __pyx_t_17 += __pyx_pybuffernd_rowind.diminfo[0].shape;
     *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_uint64_t *, __pyx_pybuffernd_rowind.rcbuffer->pybuffer.buf, __pyx_t_17, __pyx_pybuffernd_rowind.diminfo[0].strides) = __pyx_v_it.col();
 
-    /* "l0learn/cyarma.pyx":236
+    /* "l0learn/cyarma.pyx":244
  *         # Arma is column major so rows are columns and columns are rows when converting back to l0learn (row major)
  *         rowind[i] = it.col()
  *         colind[i] = it.row()             # <<<<<<<<<<<<<<
@@ -4612,7 +4613,7 @@ static PyObject *__pyx_f_7l0learn_6cyarma_sp_dmat_to_numpy(arma::sp_dmat const &
     if (__pyx_t_17 < 0) __pyx_t_17 += __pyx_pybuffernd_colind.diminfo[0].shape;
     *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_uint64_t *, __pyx_pybuffernd_colind.rcbuffer->pybuffer.buf, __pyx_t_17, __pyx_pybuffernd_colind.diminfo[0].strides) = __pyx_v_it.row();
 
-    /* "l0learn/cyarma.pyx":237
+    /* "l0learn/cyarma.pyx":245
  *         rowind[i] = it.col()
  *         colind[i] = it.row()
  *         values[i] = deref(it)             # <<<<<<<<<<<<<<
@@ -4623,7 +4624,7 @@ static PyObject *__pyx_f_7l0learn_6cyarma_sp_dmat_to_numpy(arma::sp_dmat const &
     if (__pyx_t_17 < 0) __pyx_t_17 += __pyx_pybuffernd_values.diminfo[0].shape;
     *__Pyx_BufPtrStrided1d(__pyx_t_5numpy_double_t *, __pyx_pybuffernd_values.rcbuffer->pybuffer.buf, __pyx_t_17, __pyx_pybuffernd_values.diminfo[0].strides) = (*__pyx_v_it);
 
-    /* "l0learn/cyarma.pyx":238
+    /* "l0learn/cyarma.pyx":246
  *         colind[i] = it.row()
  *         values[i] = deref(it)
  *         inc(it)             # <<<<<<<<<<<<<<
@@ -4633,15 +4634,15 @@ static PyObject *__pyx_f_7l0learn_6cyarma_sp_dmat_to_numpy(arma::sp_dmat const &
     (void)((++__pyx_v_it));
   }
 
-  /* "l0learn/cyarma.pyx":240
+  /* "l0learn/cyarma.pyx":248
  *         inc(it)
  * 
  *     return csc_matrix((values, (colind, rowind)), shape=(X.n_rows, X.n_cols))             # <<<<<<<<<<<<<<
  */
   __Pyx_XDECREF(__pyx_r);
-  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_csc_matrix); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 240, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_csc_matrix); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 248, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_6 = PyTuple_New(2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 240, __pyx_L1_error)
+  __pyx_t_6 = PyTuple_New(2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 248, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_INCREF(((PyObject *)__pyx_v_colind));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_colind));
@@ -4649,7 +4650,7 @@ static PyObject *__pyx_f_7l0learn_6cyarma_sp_dmat_to_numpy(arma::sp_dmat const &
   __Pyx_INCREF(((PyObject *)__pyx_v_rowind));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_rowind));
   PyTuple_SET_ITEM(__pyx_t_6, 1, ((PyObject *)__pyx_v_rowind));
-  __pyx_t_5 = PyTuple_New(2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 240, __pyx_L1_error)
+  __pyx_t_5 = PyTuple_New(2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 248, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_INCREF(((PyObject *)__pyx_v_values));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_values));
@@ -4657,18 +4658,18 @@ static PyObject *__pyx_f_7l0learn_6cyarma_sp_dmat_to_numpy(arma::sp_dmat const &
   __Pyx_GIVEREF(__pyx_t_6);
   PyTuple_SET_ITEM(__pyx_t_5, 1, __pyx_t_6);
   __pyx_t_6 = 0;
-  __pyx_t_6 = PyTuple_New(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 240, __pyx_L1_error)
+  __pyx_t_6 = PyTuple_New(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 248, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_GIVEREF(__pyx_t_5);
   PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_5);
   __pyx_t_5 = 0;
-  __pyx_t_5 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 240, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 248, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_7 = __Pyx_PyInt_From_int(__pyx_v_X.n_rows); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 240, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyInt_From_int(__pyx_v_X.n_rows); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 248, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_X.n_cols); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 240, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_X.n_cols); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 248, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_18 = PyTuple_New(2); if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 240, __pyx_L1_error)
+  __pyx_t_18 = PyTuple_New(2); if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 248, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_18);
   __Pyx_GIVEREF(__pyx_t_7);
   PyTuple_SET_ITEM(__pyx_t_18, 0, __pyx_t_7);
@@ -4676,9 +4677,9 @@ static PyObject *__pyx_f_7l0learn_6cyarma_sp_dmat_to_numpy(arma::sp_dmat const &
   PyTuple_SET_ITEM(__pyx_t_18, 1, __pyx_t_3);
   __pyx_t_7 = 0;
   __pyx_t_3 = 0;
-  if (PyDict_SetItem(__pyx_t_5, __pyx_n_s_shape, __pyx_t_18) < 0) __PYX_ERR(0, 240, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_5, __pyx_n_s_shape, __pyx_t_18) < 0) __PYX_ERR(0, 248, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_18); __pyx_t_18 = 0;
-  __pyx_t_18 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_6, __pyx_t_5); if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 240, __pyx_L1_error)
+  __pyx_t_18 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_6, __pyx_t_5); if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 248, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_18);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
@@ -4687,7 +4688,7 @@ static PyObject *__pyx_f_7l0learn_6cyarma_sp_dmat_to_numpy(arma::sp_dmat const &
   __pyx_t_18 = 0;
   goto __pyx_L0;
 
-  /* "l0learn/cyarma.pyx":220
+  /* "l0learn/cyarma.pyx":228
  * 
  * @cython.boundscheck(False)
  * cdef sp_dmat_to_numpy(const sp_dmat & X, np.ndarray[np.uint64_t, ndim=1] rowind,             # <<<<<<<<<<<<<<
@@ -5638,7 +5639,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_import, __pyx_k_import, sizeof(__pyx_k_import), 0, 0, 1, 1},
   {&__pyx_n_s_indices, __pyx_k_indices, sizeof(__pyx_k_indices), 0, 0, 1, 1},
   {&__pyx_n_s_indptr, __pyx_k_indptr, sizeof(__pyx_k_indptr), 0, 0, 1, 1},
-  {&__pyx_n_s_isreal, __pyx_k_isreal, sizeof(__pyx_k_isreal), 0, 0, 1, 1},
+  {&__pyx_n_s_isrealobj, __pyx_k_isrealobj, sizeof(__pyx_k_isrealobj), 0, 0, 1, 1},
   {&__pyx_n_s_main, __pyx_k_main, sizeof(__pyx_k_main), 0, 0, 1, 1},
   {&__pyx_n_s_name, __pyx_k_name, sizeof(__pyx_k_name), 0, 0, 1, 1},
   {&__pyx_n_s_ndim, __pyx_k_ndim, sizeof(__pyx_k_ndim), 0, 0, 1, 1},
@@ -5656,10 +5657,10 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {0, 0, 0, 0, 0, 0, 0}
 };
 static CYTHON_SMALL_CODE int __Pyx_InitCachedBuiltins(void) {
-  __pyx_builtin_enumerate = __Pyx_GetBuiltinName(__pyx_n_s_enumerate); if (!__pyx_builtin_enumerate) __PYX_ERR(0, 88, __pyx_L1_error)
-  __pyx_builtin_TypeError = __Pyx_GetBuiltinName(__pyx_n_s_TypeError); if (!__pyx_builtin_TypeError) __PYX_ERR(0, 90, __pyx_L1_error)
-  __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) __PYX_ERR(0, 144, __pyx_L1_error)
-  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(0, 172, __pyx_L1_error)
+  __pyx_builtin_enumerate = __Pyx_GetBuiltinName(__pyx_n_s_enumerate); if (!__pyx_builtin_enumerate) __PYX_ERR(0, 89, __pyx_L1_error)
+  __pyx_builtin_TypeError = __Pyx_GetBuiltinName(__pyx_n_s_TypeError); if (!__pyx_builtin_TypeError) __PYX_ERR(0, 91, __pyx_L1_error)
+  __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) __PYX_ERR(0, 149, __pyx_L1_error)
+  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(0, 179, __pyx_L1_error)
   __pyx_builtin_ImportError = __Pyx_GetBuiltinName(__pyx_n_s_ImportError); if (!__pyx_builtin_ImportError) __PYX_ERR(1, 884, __pyx_L1_error)
   return 0;
   __pyx_L1_error:;

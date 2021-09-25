@@ -1733,8 +1733,8 @@ static PyObject *__pyx_codeobj__14;
 static PyObject *__pyx_codeobj__16;
 /* Late includes */
 
-/* "l0learn/testing_utils.pyx":10
- *                              sp_dmat_to_numpy)
+/* "l0learn/testing_utils.pyx":11
+ * 
  * 
  * def list_csc_to_arma_csc_to_list(x):             # <<<<<<<<<<<<<<
  *     return  c_list_csc_to_arma_csc_to_list(x)
@@ -1765,23 +1765,23 @@ static PyObject *__pyx_pf_7l0learn_13testing_utils_list_csc_to_arma_csc_to_list(
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("list_csc_to_arma_csc_to_list", 0);
 
-  /* "l0learn/testing_utils.pyx":11
+  /* "l0learn/testing_utils.pyx":12
  * 
  * def list_csc_to_arma_csc_to_list(x):
  *     return  c_list_csc_to_arma_csc_to_list(x)             # <<<<<<<<<<<<<<
  * 
- * cdef list c_list_csc_to_arma_csc_to_list(list x):
+ * 
  */
   __Pyx_XDECREF(__pyx_r);
-  if (!(likely(PyList_CheckExact(__pyx_v_x))||((__pyx_v_x) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "list", Py_TYPE(__pyx_v_x)->tp_name), 0))) __PYX_ERR(0, 11, __pyx_L1_error)
-  __pyx_t_1 = __pyx_f_7l0learn_13testing_utils_c_list_csc_to_arma_csc_to_list(((PyObject*)__pyx_v_x)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 11, __pyx_L1_error)
+  if (!(likely(PyList_CheckExact(__pyx_v_x))||((__pyx_v_x) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "list", Py_TYPE(__pyx_v_x)->tp_name), 0))) __PYX_ERR(0, 12, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_7l0learn_13testing_utils_c_list_csc_to_arma_csc_to_list(((PyObject*)__pyx_v_x)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 12, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "l0learn/testing_utils.pyx":10
- *                              sp_dmat_to_numpy)
+  /* "l0learn/testing_utils.pyx":11
+ * 
  * 
  * def list_csc_to_arma_csc_to_list(x):             # <<<<<<<<<<<<<<
  *     return  c_list_csc_to_arma_csc_to_list(x)
@@ -1799,8 +1799,8 @@ static PyObject *__pyx_pf_7l0learn_13testing_utils_list_csc_to_arma_csc_to_list(
   return __pyx_r;
 }
 
-/* "l0learn/testing_utils.pyx":13
- *     return  c_list_csc_to_arma_csc_to_list(x)
+/* "l0learn/testing_utils.pyx":15
+ * 
  * 
  * cdef list c_list_csc_to_arma_csc_to_list(list x):             # <<<<<<<<<<<<<<
  *     cdef field[sp_dmat] f = list_to_sp_dmat_field(x)
@@ -1818,7 +1818,7 @@ static PyObject *__pyx_f_7l0learn_13testing_utils_c_list_csc_to_arma_csc_to_list
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("c_list_csc_to_arma_csc_to_list", 0);
 
-  /* "l0learn/testing_utils.pyx":14
+  /* "l0learn/testing_utils.pyx":16
  * 
  * cdef list c_list_csc_to_arma_csc_to_list(list x):
  *     cdef field[sp_dmat] f = list_to_sp_dmat_field(x)             # <<<<<<<<<<<<<<
@@ -1827,33 +1827,33 @@ static PyObject *__pyx_f_7l0learn_13testing_utils_c_list_csc_to_arma_csc_to_list
  */
   __pyx_v_f = __pyx_f_7l0learn_6cyarma_list_to_sp_dmat_field(__pyx_v_x);
 
-  /* "l0learn/testing_utils.pyx":15
+  /* "l0learn/testing_utils.pyx":17
  * cdef list c_list_csc_to_arma_csc_to_list(list x):
  *     cdef field[sp_dmat] f = list_to_sp_dmat_field(x)
  *     cdef lst = sp_dmat_field_to_list(f)             # <<<<<<<<<<<<<<
  *     return lst
  * 
  */
-  __pyx_t_1 = __pyx_f_7l0learn_6cyarma_sp_dmat_field_to_list(__pyx_v_f); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 15, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_7l0learn_6cyarma_sp_dmat_field_to_list(__pyx_v_f); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 17, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_lst = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "l0learn/testing_utils.pyx":16
+  /* "l0learn/testing_utils.pyx":18
  *     cdef field[sp_dmat] f = list_to_sp_dmat_field(x)
  *     cdef lst = sp_dmat_field_to_list(f)
  *     return lst             # <<<<<<<<<<<<<<
  * 
- * def list_dvec_to_arma_dvec_to_list(x):
+ * 
  */
   __Pyx_XDECREF(__pyx_r);
-  if (!(likely(PyList_CheckExact(__pyx_v_lst))||((__pyx_v_lst) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "list", Py_TYPE(__pyx_v_lst)->tp_name), 0))) __PYX_ERR(0, 16, __pyx_L1_error)
+  if (!(likely(PyList_CheckExact(__pyx_v_lst))||((__pyx_v_lst) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "list", Py_TYPE(__pyx_v_lst)->tp_name), 0))) __PYX_ERR(0, 18, __pyx_L1_error)
   __Pyx_INCREF(__pyx_v_lst);
   __pyx_r = ((PyObject*)__pyx_v_lst);
   goto __pyx_L0;
 
-  /* "l0learn/testing_utils.pyx":13
- *     return  c_list_csc_to_arma_csc_to_list(x)
+  /* "l0learn/testing_utils.pyx":15
+ * 
  * 
  * cdef list c_list_csc_to_arma_csc_to_list(list x):             # <<<<<<<<<<<<<<
  *     cdef field[sp_dmat] f = list_to_sp_dmat_field(x)
@@ -1872,8 +1872,8 @@ static PyObject *__pyx_f_7l0learn_13testing_utils_c_list_csc_to_arma_csc_to_list
   return __pyx_r;
 }
 
-/* "l0learn/testing_utils.pyx":18
- *     return lst
+/* "l0learn/testing_utils.pyx":21
+ * 
  * 
  * def list_dvec_to_arma_dvec_to_list(x):             # <<<<<<<<<<<<<<
  *     return  c_list_dvec_to_arma_dvec_to_list(x)
@@ -1904,23 +1904,23 @@ static PyObject *__pyx_pf_7l0learn_13testing_utils_2list_dvec_to_arma_dvec_to_li
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("list_dvec_to_arma_dvec_to_list", 0);
 
-  /* "l0learn/testing_utils.pyx":19
+  /* "l0learn/testing_utils.pyx":22
  * 
  * def list_dvec_to_arma_dvec_to_list(x):
  *     return  c_list_dvec_to_arma_dvec_to_list(x)             # <<<<<<<<<<<<<<
  * 
- * cdef list c_list_dvec_to_arma_dvec_to_list(list x):
+ * 
  */
   __Pyx_XDECREF(__pyx_r);
-  if (!(likely(PyList_CheckExact(__pyx_v_x))||((__pyx_v_x) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "list", Py_TYPE(__pyx_v_x)->tp_name), 0))) __PYX_ERR(0, 19, __pyx_L1_error)
-  __pyx_t_1 = __pyx_f_7l0learn_13testing_utils_c_list_dvec_to_arma_dvec_to_list(((PyObject*)__pyx_v_x)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 19, __pyx_L1_error)
+  if (!(likely(PyList_CheckExact(__pyx_v_x))||((__pyx_v_x) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "list", Py_TYPE(__pyx_v_x)->tp_name), 0))) __PYX_ERR(0, 22, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_7l0learn_13testing_utils_c_list_dvec_to_arma_dvec_to_list(((PyObject*)__pyx_v_x)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 22, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "l0learn/testing_utils.pyx":18
- *     return lst
+  /* "l0learn/testing_utils.pyx":21
+ * 
  * 
  * def list_dvec_to_arma_dvec_to_list(x):             # <<<<<<<<<<<<<<
  *     return  c_list_dvec_to_arma_dvec_to_list(x)
@@ -1938,8 +1938,8 @@ static PyObject *__pyx_pf_7l0learn_13testing_utils_2list_dvec_to_arma_dvec_to_li
   return __pyx_r;
 }
 
-/* "l0learn/testing_utils.pyx":21
- *     return  c_list_dvec_to_arma_dvec_to_list(x)
+/* "l0learn/testing_utils.pyx":25
+ * 
  * 
  * cdef list c_list_dvec_to_arma_dvec_to_list(list x):             # <<<<<<<<<<<<<<
  *     cdef field[dvec] f = list_to_dvec_field(x)
@@ -1957,7 +1957,7 @@ static PyObject *__pyx_f_7l0learn_13testing_utils_c_list_dvec_to_arma_dvec_to_li
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("c_list_dvec_to_arma_dvec_to_list", 0);
 
-  /* "l0learn/testing_utils.pyx":22
+  /* "l0learn/testing_utils.pyx":26
  * 
  * cdef list c_list_dvec_to_arma_dvec_to_list(list x):
  *     cdef field[dvec] f = list_to_dvec_field(x)             # <<<<<<<<<<<<<<
@@ -1966,19 +1966,19 @@ static PyObject *__pyx_f_7l0learn_13testing_utils_c_list_dvec_to_arma_dvec_to_li
  */
   __pyx_v_f = __pyx_f_7l0learn_6cyarma_list_to_dvec_field(__pyx_v_x);
 
-  /* "l0learn/testing_utils.pyx":23
+  /* "l0learn/testing_utils.pyx":27
  * cdef list c_list_dvec_to_arma_dvec_to_list(list x):
  *     cdef field[dvec] f = list_to_dvec_field(x)
  *     cdef lst = dvec_field_to_list(f)             # <<<<<<<<<<<<<<
  *     return lst
  * 
  */
-  __pyx_t_1 = __pyx_f_7l0learn_6cyarma_dvec_field_to_list(__pyx_v_f); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 23, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_7l0learn_6cyarma_dvec_field_to_list(__pyx_v_f); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 27, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_lst = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "l0learn/testing_utils.pyx":24
+  /* "l0learn/testing_utils.pyx":28
  *     cdef field[dvec] f = list_to_dvec_field(x)
  *     cdef lst = dvec_field_to_list(f)
  *     return lst             # <<<<<<<<<<<<<<
@@ -1986,13 +1986,13 @@ static PyObject *__pyx_f_7l0learn_13testing_utils_c_list_dvec_to_arma_dvec_to_li
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  if (!(likely(PyList_CheckExact(__pyx_v_lst))||((__pyx_v_lst) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "list", Py_TYPE(__pyx_v_lst)->tp_name), 0))) __PYX_ERR(0, 24, __pyx_L1_error)
+  if (!(likely(PyList_CheckExact(__pyx_v_lst))||((__pyx_v_lst) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "list", Py_TYPE(__pyx_v_lst)->tp_name), 0))) __PYX_ERR(0, 28, __pyx_L1_error)
   __Pyx_INCREF(__pyx_v_lst);
   __pyx_r = ((PyObject*)__pyx_v_lst);
   goto __pyx_L0;
 
-  /* "l0learn/testing_utils.pyx":21
- *     return  c_list_dvec_to_arma_dvec_to_list(x)
+  /* "l0learn/testing_utils.pyx":25
+ * 
  * 
  * cdef list c_list_dvec_to_arma_dvec_to_list(list x):             # <<<<<<<<<<<<<<
  *     cdef field[dvec] f = list_to_dvec_field(x)
@@ -2011,7 +2011,7 @@ static PyObject *__pyx_f_7l0learn_13testing_utils_c_list_dvec_to_arma_dvec_to_li
   return __pyx_r;
 }
 
-/* "l0learn/testing_utils.pyx":27
+/* "l0learn/testing_utils.pyx":31
  * 
  * 
  * def dmat_np_to_arma_to_np(x):             # <<<<<<<<<<<<<<
@@ -2054,15 +2054,15 @@ static PyObject *__pyx_pf_7l0learn_13testing_utils_4dmat_np_to_arma_to_np(CYTHON
   __pyx_pybuffernd_x_pass.data = NULL;
   __pyx_pybuffernd_x_pass.rcbuffer = &__pyx_pybuffer_x_pass;
 
-  /* "l0learn/testing_utils.pyx":29
+  /* "l0learn/testing_utils.pyx":33
  * def dmat_np_to_arma_to_np(x):
  *     cdef np.ndarray[np.double_t, ndim=2] x_pass
  *     x_pass = c_dmat_np_to_arma_to_np(x)             # <<<<<<<<<<<<<<
  * 
  *     return x_pass
  */
-  if (!(likely(((__pyx_v_x) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_x, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 29, __pyx_L1_error)
-  __pyx_t_1 = ((PyObject *)__pyx_f_7l0learn_13testing_utils_c_dmat_np_to_arma_to_np(((PyArrayObject *)__pyx_v_x))); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 29, __pyx_L1_error)
+  if (!(likely(((__pyx_v_x) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_x, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 33, __pyx_L1_error)
+  __pyx_t_1 = ((PyObject *)__pyx_f_7l0learn_13testing_utils_c_dmat_np_to_arma_to_np(((PyArrayObject *)__pyx_v_x))); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 33, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
@@ -2079,12 +2079,12 @@ static PyObject *__pyx_pf_7l0learn_13testing_utils_4dmat_np_to_arma_to_np(CYTHON
       __pyx_t_3 = __pyx_t_4 = __pyx_t_5 = 0;
     }
     __pyx_pybuffernd_x_pass.diminfo[0].strides = __pyx_pybuffernd_x_pass.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_x_pass.diminfo[0].shape = __pyx_pybuffernd_x_pass.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_x_pass.diminfo[1].strides = __pyx_pybuffernd_x_pass.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_x_pass.diminfo[1].shape = __pyx_pybuffernd_x_pass.rcbuffer->pybuffer.shape[1];
-    if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 29, __pyx_L1_error)
+    if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 33, __pyx_L1_error)
   }
   __pyx_v_x_pass = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "l0learn/testing_utils.pyx":31
+  /* "l0learn/testing_utils.pyx":35
  *     x_pass = c_dmat_np_to_arma_to_np(x)
  * 
  *     return x_pass             # <<<<<<<<<<<<<<
@@ -2096,7 +2096,7 @@ static PyObject *__pyx_pf_7l0learn_13testing_utils_4dmat_np_to_arma_to_np(CYTHON
   __pyx_r = ((PyObject *)__pyx_v_x_pass);
   goto __pyx_L0;
 
-  /* "l0learn/testing_utils.pyx":27
+  /* "l0learn/testing_utils.pyx":31
  * 
  * 
  * def dmat_np_to_arma_to_np(x):             # <<<<<<<<<<<<<<
@@ -2125,7 +2125,7 @@ static PyObject *__pyx_pf_7l0learn_13testing_utils_4dmat_np_to_arma_to_np(CYTHON
   return __pyx_r;
 }
 
-/* "l0learn/testing_utils.pyx":34
+/* "l0learn/testing_utils.pyx":38
  * 
  * 
  * cdef np.ndarray[np.double_t, ndim=2] c_dmat_np_to_arma_to_np(np.ndarray[np.double_t, ndim=2] x):             # <<<<<<<<<<<<<<
@@ -2157,11 +2157,11 @@ static PyArrayObject *__pyx_f_7l0learn_13testing_utils_c_dmat_np_to_arma_to_np(P
   __pyx_pybuffernd_x.rcbuffer = &__pyx_pybuffer_x;
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_x.rcbuffer->pybuffer, (PyObject*)__pyx_v_x, &__Pyx_TypeInfo_nn___pyx_t_5numpy_double_t, PyBUF_FORMAT| PyBUF_STRIDES, 2, 0, __pyx_stack) == -1)) __PYX_ERR(0, 34, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_x.rcbuffer->pybuffer, (PyObject*)__pyx_v_x, &__Pyx_TypeInfo_nn___pyx_t_5numpy_double_t, PyBUF_FORMAT| PyBUF_STRIDES, 2, 0, __pyx_stack) == -1)) __PYX_ERR(0, 38, __pyx_L1_error)
   }
   __pyx_pybuffernd_x.diminfo[0].strides = __pyx_pybuffernd_x.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_x.diminfo[0].shape = __pyx_pybuffernd_x.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_x.diminfo[1].strides = __pyx_pybuffernd_x.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_x.diminfo[1].shape = __pyx_pybuffernd_x.rcbuffer->pybuffer.shape[1];
 
-  /* "l0learn/testing_utils.pyx":35
+  /* "l0learn/testing_utils.pyx":39
  * 
  * cdef np.ndarray[np.double_t, ndim=2] c_dmat_np_to_arma_to_np(np.ndarray[np.double_t, ndim=2] x):
  *     cdef dmat arma_x = numpy_to_dmat_d(x)             # <<<<<<<<<<<<<<
@@ -2170,27 +2170,27 @@ static PyArrayObject *__pyx_f_7l0learn_13testing_utils_c_dmat_np_to_arma_to_np(P
  */
   __pyx_v_arma_x = __pyx_f_7l0learn_6cyarma_numpy_to_dmat_d(((PyArrayObject *)__pyx_v_x));
 
-  /* "l0learn/testing_utils.pyx":37
+  /* "l0learn/testing_utils.pyx":41
  *     cdef dmat arma_x = numpy_to_dmat_d(x)
  * 
  *     cdef np.ndarray[np.double_t, ndim=2] np_x = dmat_to_numpy(arma_x, None)             # <<<<<<<<<<<<<<
  * 
  *     return np_x
  */
-  __pyx_t_1 = ((PyObject *)__pyx_f_7l0learn_6cyarma_dmat_to_numpy(__pyx_v_arma_x, ((PyArrayObject *)Py_None))); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 37, __pyx_L1_error)
+  __pyx_t_1 = ((PyObject *)__pyx_f_7l0learn_6cyarma_dmat_to_numpy(__pyx_v_arma_x, ((PyArrayObject *)Py_None))); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 41, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_np_x.rcbuffer->pybuffer, (PyObject*)((PyArrayObject *)__pyx_t_1), &__Pyx_TypeInfo_nn___pyx_t_5numpy_double_t, PyBUF_FORMAT| PyBUF_STRIDES, 2, 0, __pyx_stack) == -1)) {
       __pyx_v_np_x = ((PyArrayObject *)Py_None); __Pyx_INCREF(Py_None); __pyx_pybuffernd_np_x.rcbuffer->pybuffer.buf = NULL;
-      __PYX_ERR(0, 37, __pyx_L1_error)
+      __PYX_ERR(0, 41, __pyx_L1_error)
     } else {__pyx_pybuffernd_np_x.diminfo[0].strides = __pyx_pybuffernd_np_x.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_np_x.diminfo[0].shape = __pyx_pybuffernd_np_x.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_np_x.diminfo[1].strides = __pyx_pybuffernd_np_x.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_np_x.diminfo[1].shape = __pyx_pybuffernd_np_x.rcbuffer->pybuffer.shape[1];
     }
   }
   __pyx_v_np_x = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "l0learn/testing_utils.pyx":39
+  /* "l0learn/testing_utils.pyx":43
  *     cdef np.ndarray[np.double_t, ndim=2] np_x = dmat_to_numpy(arma_x, None)
  * 
  *     return np_x             # <<<<<<<<<<<<<<
@@ -2202,7 +2202,7 @@ static PyArrayObject *__pyx_f_7l0learn_13testing_utils_c_dmat_np_to_arma_to_np(P
   __pyx_r = ((PyArrayObject *)__pyx_v_np_x);
   goto __pyx_L0;
 
-  /* "l0learn/testing_utils.pyx":34
+  /* "l0learn/testing_utils.pyx":38
  * 
  * 
  * cdef np.ndarray[np.double_t, ndim=2] c_dmat_np_to_arma_to_np(np.ndarray[np.double_t, ndim=2] x):             # <<<<<<<<<<<<<<
@@ -2233,7 +2233,7 @@ static PyArrayObject *__pyx_f_7l0learn_13testing_utils_c_dmat_np_to_arma_to_np(P
   return __pyx_r;
 }
 
-/* "l0learn/testing_utils.pyx":42
+/* "l0learn/testing_utils.pyx":46
  * 
  * 
  * def uvec_np_to_arma_to_np(x):             # <<<<<<<<<<<<<<
@@ -2276,15 +2276,15 @@ static PyObject *__pyx_pf_7l0learn_13testing_utils_6uvec_np_to_arma_to_np(CYTHON
   __pyx_pybuffernd_x_pass.data = NULL;
   __pyx_pybuffernd_x_pass.rcbuffer = &__pyx_pybuffer_x_pass;
 
-  /* "l0learn/testing_utils.pyx":44
+  /* "l0learn/testing_utils.pyx":48
  * def uvec_np_to_arma_to_np(x):
  *     cdef np.ndarray[np.uint64_t, ndim=1] x_pass
  *     x_pass = c_uvec_np_to_arma_to_np(x)             # <<<<<<<<<<<<<<
  * 
  *     return x_pass
  */
-  if (!(likely(((__pyx_v_x) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_x, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 44, __pyx_L1_error)
-  __pyx_t_1 = ((PyObject *)__pyx_f_7l0learn_13testing_utils_c_uvec_np_to_arma_to_np(((PyArrayObject *)__pyx_v_x))); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 44, __pyx_L1_error)
+  if (!(likely(((__pyx_v_x) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_x, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 48, __pyx_L1_error)
+  __pyx_t_1 = ((PyObject *)__pyx_f_7l0learn_13testing_utils_c_uvec_np_to_arma_to_np(((PyArrayObject *)__pyx_v_x))); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 48, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
@@ -2301,12 +2301,12 @@ static PyObject *__pyx_pf_7l0learn_13testing_utils_6uvec_np_to_arma_to_np(CYTHON
       __pyx_t_3 = __pyx_t_4 = __pyx_t_5 = 0;
     }
     __pyx_pybuffernd_x_pass.diminfo[0].strides = __pyx_pybuffernd_x_pass.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_x_pass.diminfo[0].shape = __pyx_pybuffernd_x_pass.rcbuffer->pybuffer.shape[0];
-    if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 44, __pyx_L1_error)
+    if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 48, __pyx_L1_error)
   }
   __pyx_v_x_pass = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "l0learn/testing_utils.pyx":46
+  /* "l0learn/testing_utils.pyx":50
  *     x_pass = c_uvec_np_to_arma_to_np(x)
  * 
  *     return x_pass             # <<<<<<<<<<<<<<
@@ -2318,7 +2318,7 @@ static PyObject *__pyx_pf_7l0learn_13testing_utils_6uvec_np_to_arma_to_np(CYTHON
   __pyx_r = ((PyObject *)__pyx_v_x_pass);
   goto __pyx_L0;
 
-  /* "l0learn/testing_utils.pyx":42
+  /* "l0learn/testing_utils.pyx":46
  * 
  * 
  * def uvec_np_to_arma_to_np(x):             # <<<<<<<<<<<<<<
@@ -2347,7 +2347,7 @@ static PyObject *__pyx_pf_7l0learn_13testing_utils_6uvec_np_to_arma_to_np(CYTHON
   return __pyx_r;
 }
 
-/* "l0learn/testing_utils.pyx":49
+/* "l0learn/testing_utils.pyx":53
  * 
  * 
  * cdef np.ndarray[np.uint64_t, ndim=1] c_uvec_np_to_arma_to_np(np.ndarray[np.uint64_t, ndim=1] x):             # <<<<<<<<<<<<<<
@@ -2379,11 +2379,11 @@ static PyArrayObject *__pyx_f_7l0learn_13testing_utils_c_uvec_np_to_arma_to_np(P
   __pyx_pybuffernd_x.rcbuffer = &__pyx_pybuffer_x;
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_x.rcbuffer->pybuffer, (PyObject*)__pyx_v_x, &__Pyx_TypeInfo_nn___pyx_t_5numpy_uint64_t, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 49, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_x.rcbuffer->pybuffer, (PyObject*)__pyx_v_x, &__Pyx_TypeInfo_nn___pyx_t_5numpy_uint64_t, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 53, __pyx_L1_error)
   }
   __pyx_pybuffernd_x.diminfo[0].strides = __pyx_pybuffernd_x.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_x.diminfo[0].shape = __pyx_pybuffernd_x.rcbuffer->pybuffer.shape[0];
 
-  /* "l0learn/testing_utils.pyx":50
+  /* "l0learn/testing_utils.pyx":54
  * 
  * cdef np.ndarray[np.uint64_t, ndim=1] c_uvec_np_to_arma_to_np(np.ndarray[np.uint64_t, ndim=1] x):
  *     cdef uvec arma_x = numpy_to_uvec_d(x)             # <<<<<<<<<<<<<<
@@ -2392,27 +2392,27 @@ static PyArrayObject *__pyx_f_7l0learn_13testing_utils_c_uvec_np_to_arma_to_np(P
  */
   __pyx_v_arma_x = __pyx_f_7l0learn_6cyarma_numpy_to_uvec_d(((PyArrayObject *)__pyx_v_x));
 
-  /* "l0learn/testing_utils.pyx":52
+  /* "l0learn/testing_utils.pyx":56
  *     cdef uvec arma_x = numpy_to_uvec_d(x)
  * 
  *     cdef np.ndarray[np.uint64_t, ndim=1] np_x = uvec_to_numpy(arma_x, None)             # <<<<<<<<<<<<<<
  * 
  *     return np_x
  */
-  __pyx_t_1 = ((PyObject *)__pyx_f_7l0learn_6cyarma_uvec_to_numpy(__pyx_v_arma_x, ((PyArrayObject *)Py_None))); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 52, __pyx_L1_error)
+  __pyx_t_1 = ((PyObject *)__pyx_f_7l0learn_6cyarma_uvec_to_numpy(__pyx_v_arma_x, ((PyArrayObject *)Py_None))); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 56, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_np_x.rcbuffer->pybuffer, (PyObject*)((PyArrayObject *)__pyx_t_1), &__Pyx_TypeInfo_nn___pyx_t_5numpy_uint64_t, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack) == -1)) {
       __pyx_v_np_x = ((PyArrayObject *)Py_None); __Pyx_INCREF(Py_None); __pyx_pybuffernd_np_x.rcbuffer->pybuffer.buf = NULL;
-      __PYX_ERR(0, 52, __pyx_L1_error)
+      __PYX_ERR(0, 56, __pyx_L1_error)
     } else {__pyx_pybuffernd_np_x.diminfo[0].strides = __pyx_pybuffernd_np_x.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_np_x.diminfo[0].shape = __pyx_pybuffernd_np_x.rcbuffer->pybuffer.shape[0];
     }
   }
   __pyx_v_np_x = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "l0learn/testing_utils.pyx":54
+  /* "l0learn/testing_utils.pyx":58
  *     cdef np.ndarray[np.uint64_t, ndim=1] np_x = uvec_to_numpy(arma_x, None)
  * 
  *     return np_x             # <<<<<<<<<<<<<<
@@ -2424,7 +2424,7 @@ static PyArrayObject *__pyx_f_7l0learn_13testing_utils_c_uvec_np_to_arma_to_np(P
   __pyx_r = ((PyArrayObject *)__pyx_v_np_x);
   goto __pyx_L0;
 
-  /* "l0learn/testing_utils.pyx":49
+  /* "l0learn/testing_utils.pyx":53
  * 
  * 
  * cdef np.ndarray[np.uint64_t, ndim=1] c_uvec_np_to_arma_to_np(np.ndarray[np.uint64_t, ndim=1] x):             # <<<<<<<<<<<<<<
@@ -2455,7 +2455,7 @@ static PyArrayObject *__pyx_f_7l0learn_13testing_utils_c_uvec_np_to_arma_to_np(P
   return __pyx_r;
 }
 
-/* "l0learn/testing_utils.pyx":57
+/* "l0learn/testing_utils.pyx":61
  * 
  * 
  * def dvec_np_to_arma_to_np(x):             # <<<<<<<<<<<<<<
@@ -2498,15 +2498,15 @@ static PyObject *__pyx_pf_7l0learn_13testing_utils_8dvec_np_to_arma_to_np(CYTHON
   __pyx_pybuffernd_x_pass.data = NULL;
   __pyx_pybuffernd_x_pass.rcbuffer = &__pyx_pybuffer_x_pass;
 
-  /* "l0learn/testing_utils.pyx":59
+  /* "l0learn/testing_utils.pyx":63
  * def dvec_np_to_arma_to_np(x):
  *     cdef np.ndarray[np.double_t, ndim=1] x_pass
  *     x_pass = c_dvec_np_to_arma_to_np(x)             # <<<<<<<<<<<<<<
  * 
  *     return x_pass
  */
-  if (!(likely(((__pyx_v_x) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_x, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 59, __pyx_L1_error)
-  __pyx_t_1 = ((PyObject *)__pyx_f_7l0learn_13testing_utils_c_dvec_np_to_arma_to_np(((PyArrayObject *)__pyx_v_x))); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 59, __pyx_L1_error)
+  if (!(likely(((__pyx_v_x) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_x, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 63, __pyx_L1_error)
+  __pyx_t_1 = ((PyObject *)__pyx_f_7l0learn_13testing_utils_c_dvec_np_to_arma_to_np(((PyArrayObject *)__pyx_v_x))); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 63, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
@@ -2523,12 +2523,12 @@ static PyObject *__pyx_pf_7l0learn_13testing_utils_8dvec_np_to_arma_to_np(CYTHON
       __pyx_t_3 = __pyx_t_4 = __pyx_t_5 = 0;
     }
     __pyx_pybuffernd_x_pass.diminfo[0].strides = __pyx_pybuffernd_x_pass.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_x_pass.diminfo[0].shape = __pyx_pybuffernd_x_pass.rcbuffer->pybuffer.shape[0];
-    if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 59, __pyx_L1_error)
+    if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 63, __pyx_L1_error)
   }
   __pyx_v_x_pass = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "l0learn/testing_utils.pyx":61
+  /* "l0learn/testing_utils.pyx":65
  *     x_pass = c_dvec_np_to_arma_to_np(x)
  * 
  *     return x_pass             # <<<<<<<<<<<<<<
@@ -2540,7 +2540,7 @@ static PyObject *__pyx_pf_7l0learn_13testing_utils_8dvec_np_to_arma_to_np(CYTHON
   __pyx_r = ((PyObject *)__pyx_v_x_pass);
   goto __pyx_L0;
 
-  /* "l0learn/testing_utils.pyx":57
+  /* "l0learn/testing_utils.pyx":61
  * 
  * 
  * def dvec_np_to_arma_to_np(x):             # <<<<<<<<<<<<<<
@@ -2569,7 +2569,7 @@ static PyObject *__pyx_pf_7l0learn_13testing_utils_8dvec_np_to_arma_to_np(CYTHON
   return __pyx_r;
 }
 
-/* "l0learn/testing_utils.pyx":64
+/* "l0learn/testing_utils.pyx":68
  * 
  * 
  * cdef np.ndarray[np.uint64_t, ndim=1] c_dvec_np_to_arma_to_np(np.ndarray[np.double_t, ndim=1] x):             # <<<<<<<<<<<<<<
@@ -2601,11 +2601,11 @@ static PyArrayObject *__pyx_f_7l0learn_13testing_utils_c_dvec_np_to_arma_to_np(P
   __pyx_pybuffernd_x.rcbuffer = &__pyx_pybuffer_x;
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_x.rcbuffer->pybuffer, (PyObject*)__pyx_v_x, &__Pyx_TypeInfo_nn___pyx_t_5numpy_double_t, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 64, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_x.rcbuffer->pybuffer, (PyObject*)__pyx_v_x, &__Pyx_TypeInfo_nn___pyx_t_5numpy_double_t, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 68, __pyx_L1_error)
   }
   __pyx_pybuffernd_x.diminfo[0].strides = __pyx_pybuffernd_x.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_x.diminfo[0].shape = __pyx_pybuffernd_x.rcbuffer->pybuffer.shape[0];
 
-  /* "l0learn/testing_utils.pyx":65
+  /* "l0learn/testing_utils.pyx":69
  * 
  * cdef np.ndarray[np.uint64_t, ndim=1] c_dvec_np_to_arma_to_np(np.ndarray[np.double_t, ndim=1] x):
  *     cdef dvec arma_x = numpy_to_dvec_d(x)             # <<<<<<<<<<<<<<
@@ -2614,27 +2614,27 @@ static PyArrayObject *__pyx_f_7l0learn_13testing_utils_c_dvec_np_to_arma_to_np(P
  */
   __pyx_v_arma_x = __pyx_f_7l0learn_6cyarma_numpy_to_dvec_d(((PyArrayObject *)__pyx_v_x));
 
-  /* "l0learn/testing_utils.pyx":67
+  /* "l0learn/testing_utils.pyx":71
  *     cdef dvec arma_x = numpy_to_dvec_d(x)
  * 
  *     cdef np.ndarray[np.double_t, ndim=1] np_x = dvec_to_numpy(arma_x, None)             # <<<<<<<<<<<<<<
  * 
  *     return np_x
  */
-  __pyx_t_1 = ((PyObject *)__pyx_f_7l0learn_6cyarma_dvec_to_numpy(__pyx_v_arma_x, ((PyArrayObject *)Py_None))); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 67, __pyx_L1_error)
+  __pyx_t_1 = ((PyObject *)__pyx_f_7l0learn_6cyarma_dvec_to_numpy(__pyx_v_arma_x, ((PyArrayObject *)Py_None))); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 71, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_np_x.rcbuffer->pybuffer, (PyObject*)((PyArrayObject *)__pyx_t_1), &__Pyx_TypeInfo_nn___pyx_t_5numpy_double_t, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack) == -1)) {
       __pyx_v_np_x = ((PyArrayObject *)Py_None); __Pyx_INCREF(Py_None); __pyx_pybuffernd_np_x.rcbuffer->pybuffer.buf = NULL;
-      __PYX_ERR(0, 67, __pyx_L1_error)
+      __PYX_ERR(0, 71, __pyx_L1_error)
     } else {__pyx_pybuffernd_np_x.diminfo[0].strides = __pyx_pybuffernd_np_x.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_np_x.diminfo[0].shape = __pyx_pybuffernd_np_x.rcbuffer->pybuffer.shape[0];
     }
   }
   __pyx_v_np_x = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "l0learn/testing_utils.pyx":69
+  /* "l0learn/testing_utils.pyx":73
  *     cdef np.ndarray[np.double_t, ndim=1] np_x = dvec_to_numpy(arma_x, None)
  * 
  *     return np_x             # <<<<<<<<<<<<<<
@@ -2646,7 +2646,7 @@ static PyArrayObject *__pyx_f_7l0learn_13testing_utils_c_dvec_np_to_arma_to_np(P
   __pyx_r = ((PyArrayObject *)__pyx_v_np_x);
   goto __pyx_L0;
 
-  /* "l0learn/testing_utils.pyx":64
+  /* "l0learn/testing_utils.pyx":68
  * 
  * 
  * cdef np.ndarray[np.uint64_t, ndim=1] c_dvec_np_to_arma_to_np(np.ndarray[np.double_t, ndim=1] x):             # <<<<<<<<<<<<<<
@@ -2677,7 +2677,7 @@ static PyArrayObject *__pyx_f_7l0learn_13testing_utils_c_dvec_np_to_arma_to_np(P
   return __pyx_r;
 }
 
-/* "l0learn/testing_utils.pyx":72
+/* "l0learn/testing_utils.pyx":76
  * 
  * 
  * def sp_dmat_np_to_arma_to_np(x):             # <<<<<<<<<<<<<<
@@ -2709,7 +2709,7 @@ static PyObject *__pyx_pf_7l0learn_13testing_utils_10sp_dmat_np_to_arma_to_np(CY
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("sp_dmat_np_to_arma_to_np", 0);
 
-  /* "l0learn/testing_utils.pyx":73
+  /* "l0learn/testing_utils.pyx":77
  * 
  * def sp_dmat_np_to_arma_to_np(x):
  *     return c_sp_dmat_np_to_arma_to_np(x)             # <<<<<<<<<<<<<<
@@ -2717,13 +2717,13 @@ static PyObject *__pyx_pf_7l0learn_13testing_utils_10sp_dmat_np_to_arma_to_np(CY
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_7l0learn_13testing_utils_c_sp_dmat_np_to_arma_to_np(__pyx_v_x); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 73, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_7l0learn_13testing_utils_c_sp_dmat_np_to_arma_to_np(__pyx_v_x); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 77, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "l0learn/testing_utils.pyx":72
+  /* "l0learn/testing_utils.pyx":76
  * 
  * 
  * def sp_dmat_np_to_arma_to_np(x):             # <<<<<<<<<<<<<<
@@ -2742,7 +2742,7 @@ static PyObject *__pyx_pf_7l0learn_13testing_utils_10sp_dmat_np_to_arma_to_np(CY
   return __pyx_r;
 }
 
-/* "l0learn/testing_utils.pyx":76
+/* "l0learn/testing_utils.pyx":80
  * 
  * 
  * cdef c_sp_dmat_np_to_arma_to_np(x):             # <<<<<<<<<<<<<<
@@ -2761,7 +2761,7 @@ static PyObject *__pyx_f_7l0learn_13testing_utils_c_sp_dmat_np_to_arma_to_np(PyO
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("c_sp_dmat_np_to_arma_to_np", 0);
 
-  /* "l0learn/testing_utils.pyx":77
+  /* "l0learn/testing_utils.pyx":81
  * 
  * cdef c_sp_dmat_np_to_arma_to_np(x):
  *     cdef sp_dmat arma_x = numpy_to_sp_dmat_d(x)             # <<<<<<<<<<<<<<
@@ -2770,31 +2770,31 @@ static PyObject *__pyx_f_7l0learn_13testing_utils_c_sp_dmat_np_to_arma_to_np(PyO
  */
   __pyx_v_arma_x = __pyx_f_7l0learn_6cyarma_numpy_to_sp_dmat_d(__pyx_v_x);
 
-  /* "l0learn/testing_utils.pyx":79
+  /* "l0learn/testing_utils.pyx":83
  *     cdef sp_dmat arma_x = numpy_to_sp_dmat_d(x)
  * 
  *     np_x = sp_dmat_to_numpy(arma_x, None, None, None)             # <<<<<<<<<<<<<<
  *     return np_x
  * 
  */
-  __pyx_t_1 = __pyx_f_7l0learn_6cyarma_sp_dmat_to_numpy(__pyx_v_arma_x, ((PyArrayObject *)Py_None), ((PyArrayObject *)Py_None), ((PyArrayObject *)Py_None)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 79, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_7l0learn_6cyarma_sp_dmat_to_numpy(__pyx_v_arma_x, ((PyArrayObject *)Py_None), ((PyArrayObject *)Py_None), ((PyArrayObject *)Py_None)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 83, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_np_x = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "l0learn/testing_utils.pyx":80
+  /* "l0learn/testing_utils.pyx":84
  * 
  *     np_x = sp_dmat_to_numpy(arma_x, None, None, None)
  *     return np_x             # <<<<<<<<<<<<<<
  * 
- * def dmat_dot_dmat(x, y):
+ * 
  */
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(__pyx_v_np_x);
   __pyx_r = __pyx_v_np_x;
   goto __pyx_L0;
 
-  /* "l0learn/testing_utils.pyx":76
+  /* "l0learn/testing_utils.pyx":80
  * 
  * 
  * cdef c_sp_dmat_np_to_arma_to_np(x):             # <<<<<<<<<<<<<<
@@ -2814,8 +2814,8 @@ static PyObject *__pyx_f_7l0learn_13testing_utils_c_sp_dmat_np_to_arma_to_np(PyO
   return __pyx_r;
 }
 
-/* "l0learn/testing_utils.pyx":82
- *     return np_x
+/* "l0learn/testing_utils.pyx":87
+ * 
  * 
  * def dmat_dot_dmat(x, y):             # <<<<<<<<<<<<<<
  *     cdef dmat arma_x = numpy_to_dmat_d(x)
@@ -2858,11 +2858,11 @@ static PyObject *__pyx_pw_7l0learn_13testing_utils_13dmat_dot_dmat(PyObject *__p
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_y)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("dmat_dot_dmat", 1, 2, 2, 1); __PYX_ERR(0, 82, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("dmat_dot_dmat", 1, 2, 2, 1); __PYX_ERR(0, 87, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "dmat_dot_dmat") < 0)) __PYX_ERR(0, 82, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "dmat_dot_dmat") < 0)) __PYX_ERR(0, 87, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -2875,7 +2875,7 @@ static PyObject *__pyx_pw_7l0learn_13testing_utils_13dmat_dot_dmat(PyObject *__p
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("dmat_dot_dmat", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 82, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("dmat_dot_dmat", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 87, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("l0learn.testing_utils.dmat_dot_dmat", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -2907,27 +2907,27 @@ static PyObject *__pyx_pf_7l0learn_13testing_utils_12dmat_dot_dmat(CYTHON_UNUSED
   __pyx_pybuffernd_np_xy.data = NULL;
   __pyx_pybuffernd_np_xy.rcbuffer = &__pyx_pybuffer_np_xy;
 
-  /* "l0learn/testing_utils.pyx":83
+  /* "l0learn/testing_utils.pyx":88
  * 
  * def dmat_dot_dmat(x, y):
  *     cdef dmat arma_x = numpy_to_dmat_d(x)             # <<<<<<<<<<<<<<
  *     cdef dmat arma_y = numpy_to_dmat_d(y)
  * 
  */
-  if (!(likely(((__pyx_v_x) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_x, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 83, __pyx_L1_error)
+  if (!(likely(((__pyx_v_x) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_x, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 88, __pyx_L1_error)
   __pyx_v_arma_x = __pyx_f_7l0learn_6cyarma_numpy_to_dmat_d(((PyArrayObject *)__pyx_v_x));
 
-  /* "l0learn/testing_utils.pyx":84
+  /* "l0learn/testing_utils.pyx":89
  * def dmat_dot_dmat(x, y):
  *     cdef dmat arma_x = numpy_to_dmat_d(x)
  *     cdef dmat arma_y = numpy_to_dmat_d(y)             # <<<<<<<<<<<<<<
  * 
  *     cdef dmat arma_xy =  c_dmat_dot_dmat(arma_x, arma_y)
  */
-  if (!(likely(((__pyx_v_y) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_y, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 84, __pyx_L1_error)
+  if (!(likely(((__pyx_v_y) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_y, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 89, __pyx_L1_error)
   __pyx_v_arma_y = __pyx_f_7l0learn_6cyarma_numpy_to_dmat_d(((PyArrayObject *)__pyx_v_y));
 
-  /* "l0learn/testing_utils.pyx":86
+  /* "l0learn/testing_utils.pyx":91
  *     cdef dmat arma_y = numpy_to_dmat_d(y)
  * 
  *     cdef dmat arma_xy =  c_dmat_dot_dmat(arma_x, arma_y)             # <<<<<<<<<<<<<<
@@ -2936,40 +2936,40 @@ static PyObject *__pyx_pf_7l0learn_13testing_utils_12dmat_dot_dmat(CYTHON_UNUSED
  */
   __pyx_v_arma_xy = __pyx_f_7l0learn_13testing_utils_c_dmat_dot_dmat(__pyx_v_arma_x, __pyx_v_arma_y);
 
-  /* "l0learn/testing_utils.pyx":88
+  /* "l0learn/testing_utils.pyx":93
  *     cdef dmat arma_xy =  c_dmat_dot_dmat(arma_x, arma_y)
  * 
  *     cdef np.ndarray[np.double_t, ndim=2] np_xy = dmat_to_numpy(arma_xy, None)             # <<<<<<<<<<<<<<
  * 
  *     return np_xy
  */
-  __pyx_t_1 = ((PyObject *)__pyx_f_7l0learn_6cyarma_dmat_to_numpy(__pyx_v_arma_xy, ((PyArrayObject *)Py_None))); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 88, __pyx_L1_error)
+  __pyx_t_1 = ((PyObject *)__pyx_f_7l0learn_6cyarma_dmat_to_numpy(__pyx_v_arma_xy, ((PyArrayObject *)Py_None))); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 93, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_np_xy.rcbuffer->pybuffer, (PyObject*)((PyArrayObject *)__pyx_t_1), &__Pyx_TypeInfo_nn___pyx_t_5numpy_double_t, PyBUF_FORMAT| PyBUF_STRIDES, 2, 0, __pyx_stack) == -1)) {
       __pyx_v_np_xy = ((PyArrayObject *)Py_None); __Pyx_INCREF(Py_None); __pyx_pybuffernd_np_xy.rcbuffer->pybuffer.buf = NULL;
-      __PYX_ERR(0, 88, __pyx_L1_error)
+      __PYX_ERR(0, 93, __pyx_L1_error)
     } else {__pyx_pybuffernd_np_xy.diminfo[0].strides = __pyx_pybuffernd_np_xy.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_np_xy.diminfo[0].shape = __pyx_pybuffernd_np_xy.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_np_xy.diminfo[1].strides = __pyx_pybuffernd_np_xy.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_np_xy.diminfo[1].shape = __pyx_pybuffernd_np_xy.rcbuffer->pybuffer.shape[1];
     }
   }
   __pyx_v_np_xy = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "l0learn/testing_utils.pyx":90
+  /* "l0learn/testing_utils.pyx":95
  *     cdef np.ndarray[np.double_t, ndim=2] np_xy = dmat_to_numpy(arma_xy, None)
  * 
  *     return np_xy             # <<<<<<<<<<<<<<
  * 
- * cdef dmat c_dmat_dot_dmat(dmat arma_x,  dmat arma_y):
+ * 
  */
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(((PyObject *)__pyx_v_np_xy));
   __pyx_r = ((PyObject *)__pyx_v_np_xy);
   goto __pyx_L0;
 
-  /* "l0learn/testing_utils.pyx":82
- *     return np_x
+  /* "l0learn/testing_utils.pyx":87
+ * 
  * 
  * def dmat_dot_dmat(x, y):             # <<<<<<<<<<<<<<
  *     cdef dmat arma_x = numpy_to_dmat_d(x)
@@ -2997,8 +2997,8 @@ static PyObject *__pyx_pf_7l0learn_13testing_utils_12dmat_dot_dmat(CYTHON_UNUSED
   return __pyx_r;
 }
 
-/* "l0learn/testing_utils.pyx":92
- *     return np_xy
+/* "l0learn/testing_utils.pyx":98
+ * 
  * 
  * cdef dmat c_dmat_dot_dmat(dmat arma_x,  dmat arma_y):             # <<<<<<<<<<<<<<
  *     cdef dmat arma_xy = arma_x*arma_y
@@ -3011,7 +3011,7 @@ static arma::dmat __pyx_f_7l0learn_13testing_utils_c_dmat_dot_dmat(arma::dmat __
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("c_dmat_dot_dmat", 0);
 
-  /* "l0learn/testing_utils.pyx":93
+  /* "l0learn/testing_utils.pyx":99
  * 
  * cdef dmat c_dmat_dot_dmat(dmat arma_x,  dmat arma_y):
  *     cdef dmat arma_xy = arma_x*arma_y             # <<<<<<<<<<<<<<
@@ -3020,7 +3020,7 @@ static arma::dmat __pyx_f_7l0learn_13testing_utils_c_dmat_dot_dmat(arma::dmat __
  */
   __pyx_v_arma_xy = (__pyx_v_arma_x * __pyx_v_arma_y);
 
-  /* "l0learn/testing_utils.pyx":95
+  /* "l0learn/testing_utils.pyx":101
  *     cdef dmat arma_xy = arma_x*arma_y
  * 
  *     return arma_xy             # <<<<<<<<<<<<<<
@@ -3028,8 +3028,8 @@ static arma::dmat __pyx_f_7l0learn_13testing_utils_c_dmat_dot_dmat(arma::dmat __
   __pyx_r = __pyx_v_arma_xy;
   goto __pyx_L0;
 
-  /* "l0learn/testing_utils.pyx":92
- *     return np_xy
+  /* "l0learn/testing_utils.pyx":98
+ * 
  * 
  * cdef dmat c_dmat_dot_dmat(dmat arma_x,  dmat arma_y):             # <<<<<<<<<<<<<<
  *     cdef dmat arma_xy = arma_x*arma_y
@@ -3992,89 +3992,89 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__2);
   __Pyx_GIVEREF(__pyx_tuple__2);
 
-  /* "l0learn/testing_utils.pyx":10
- *                              sp_dmat_to_numpy)
+  /* "l0learn/testing_utils.pyx":11
+ * 
  * 
  * def list_csc_to_arma_csc_to_list(x):             # <<<<<<<<<<<<<<
  *     return  c_list_csc_to_arma_csc_to_list(x)
  * 
  */
-  __pyx_tuple__3 = PyTuple_Pack(1, __pyx_n_s_x); if (unlikely(!__pyx_tuple__3)) __PYX_ERR(0, 10, __pyx_L1_error)
+  __pyx_tuple__3 = PyTuple_Pack(1, __pyx_n_s_x); if (unlikely(!__pyx_tuple__3)) __PYX_ERR(0, 11, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__3);
   __Pyx_GIVEREF(__pyx_tuple__3);
-  __pyx_codeobj__4 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__3, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_l0learn_testing_utils_pyx, __pyx_n_s_list_csc_to_arma_csc_to_list, 10, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__4)) __PYX_ERR(0, 10, __pyx_L1_error)
+  __pyx_codeobj__4 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__3, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_l0learn_testing_utils_pyx, __pyx_n_s_list_csc_to_arma_csc_to_list, 11, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__4)) __PYX_ERR(0, 11, __pyx_L1_error)
 
-  /* "l0learn/testing_utils.pyx":18
- *     return lst
+  /* "l0learn/testing_utils.pyx":21
+ * 
  * 
  * def list_dvec_to_arma_dvec_to_list(x):             # <<<<<<<<<<<<<<
  *     return  c_list_dvec_to_arma_dvec_to_list(x)
  * 
  */
-  __pyx_tuple__5 = PyTuple_Pack(1, __pyx_n_s_x); if (unlikely(!__pyx_tuple__5)) __PYX_ERR(0, 18, __pyx_L1_error)
+  __pyx_tuple__5 = PyTuple_Pack(1, __pyx_n_s_x); if (unlikely(!__pyx_tuple__5)) __PYX_ERR(0, 21, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__5);
   __Pyx_GIVEREF(__pyx_tuple__5);
-  __pyx_codeobj__6 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__5, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_l0learn_testing_utils_pyx, __pyx_n_s_list_dvec_to_arma_dvec_to_list, 18, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__6)) __PYX_ERR(0, 18, __pyx_L1_error)
+  __pyx_codeobj__6 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__5, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_l0learn_testing_utils_pyx, __pyx_n_s_list_dvec_to_arma_dvec_to_list, 21, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__6)) __PYX_ERR(0, 21, __pyx_L1_error)
 
-  /* "l0learn/testing_utils.pyx":27
+  /* "l0learn/testing_utils.pyx":31
  * 
  * 
  * def dmat_np_to_arma_to_np(x):             # <<<<<<<<<<<<<<
  *     cdef np.ndarray[np.double_t, ndim=2] x_pass
  *     x_pass = c_dmat_np_to_arma_to_np(x)
  */
-  __pyx_tuple__7 = PyTuple_Pack(2, __pyx_n_s_x, __pyx_n_s_x_pass); if (unlikely(!__pyx_tuple__7)) __PYX_ERR(0, 27, __pyx_L1_error)
+  __pyx_tuple__7 = PyTuple_Pack(2, __pyx_n_s_x, __pyx_n_s_x_pass); if (unlikely(!__pyx_tuple__7)) __PYX_ERR(0, 31, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__7);
   __Pyx_GIVEREF(__pyx_tuple__7);
-  __pyx_codeobj__8 = (PyObject*)__Pyx_PyCode_New(1, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__7, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_l0learn_testing_utils_pyx, __pyx_n_s_dmat_np_to_arma_to_np, 27, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__8)) __PYX_ERR(0, 27, __pyx_L1_error)
+  __pyx_codeobj__8 = (PyObject*)__Pyx_PyCode_New(1, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__7, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_l0learn_testing_utils_pyx, __pyx_n_s_dmat_np_to_arma_to_np, 31, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__8)) __PYX_ERR(0, 31, __pyx_L1_error)
 
-  /* "l0learn/testing_utils.pyx":42
+  /* "l0learn/testing_utils.pyx":46
  * 
  * 
  * def uvec_np_to_arma_to_np(x):             # <<<<<<<<<<<<<<
  *     cdef np.ndarray[np.uint64_t, ndim=1] x_pass
  *     x_pass = c_uvec_np_to_arma_to_np(x)
  */
-  __pyx_tuple__9 = PyTuple_Pack(2, __pyx_n_s_x, __pyx_n_s_x_pass); if (unlikely(!__pyx_tuple__9)) __PYX_ERR(0, 42, __pyx_L1_error)
+  __pyx_tuple__9 = PyTuple_Pack(2, __pyx_n_s_x, __pyx_n_s_x_pass); if (unlikely(!__pyx_tuple__9)) __PYX_ERR(0, 46, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__9);
   __Pyx_GIVEREF(__pyx_tuple__9);
-  __pyx_codeobj__10 = (PyObject*)__Pyx_PyCode_New(1, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__9, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_l0learn_testing_utils_pyx, __pyx_n_s_uvec_np_to_arma_to_np, 42, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__10)) __PYX_ERR(0, 42, __pyx_L1_error)
+  __pyx_codeobj__10 = (PyObject*)__Pyx_PyCode_New(1, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__9, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_l0learn_testing_utils_pyx, __pyx_n_s_uvec_np_to_arma_to_np, 46, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__10)) __PYX_ERR(0, 46, __pyx_L1_error)
 
-  /* "l0learn/testing_utils.pyx":57
+  /* "l0learn/testing_utils.pyx":61
  * 
  * 
  * def dvec_np_to_arma_to_np(x):             # <<<<<<<<<<<<<<
  *     cdef np.ndarray[np.double_t, ndim=1] x_pass
  *     x_pass = c_dvec_np_to_arma_to_np(x)
  */
-  __pyx_tuple__11 = PyTuple_Pack(2, __pyx_n_s_x, __pyx_n_s_x_pass); if (unlikely(!__pyx_tuple__11)) __PYX_ERR(0, 57, __pyx_L1_error)
+  __pyx_tuple__11 = PyTuple_Pack(2, __pyx_n_s_x, __pyx_n_s_x_pass); if (unlikely(!__pyx_tuple__11)) __PYX_ERR(0, 61, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__11);
   __Pyx_GIVEREF(__pyx_tuple__11);
-  __pyx_codeobj__12 = (PyObject*)__Pyx_PyCode_New(1, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__11, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_l0learn_testing_utils_pyx, __pyx_n_s_dvec_np_to_arma_to_np, 57, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__12)) __PYX_ERR(0, 57, __pyx_L1_error)
+  __pyx_codeobj__12 = (PyObject*)__Pyx_PyCode_New(1, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__11, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_l0learn_testing_utils_pyx, __pyx_n_s_dvec_np_to_arma_to_np, 61, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__12)) __PYX_ERR(0, 61, __pyx_L1_error)
 
-  /* "l0learn/testing_utils.pyx":72
+  /* "l0learn/testing_utils.pyx":76
  * 
  * 
  * def sp_dmat_np_to_arma_to_np(x):             # <<<<<<<<<<<<<<
  *     return c_sp_dmat_np_to_arma_to_np(x)
  * 
  */
-  __pyx_tuple__13 = PyTuple_Pack(1, __pyx_n_s_x); if (unlikely(!__pyx_tuple__13)) __PYX_ERR(0, 72, __pyx_L1_error)
+  __pyx_tuple__13 = PyTuple_Pack(1, __pyx_n_s_x); if (unlikely(!__pyx_tuple__13)) __PYX_ERR(0, 76, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__13);
   __Pyx_GIVEREF(__pyx_tuple__13);
-  __pyx_codeobj__14 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__13, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_l0learn_testing_utils_pyx, __pyx_n_s_sp_dmat_np_to_arma_to_np, 72, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__14)) __PYX_ERR(0, 72, __pyx_L1_error)
+  __pyx_codeobj__14 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__13, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_l0learn_testing_utils_pyx, __pyx_n_s_sp_dmat_np_to_arma_to_np, 76, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__14)) __PYX_ERR(0, 76, __pyx_L1_error)
 
-  /* "l0learn/testing_utils.pyx":82
- *     return np_x
+  /* "l0learn/testing_utils.pyx":87
+ * 
  * 
  * def dmat_dot_dmat(x, y):             # <<<<<<<<<<<<<<
  *     cdef dmat arma_x = numpy_to_dmat_d(x)
  *     cdef dmat arma_y = numpy_to_dmat_d(y)
  */
-  __pyx_tuple__15 = PyTuple_Pack(6, __pyx_n_s_x, __pyx_n_s_y, __pyx_n_s_arma_x, __pyx_n_s_arma_y, __pyx_n_s_arma_xy, __pyx_n_s_np_xy); if (unlikely(!__pyx_tuple__15)) __PYX_ERR(0, 82, __pyx_L1_error)
+  __pyx_tuple__15 = PyTuple_Pack(6, __pyx_n_s_x, __pyx_n_s_y, __pyx_n_s_arma_x, __pyx_n_s_arma_y, __pyx_n_s_arma_xy, __pyx_n_s_np_xy); if (unlikely(!__pyx_tuple__15)) __PYX_ERR(0, 87, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__15);
   __Pyx_GIVEREF(__pyx_tuple__15);
-  __pyx_codeobj__16 = (PyObject*)__Pyx_PyCode_New(2, 0, 6, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__15, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_l0learn_testing_utils_pyx, __pyx_n_s_dmat_dot_dmat, 82, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__16)) __PYX_ERR(0, 82, __pyx_L1_error)
+  __pyx_codeobj__16 = (PyObject*)__Pyx_PyCode_New(2, 0, 6, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__15, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_l0learn_testing_utils_pyx, __pyx_n_s_dmat_dot_dmat, 87, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__16)) __PYX_ERR(0, 87, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -4433,88 +4433,88 @@ if (!__Pyx_RefNanny) {
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_np, __pyx_t_1) < 0) __PYX_ERR(0, 2, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "l0learn/testing_utils.pyx":10
- *                              sp_dmat_to_numpy)
+  /* "l0learn/testing_utils.pyx":11
+ * 
  * 
  * def list_csc_to_arma_csc_to_list(x):             # <<<<<<<<<<<<<<
  *     return  c_list_csc_to_arma_csc_to_list(x)
  * 
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_7l0learn_13testing_utils_1list_csc_to_arma_csc_to_list, NULL, __pyx_n_s_l0learn_testing_utils); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 10, __pyx_L1_error)
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_7l0learn_13testing_utils_1list_csc_to_arma_csc_to_list, NULL, __pyx_n_s_l0learn_testing_utils); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 11, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_list_csc_to_arma_csc_to_list, __pyx_t_1) < 0) __PYX_ERR(0, 10, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_list_csc_to_arma_csc_to_list, __pyx_t_1) < 0) __PYX_ERR(0, 11, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "l0learn/testing_utils.pyx":18
- *     return lst
+  /* "l0learn/testing_utils.pyx":21
+ * 
  * 
  * def list_dvec_to_arma_dvec_to_list(x):             # <<<<<<<<<<<<<<
  *     return  c_list_dvec_to_arma_dvec_to_list(x)
  * 
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_7l0learn_13testing_utils_3list_dvec_to_arma_dvec_to_list, NULL, __pyx_n_s_l0learn_testing_utils); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 18, __pyx_L1_error)
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_7l0learn_13testing_utils_3list_dvec_to_arma_dvec_to_list, NULL, __pyx_n_s_l0learn_testing_utils); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 21, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_list_dvec_to_arma_dvec_to_list, __pyx_t_1) < 0) __PYX_ERR(0, 18, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_list_dvec_to_arma_dvec_to_list, __pyx_t_1) < 0) __PYX_ERR(0, 21, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "l0learn/testing_utils.pyx":27
+  /* "l0learn/testing_utils.pyx":31
  * 
  * 
  * def dmat_np_to_arma_to_np(x):             # <<<<<<<<<<<<<<
  *     cdef np.ndarray[np.double_t, ndim=2] x_pass
  *     x_pass = c_dmat_np_to_arma_to_np(x)
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_7l0learn_13testing_utils_5dmat_np_to_arma_to_np, NULL, __pyx_n_s_l0learn_testing_utils); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 27, __pyx_L1_error)
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_7l0learn_13testing_utils_5dmat_np_to_arma_to_np, NULL, __pyx_n_s_l0learn_testing_utils); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 31, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_dmat_np_to_arma_to_np, __pyx_t_1) < 0) __PYX_ERR(0, 27, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_dmat_np_to_arma_to_np, __pyx_t_1) < 0) __PYX_ERR(0, 31, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "l0learn/testing_utils.pyx":42
+  /* "l0learn/testing_utils.pyx":46
  * 
  * 
  * def uvec_np_to_arma_to_np(x):             # <<<<<<<<<<<<<<
  *     cdef np.ndarray[np.uint64_t, ndim=1] x_pass
  *     x_pass = c_uvec_np_to_arma_to_np(x)
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_7l0learn_13testing_utils_7uvec_np_to_arma_to_np, NULL, __pyx_n_s_l0learn_testing_utils); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 42, __pyx_L1_error)
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_7l0learn_13testing_utils_7uvec_np_to_arma_to_np, NULL, __pyx_n_s_l0learn_testing_utils); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 46, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_uvec_np_to_arma_to_np, __pyx_t_1) < 0) __PYX_ERR(0, 42, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_uvec_np_to_arma_to_np, __pyx_t_1) < 0) __PYX_ERR(0, 46, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "l0learn/testing_utils.pyx":57
+  /* "l0learn/testing_utils.pyx":61
  * 
  * 
  * def dvec_np_to_arma_to_np(x):             # <<<<<<<<<<<<<<
  *     cdef np.ndarray[np.double_t, ndim=1] x_pass
  *     x_pass = c_dvec_np_to_arma_to_np(x)
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_7l0learn_13testing_utils_9dvec_np_to_arma_to_np, NULL, __pyx_n_s_l0learn_testing_utils); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 57, __pyx_L1_error)
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_7l0learn_13testing_utils_9dvec_np_to_arma_to_np, NULL, __pyx_n_s_l0learn_testing_utils); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 61, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_dvec_np_to_arma_to_np, __pyx_t_1) < 0) __PYX_ERR(0, 57, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_dvec_np_to_arma_to_np, __pyx_t_1) < 0) __PYX_ERR(0, 61, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "l0learn/testing_utils.pyx":72
+  /* "l0learn/testing_utils.pyx":76
  * 
  * 
  * def sp_dmat_np_to_arma_to_np(x):             # <<<<<<<<<<<<<<
  *     return c_sp_dmat_np_to_arma_to_np(x)
  * 
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_7l0learn_13testing_utils_11sp_dmat_np_to_arma_to_np, NULL, __pyx_n_s_l0learn_testing_utils); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 72, __pyx_L1_error)
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_7l0learn_13testing_utils_11sp_dmat_np_to_arma_to_np, NULL, __pyx_n_s_l0learn_testing_utils); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 76, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_sp_dmat_np_to_arma_to_np, __pyx_t_1) < 0) __PYX_ERR(0, 72, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_sp_dmat_np_to_arma_to_np, __pyx_t_1) < 0) __PYX_ERR(0, 76, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "l0learn/testing_utils.pyx":82
- *     return np_x
+  /* "l0learn/testing_utils.pyx":87
+ * 
  * 
  * def dmat_dot_dmat(x, y):             # <<<<<<<<<<<<<<
  *     cdef dmat arma_x = numpy_to_dmat_d(x)
  *     cdef dmat arma_y = numpy_to_dmat_d(y)
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_7l0learn_13testing_utils_13dmat_dot_dmat, NULL, __pyx_n_s_l0learn_testing_utils); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 82, __pyx_L1_error)
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_7l0learn_13testing_utils_13dmat_dot_dmat, NULL, __pyx_n_s_l0learn_testing_utils); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 87, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_dmat_dot_dmat, __pyx_t_1) < 0) __PYX_ERR(0, 82, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_dmat_dot_dmat, __pyx_t_1) < 0) __PYX_ERR(0, 87, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
   /* "l0learn/testing_utils.pyx":1
