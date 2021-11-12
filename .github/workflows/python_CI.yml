@@ -23,7 +23,7 @@ jobs:
         os: [macos-latest] # , ubuntu-latest, ubuntu-latest]
         include:
           - os: macos-latest
-            INSTALL_DEPS: brew install armadillo --with-hdf5
+            INSTALL_DEPS: brew install armadillo
     defaults:
       run:
         working-directory: ./python
