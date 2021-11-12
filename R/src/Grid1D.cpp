@@ -1,4 +1,4 @@
-#include "Grid1D.hpp"
+#include "Grid1D.h"
 
 template <class T>
 Grid1D<T>::Grid1D(const T& Xi, const arma::vec& yi, const GridParams<T>& PG) {

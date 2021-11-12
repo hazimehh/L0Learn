@@ -1,11 +1,39 @@
-language: R
-r:
-  - release
-sudo: false
-cache: packages
-warnings_are_errors: false
-after_failure:
-  - cat /home/travis/build/hazimehh/L0Learn/L0Learn.Rcheck/00check.log
-after_success:
-  - cat /home/travis/build/hazimehh/L0Learn/L0Learn.Rcheck/00check.log
-  - travis_wait 300 Rscript -e "covr::codecov(quiet = FALSE, token='6f2e6703-ee4f-4479-b079-1d5d219786f4')"
+jobs:
+  include:
+    language: R
+    r:
+      - release
+    before_script:
+      - cd R
+    sudo: false
+    cache: packages
+    warnings_are_errors: false
+    after_failure:
+      - cat /home/travis/build/hazimehh/L0Learn/L0Learn.Rcheck/00check.log
+    after_success:
+      - cat /home/travis/build/hazimehh/L0Learn/L0Learn.Rcheck/00check.log
+      - travis_wait 300 Rscript -e "covr::codecov(quiet = FALSE, token='6f2e6703-ee4f-4479-b079-1d5d219786f4')"
+  include:
+    language: python
+    before_script:
+      - cd python
+    os:
+      - linux
+      - osx
+    python:
+      - "3.6"
+      - "3.7"
+      - "3.8"
+      - "3.9"
+      - "3.9-dev"
+      - "nightly"
+    install:
+      - pip install .
+      - pip install pytest-cov
+      - pip install coveralls
+    script:
+      - pytest --cov=happenings
+    after_success:
+      - coveralls
+    
+    

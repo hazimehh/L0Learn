@@ -1,4 +1,4 @@
-#include "Grid.hpp"
+#include "Grid.h"
 
 // Assumes PG.P.Specs have been already set
 template <class T>

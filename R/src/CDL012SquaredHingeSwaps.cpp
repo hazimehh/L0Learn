@@ -1,4 +1,4 @@
-#include "CDL012SquaredHingeSwaps.hpp"
+#include "CDL012SquaredHingeSwaps.h"
 
 template <class T>
 CDL012SquaredHingeSwaps<T>::CDL012SquaredHingeSwaps(const T& Xi, const arma::vec& yi, const Params<T>& Pi) : CDSwaps<T>(Xi, yi, Pi) {

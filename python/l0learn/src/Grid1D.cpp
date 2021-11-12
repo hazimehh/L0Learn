@@ -1,9 +1,9 @@
-#include "Grid1D.hpp"
+#include "Grid1D.h"
 
 template <class T>
 Grid1D<T>::Grid1D(const T& Xi, const arma::vec& yi, const GridParams<T>& PG) {
     // automatically selects lambda_0 (but assumes other lambdas are given in PG.P.ModelParams)
-    
+    // arma::cout << "Grid1D<T>(Xscaled, yscaled, PG) Entered \n";
     X = &Xi;
     y = &yi;
     p = Xi.n_cols;
@@ -43,6 +43,7 @@ Grid1D<T>::Grid1D(const T& Xi, const arma::vec& yi, const GridParams<T>& PG) {
         ytXmax2d = PG.ytXmax;
         Xtr = PG.Xtr;
     }
+    // arma::cout << "Grid1D<T>(Xscaled, yscaled, PG) Finished \n";
 }
 
 template <class T>
@@ -57,7 +58,7 @@ Grid1D<T>::~Grid1D() {
 
 template <class T>
 std::vector<std::unique_ptr<FitResult<T>>> Grid1D<T>::Fit() {
-    
+    // arma::cout << "Grid1D<T> Fit Enetered \n";
     if (P.Specs.L0 || P.Specs.L0L2 || P.Specs.L0L1) {
         bool scaledown = false;
         
@@ -92,17 +93,18 @@ std::vector<std::unique_ptr<FitResult<T>>> Grid1D<T>::Fit() {
         }
         
         double lambdamax = ((ytXmax - P.ModelParams[1]) * (ytXmax - P.ModelParams[1])) / (2 * (Lipconst));
-        
-        // Rcpp::Rcout << "lambdamax: " << lambdamax << "\n";
-        
+
+        // arma::cout << "Grid1D<T> Fit Point1 \n";
+
         if (!LambdaU) {
             P.ModelParams[0] = lambdamax;
         } else {
+            // arma::cout << "Grid1D<T> Fit Point2 \n";
             P.ModelParams[0] = Lambdas[0];
         }
         
         // Rcpp::Rcout << "P ModelParams: {" << P.ModelParams[0] << ", " << P.ModelParams[1] << ", " << P.ModelParams[2] << ", " << P.ModelParams[3] <<   "}\n";
-        
+        // arma::cout << "Grid1D<T> Fit Point3 \n";
         P.Init = 'z';
         
         
@@ -119,8 +121,9 @@ std::vector<std::unique_ptr<FitResult<T>>> Grid1D<T>::Fit() {
         double Xrmax;
         bool prevskip = false; //previous grid point was skipped
         bool currentskip = false; // current grid point should be skipped
-        
+        // arma::cout << "Grid1D<T> Fit Loop Beginning \n";
         for (std::size_t i = 0; i < G_ncols; ++i) {
+            // arma::cout << "Grid1D<T> Fit Loop: " << i << " \n";
             // Rcpp::checkUserInterrupt();
             // Rcpp::Rcout << "Grid1D: " << i << "\n";
             FitResult<T> *  prevresult = new FitResult<T>; // prevresult is ptr to the prev result object
@@ -134,6 +137,7 @@ std::vector<std::unique_ptr<FitResult<T>>> Grid1D<T>::Fit() {
             currentskip = false;
             
             if (!prevskip) {
+                // arma::cout << "Grid1D<T> Fit Loop: Here 1\n";
                 
                 std::iota(idx.begin(), idx.end(), 0); // make global class var later
                 // Exclude the first NoSelectK features from sorting.
@@ -148,6 +152,7 @@ std::vector<std::unique_ptr<FitResult<T>>> Grid1D<T>::Fit() {
                 Xrmax = (*Xtr)[idx[NoSelectK]];
                 
                 if (i > 0) {
+                    // arma::cout << "Grid1D<T> Fit Loop: Here 2\n";
                     std::vector<std::size_t> Sp = nnzIndicies(prevresult->B);
                     
                     for(std::size_t l = NoSelectK; l < p; ++l) {
@@ -159,30 +164,34 @@ std::vector<std::unique_ptr<FitResult<T>>> Grid1D<T>::Fit() {
                     }
                 }
             }
-            
             // Following part assumes that lambda_0 has been set to the new value
             if(i >= 1 && !scaledown && !LambdaU) {
+                // arma::cout << "Grid1D<T> Fit Loop New Params 1 \n";
                 P.ModelParams[0] = (((Xrmax - P.ModelParams[1]) * (Xrmax - P.ModelParams[1])) / (2 * (Lipconst))) * 0.99; // for numerical stability issues.
                 
                 if (P.ModelParams[0] >= prevresult->ModelParams[0]) {
                     P.ModelParams[0] = prevresult->ModelParams[0] * 0.97;
                 } // handles numerical instability.
             } else if (i >= 1 && !LambdaU) {
+                // arma::cout << "Grid1D<T> Fit Loop New Params 2 \n";
                 P.ModelParams[0] = std::min(P.ModelParams[0] * ScaleDownFactor, (((Xrmax - P.ModelParams[1]) * (Xrmax - P.ModelParams[1])) / (2 * (Lipconst))) * 0.97 );
                 // add 0.9 as an R param
             } else if (i >= 1 && LambdaU) {
+               // arma::cout << "Grid1D<T> Fit Loop New Params 3 \n";
                 P.ModelParams[0] = Lambdas[i];
             }
             
             // Rcpp::Rcout << "P.ModelParams[0]: " << P.ModelParams[0] << "\n";
            
             if (!currentskip) {
-            
+                // arma::cout << "Grid1D<T> Fit Loop: Here 3\n";
+
                 auto Model = make_CD(*X, *y, P);
-                
+                // arma::cout << "Grid1D<T> Fit Loop: Here 4\n";
                 std::unique_ptr<FitResult<T>> result(new FitResult<T>);
+                // arma::cout << "Grid1D<T> Fit Loop: Here 4.5\n";
                 *result = Model->Fit();
-    
+                // arma::cout << "Grid1D<T> Fit Loop: Here 5\n";
                 delete Model;
                 
                 scaledown = false;
@@ -206,12 +215,14 @@ std::vector<std::unique_ptr<FitResult<T>>> Grid1D<T>::Fit() {
                 }
                 
                 //else {scaledown = false;}
+                // arma::cout << "Grid1D<T> Fit Loop: Here 6\n";
                 G.push_back(std::move(result));
                 
-                
+                // arma::cout << "Grid1D<T> Fit Loop: Here 7\n";
                 if(n_nonzero(G.back()->B) >= StopNum) {
                     break;
                 }
+                // arma::cout << "Grid1D<T> Fit Loop: Here 8\n";
                 //result->B.t().print();
                 P.InitialSol = &(G.back()->B);
                 P.b0 = G.back()->b0;
@@ -228,7 +239,7 @@ std::vector<std::unique_ptr<FitResult<T>>> Grid1D<T>::Fit() {
             prevskip = currentskip;
         }
     }
-    
+    // arma::cout << "Grid1D<T> Fit Finished \n";
     return std::move(G);
 }
 

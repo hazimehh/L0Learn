@@ -1,4 +1,4 @@
-#include "Grid.hpp"
+#include "Grid.h"
 
 // Assumes PG.P.Specs have been already set
 template <class T>
@@ -17,16 +17,18 @@ Grid<T>::Grid(const T& X, const arma::vec& y, const GridParams<T>& PGi) {
 
 template <class T>
 void Grid<T>::Fit() {
-    
+    // // arma::cout << "Grid<T>::Fit() Entered \n";
     std::vector<std::vector<std::unique_ptr<FitResult<T>>>> G;
-    
+
     if (PG.P.Specs.L0) {
+        // arma::cout << "Grid1D<T>(Xscaled, yscaled, PG) Created \n";
         G.push_back(std::move(Grid1D<T>(Xscaled, yscaled, PG).Fit()));
         Lambda12.push_back(0);
     } else {
         G = std::move(Grid2D<T>(Xscaled, yscaled, PG).Fit());
     }
-    
+
+    // arma::cout << "Grid<T> Unpacking Beginning \n";
     Lambda0 = std::vector< std::vector<double> >(G.size());
     NnzCount = std::vector< std::vector<std::size_t> >(G.size());
     Solutions = std::vector< std::vector<arma::sp_mat> >(G.size());
@@ -60,6 +62,7 @@ void Grid<T>::Fit() {
             Intercepts[i].push_back(scaley*g->b0 + b0);
         }
     }
+    // arma::cout << "Grid<T> Unpacking Ended \n";
 }
 
 template class Grid<arma::mat>;
