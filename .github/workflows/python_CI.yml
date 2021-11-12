@@ -17,8 +17,6 @@ jobs:
   build:
     # The type of runner that the job will run on
     runs-on: ${{ matrix.os }}
-    env: 
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     strategy:
       matrix:
         python-version: [3.7, 3.8, 3.9]
@@ -47,5 +45,7 @@ jobs:
           pip install -e ".[test]" 
       - name: Run Tests and Coverage
         run: pytest --cov=l0learn
-      - name: Report coverage
-        run: coveralls
+      - name: Coveralls
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
