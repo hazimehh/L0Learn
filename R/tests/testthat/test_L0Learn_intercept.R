@@ -187,7 +187,7 @@ test_that("Intercepts are learned close to real values", {
   k = 10 
   for (a in c("CD", "CDPSI")){
     for (b0 in c(-100, -10, -2, 2, 10, 100)){
-      tmp <-  L0Learn::GenSynthetic(n=500, p=200, k=k, seed=1, rho=1, b0=b0)
+      tmp <-  L0Learn::GenSynthetic(n=5000, p=200, k=k, seed=1, rho=1, b0=b0)
       X2 <- tmp[[1]]
       y2 <- tmp[[2]]
       
