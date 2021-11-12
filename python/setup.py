@@ -115,10 +115,8 @@ setup(
         # #https://github.com/HypothesisWorks/hypothesis/issues/2113
         "hypothesis",
         "pytest",
-    ]}
-# package_dir={"": "l0learn"},
-# packages=find_packages(where="l0learn"),
-python_requires=">=3.6",
+    ]},
+    python_requires=">=3.6",
 )
 
 
