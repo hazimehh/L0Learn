@@ -44,9 +44,8 @@ jobs:
           pip install coveralls
           pip install -e ".[test]" 
       - name: Run Tests and Coverage
-        run: python -m pytest --cov=l0learn --cov-report xml
+        run: python -m pytest --cov=l0learn
       - name: Coveralls
-        uses: coverallsapp/github-action@master
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          path-to-lcov: coverage.xml
+        run: coveralls --service=github
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
