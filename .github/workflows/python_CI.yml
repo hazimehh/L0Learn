@@ -20,7 +20,10 @@ jobs:
     strategy:
       matrix:
         python-version: [3.6, 3.7, 3.8, 3.9]
-        os: [macos-latest, ubuntu-latest, ubuntu-latest]
+        os: [macos-latest] # , ubuntu-latest, ubuntu-latest]
+        include:
+          - os: macos-latest
+            INSTALL_DEPS: brew install armadillo
     defaults:
       run:
         working-directory: ./python
