@@ -23,7 +23,7 @@ jobs:
         os: [macos-latest] # , ubuntu-latest, ubuntu-latest]
         include:
           - os: macos-latest
-            INSTALL_DEPS: brew install armadillo
+            INSTALL_DEPS: brew install armadillo --with-hdf5
     defaults:
       run:
         working-directory: ./python
@@ -42,7 +42,7 @@ jobs:
           pip install wheel
           pip install pytest-cov
           pip install coveralls
-          pip install .
+          pip install -e ".[test]" 
       - name: Run Tests and Coverage
         run: pytest --cov=l0learn
       - name: Report coverage
