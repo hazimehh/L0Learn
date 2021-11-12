@@ -30,6 +30,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+      - name: install-dependencies
+        run: ${{ matrix.INSTALL_DEPS }}
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with:
