@@ -17,9 +17,6 @@ jobs:
     language: python
     before_script:
       - cd python
-    os:
-      - linux
-      - osx
     python:
       - "3.6"
       - "3.7"
