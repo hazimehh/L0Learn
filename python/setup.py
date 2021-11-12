@@ -109,7 +109,8 @@ setup(
     install_requires=[
         "numpy>=1.19.0",
         "scipy>=1.1.0",
-        "pandas>=1.0.0"
+        "pandas>=1.0.0",
+        "matplotlib>=3.0.0"
     ],
     extras_require={"test": [
         "attrs>=19.2.0",  # Usually installed by hypothesis, but current issue
