@@ -20,10 +20,16 @@ jobs:
     strategy:
       matrix:
         python-version: [3.7, 3.8, 3.9]
-        os: [macos-latest] # , ubuntu-latest, ubuntu-latest]
+        os: [macos-latest, ubuntu-latest] #, ubuntu-latest]
         include:
           - os: macos-latest
             INSTALL_DEPS: brew install armadillo
+          - os: ubuntu-latest
+            INSTALL_DEPS: |
+              sudo apt-get install liblapack-dev
+              sudo apt-get install libblas-dev
+              sudo apt-get install libboost-dev
+              sudo apt-get install libarmadillo-dev
     defaults:
       run:
         working-directory: ./python
