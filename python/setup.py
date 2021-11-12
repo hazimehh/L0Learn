@@ -106,8 +106,19 @@ setup(
     ],
     cmdclass={'build_ext': build_ext},
     ext_modules=extensions,
-    # package_dir={"": "l0learn"},
-    # packages=find_packages(where="l0learn"),
-    python_requires=">=3.6",
+    install_requires=[
+        "numpy>=1.19.0",
+        "scipy>=1.1.0",
+    ],
+    extras_require={"test": [
+        "attrs>=19.2.0",  # Usually installed by hypothesis, but current issue
+        # #https://github.com/HypothesisWorks/hypothesis/issues/2113
+        "hypothesis",
+        "pytest",
+    ]}
+# package_dir={"": "l0learn"},
+# packages=find_packages(where="l0learn"),
+python_requires=">=3.6",
 )
+
 
