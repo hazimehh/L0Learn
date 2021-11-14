@@ -187,7 +187,7 @@ test_that("Intercepts are learned close to real values", {
   k = 10 
   for (a in c("CD", "CDPSI")){
     for (b0 in c(-100, -10, -2, 2, 10, 100)){
-      tmp <-  L0Learn::GenSynthetic(n=5000, p=200, k=k, seed=1, rho=1, b0=b0)
+      tmp <-  L0Learn::GenSynthetic(n=5000, p=200, k=k, seed=1, rho=0, b0=b0)
       X2 <- tmp[[1]]
       y2 <- tmp[[2]]
       
@@ -197,21 +197,26 @@ test_that("Intercepts are learned close to real values", {
       }
       X2_sparse <- as(X2, "dgCMatrix") 
       
-      x1 <- L0Learn.fit(X2_sparse, y2, penalty="L0", intercept = TRUE, algorithm = a, 
-                        autoLambda=FALSE, lambdaGrid=fineuserLambda, maxSuppSize=1000)
+      x1 <- L0Learn.fit(X2_sparse, y2, penalty="L0", intercept = TRUE, algorithm = a) 
+                        #autoLambda=FALSE, lambdaGrid=fineuserLambda, maxSuppSize=1000)
       
-      x2 <- L0Learn.fit(X2, y2, penalty="L0", intercept = TRUE, algorithm = a, 
-                        autoLambda=FALSE, lambdaGrid=fineuserLambda, maxSuppSize=1000)
-      
-      for (i in 1:length(x1$suppSize[[1]])){
-        if (x1$suppSize[[1]][i] ==  k){
-          expect_lt(abs(x1$a0[[1]][i] - b0), abs(.01*b0))
+      x2 <- L0Learn.fit(X2, y2, penalty="L0", intercept = TRUE, algorithm = a)
+                        #autoLambda=FALSE, lambdaGrid=fineuserLambda, maxSuppSize=1000)
+      y2_mean = mean(y2)
+      for (j in 1:length(x1$suppSize)){
+        for (i in 1:length(x1$suppSize[[1]])){
+          if (x1$suppSize[[j]][i] ==  k){
+            expect_lt(abs(x1$a0[[j]][i] - b0), abs(2*(abs(b0) - abs(y2_mean))))
+            print(paste(abs(x1$a0[[j]][i] - b0), abs(2*(abs(b0) - abs(y2_mean)))))
+          }
         }
       }
       
-      for (i in 1:length(x2$suppSize[[1]])){
-        if (x2$suppSize[[1]][i] ==  k){
-          expect_lt(abs(x2$a0[[1]][i] - b0), abs(.01*b0))
+      for (j in 1:length(x1$suppSize)){
+        for (i in 1:length(x2$suppSize[[j]])){
+          if (x2$suppSize[[j]][i] ==  k){
+            expect_lt(abs(x2$a0[[j]][i] - b0), abs(2*(abs(b0) - abs(y2_mean))))
+          }
         }
       }
     }
