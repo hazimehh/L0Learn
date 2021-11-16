@@ -17,7 +17,7 @@ jobs:
         
     defaults:
       run:
-        working-directory: ./R
+        working-directory: R
 
     steps:
       - uses: actions/checkout@v2
@@ -43,6 +43,7 @@ jobs:
       - uses: r-lib/actions/setup-r-dependencies@v1
         with:
           extra-packages: covr
+          working-directory: R
 
       - name: Test coverage
         run: covr::codecov()
