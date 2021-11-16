@@ -1,7 +1,7 @@
 library("Matrix")
 library("testthat")
 library("L0Learn")
-library("raster")
+library("pracma")
 
 tmp <-  L0Learn::GenSynthetic(n=100, p=5000, k=10, seed=1, rho=1.5)
 X <- tmp[[1]]
@@ -172,6 +172,12 @@ find <- function(x, inside){
     which(sapply(inside, FUN=function(X) x %in% X), arr.ind = TRUE)
 }
 
+clamp <- function(x, lower=-Inf, upper=Inf, ...) {
+    x[x < lower] <- lower
+    x[x > upper] <- upper
+    return(x)
+}
+
 test_that("L0Learn with bounds is better than no-bounds", {
     skip_on_cran()
     lows = -.02
@@ -194,7 +200,7 @@ test_that("L0Learn with bounds is better than no-bounds", {
                 r_wb = y - X %*% beta_wb
                 r_nb = y - X %*% beta_nb
                 
-                expect_gte(norm(r_nb, "2"), norm(r_wb, "2"))
+                expect_gte(Norm(r_nb), Norm(r_wb))
             }
         }
     }
