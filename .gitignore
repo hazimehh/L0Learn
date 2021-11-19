@@ -158,4 +158,4 @@ dmypy.json
 cython_debug/
 
 # sphinx build folder
-python/_build
+python/doc/_build
