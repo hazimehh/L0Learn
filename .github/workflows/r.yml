@@ -42,6 +42,7 @@ jobs:
 
       - uses: TNonet/actions/setup-r-dependencies@master
         with:
+          cache-version: 2
           extra-packages: covr
           working-directory: R
 
