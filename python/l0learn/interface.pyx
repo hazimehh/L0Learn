@@ -209,7 +209,7 @@ def fit(X: Union[np.ndarray, csc_matrix],
         size p (number of columns of X) where highs[i] is the upper bound for coefficient i.
 
         Upper bounds can not be below 0 (i.e. we can not specify that all coefficients must be smaller than a < 0).
-        Upper bounds can be set to 0 iff the corresponding looer bound for that coefficient is also not 0.
+        Upper bounds can be set to 0 iff the corresponding lower bound for that coefficient is also not 0.
 
     Returns
     -------

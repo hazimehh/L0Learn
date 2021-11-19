@@ -1,1 +1,1 @@
-from l0learn.interface import fit, cvfit
+from .interface import fit, cvfit
