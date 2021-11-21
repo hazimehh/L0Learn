@@ -207,7 +207,7 @@ test_that("Intercepts are learned close to real values", {
         for (i in 1:length(x1$suppSize[[1]])){
           if (x1$suppSize[[j]][i] ==  k){
             expect_lt(abs(x1$a0[[j]][i] - b0), abs(2*(abs(b0) - abs(y2_mean))))
-            print(paste(abs(x1$a0[[j]][i] - b0), abs(2*(abs(b0) - abs(y2_mean)))))
+            # print(paste(abs(x1$a0[[j]][i] - b0), abs(2*(abs(b0) - abs(y2_mean)))))
           }
         }
       }
