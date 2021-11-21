@@ -5,11 +5,12 @@ import numpy as np
 from scipy.sparse import csc_matrix
 from warnings import warn
 
-from typing import Union, Optional, List
+from typing import Union, Optional, List, Dict, Any
 
 from l0learn.cyarma cimport dmat, sp_dmat, numpy_to_sp_dmat_d, numpy_to_dmat_d, dvec, numpy_to_dvec_d, \
     sp_dmat_field_to_list, dvec_field_to_list
 
+import l0learn.models
 from l0learn.models import FitModel, CVFitModel
 
 def np_to_arma_check(arr):
@@ -47,9 +48,205 @@ CLASSIFICATION_LOSS = SUPPORTED_LOSS[1], SUPPORTED_LOSS[2]
 SUPPORTED_PENALTY = ("L0", "L0L1", "L0L2")
 SUPPORTED_ALGORITHM = ("CD", "CDPSI")
 
+
+def _fit_check(X: Union[np.ndarray, csc_matrix],
+               y: np.ndarray,
+               loss: str,
+               penalty: str,
+               algorithm: str,
+               max_support_size: int,
+               num_lambda: Union[int, None],
+               num_gamma: Union[int, None],
+               gamma_max: float,
+               gamma_min: float,
+               partial_sort: bool,
+               max_iter: int,
+               rtol: float,
+               atol: float,
+               active_set: bool,
+               active_set_num: int,
+               max_swaps: int,
+               scale_down_factor: float,
+               screen_size: int,
+               lambda_grid: Union[List[List[float]], None],
+               exclude_first_k: int,
+               intercept: bool,
+               lows: Union[np.ndarray, float],
+               highs: Union[np.ndarray, float]) -> Dict[str, Any]:
+
+    if not isinstance(X, (np.ndarray, csc_matrix)) or X.dtype != np.float64 or X.ndim != 2 or not np.product(X.shape) or not X.flags.contiguous:
+        raise ValueError(f"expected X to be a 2D continuous non-degenerate real numpy or csc_matrix, but got {X}.")
+    n, p = X.shape
+    if not isinstance(y, np.ndarray) or not np.isrealobj(y) or y.ndim != 1 or len(y) != n:
+        raise ValueError(f"expected y to be a 1D real numpy, but got {y}.")
+    if loss not in SUPPORTED_LOSS:
+        raise ValueError(f"expected loss parameter to be on of {SUPPORTED_LOSS}, but got {loss}")
+    if penalty not in SUPPORTED_PENALTY:
+        raise ValueError(f"expected penalty parameter to be on of {SUPPORTED_PENALTY}, but got {penalty}")
+    if algorithm not in SUPPORTED_ALGORITHM:
+        raise ValueError(f"expected algorithm parameter to be on of {SUPPORTED_ALGORITHM}, but got {algorithm}")
+    if not isinstance(max_support_size, int) or 1 > max_support_size:
+        raise ValueError(f"expected max_support_size parameter to be a positive integer, but got {max_support_size}")
+    max_support_size = min(p, max_support_size)
+
+    if gamma_max < 0:
+        raise ValueError(f"expected gamma_max parameter to be a positive float, but got {gamma_max}")
+    if gamma_min < 0 or gamma_min > gamma_max:
+        raise ValueError(f"expected gamma_max parameter to be a positive float less than gamma_max,"
+                         f" but got {gamma_min}")
+    if not isinstance(partial_sort, bool):
+        raise ValueError(f"expected partial_sort parameter to be a bool, but got {partial_sort}")
+    if not isinstance(max_iter, int) or max_iter < 1:
+        raise ValueError(f"expected max_iter parameter to be a positive integer, but got {max_iter}")
+    if rtol < 0 or rtol >= 1:
+        raise ValueError(f"expected rtol parameter to exist in [0, 1), but got {rtol}")
+    if atol < 0:
+        raise ValueError(f"expected atol parameter to exist in [0, INF), but got {atol}")
+    if not isinstance(active_set, bool):
+        raise ValueError(f"expected active_set parameter to be a bool, but got {active_set}")
+    if not isinstance(active_set_num, int) or active_set_num < 1:
+        raise ValueError(f"expected active_set_num parameter to be a positive integer, but got {active_set_num}")
+    if not isinstance(max_swaps, int) or max_swaps < 1:
+        raise ValueError(f"expected max_swaps parameter to be a positive integer, but got {max_swaps}")
+    if not (0 < scale_down_factor < 1):
+        raise ValueError(f"expected scale_down_factor parameter to exist in (0, 1), but got {scale_down_factor}")
+    if not isinstance(screen_size, int) or screen_size < 1:
+        raise ValueError(f"expected screen_size parameter to be a positive integer, but got {screen_size}")
+    screen_size = min(screen_size, p)
+
+    if not isinstance(exclude_first_k, int) or not (0 <= exclude_first_k <= p):
+        raise ValueError(f"expected exclude_first_k parameter to be a positive integer less than {p}, "
+                         f"but got {exclude_first_k}")
+    if not isinstance(intercept, bool):
+        raise ValueError(f"expected intercept parameter to be a bool, "
+                         f"but got {intercept}")
+
+    if loss in CLASSIFICATION_LOSS:
+        unique_items = sorted(np.unique(y))
+        if len(unique_items) != 2:
+            raise ValueError(f"expected y vector to only have two unique values (Binary Classification), "
+                             f"but got {unique_items}")
+        else:
+            a, *_ = unique_items # a is the lower value
+            y = np.copy(y)
+            first_value = y==a
+            second_value = y!=a
+            y[first_value] = -1.0
+            y[second_value] = 1.0
+            if y.dtype != np.float64:
+                y = y.astype(float)
+
+        if penalty == "L0":
+            # Pure L0 is not supported for classification
+            # Below we add a small L2 component.
+
+            if lambda_grid is not None and len(lambda_grid) != 1:
+                # If this error checking was left to the lower section, it would confuse users as
+                # we are converting L0 to L0L2 with small L2 penalty.
+                # Here we must check if lambdaGrid is supplied (And thus use 'autolambda')
+                # If 'lambdaGrid' is supplied, we must only supply 1 list of lambda values
+                raise ValueError(f"L0 Penalty requires 'lambda_grid' to be a list of length 1, but got {lambda_grid}.")
+
+        penalty = "L0L2"
+        gamma_max = 1e-7
+        gamma_min = 1e-7
+    elif penalty != "L0" and num_gamma == 1:
+        warn(f"num_gamma set to 1 with {penalty} penalty. Only one {penalty[2:]} penalty value will be fit.")
+
+    if y.dtype != np.float64:
+        raise ValueError(f"expected y vector to have type {np.float64}, but got {y.dtype}")
+
+    if lambda_grid is None:
+        lambda_grid = [[0.]]
+        auto_lambda = True
+        if not isinstance(num_lambda, int) or num_lambda < 1:
+            raise ValueError(f"expected num_lambda to a positive integer when lambda_grid is None, but got {num_lambda}.")
+        if not isinstance(num_gamma, int) or num_gamma < 1:
+            raise ValueError(f"expected num_gamma to a positive integer when lambda_grid is None, but got {num_gamma}.")
+        if penalty == "L0" and num_gamma != 1:
+            raise ValueError(f"expected num_gamma to 1 when penalty = 'L0', but got {num_gamma}.")
+    else: # lambda_grid should be a List[List[float]]
+        if num_gamma is not None:
+            raise ValueError(f"expected num_gamma to be None if lambda_grid is specified by the user, "
+                             f"but got {num_gamma}")
+        num_gamma = len(lambda_grid)
+
+        if num_lambda is not None:
+            raise ValueError(f"expected num_lambda to be None if lambda_grid is specified by the user, "
+                             f"but got {num_lambda}")
+        num_lambda = 0 #  This value is ignored.
+        auto_lambda = False
+        bad_lambda_grid = False
+
+        if penalty == "L0" and num_gamma != 1:
+            raise ValueError(f"expected lambda_grid to of length 1 when penalty = 'L0', but got {len(lambda_grid)}")
+
+        for i, sub_lambda_grid in enumerate(lambda_grid):
+            current = float("inf")
+            if sub_lambda_grid[0] <= 0:
+                raise ValueError(f"Expected all values of lambda_grid to be positive, "
+                                 f"but got lambda_grid[{i}] containing a negative value")
+            if any(np.diff(sub_lambda_grid) >= 0):
+                raise ValueError(f"Expected each element of lambda_grid to be a list of decreasing value, "
+                                 f"but got lambda_grid[{i}] containing an increasing value.")
+
+    n, p = X.shape
+    with_bounds = False
+
+    if isinstance(lows, float):
+        if lows > 0:
+            raise ValueError(f"expected lows to be a non-positive float, but got {lows}")
+        elif lows > -float('inf'):
+            with_bounds = True
+    elif isinstance(lows, np.ndarray) and lows.ndim == 1 and len(lows) == p and all(lows <= 0):
+        with_bounds = True
+    else:
+        raise ValueError(f"expected lows to be a non-positive float, or a 1D numpy array of length {p} of non-positives "
+                         f"floats, but got {lows}")
+
+    if isinstance(highs, float):
+        if highs < 0:
+            raise ValueError(f"expected highs to be a non-negative float, but got {highs}")
+        if highs < float('inf'):
+            with_bounds = True
+    elif isinstance(highs, np.ndarray) and highs.ndim == 1 and len(highs) == p and (highs >= 0):
+        with_bounds = True
+    else:
+        raise ValueError(f"expected highs to be a non-negative float, or a 1D numpy array of length {p} of "
+                         f"non-negative floats, but got {highs}")
+
+    if with_bounds:
+        if isinstance(lows, float):
+            lows = np.ones(p) * lows
+        if isinstance(highs, float):
+            highs = np.ones(p) * highs
+
+        if any(lows >= highs):
+            bad_bounds = np.argwhere(lows >= highs)
+            raise ValueError(f"expected to be high to be elementwise greater than lows, "
+                             f"but got indices {bad_bounds[0]} where that is not the case ")
+    else:
+        lows = np.array([0.])
+        highs = np.array(([0.]))
+
+    return {"max_support_size": max_support_size,
+            "screen_size": screen_size,
+            "y": y,
+            "penalty":penalty,
+            "gamma_max":gamma_max,
+            "gamma_min": gamma_min,
+            "lambda_grid": lambda_grid,
+            "num_gamma": num_gamma,
+            "num_lambda":num_lambda,
+            "auto_lambda": auto_lambda,
+            "with_bounds": with_bounds,
+            "lows": lows,
+            "highs":highs}
+
+
 def fit(X: Union[np.ndarray, csc_matrix],
         y: np.ndarray,
-        loss: str = "SquaredHinge",
+        loss: str = "SquaredError",
         penalty: str = "L0",
         algorithm: str = "CD",
         max_support_size: int = 100,
@@ -70,7 +267,7 @@ def fit(X: Union[np.ndarray, csc_matrix],
         exclude_first_k: int = 0,
         intercept: bool = True,
         lows: Union[np.ndarray, float] = -float('inf'),
-        highs: Union[np.ndarray, float] = +float('inf'),):
+        highs: Union[np.ndarray, float] = +float('inf'),) -> l0learn.models.FitModel:
     """
     Computes the regularization path for the specified loss function and penalty function.
 
@@ -218,152 +415,44 @@ def fit(X: Union[np.ndarray, csc_matrix],
     Examples
     --------
     """
+    check = _fit_check(X=X,
+                       y=y,
+                       loss=loss,
+                       penalty=penalty,
+                       algorithm=algorithm,
+                       max_support_size=max_support_size,
+                       num_lambda=num_lambda,
+                       num_gamma=num_gamma,
+                       gamma_max=gamma_max,
+                       gamma_min=gamma_min,
+                       partial_sort=partial_sort,
+                       max_iter=max_iter,
+                       rtol=rtol,
+                       atol=atol,
+                       active_set=active_set,
+                       active_set_num=active_set_num,
+                       max_swaps=max_swaps,
+                       scale_down_factor=scale_down_factor,
+                       screen_size=screen_size,
+                       lambda_grid=lambda_grid,
+                       exclude_first_k=exclude_first_k,
+                       intercept=intercept,
+                       lows=lows,
+                       highs=highs)
 
-    if not isinstance(X, (np.ndarray, csc_matrix)) or not np.isrealobj(X) or X.ndim != 2 or not np.product(X.shape):
-        raise ValueError(f"expected X to be a 2D non-degenerate real numpy or csc_matrix, but got {X}.")
-    n, p = X.shape
-    if not isinstance(y, np.ndarray) or not np.isrealobj(y) or y.ndim != 1 or len(y) != n:
-        raise ValueError(f"expected y to be a 1D real numpy, but got {y}.")
-    if loss not in SUPPORTED_LOSS:
-        raise ValueError(f"expected loss parameter to be on of {SUPPORTED_LOSS}, but got {loss}")
-    if penalty not in SUPPORTED_PENALTY:
-        raise ValueError(f"expected penalty parameter to be on of {SUPPORTED_PENALTY}, but got {penalty}")
-    if algorithm not in SUPPORTED_ALGORITHM:
-        raise ValueError(f"expected algorithm parameter to be on of {SUPPORTED_ALGORITHM}, but got {algorithm}")
-    if not isinstance(max_support_size, int) or not (0 < max_support_size <= p):
-        raise ValueError(f"expected max_support_size parameter to be a positive integer less than {p},"
-                         f" but got {max_support_size}")
-    if gamma_max < 0:
-        raise ValueError(f"expected gamma_max parameter to be a positive float, but got {gamma_max}")
-    if gamma_min < 0 or gamma_min > gamma_max:
-        raise ValueError(f"expected gamma_max parameter to be a positive float less than gamma_max,"
-                         f" but got {gamma_min}")
-    if not isinstance(partial_sort, bool):
-        raise ValueError(f"expected partial_sort parameter to be a bool, but got {partial_sort}")
-    if not isinstance(max_iter, int) or max_iter < 1:
-        raise ValueError(f"expected max_iter parameter to be a positive integer, but got {max_iter}")
-    if rtol < 0 or rtol >= 1:
-        raise ValueError(f"expected rtol parameter to exist in [0, 1), but got {rtol}")
-    if atol < 0:
-        raise ValueError(f"expected atol parameter to exist in [0, INF), but got {atol}")
-    if not isinstance(active_set, bool):
-        raise ValueError(f"expected active_set parameter to be a bool, but got {active_set}")
-    if not isinstance(active_set_num, int) or active_set_num < 1:
-        raise ValueError(f"expected active_set_num parameter to be a positive integer, but got {active_set_num}")
-    if not isinstance(max_swaps, int) or max_swaps < 1:
-        raise ValueError(f"expected max_swaps parameter to be a positive integer, but got {max_swaps}")
-    if not (0 < scale_down_factor < 1):
-        raise ValueError(f"expected scale_down_factor parameter to exist in (0, 1), but got {scale_down_factor}")
-    if not isinstance(screen_size, int) or screen_size < 1 or screen_size > p:
-        raise ValueError(f"expected screen_size parameter to be a positive integer less than {p},"
-                         f" but got {screen_size}")
-    if not isinstance(exclude_first_k, int) or not (0 <= exclude_first_k <= p):
-        raise ValueError(f"expected exclude_first_k parameter to be a positive integer less than {p}, "
-                         f"but got {exclude_first_k}")
-    if not isinstance(intercept, bool):
-        raise ValueError(f"expected intercept parameter to be a bool, "
-                 f"but got {intercept}")
-
-    if loss in CLASSIFICATION_LOSS:
-        unique_items = sorted(np.unique(y))
-        if 0 >= len(unique_items) > 2:
-            raise ValueError(f"expected y vector to only have two unique values (Binary Classification), "
-                             f"but got {unique_items}")
-        else:
-            a, *_ = unique_items # a is the lower value
-            y = np.copy(y)
-            y[y==a] = -1
-            y[y!=a] = 1
-
-        if penalty == "L0":
-            # Pure L0 is not supported for classification
-            # Below we add a small L2 component.
-
-            if lambda_grid is not None and len(lambda_grid) != 1:
-                # If this error checking was left to the lower section, it would confuse users as
-                # we are converting L0 to L0L2 with small L2 penalty.
-                # Here we must check if lambdaGrid is supplied (And thus use 'autolambda')
-                # If 'lambdaGrid' is supplied, we must only supply 1 list of lambda values
-                raise ValueError(f"L0 Penalty requires 'lambda_grid' to be a list of length 1, but got {lambda_grid}.")
-
-        penalty = "L0L2"
-        gamma_max = 1e-7
-        gamma_min = 1e-7
-    elif penalty != "L0" and num_gamma == 1:
-        warn(f"num_gamma set to 1 with {penalty} penalty. Only one {penalty[2:]} penalty value will be fit.")
-
-    if lambda_grid is None:
-        lambda_grid = [[0.]]
-        auto_lambda = True
-        if not isinstance(num_lambda, int) or num_lambda < 1:
-            raise ValueError(f"expected num_lambda to a positive integer when lambda_grid is None, but got {num_lambda}.")
-        if not isinstance(num_gamma, int) or num_gamma < 1:
-            raise ValueError(f"expected num_gamma to a positive integer when lambda_grid is None, but got {num_gamma}.")
-        if penalty == "L0" and num_gamma != 1:
-            raise ValueError(f"expected num_gamma to 1 when penalty = 'L0', but got {num_gamma}.")
-    else: # lambda_grid should be a List[List[float]]
-        if num_gamma is not None:
-            raise ValueError(f"expected num_gamma to be None if lambda_grid is specified by the user, "
-                             f"but got {num_gamma}")
-        num_gamma = len(lambda_grid)
-
-        if num_lambda is not None:
-            raise ValueError(f"expected num_lambda to be None if lambda_grid is specified by the user, "
-                             f"but got {num_lambda}")
-        num_lambda = 0 #  This value is ignored.
-        auto_lambda = False
-        bad_lambda_grid = False
-
-        if penalty == "L0" and num_gamma != 1:
-           raise ValueError(f"expected lambda_grid to of length 1 when penalty = 'L0', but got {len(lambda_grid)}")
-
-        for i, sub_lambda_grid in enumerate(lambda_grid):
-            current = float("inf")
-            if sub_lambda_grid[0] <= 0:
-                raise ValueError(f"Expected all values of lambda_grid to be positive, "
-                                 f"but got lambda_grid[{i}] containing a negative value")
-            if any(np.diff(sub_lambda_grid) >= 0):
-                raise ValueError(f"Expected each element of lambda_grid to be a list of decreasing value, "
-                                 f"but got lambda_grid[{i}] containing an increasing value.")
-
-    n, p = X.shape
-    with_bounds = False
-
-    if isinstance(lows, float):
-        if lows > 0:
-            raise ValueError(f"expected lows to be a non-positive float, but got {lows}")
-        elif lows > -float('inf'):
-            with_bounds = True
-    elif isinstance(lows, np.ndarray) and lows.ndim == 1 and len(lows) == p and all(lows <= 0):
-        with_bounds = True
-    else:
-        raise ValueError(f"expected lows to be a non-positive float, or a 1D numpy array of length {p} of non-positives "
-                         f"floats, but got {lows}")
-
-    if isinstance(highs, float):
-        if highs < 0:
-            raise ValueError(f"expected highs to be a non-negative float, but got {highs}")
-        if highs < float('inf'):
-            with_bounds = True
-    elif isinstance(highs, np.ndarray) and highs.ndim == 1 and len(highs) == p and (highs >= 0):
-        with_bounds = True
-    else:
-        raise ValueError(f"expected highs to be a non-negative float, or a 1D numpy array of length {p} of "
-                         f"non-negative floats, but got {highs}")
-
-    if with_bounds:
-        if isinstance(lows, float):
-            lows = np.ones(p) * lows
-        if isinstance(highs, float):
-            highs = np.ones(p) * highs
-
-        if any(lows >= highs):
-            bad_bounds = np.argwhere(lows >= highs)
-            raise ValueError(f"expected to be high to be elementwise greater than lows, "
-                             f"but got indices {bad_bounds[0]} where that is not the case ")
-    else:
-        lows = np.array([0.])
-        highs = np.array(([0.]))
+    max_support_size = check["max_support_size"]
+    screen_size = check["screen_size"]
+    y = check['y']
+    penalty = check['penalty']
+    gamma_max = check['gamma_max']
+    gamma_min = check['gamma_min']
+    lambda_grid = check['lambda_grid']
+    num_gamma = check['num_gamma']
+    num_lambda = check['num_lambda']
+    auto_lambda = check['auto_lambda']
+    with_bounds = check['with_bounds']
+    lows = check['lows']
+    highs = check['highs']
 
     cdef vector[vector[double]] c_lambda_grid
     try:
@@ -443,7 +532,7 @@ def fit(X: Union[np.ndarray, csc_matrix],
 
 def cvfit(X: Union[np.ndarray, csc_matrix],
           y: np.ndarray,
-          loss: str = "SquaredHinge",
+          loss: str = "SquaredError",
           penalty: str = "L0",
           algorithm: str = "CD",
           num_folds: int = 10,
@@ -466,158 +555,52 @@ def cvfit(X: Union[np.ndarray, csc_matrix],
           exclude_first_k: int = 0,
           intercept: bool = True,
           lows: Union[np.ndarray, float] = -float('inf'),
-          highs: Union[np.ndarray, float] = +float('inf'),):
-    if not isinstance(X, (np.ndarray, csc_matrix)) or not np.isrealobj(X) or X.ndim != 2 or not np.product(X.shape):
-        raise ValueError(f"expected X to be a 2D non-degenerate real numpy or csc_matrix, but got {X}.")
+          highs: Union[np.ndarray, float] = +float('inf'),) -> l0learn.models.CVFitModel:
 
-    n, p = X.shape
-    if not isinstance(y, np.ndarray) or not np.isrealobj(y) or y.ndim != 1 or len(y) != n:
-        raise ValueError(f"expected y to be a 1D real numpy, but got {y}.")
+    check = _fit_check(X=X,
+                       y=y,
+                       loss=loss,
+                       penalty=penalty,
+                       algorithm=algorithm,
+                       max_support_size=max_support_size,
+                       num_lambda=num_lambda,
+                       num_gamma=num_gamma,
+                       gamma_max=gamma_max,
+                       gamma_min=gamma_min,
+                       partial_sort=partial_sort,
+                       max_iter=max_iter,
+                       rtol=rtol,
+                       atol=atol,
+                       active_set=active_set,
+                       active_set_num=active_set_num,
+                       max_swaps=max_swaps,
+                       scale_down_factor=scale_down_factor,
+                       screen_size=screen_size,
+                       lambda_grid=lambda_grid,
+                       exclude_first_k=exclude_first_k,
+                       intercept=intercept,
+                       lows=lows,
+                       highs=highs)
 
-    if loss not in SUPPORTED_LOSS:
-        raise ValueError(f"expected loss parameter to be on of {SUPPORTED_LOSS}, but got {loss}")
+    max_support_size = check["max_support_size"]
+    screen_size = check["screen_size"]
+    y = check['y']
+    penalty = check['penalty']
+    gamma_max = check['gamma_max']
+    gamma_min = check['gamma_min']
+    lambda_grid = check['lambda_grid']
+    num_gamma = check['num_gamma']
+    num_lambda = check['num_lambda']
+    auto_lambda = check['auto_lambda']
+    with_bounds = check['with_bounds']
+    lows = check['lows']
+    highs = check['highs']
 
-    if penalty not in SUPPORTED_PENALTY:
-        raise ValueError(f"expected penalty parameter to be on of {SUPPORTED_PENALTY}, but got {penalty}")
-    if algorithm not in SUPPORTED_ALGORITHM:
-        raise ValueError(f"expected algorithm parameter to be on of {SUPPORTED_ALGORITHM}, but got {algorithm}")
-    if not isinstance(num_folds, int) or num_folds < 2:
-        raise ValueError(f"expected num_folds parameter to be a integer greater than 2, but got {num_folds}")
-    if not isinstance(seed, int):
-        raise ValueError(f"expected seed parameter to be an integer, but got {seed}")
-    if not isinstance(max_support_size, int) or not (0 < max_support_size <= p):
-        raise ValueError(f"expected max_support_size parameter to be a positive integer less than {p},"
-                         f" but got {max_support_size}")
-    if gamma_max < 0:
-        raise ValueError(f"expected gamma_max parameter to be a positive float, but got {gamma_max}")
-    if gamma_min < 0 or gamma_min > gamma_max:
-        raise ValueError(f"expected gamma_max parameter to be a positive float less than gamma_max,"
-                         f" but got {gamma_min}")
-    if not isinstance(partial_sort, bool):
-        raise ValueError(f"expected partial_sort parameter to be a bool, but got {partial_sort}")
-    if not isinstance(max_iter, int) or max_iter < 1:
-        raise ValueError(f"expected max_iter parameter to be a positive integer, but got {max_iter}")
-    if rtol < 0 or rtol >= 1:
-        raise ValueError(f"expected rtol parameter to exist in [0, 1), but got {rtol}")
-    if atol < 0:
-        raise ValueError(f"expected atol parameter to exist in [0, INF), but got {atol}")
-    if not isinstance(active_set, bool):
-        raise ValueError(f"expected active_set parameter to be a bool, but got {active_set}")
-    if not isinstance(active_set_num, int) or active_set_num < 1:
-        raise ValueError(f"expected active_set_num parameter to be a positive integer, but got {active_set_num}")
-    if not isinstance(max_swaps, int) or max_swaps < 1:
-        raise ValueError(f"expected max_swaps parameter to be a positive integer, but got {max_swaps}")
-    if not (0 < scale_down_factor < 1):
-        raise ValueError(f"expected scale_down_factor parameter to exist in (0, 1), but got {scale_down_factor}")
-    if not isinstance(screen_size, int) or screen_size < 1:
-        raise ValueError(f"expected screen_size parameter to be a positive integer, but got {screen_size}")
-    if not isinstance(exclude_first_k, int) or not (0 <= exclude_first_k <= p):
-        raise ValueError(f"expected exclude_first_k parameter to be a positive integer less than {p}, "
-                         f"but got {exclude_first_k}")
-    if not isinstance(intercept, bool):
-        raise ValueError(f"expected intercept parameter to be a bool, "
-                 f"but got {intercept}")
+    _, p = X.shape
 
-    if loss in CLASSIFICATION_LOSS:
-        unique_items = sorted(np.unique(y))
-        if 0 >= len(unique_items) > 2:
-            raise ValueError(f"expected y vector to only have two unique values (Binary Classification), "
-                             f"but got {unique_items}")
-        else:
-            a, *_ = unique_items # a is the lower value
-            y = np.copy(y)
-            y[y==a] = -1
-            y[y!=a] = 1
+    if not isinstance(num_folds, int) or num_folds < 2 or num_folds > p:
+        raise ValueError(f"expected num_folds parameter to be a positive integer less than {p}, but got {num_folds}")
 
-        if penalty == "L0":
-            # Pure L0 is not supported for classification
-            # Below we add a small L2 component.
-
-            if lambda_grid is not None and len(lambda_grid) != 1:
-                # If this error checking was left to the lower section, it would confuse users as
-                # we are converting L0 to L0L2 with small L2 penalty.
-                # Here we must check if lambdaGrid is supplied (And thus use 'autolambda')
-                # If 'lambdaGrid' is supplied, we must only supply 1 list of lambda values
-                raise ValueError(f"L0 Penalty requires 'lambda_grid' to be a list of length 1, but got {lambda_grid}.")
-
-        penalty = "L0L2"
-        gamma_max = 1e-7
-        gamma_min = 1e-7
-    elif penalty != "L0" and num_gamma == 1:
-        warn(f"num_gamma set to 1 with {penalty} penalty. Only one {penalty[2:]} penalty value will be fit.")
-
-    if lambda_grid is None:
-        lambda_grid = [[0.]]
-        auto_lambda = True
-        if not isinstance(num_lambda, int) or num_lambda < 1:
-            raise ValueError(f"expected num_lambda to a positive integer when lambda_grid is None, but got {num_lambda}.")
-        if not isinstance(num_gamma, int) or num_gamma < 1:
-            raise ValueError(f"expected num_gamma to a positive integer when lambda_grid is None, but got {num_gamma}.")
-        if penalty == "L0" and num_gamma != 1:
-            raise ValueError(f"expected num_gamma to 1 when penalty = 'L0', but got {num_gamma}.")
-    else: # lambda_grid should be a List[List[float]]
-        if num_gamma is not None:
-            raise ValueError(f"expected num_gamma to be None if lambda_grid is specified by the user, "
-                             f"but got {num_gamma}")
-        num_gamma = len(lambda_grid)
-
-        if num_lambda is not None:
-            raise ValueError(f"expected num_lambda to be None if lambda_grid is specified by the user, "
-                             f"but got {num_lambda}")
-        num_lambda = 0 #  This value is ignored.
-        auto_lambda = False
-        bad_lambda_grid = False
-
-        if penalty == "L0" and num_gamma != 1:
-           raise ValueError(f"expected lambda_grid to of length 1 when penalty = 'L0', but got {len(lambda_grid)}")
-
-        for i, sub_lambda_grid in enumerate(lambda_grid):
-            current = float("inf")
-            if sub_lambda_grid[0] <= 0:
-                raise ValueError(f"Expected all values of lambda_grid to be positive, "
-                                 f"but got lambda_grid[{i}] containing a negative value")
-            if any(np.diff(sub_lambda_grid) >= 0):
-                raise ValueError(f"Expected each element of lambda_grid to be a list of decreasing value, "
-                                 f"but got lambda_grid[{i}] containing an increasing value.")
-
-    n, p = X.shape
-    with_bounds = False
-
-    if isinstance(lows, float):
-        if lows > 0:
-            raise ValueError(f"expected lows to be a non-positive float, but got {lows}")
-        elif lows > -float('inf'):
-            with_bounds = True
-    elif isinstance(lows, np.ndarray) and lows.ndim == 1 and len(lows) == p and all(lows <= 0):
-        with_bounds = True
-    else:
-        raise ValueError(f"expected lows to be a non-positive float, or a 1D numpy array of length {p} of non-positives "
-                         f"floats, but got {lows}")
-
-    if isinstance(highs, float):
-        if highs < 0:
-            raise ValueError(f"expected highs to be a non-negative float, but got {highs}")
-        if highs < float('inf'):
-            with_bounds = True
-    elif isinstance(highs, np.ndarray) and highs.ndim == 1 and len(highs) == p and (highs >= 0):
-        with_bounds = True
-    else:
-        raise ValueError(f"expected highs to be a non-negative float, or a 1D numpy array of length {p} of "
-                         f"non-negative floats, but got {highs}")
-
-    if with_bounds:
-        if isinstance(lows, float):
-            lows = np.ones(p) * lows
-        if isinstance(highs, float):
-            highs = np.ones(p) * highs
-
-        if any(lows >= highs):
-            bad_bounds = np.argwhere(lows >= highs)
-            raise ValueError(f"expected to be high to be elementwise greater than lows, "
-                             f"but got indices {bad_bounds[0]} where that is not the case ")
-    else:
-        lows = np.array([0.])
-        highs = np.array(([0.]))
 
     cdef vector[vector[double]] c_lambda_grid
     try:
