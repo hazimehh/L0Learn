@@ -1,8 +1,10 @@
 #!/usr/bin/python3
 
 import os
-from setuptools import setup, Extension, find_packages
+
+from setuptools import setup, Extension
 import numpy as np
+
 
 try:
     from Cython.Build import cythonize
@@ -18,6 +20,11 @@ except ImportError:
 
 from Cython.Distutils import build_ext
 
+CYTHONIZE = bool(int(os.getenv("CYTHONIZE", 0))) and cythonize is not None
+CYTHONIZE = True
+print(f"CYTHONIZE = {CYTHONIZE}")
+COVERAGE_MODE = bool(os.getenv("L0LEARN_COVERAGE_MODE", 0)) and CYTHONIZE
+print(f"COVERAGE_MODE = {COVERAGE_MODE}")
 
 # https://cython.readthedocs.io/en/latest/src/userguide/source_files_and_compilation.html#distributing-cython-modules
 def no_cythonize(extensions, **_ignore):
@@ -35,9 +42,13 @@ def no_cythonize(extensions, **_ignore):
         extension.sources[:] = sources
     return extensions
 
-
 if psutil_found:
     os.environ["CMAKE_BUILD_PARALLEL_LEVEL"] = str(cpu_count(logical=False))
+
+if COVERAGE_MODE:
+    macros = [("CYTHON_TRACE_NOGIL", "1")]
+else:
+    macros = []
 
 extensions = [
     Extension(name='l0learn.cyarma',
@@ -47,6 +58,7 @@ extensions = [
               libraries=["armadillo", "lapack", "blas"],
               extra_compile_args=["-std=c++11"],
               extra_link_args=["-std=c++11"],
+              define_macros=macros,
               ),
     Extension(name='l0learn.testing_utils',
               sources=["l0learn/testing_utils.pyx"],
@@ -55,6 +67,7 @@ extensions = [
               libraries=["armadillo", "lapack", "blas"],
               extra_compile_args=["-std=c++11"],
               extra_link_args=["-std=c++11"],
+              define_macros=macros,
               ),
     Extension(name="l0learn.interface",
               sources=["l0learn/interface.pyx",
@@ -70,14 +83,18 @@ extensions = [
               language="c++",
               libraries=["armadillo", "lapack", "blas"],
               extra_compile_args=["-std=c++11"],
-              extra_link_args=["-std=c++11"]),
+              extra_link_args=["-std=c++11"],
+              define_macros=macros,
+              ),
 ]
 
-CYTHONIZE = bool(int(os.getenv("CYTHONIZE", 0))) and cythonize is not None
-if True:
+if CYTHONIZE:
     compiler_directives = {"language_level": 3, "embedsignature": True}
+    if COVERAGE_MODE:
+        compiler_directives['linetrace'] = True
     extensions = cythonize(extensions, compiler_directives=compiler_directives)
 else:
+    COVERAGE_MODE = False
     extensions = no_cythonize(extensions)
 
 """

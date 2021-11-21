@@ -9,7 +9,12 @@ requires = [
 build-backend = "setuptools.build_meta"
 
 [tool.coverage.run]
-omit = [
-    "l0learn/src/*",
-    "src/*",
+plugins = ["Cython.Coverage"]
+source=[
+    "l0learn/cyarma.pyx",
+    "l0learn/cyarma.pxd",
+    "l0learn/init.py",
+    "l0learn/interface.pxd",
+    "l0learn/interface.pyx",
+    "l0learn/models.py",
 ]

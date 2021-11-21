@@ -3,6 +3,12 @@
 /* BEGIN: Cython Metadata
 {
     "distutils": {
+        "define_macros": [
+            [
+                "CYTHON_TRACE_NOGIL",
+                "1"
+            ]
+        ],
         "depends": [
             "/Users/tnonet/opt/anaconda3/envs/l0learn-test2/lib/python3.9/site-packages/numpy/core/include/numpy/arrayobject.h",
             "/Users/tnonet/opt/anaconda3/envs/l0learn-test2/lib/python3.9/site-packages/numpy/core/include/numpy/arrayscalars.h",
@@ -1261,33 +1267,6 @@ typedef npy_cdouble __pyx_t_5numpy_complex_t;
 #define __Pyx_CLEAR(r)    do { PyObject* tmp = ((PyObject*)(r)); r = NULL; __Pyx_DECREF(tmp);} while(0)
 #define __Pyx_XCLEAR(r)   do { if((r) != NULL) {PyObject* tmp = ((PyObject*)(r)); r = NULL; __Pyx_DECREF(tmp);}} while(0)
 
-/* ExtTypeTest.proto */
-static CYTHON_INLINE int __Pyx_TypeTest(PyObject *obj, PyTypeObject *type);
-
-/* IsLittleEndian.proto */
-static CYTHON_INLINE int __Pyx_Is_Little_Endian(void);
-
-/* BufferFormatCheck.proto */
-static const char* __Pyx_BufFmt_CheckString(__Pyx_BufFmt_Context* ctx, const char* ts);
-static void __Pyx_BufFmt_Init(__Pyx_BufFmt_Context* ctx,
-                              __Pyx_BufFmt_StackElem* stack,
-                              __Pyx_TypeInfo* type);
-
-/* BufferGetAndValidate.proto */
-#define __Pyx_GetBufferAndValidate(buf, obj, dtype, flags, nd, cast, stack)\
-    ((obj == Py_None || obj == NULL) ?\
-    (__Pyx_ZeroBuffer(buf), 0) :\
-    __Pyx__GetBufferAndValidate(buf, obj, dtype, flags, nd, cast, stack))
-static int  __Pyx__GetBufferAndValidate(Py_buffer* buf, PyObject* obj,
-    __Pyx_TypeInfo* dtype, int flags, int nd, int cast, __Pyx_BufFmt_StackElem* stack);
-static void __Pyx_ZeroBuffer(Py_buffer* buf);
-static CYTHON_INLINE void __Pyx_SafeReleaseBuffer(Py_buffer* info);
-static Py_ssize_t __Pyx_minusones[] = { -1, -1, -1, -1, -1, -1, -1, -1 };
-static Py_ssize_t __Pyx_zeros[] = { 0, 0, 0, 0, 0, 0, 0, 0 };
-
-/* BufferFallbackError.proto */
-static void __Pyx_RaiseBufferFallbackError(void);
-
 /* PyThreadStateGet.proto */
 #if CYTHON_FAST_THREAD_STATE
 #define __Pyx_PyThreadState_declare  PyThreadState *__pyx_tstate;
@@ -1324,6 +1303,246 @@ static CYTHON_INLINE void __Pyx_ErrFetchInState(PyThreadState *tstate, PyObject 
 #define __Pyx_ErrFetch(type, value, tb)  PyErr_Fetch(type, value, tb)
 #endif
 
+/* Profile.proto */
+#ifndef CYTHON_PROFILE
+#if CYTHON_COMPILING_IN_PYPY || CYTHON_COMPILING_IN_PYSTON
+  #define CYTHON_PROFILE 0
+#else
+  #define CYTHON_PROFILE 1
+#endif
+#endif
+#ifndef CYTHON_TRACE_NOGIL
+  #define CYTHON_TRACE_NOGIL 0
+#else
+  #if CYTHON_TRACE_NOGIL && !defined(CYTHON_TRACE)
+    #define CYTHON_TRACE 1
+  #endif
+#endif
+#ifndef CYTHON_TRACE
+  #define CYTHON_TRACE 0
+#endif
+#if CYTHON_TRACE
+  #undef CYTHON_PROFILE_REUSE_FRAME
+#endif
+#ifndef CYTHON_PROFILE_REUSE_FRAME
+  #define CYTHON_PROFILE_REUSE_FRAME 0
+#endif
+#if CYTHON_PROFILE || CYTHON_TRACE
+  #include "compile.h"
+  #include "frameobject.h"
+  #include "traceback.h"
+  #if CYTHON_PROFILE_REUSE_FRAME
+    #define CYTHON_FRAME_MODIFIER static
+    #define CYTHON_FRAME_DEL(frame)
+  #else
+    #define CYTHON_FRAME_MODIFIER
+    #define CYTHON_FRAME_DEL(frame) Py_CLEAR(frame)
+  #endif
+  #define __Pyx_TraceDeclarations\
+      static PyCodeObject *__pyx_frame_code = NULL;\
+      CYTHON_FRAME_MODIFIER PyFrameObject *__pyx_frame = NULL;\
+      int __Pyx_use_tracing = 0;
+  #define __Pyx_TraceFrameInit(codeobj)\
+      if (codeobj) __pyx_frame_code = (PyCodeObject*) codeobj;
+#if PY_VERSION_HEX >= 0x030a00b1
+  #define __Pyx_IsTracing(tstate, check_tracing, check_funcs)\
+     (unlikely((tstate)->cframe->use_tracing) &&\
+         (!(check_tracing) || !(tstate)->tracing) &&\
+         (!(check_funcs) || (tstate)->c_profilefunc || (CYTHON_TRACE && (tstate)->c_tracefunc)))
+  #define __Pyx_SetTracing(tstate, enable)\
+      (tstate)->cframe->use_tracing = (enable)
+#else
+  #define __Pyx_IsTracing(tstate, check_tracing, check_funcs)\
+     (unlikely((tstate)->use_tracing) &&\
+         (!(check_tracing) || !(tstate)->tracing) &&\
+         (!(check_funcs) || (tstate)->c_profilefunc || (CYTHON_TRACE && (tstate)->c_tracefunc)))
+  #define __Pyx_SetTracing(tstate, enable)\
+      (tstate)->use_tracing = (enable)
+#endif
+  #ifdef WITH_THREAD
+  #define __Pyx_TraceCall(funcname, srcfile, firstlineno, nogil, goto_error)\
+  if (nogil) {\
+      if (CYTHON_TRACE_NOGIL) {\
+          PyThreadState *tstate;\
+          PyGILState_STATE state = PyGILState_Ensure();\
+          tstate = __Pyx_PyThreadState_Current;\
+          if (__Pyx_IsTracing(tstate, 1, 1)) {\
+              __Pyx_use_tracing = __Pyx_TraceSetupAndCall(&__pyx_frame_code, &__pyx_frame, tstate, funcname, srcfile, firstlineno);\
+          }\
+          PyGILState_Release(state);\
+          if (unlikely(__Pyx_use_tracing < 0)) goto_error;\
+      }\
+  } else {\
+      PyThreadState* tstate = PyThreadState_GET();\
+      if (__Pyx_IsTracing(tstate, 1, 1)) {\
+          __Pyx_use_tracing = __Pyx_TraceSetupAndCall(&__pyx_frame_code, &__pyx_frame, tstate, funcname, srcfile, firstlineno);\
+          if (unlikely(__Pyx_use_tracing < 0)) goto_error;\
+      }\
+  }
+  #else
+  #define __Pyx_TraceCall(funcname, srcfile, firstlineno, nogil, goto_error)\
+  {   PyThreadState* tstate = PyThreadState_GET();\
+      if (__Pyx_IsTracing(tstate, 1, 1)) {\
+          __Pyx_use_tracing = __Pyx_TraceSetupAndCall(&__pyx_frame_code, &__pyx_frame, tstate, funcname, srcfile, firstlineno);\
+          if (unlikely(__Pyx_use_tracing < 0)) goto_error;\
+      }\
+  }
+  #endif
+  #define __Pyx_TraceException()\
+  if (likely(!__Pyx_use_tracing)); else {\
+      PyThreadState* tstate = __Pyx_PyThreadState_Current;\
+      if (__Pyx_IsTracing(tstate, 0, 1)) {\
+          tstate->tracing++;\
+          __Pyx_SetTracing(tstate, 0);\
+          PyObject *exc_info = __Pyx_GetExceptionTuple(tstate);\
+          if (exc_info) {\
+              if (CYTHON_TRACE && tstate->c_tracefunc)\
+                  tstate->c_tracefunc(\
+                      tstate->c_traceobj, __pyx_frame, PyTrace_EXCEPTION, exc_info);\
+              tstate->c_profilefunc(\
+                  tstate->c_profileobj, __pyx_frame, PyTrace_EXCEPTION, exc_info);\
+              Py_DECREF(exc_info);\
+          }\
+          __Pyx_SetTracing(tstate, 1);\
+          tstate->tracing--;\
+      }\
+  }
+  static void __Pyx_call_return_trace_func(PyThreadState *tstate, PyFrameObject *frame, PyObject *result) {
+      PyObject *type, *value, *traceback;
+      __Pyx_ErrFetchInState(tstate, &type, &value, &traceback);
+      tstate->tracing++;
+      __Pyx_SetTracing(tstate, 0);
+      if (CYTHON_TRACE && tstate->c_tracefunc)
+          tstate->c_tracefunc(tstate->c_traceobj, frame, PyTrace_RETURN, result);
+      if (tstate->c_profilefunc)
+          tstate->c_profilefunc(tstate->c_profileobj, frame, PyTrace_RETURN, result);
+      CYTHON_FRAME_DEL(frame);
+      __Pyx_SetTracing(tstate, 1);
+      tstate->tracing--;
+      __Pyx_ErrRestoreInState(tstate, type, value, traceback);
+  }
+  #ifdef WITH_THREAD
+  #define __Pyx_TraceReturn(result, nogil)\
+  if (likely(!__Pyx_use_tracing)); else {\
+      if (nogil) {\
+          if (CYTHON_TRACE_NOGIL) {\
+              PyThreadState *tstate;\
+              PyGILState_STATE state = PyGILState_Ensure();\
+              tstate = __Pyx_PyThreadState_Current;\
+              if (__Pyx_IsTracing(tstate, 0, 0)) {\
+                  __Pyx_call_return_trace_func(tstate, __pyx_frame, (PyObject*)result);\
+              }\
+              PyGILState_Release(state);\
+          }\
+      } else {\
+          PyThreadState* tstate = __Pyx_PyThreadState_Current;\
+          if (__Pyx_IsTracing(tstate, 0, 0)) {\
+              __Pyx_call_return_trace_func(tstate, __pyx_frame, (PyObject*)result);\
+          }\
+      }\
+  }
+  #else
+  #define __Pyx_TraceReturn(result, nogil)\
+  if (likely(!__Pyx_use_tracing)); else {\
+      PyThreadState* tstate = __Pyx_PyThreadState_Current;\
+      if (__Pyx_IsTracing(tstate, 0, 0)) {\
+          __Pyx_call_return_trace_func(tstate, __pyx_frame, (PyObject*)result);\
+      }\
+  }
+  #endif
+  static PyCodeObject *__Pyx_createFrameCodeObject(const char *funcname, const char *srcfile, int firstlineno);
+  static int __Pyx_TraceSetupAndCall(PyCodeObject** code, PyFrameObject** frame, PyThreadState* tstate, const char *funcname, const char *srcfile, int firstlineno);
+#else
+  #define __Pyx_TraceDeclarations
+  #define __Pyx_TraceFrameInit(codeobj)
+  #define __Pyx_TraceCall(funcname, srcfile, firstlineno, nogil, goto_error)   if ((1)); else goto_error;
+  #define __Pyx_TraceException()
+  #define __Pyx_TraceReturn(result, nogil)
+#endif
+#if CYTHON_TRACE
+  static int __Pyx_call_line_trace_func(PyThreadState *tstate, PyFrameObject *frame, int lineno) {
+      int ret;
+      PyObject *type, *value, *traceback;
+      __Pyx_ErrFetchInState(tstate, &type, &value, &traceback);
+      __Pyx_PyFrame_SetLineNumber(frame, lineno);
+      tstate->tracing++;
+      __Pyx_SetTracing(tstate, 0);
+      ret = tstate->c_tracefunc(tstate->c_traceobj, frame, PyTrace_LINE, NULL);
+      __Pyx_SetTracing(tstate, 1);
+      tstate->tracing--;
+      if (likely(!ret)) {
+          __Pyx_ErrRestoreInState(tstate, type, value, traceback);
+      } else {
+          Py_XDECREF(type);
+          Py_XDECREF(value);
+          Py_XDECREF(traceback);
+      }
+      return ret;
+  }
+  #ifdef WITH_THREAD
+  #define __Pyx_TraceLine(lineno, nogil, goto_error)\
+  if (likely(!__Pyx_use_tracing)); else {\
+      if (nogil) {\
+          if (CYTHON_TRACE_NOGIL) {\
+              int ret = 0;\
+              PyThreadState *tstate;\
+              PyGILState_STATE state = PyGILState_Ensure();\
+              tstate = __Pyx_PyThreadState_Current;\
+              if (__Pyx_IsTracing(tstate, 0, 0) && tstate->c_tracefunc && __pyx_frame->f_trace) {\
+                  ret = __Pyx_call_line_trace_func(tstate, __pyx_frame, lineno);\
+              }\
+              PyGILState_Release(state);\
+              if (unlikely(ret)) goto_error;\
+          }\
+      } else {\
+          PyThreadState* tstate = __Pyx_PyThreadState_Current;\
+          if (__Pyx_IsTracing(tstate, 0, 0) && tstate->c_tracefunc && __pyx_frame->f_trace) {\
+              int ret = __Pyx_call_line_trace_func(tstate, __pyx_frame, lineno);\
+              if (unlikely(ret)) goto_error;\
+          }\
+      }\
+  }
+  #else
+  #define __Pyx_TraceLine(lineno, nogil, goto_error)\
+  if (likely(!__Pyx_use_tracing)); else {\
+      PyThreadState* tstate = __Pyx_PyThreadState_Current;\
+      if (__Pyx_IsTracing(tstate, 0, 0) && tstate->c_tracefunc && __pyx_frame->f_trace) {\
+          int ret = __Pyx_call_line_trace_func(tstate, __pyx_frame, lineno);\
+          if (unlikely(ret)) goto_error;\
+      }\
+  }
+  #endif
+#else
+  #define __Pyx_TraceLine(lineno, nogil, goto_error)   if ((1)); else goto_error;
+#endif
+
+/* ExtTypeTest.proto */
+static CYTHON_INLINE int __Pyx_TypeTest(PyObject *obj, PyTypeObject *type);
+
+/* IsLittleEndian.proto */
+static CYTHON_INLINE int __Pyx_Is_Little_Endian(void);
+
+/* BufferFormatCheck.proto */
+static const char* __Pyx_BufFmt_CheckString(__Pyx_BufFmt_Context* ctx, const char* ts);
+static void __Pyx_BufFmt_Init(__Pyx_BufFmt_Context* ctx,
+                              __Pyx_BufFmt_StackElem* stack,
+                              __Pyx_TypeInfo* type);
+
+/* BufferGetAndValidate.proto */
+#define __Pyx_GetBufferAndValidate(buf, obj, dtype, flags, nd, cast, stack)\
+    ((obj == Py_None || obj == NULL) ?\
+    (__Pyx_ZeroBuffer(buf), 0) :\
+    __Pyx__GetBufferAndValidate(buf, obj, dtype, flags, nd, cast, stack))
+static int  __Pyx__GetBufferAndValidate(Py_buffer* buf, PyObject* obj,
+    __Pyx_TypeInfo* dtype, int flags, int nd, int cast, __Pyx_BufFmt_StackElem* stack);
+static void __Pyx_ZeroBuffer(Py_buffer* buf);
+static CYTHON_INLINE void __Pyx_SafeReleaseBuffer(Py_buffer* info);
+static Py_ssize_t __Pyx_minusones[] = { -1, -1, -1, -1, -1, -1, -1, -1 };
+static Py_ssize_t __Pyx_zeros[] = { 0, 0, 0, 0, 0, 0, 0, 0 };
+
+/* BufferFallbackError.proto */
+static void __Pyx_RaiseBufferFallbackError(void);
+
 /* RaiseArgTupleInvalid.proto */
 static void __Pyx_RaiseArgtupleInvalid(const char* func_name, int exact,
     Py_ssize_t num_min, Py_ssize_t num_max, Py_ssize_t num_found);
@@ -1335,6 +1554,11 @@ static void __Pyx_RaiseDoubleKeywordsError(const char* func_name, PyObject* kw_n
 static int __Pyx_ParseOptionalKeywords(PyObject *kwds, PyObject **argnames[],\
     PyObject *kwds2, PyObject *values[], Py_ssize_t num_pos_args,\
     const char* function_name);
+
+/* WriteUnraisableException.proto */
+static void __Pyx_WriteUnraisable(const char *name, int clineno,
+                                  int lineno, const char *filename,
+                                  int full_traceback, int nogil);
 
 /* PyObjectGetAttrStr.proto */
 #if CYTHON_USE_TYPE_SLOTS
@@ -1746,22 +1970,22 @@ static PyObject *__pyx_pf_7l0learn_13testing_utils_6uvec_np_to_arma_to_np(CYTHON
 static PyObject *__pyx_pf_7l0learn_13testing_utils_8dvec_np_to_arma_to_np(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_x); /* proto */
 static PyObject *__pyx_pf_7l0learn_13testing_utils_10sp_dmat_np_to_arma_to_np(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_x); /* proto */
 static PyObject *__pyx_pf_7l0learn_13testing_utils_12dmat_dot_dmat(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_x, PyObject *__pyx_v_y); /* proto */
-static PyObject *__pyx_tuple_;
-static PyObject *__pyx_tuple__2;
-static PyObject *__pyx_tuple__3;
-static PyObject *__pyx_tuple__5;
-static PyObject *__pyx_tuple__7;
+static PyObject *__pyx_codeobj_;
+static PyObject *__pyx_tuple__8;
 static PyObject *__pyx_tuple__9;
+static PyObject *__pyx_tuple__10;
 static PyObject *__pyx_tuple__11;
+static PyObject *__pyx_tuple__12;
 static PyObject *__pyx_tuple__13;
+static PyObject *__pyx_tuple__14;
 static PyObject *__pyx_tuple__15;
+static PyObject *__pyx_tuple__16;
+static PyObject *__pyx_codeobj__2;
+static PyObject *__pyx_codeobj__3;
 static PyObject *__pyx_codeobj__4;
+static PyObject *__pyx_codeobj__5;
 static PyObject *__pyx_codeobj__6;
-static PyObject *__pyx_codeobj__8;
-static PyObject *__pyx_codeobj__10;
-static PyObject *__pyx_codeobj__12;
-static PyObject *__pyx_codeobj__14;
-static PyObject *__pyx_codeobj__16;
+static PyObject *__pyx_codeobj__7;
 /* Late includes */
 
 /* "l0learn/testing_utils.pyx":11
@@ -1789,12 +2013,15 @@ static PyObject *__pyx_pw_7l0learn_13testing_utils_1list_csc_to_arma_csc_to_list
 
 static PyObject *__pyx_pf_7l0learn_13testing_utils_list_csc_to_arma_csc_to_list(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_x) {
   PyObject *__pyx_r = NULL;
+  __Pyx_TraceDeclarations
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
+  __Pyx_TraceFrameInit(__pyx_codeobj_)
   __Pyx_RefNannySetupContext("list_csc_to_arma_csc_to_list", 0);
+  __Pyx_TraceCall("list_csc_to_arma_csc_to_list", __pyx_f[0], 11, 0, __PYX_ERR(0, 11, __pyx_L1_error));
 
   /* "l0learn/testing_utils.pyx":12
  * 
@@ -1803,6 +2030,7 @@ static PyObject *__pyx_pf_7l0learn_13testing_utils_list_csc_to_arma_csc_to_list(
  * 
  * 
  */
+  __Pyx_TraceLine(12,0,__PYX_ERR(0, 12, __pyx_L1_error))
   __Pyx_XDECREF(__pyx_r);
   if (!(likely(PyList_CheckExact(__pyx_v_x))||((__pyx_v_x) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "list", Py_TYPE(__pyx_v_x)->tp_name), 0))) __PYX_ERR(0, 12, __pyx_L1_error)
   __pyx_t_1 = __pyx_f_7l0learn_13testing_utils_c_list_csc_to_arma_csc_to_list(((PyObject*)__pyx_v_x)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 12, __pyx_L1_error)
@@ -1826,6 +2054,7 @@ static PyObject *__pyx_pf_7l0learn_13testing_utils_list_csc_to_arma_csc_to_list(
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_TraceReturn(__pyx_r, 0);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
@@ -1842,12 +2071,14 @@ static PyObject *__pyx_f_7l0learn_13testing_utils_c_list_csc_to_arma_csc_to_list
   arma::field<arma::sp_dmat>  __pyx_v_f;
   PyObject *__pyx_v_lst = 0;
   PyObject *__pyx_r = NULL;
+  __Pyx_TraceDeclarations
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("c_list_csc_to_arma_csc_to_list", 0);
+  __Pyx_TraceCall("c_list_csc_to_arma_csc_to_list", __pyx_f[0], 15, 0, __PYX_ERR(0, 15, __pyx_L1_error));
 
   /* "l0learn/testing_utils.pyx":16
  * 
@@ -1856,6 +2087,7 @@ static PyObject *__pyx_f_7l0learn_13testing_utils_c_list_csc_to_arma_csc_to_list
  *     cdef lst = sp_dmat_field_to_list(f)
  *     return lst
  */
+  __Pyx_TraceLine(16,0,__PYX_ERR(0, 16, __pyx_L1_error))
   __pyx_v_f = __pyx_f_7l0learn_6cyarma_list_to_sp_dmat_field(__pyx_v_x);
 
   /* "l0learn/testing_utils.pyx":17
@@ -1865,6 +2097,7 @@ static PyObject *__pyx_f_7l0learn_13testing_utils_c_list_csc_to_arma_csc_to_list
  *     return lst
  * 
  */
+  __Pyx_TraceLine(17,0,__PYX_ERR(0, 17, __pyx_L1_error))
   __pyx_t_1 = __pyx_f_7l0learn_6cyarma_sp_dmat_field_to_list(__pyx_v_f); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 17, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_lst = __pyx_t_1;
@@ -1877,6 +2110,7 @@ static PyObject *__pyx_f_7l0learn_13testing_utils_c_list_csc_to_arma_csc_to_list
  * 
  * 
  */
+  __Pyx_TraceLine(18,0,__PYX_ERR(0, 18, __pyx_L1_error))
   __Pyx_XDECREF(__pyx_r);
   if (!(likely(PyList_CheckExact(__pyx_v_lst))||((__pyx_v_lst) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "list", Py_TYPE(__pyx_v_lst)->tp_name), 0))) __PYX_ERR(0, 18, __pyx_L1_error)
   __Pyx_INCREF(__pyx_v_lst);
@@ -1899,6 +2133,7 @@ static PyObject *__pyx_f_7l0learn_13testing_utils_c_list_csc_to_arma_csc_to_list
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_lst);
   __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_TraceReturn(__pyx_r, 0);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
@@ -1928,12 +2163,15 @@ static PyObject *__pyx_pw_7l0learn_13testing_utils_3list_dvec_to_arma_dvec_to_li
 
 static PyObject *__pyx_pf_7l0learn_13testing_utils_2list_dvec_to_arma_dvec_to_list(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_x) {
   PyObject *__pyx_r = NULL;
+  __Pyx_TraceDeclarations
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
+  __Pyx_TraceFrameInit(__pyx_codeobj__2)
   __Pyx_RefNannySetupContext("list_dvec_to_arma_dvec_to_list", 0);
+  __Pyx_TraceCall("list_dvec_to_arma_dvec_to_list", __pyx_f[0], 21, 0, __PYX_ERR(0, 21, __pyx_L1_error));
 
   /* "l0learn/testing_utils.pyx":22
  * 
@@ -1942,6 +2180,7 @@ static PyObject *__pyx_pf_7l0learn_13testing_utils_2list_dvec_to_arma_dvec_to_li
  * 
  * 
  */
+  __Pyx_TraceLine(22,0,__PYX_ERR(0, 22, __pyx_L1_error))
   __Pyx_XDECREF(__pyx_r);
   if (!(likely(PyList_CheckExact(__pyx_v_x))||((__pyx_v_x) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "list", Py_TYPE(__pyx_v_x)->tp_name), 0))) __PYX_ERR(0, 22, __pyx_L1_error)
   __pyx_t_1 = __pyx_f_7l0learn_13testing_utils_c_list_dvec_to_arma_dvec_to_list(((PyObject*)__pyx_v_x)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 22, __pyx_L1_error)
@@ -1965,6 +2204,7 @@ static PyObject *__pyx_pf_7l0learn_13testing_utils_2list_dvec_to_arma_dvec_to_li
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_TraceReturn(__pyx_r, 0);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
@@ -1981,12 +2221,14 @@ static PyObject *__pyx_f_7l0learn_13testing_utils_c_list_dvec_to_arma_dvec_to_li
   arma::field<arma::dvec>  __pyx_v_f;
   PyObject *__pyx_v_lst = 0;
   PyObject *__pyx_r = NULL;
+  __Pyx_TraceDeclarations
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("c_list_dvec_to_arma_dvec_to_list", 0);
+  __Pyx_TraceCall("c_list_dvec_to_arma_dvec_to_list", __pyx_f[0], 25, 0, __PYX_ERR(0, 25, __pyx_L1_error));
 
   /* "l0learn/testing_utils.pyx":26
  * 
@@ -1995,6 +2237,7 @@ static PyObject *__pyx_f_7l0learn_13testing_utils_c_list_dvec_to_arma_dvec_to_li
  *     cdef lst = dvec_field_to_list(f)
  *     return lst
  */
+  __Pyx_TraceLine(26,0,__PYX_ERR(0, 26, __pyx_L1_error))
   __pyx_v_f = __pyx_f_7l0learn_6cyarma_list_to_dvec_field(__pyx_v_x);
 
   /* "l0learn/testing_utils.pyx":27
@@ -2004,6 +2247,7 @@ static PyObject *__pyx_f_7l0learn_13testing_utils_c_list_dvec_to_arma_dvec_to_li
  *     return lst
  * 
  */
+  __Pyx_TraceLine(27,0,__PYX_ERR(0, 27, __pyx_L1_error))
   __pyx_t_1 = __pyx_f_7l0learn_6cyarma_dvec_field_to_list(__pyx_v_f); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 27, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_lst = __pyx_t_1;
@@ -2016,6 +2260,7 @@ static PyObject *__pyx_f_7l0learn_13testing_utils_c_list_dvec_to_arma_dvec_to_li
  * 
  * 
  */
+  __Pyx_TraceLine(28,0,__PYX_ERR(0, 28, __pyx_L1_error))
   __Pyx_XDECREF(__pyx_r);
   if (!(likely(PyList_CheckExact(__pyx_v_lst))||((__pyx_v_lst) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "list", Py_TYPE(__pyx_v_lst)->tp_name), 0))) __PYX_ERR(0, 28, __pyx_L1_error)
   __Pyx_INCREF(__pyx_v_lst);
@@ -2038,6 +2283,7 @@ static PyObject *__pyx_f_7l0learn_13testing_utils_c_list_dvec_to_arma_dvec_to_li
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_lst);
   __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_TraceReturn(__pyx_r, 0);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
@@ -2070,6 +2316,7 @@ static PyObject *__pyx_pf_7l0learn_13testing_utils_4dmat_np_to_arma_to_np(CYTHON
   __Pyx_LocalBuf_ND __pyx_pybuffernd_x_pass;
   __Pyx_Buffer __pyx_pybuffer_x_pass;
   PyObject *__pyx_r = NULL;
+  __Pyx_TraceDeclarations
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   int __pyx_t_2;
@@ -2079,7 +2326,9 @@ static PyObject *__pyx_pf_7l0learn_13testing_utils_4dmat_np_to_arma_to_np(CYTHON
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
+  __Pyx_TraceFrameInit(__pyx_codeobj__3)
   __Pyx_RefNannySetupContext("dmat_np_to_arma_to_np", 0);
+  __Pyx_TraceCall("dmat_np_to_arma_to_np", __pyx_f[0], 31, 0, __PYX_ERR(0, 31, __pyx_L1_error));
   __pyx_pybuffer_x_pass.pybuffer.buf = NULL;
   __pyx_pybuffer_x_pass.refcount = 0;
   __pyx_pybuffernd_x_pass.data = NULL;
@@ -2092,6 +2341,7 @@ static PyObject *__pyx_pf_7l0learn_13testing_utils_4dmat_np_to_arma_to_np(CYTHON
  * 
  *     return x_pass
  */
+  __Pyx_TraceLine(33,0,__PYX_ERR(0, 33, __pyx_L1_error))
   if (!(likely(((__pyx_v_x) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_x, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 33, __pyx_L1_error)
   __pyx_t_1 = ((PyObject *)__pyx_f_7l0learn_13testing_utils_c_dmat_np_to_arma_to_np(((PyArrayObject *)__pyx_v_x))); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 33, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
@@ -2122,6 +2372,7 @@ static PyObject *__pyx_pf_7l0learn_13testing_utils_4dmat_np_to_arma_to_np(CYTHON
  * 
  * 
  */
+  __Pyx_TraceLine(35,0,__PYX_ERR(0, 35, __pyx_L1_error))
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(((PyObject *)__pyx_v_x_pass));
   __pyx_r = ((PyObject *)__pyx_v_x_pass);
@@ -2152,6 +2403,7 @@ static PyObject *__pyx_pf_7l0learn_13testing_utils_4dmat_np_to_arma_to_np(CYTHON
   __pyx_L2:;
   __Pyx_XDECREF((PyObject *)__pyx_v_x_pass);
   __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_TraceReturn(__pyx_r, 0);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
@@ -2172,12 +2424,14 @@ static PyArrayObject *__pyx_f_7l0learn_13testing_utils_c_dmat_np_to_arma_to_np(P
   __Pyx_LocalBuf_ND __pyx_pybuffernd_x;
   __Pyx_Buffer __pyx_pybuffer_x;
   PyArrayObject *__pyx_r = NULL;
+  __Pyx_TraceDeclarations
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("c_dmat_np_to_arma_to_np", 0);
+  __Pyx_TraceCall("c_dmat_np_to_arma_to_np", __pyx_f[0], 38, 0, __PYX_ERR(0, 38, __pyx_L1_error));
   __pyx_pybuffer_np_x.pybuffer.buf = NULL;
   __pyx_pybuffer_np_x.refcount = 0;
   __pyx_pybuffernd_np_x.data = NULL;
@@ -2199,6 +2453,7 @@ static PyArrayObject *__pyx_f_7l0learn_13testing_utils_c_dmat_np_to_arma_to_np(P
  * 
  *     cdef np.ndarray[np.double_t, ndim=2] np_x = dmat_to_numpy(arma_x, None)
  */
+  __Pyx_TraceLine(39,0,__PYX_ERR(0, 39, __pyx_L1_error))
   __pyx_v_arma_x = __pyx_f_7l0learn_6cyarma_numpy_to_dmat_d(((PyArrayObject *)__pyx_v_x));
 
   /* "l0learn/testing_utils.pyx":41
@@ -2208,6 +2463,7 @@ static PyArrayObject *__pyx_f_7l0learn_13testing_utils_c_dmat_np_to_arma_to_np(P
  * 
  *     return np_x
  */
+  __Pyx_TraceLine(41,0,__PYX_ERR(0, 41, __pyx_L1_error))
   __pyx_t_1 = ((PyObject *)__pyx_f_7l0learn_6cyarma_dmat_to_numpy(__pyx_v_arma_x, ((PyArrayObject *)Py_None))); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 41, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   {
@@ -2228,6 +2484,7 @@ static PyArrayObject *__pyx_f_7l0learn_13testing_utils_c_dmat_np_to_arma_to_np(P
  * 
  * 
  */
+  __Pyx_TraceLine(43,0,__PYX_ERR(0, 43, __pyx_L1_error))
   __Pyx_XDECREF(((PyObject *)__pyx_r));
   __Pyx_INCREF(((PyObject *)__pyx_v_np_x));
   __pyx_r = ((PyArrayObject *)__pyx_v_np_x);
@@ -2260,6 +2517,7 @@ static PyArrayObject *__pyx_f_7l0learn_13testing_utils_c_dmat_np_to_arma_to_np(P
   __pyx_L2:;
   __Pyx_XDECREF((PyObject *)__pyx_v_np_x);
   __Pyx_XGIVEREF((PyObject *)__pyx_r);
+  __Pyx_TraceReturn(__pyx_r, 0);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
@@ -2292,6 +2550,7 @@ static PyObject *__pyx_pf_7l0learn_13testing_utils_6uvec_np_to_arma_to_np(CYTHON
   __Pyx_LocalBuf_ND __pyx_pybuffernd_x_pass;
   __Pyx_Buffer __pyx_pybuffer_x_pass;
   PyObject *__pyx_r = NULL;
+  __Pyx_TraceDeclarations
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   int __pyx_t_2;
@@ -2301,7 +2560,9 @@ static PyObject *__pyx_pf_7l0learn_13testing_utils_6uvec_np_to_arma_to_np(CYTHON
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
+  __Pyx_TraceFrameInit(__pyx_codeobj__4)
   __Pyx_RefNannySetupContext("uvec_np_to_arma_to_np", 0);
+  __Pyx_TraceCall("uvec_np_to_arma_to_np", __pyx_f[0], 46, 0, __PYX_ERR(0, 46, __pyx_L1_error));
   __pyx_pybuffer_x_pass.pybuffer.buf = NULL;
   __pyx_pybuffer_x_pass.refcount = 0;
   __pyx_pybuffernd_x_pass.data = NULL;
@@ -2314,6 +2575,7 @@ static PyObject *__pyx_pf_7l0learn_13testing_utils_6uvec_np_to_arma_to_np(CYTHON
  * 
  *     return x_pass
  */
+  __Pyx_TraceLine(48,0,__PYX_ERR(0, 48, __pyx_L1_error))
   if (!(likely(((__pyx_v_x) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_x, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 48, __pyx_L1_error)
   __pyx_t_1 = ((PyObject *)__pyx_f_7l0learn_13testing_utils_c_uvec_np_to_arma_to_np(((PyArrayObject *)__pyx_v_x))); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 48, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
@@ -2344,6 +2606,7 @@ static PyObject *__pyx_pf_7l0learn_13testing_utils_6uvec_np_to_arma_to_np(CYTHON
  * 
  * 
  */
+  __Pyx_TraceLine(50,0,__PYX_ERR(0, 50, __pyx_L1_error))
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(((PyObject *)__pyx_v_x_pass));
   __pyx_r = ((PyObject *)__pyx_v_x_pass);
@@ -2374,6 +2637,7 @@ static PyObject *__pyx_pf_7l0learn_13testing_utils_6uvec_np_to_arma_to_np(CYTHON
   __pyx_L2:;
   __Pyx_XDECREF((PyObject *)__pyx_v_x_pass);
   __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_TraceReturn(__pyx_r, 0);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
@@ -2394,12 +2658,14 @@ static PyArrayObject *__pyx_f_7l0learn_13testing_utils_c_uvec_np_to_arma_to_np(P
   __Pyx_LocalBuf_ND __pyx_pybuffernd_x;
   __Pyx_Buffer __pyx_pybuffer_x;
   PyArrayObject *__pyx_r = NULL;
+  __Pyx_TraceDeclarations
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("c_uvec_np_to_arma_to_np", 0);
+  __Pyx_TraceCall("c_uvec_np_to_arma_to_np", __pyx_f[0], 53, 0, __PYX_ERR(0, 53, __pyx_L1_error));
   __pyx_pybuffer_np_x.pybuffer.buf = NULL;
   __pyx_pybuffer_np_x.refcount = 0;
   __pyx_pybuffernd_np_x.data = NULL;
@@ -2421,6 +2687,7 @@ static PyArrayObject *__pyx_f_7l0learn_13testing_utils_c_uvec_np_to_arma_to_np(P
  * 
  *     cdef np.ndarray[np.uint64_t, ndim=1] np_x = uvec_to_numpy(arma_x, None)
  */
+  __Pyx_TraceLine(54,0,__PYX_ERR(0, 54, __pyx_L1_error))
   __pyx_v_arma_x = __pyx_f_7l0learn_6cyarma_numpy_to_uvec_d(((PyArrayObject *)__pyx_v_x));
 
   /* "l0learn/testing_utils.pyx":56
@@ -2430,6 +2697,7 @@ static PyArrayObject *__pyx_f_7l0learn_13testing_utils_c_uvec_np_to_arma_to_np(P
  * 
  *     return np_x
  */
+  __Pyx_TraceLine(56,0,__PYX_ERR(0, 56, __pyx_L1_error))
   __pyx_t_1 = ((PyObject *)__pyx_f_7l0learn_6cyarma_uvec_to_numpy(__pyx_v_arma_x, ((PyArrayObject *)Py_None))); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 56, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   {
@@ -2450,6 +2718,7 @@ static PyArrayObject *__pyx_f_7l0learn_13testing_utils_c_uvec_np_to_arma_to_np(P
  * 
  * 
  */
+  __Pyx_TraceLine(58,0,__PYX_ERR(0, 58, __pyx_L1_error))
   __Pyx_XDECREF(((PyObject *)__pyx_r));
   __Pyx_INCREF(((PyObject *)__pyx_v_np_x));
   __pyx_r = ((PyArrayObject *)__pyx_v_np_x);
@@ -2482,6 +2751,7 @@ static PyArrayObject *__pyx_f_7l0learn_13testing_utils_c_uvec_np_to_arma_to_np(P
   __pyx_L2:;
   __Pyx_XDECREF((PyObject *)__pyx_v_np_x);
   __Pyx_XGIVEREF((PyObject *)__pyx_r);
+  __Pyx_TraceReturn(__pyx_r, 0);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
@@ -2514,6 +2784,7 @@ static PyObject *__pyx_pf_7l0learn_13testing_utils_8dvec_np_to_arma_to_np(CYTHON
   __Pyx_LocalBuf_ND __pyx_pybuffernd_x_pass;
   __Pyx_Buffer __pyx_pybuffer_x_pass;
   PyObject *__pyx_r = NULL;
+  __Pyx_TraceDeclarations
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   int __pyx_t_2;
@@ -2523,7 +2794,9 @@ static PyObject *__pyx_pf_7l0learn_13testing_utils_8dvec_np_to_arma_to_np(CYTHON
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
+  __Pyx_TraceFrameInit(__pyx_codeobj__5)
   __Pyx_RefNannySetupContext("dvec_np_to_arma_to_np", 0);
+  __Pyx_TraceCall("dvec_np_to_arma_to_np", __pyx_f[0], 61, 0, __PYX_ERR(0, 61, __pyx_L1_error));
   __pyx_pybuffer_x_pass.pybuffer.buf = NULL;
   __pyx_pybuffer_x_pass.refcount = 0;
   __pyx_pybuffernd_x_pass.data = NULL;
@@ -2536,6 +2809,7 @@ static PyObject *__pyx_pf_7l0learn_13testing_utils_8dvec_np_to_arma_to_np(CYTHON
  * 
  *     return x_pass
  */
+  __Pyx_TraceLine(63,0,__PYX_ERR(0, 63, __pyx_L1_error))
   if (!(likely(((__pyx_v_x) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_x, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 63, __pyx_L1_error)
   __pyx_t_1 = ((PyObject *)__pyx_f_7l0learn_13testing_utils_c_dvec_np_to_arma_to_np(((PyArrayObject *)__pyx_v_x))); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 63, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
@@ -2566,6 +2840,7 @@ static PyObject *__pyx_pf_7l0learn_13testing_utils_8dvec_np_to_arma_to_np(CYTHON
  * 
  * 
  */
+  __Pyx_TraceLine(65,0,__PYX_ERR(0, 65, __pyx_L1_error))
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(((PyObject *)__pyx_v_x_pass));
   __pyx_r = ((PyObject *)__pyx_v_x_pass);
@@ -2596,6 +2871,7 @@ static PyObject *__pyx_pf_7l0learn_13testing_utils_8dvec_np_to_arma_to_np(CYTHON
   __pyx_L2:;
   __Pyx_XDECREF((PyObject *)__pyx_v_x_pass);
   __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_TraceReturn(__pyx_r, 0);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
@@ -2616,12 +2892,14 @@ static PyArrayObject *__pyx_f_7l0learn_13testing_utils_c_dvec_np_to_arma_to_np(P
   __Pyx_LocalBuf_ND __pyx_pybuffernd_x;
   __Pyx_Buffer __pyx_pybuffer_x;
   PyArrayObject *__pyx_r = NULL;
+  __Pyx_TraceDeclarations
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("c_dvec_np_to_arma_to_np", 0);
+  __Pyx_TraceCall("c_dvec_np_to_arma_to_np", __pyx_f[0], 68, 0, __PYX_ERR(0, 68, __pyx_L1_error));
   __pyx_pybuffer_np_x.pybuffer.buf = NULL;
   __pyx_pybuffer_np_x.refcount = 0;
   __pyx_pybuffernd_np_x.data = NULL;
@@ -2643,6 +2921,7 @@ static PyArrayObject *__pyx_f_7l0learn_13testing_utils_c_dvec_np_to_arma_to_np(P
  * 
  *     cdef np.ndarray[np.double_t, ndim=1] np_x = dvec_to_numpy(arma_x, None)
  */
+  __Pyx_TraceLine(69,0,__PYX_ERR(0, 69, __pyx_L1_error))
   __pyx_v_arma_x = __pyx_f_7l0learn_6cyarma_numpy_to_dvec_d(((PyArrayObject *)__pyx_v_x));
 
   /* "l0learn/testing_utils.pyx":71
@@ -2652,6 +2931,7 @@ static PyArrayObject *__pyx_f_7l0learn_13testing_utils_c_dvec_np_to_arma_to_np(P
  * 
  *     return np_x
  */
+  __Pyx_TraceLine(71,0,__PYX_ERR(0, 71, __pyx_L1_error))
   __pyx_t_1 = ((PyObject *)__pyx_f_7l0learn_6cyarma_dvec_to_numpy(__pyx_v_arma_x, ((PyArrayObject *)Py_None))); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 71, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   {
@@ -2672,6 +2952,7 @@ static PyArrayObject *__pyx_f_7l0learn_13testing_utils_c_dvec_np_to_arma_to_np(P
  * 
  * 
  */
+  __Pyx_TraceLine(73,0,__PYX_ERR(0, 73, __pyx_L1_error))
   __Pyx_XDECREF(((PyObject *)__pyx_r));
   __Pyx_INCREF(((PyObject *)__pyx_v_np_x));
   __pyx_r = ((PyArrayObject *)__pyx_v_np_x);
@@ -2704,6 +2985,7 @@ static PyArrayObject *__pyx_f_7l0learn_13testing_utils_c_dvec_np_to_arma_to_np(P
   __pyx_L2:;
   __Pyx_XDECREF((PyObject *)__pyx_v_np_x);
   __Pyx_XGIVEREF((PyObject *)__pyx_r);
+  __Pyx_TraceReturn(__pyx_r, 0);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
@@ -2733,12 +3015,15 @@ static PyObject *__pyx_pw_7l0learn_13testing_utils_11sp_dmat_np_to_arma_to_np(Py
 
 static PyObject *__pyx_pf_7l0learn_13testing_utils_10sp_dmat_np_to_arma_to_np(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_x) {
   PyObject *__pyx_r = NULL;
+  __Pyx_TraceDeclarations
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
+  __Pyx_TraceFrameInit(__pyx_codeobj__6)
   __Pyx_RefNannySetupContext("sp_dmat_np_to_arma_to_np", 0);
+  __Pyx_TraceCall("sp_dmat_np_to_arma_to_np", __pyx_f[0], 76, 0, __PYX_ERR(0, 76, __pyx_L1_error));
 
   /* "l0learn/testing_utils.pyx":77
  * 
@@ -2747,6 +3032,7 @@ static PyObject *__pyx_pf_7l0learn_13testing_utils_10sp_dmat_np_to_arma_to_np(CY
  * 
  * 
  */
+  __Pyx_TraceLine(77,0,__PYX_ERR(0, 77, __pyx_L1_error))
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_1 = __pyx_f_7l0learn_13testing_utils_c_sp_dmat_np_to_arma_to_np(__pyx_v_x); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 77, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
@@ -2769,6 +3055,7 @@ static PyObject *__pyx_pf_7l0learn_13testing_utils_10sp_dmat_np_to_arma_to_np(CY
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_TraceReturn(__pyx_r, 0);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
@@ -2785,12 +3072,14 @@ static PyObject *__pyx_f_7l0learn_13testing_utils_c_sp_dmat_np_to_arma_to_np(PyO
   arma::sp_dmat __pyx_v_arma_x;
   PyObject *__pyx_v_np_x = NULL;
   PyObject *__pyx_r = NULL;
+  __Pyx_TraceDeclarations
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("c_sp_dmat_np_to_arma_to_np", 0);
+  __Pyx_TraceCall("c_sp_dmat_np_to_arma_to_np", __pyx_f[0], 80, 0, __PYX_ERR(0, 80, __pyx_L1_error));
 
   /* "l0learn/testing_utils.pyx":81
  * 
@@ -2799,6 +3088,7 @@ static PyObject *__pyx_f_7l0learn_13testing_utils_c_sp_dmat_np_to_arma_to_np(PyO
  * 
  *     np_x = sp_dmat_to_numpy(arma_x, None, None, None)
  */
+  __Pyx_TraceLine(81,0,__PYX_ERR(0, 81, __pyx_L1_error))
   __pyx_v_arma_x = __pyx_f_7l0learn_6cyarma_numpy_to_sp_dmat_d(__pyx_v_x);
 
   /* "l0learn/testing_utils.pyx":83
@@ -2808,6 +3098,7 @@ static PyObject *__pyx_f_7l0learn_13testing_utils_c_sp_dmat_np_to_arma_to_np(PyO
  *     return np_x
  * 
  */
+  __Pyx_TraceLine(83,0,__PYX_ERR(0, 83, __pyx_L1_error))
   __pyx_t_1 = __pyx_f_7l0learn_6cyarma_sp_dmat_to_numpy(__pyx_v_arma_x, ((PyArrayObject *)Py_None), ((PyArrayObject *)Py_None), ((PyArrayObject *)Py_None)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 83, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_np_x = __pyx_t_1;
@@ -2820,6 +3111,7 @@ static PyObject *__pyx_f_7l0learn_13testing_utils_c_sp_dmat_np_to_arma_to_np(PyO
  * 
  * 
  */
+  __Pyx_TraceLine(84,0,__PYX_ERR(0, 84, __pyx_L1_error))
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(__pyx_v_np_x);
   __pyx_r = __pyx_v_np_x;
@@ -2841,6 +3133,7 @@ static PyObject *__pyx_f_7l0learn_13testing_utils_c_sp_dmat_np_to_arma_to_np(PyO
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_np_x);
   __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_TraceReturn(__pyx_r, 0);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
@@ -2927,12 +3220,15 @@ static PyObject *__pyx_pf_7l0learn_13testing_utils_12dmat_dot_dmat(CYTHON_UNUSED
   __Pyx_LocalBuf_ND __pyx_pybuffernd_np_xy;
   __Pyx_Buffer __pyx_pybuffer_np_xy;
   PyObject *__pyx_r = NULL;
+  __Pyx_TraceDeclarations
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
+  __Pyx_TraceFrameInit(__pyx_codeobj__7)
   __Pyx_RefNannySetupContext("dmat_dot_dmat", 0);
+  __Pyx_TraceCall("dmat_dot_dmat", __pyx_f[0], 87, 0, __PYX_ERR(0, 87, __pyx_L1_error));
   __pyx_pybuffer_np_xy.pybuffer.buf = NULL;
   __pyx_pybuffer_np_xy.refcount = 0;
   __pyx_pybuffernd_np_xy.data = NULL;
@@ -2945,6 +3241,7 @@ static PyObject *__pyx_pf_7l0learn_13testing_utils_12dmat_dot_dmat(CYTHON_UNUSED
  *     cdef dmat arma_y = numpy_to_dmat_d(y)
  * 
  */
+  __Pyx_TraceLine(88,0,__PYX_ERR(0, 88, __pyx_L1_error))
   if (!(likely(((__pyx_v_x) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_x, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 88, __pyx_L1_error)
   __pyx_v_arma_x = __pyx_f_7l0learn_6cyarma_numpy_to_dmat_d(((PyArrayObject *)__pyx_v_x));
 
@@ -2955,6 +3252,7 @@ static PyObject *__pyx_pf_7l0learn_13testing_utils_12dmat_dot_dmat(CYTHON_UNUSED
  * 
  *     cdef dmat arma_xy =  c_dmat_dot_dmat(arma_x, arma_y)
  */
+  __Pyx_TraceLine(89,0,__PYX_ERR(0, 89, __pyx_L1_error))
   if (!(likely(((__pyx_v_y) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_y, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 89, __pyx_L1_error)
   __pyx_v_arma_y = __pyx_f_7l0learn_6cyarma_numpy_to_dmat_d(((PyArrayObject *)__pyx_v_y));
 
@@ -2965,6 +3263,7 @@ static PyObject *__pyx_pf_7l0learn_13testing_utils_12dmat_dot_dmat(CYTHON_UNUSED
  * 
  *     cdef np.ndarray[np.double_t, ndim=2] np_xy = dmat_to_numpy(arma_xy, None)
  */
+  __Pyx_TraceLine(91,0,__PYX_ERR(0, 91, __pyx_L1_error))
   __pyx_v_arma_xy = __pyx_f_7l0learn_13testing_utils_c_dmat_dot_dmat(__pyx_v_arma_x, __pyx_v_arma_y);
 
   /* "l0learn/testing_utils.pyx":93
@@ -2974,6 +3273,7 @@ static PyObject *__pyx_pf_7l0learn_13testing_utils_12dmat_dot_dmat(CYTHON_UNUSED
  * 
  *     return np_xy
  */
+  __Pyx_TraceLine(93,0,__PYX_ERR(0, 93, __pyx_L1_error))
   __pyx_t_1 = ((PyObject *)__pyx_f_7l0learn_6cyarma_dmat_to_numpy(__pyx_v_arma_xy, ((PyArrayObject *)Py_None))); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 93, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   {
@@ -2994,6 +3294,7 @@ static PyObject *__pyx_pf_7l0learn_13testing_utils_12dmat_dot_dmat(CYTHON_UNUSED
  * 
  * 
  */
+  __Pyx_TraceLine(95,0,__PYX_ERR(0, 95, __pyx_L1_error))
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(((PyObject *)__pyx_v_np_xy));
   __pyx_r = ((PyObject *)__pyx_v_np_xy);
@@ -3024,6 +3325,7 @@ static PyObject *__pyx_pf_7l0learn_13testing_utils_12dmat_dot_dmat(CYTHON_UNUSED
   __pyx_L2:;
   __Pyx_XDECREF((PyObject *)__pyx_v_np_xy);
   __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_TraceReturn(__pyx_r, 0);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
@@ -3039,8 +3341,13 @@ static PyObject *__pyx_pf_7l0learn_13testing_utils_12dmat_dot_dmat(CYTHON_UNUSED
 static arma::dmat __pyx_f_7l0learn_13testing_utils_c_dmat_dot_dmat(arma::dmat __pyx_v_arma_x, arma::dmat __pyx_v_arma_y) {
   arma::dmat __pyx_v_arma_xy;
   arma::dmat __pyx_r;
+  __Pyx_TraceDeclarations
   __Pyx_RefNannyDeclarations
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("c_dmat_dot_dmat", 0);
+  __Pyx_TraceCall("c_dmat_dot_dmat", __pyx_f[0], 98, 0, __PYX_ERR(0, 98, __pyx_L1_error));
 
   /* "l0learn/testing_utils.pyx":99
  * 
@@ -3049,6 +3356,7 @@ static arma::dmat __pyx_f_7l0learn_13testing_utils_c_dmat_dot_dmat(arma::dmat __
  * 
  *     return arma_xy
  */
+  __Pyx_TraceLine(99,0,__PYX_ERR(0, 99, __pyx_L1_error))
   __pyx_v_arma_xy = (__pyx_v_arma_x * __pyx_v_arma_y);
 
   /* "l0learn/testing_utils.pyx":101
@@ -3056,6 +3364,7 @@ static arma::dmat __pyx_f_7l0learn_13testing_utils_c_dmat_dot_dmat(arma::dmat __
  * 
  *     return arma_xy             # <<<<<<<<<<<<<<
  */
+  __Pyx_TraceLine(101,0,__PYX_ERR(0, 101, __pyx_L1_error))
   __pyx_r = __pyx_v_arma_xy;
   goto __pyx_L0;
 
@@ -3068,7 +3377,11 @@ static arma::dmat __pyx_f_7l0learn_13testing_utils_c_dmat_dot_dmat(arma::dmat __
  */
 
   /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_WriteUnraisable("l0learn.testing_utils.c_dmat_dot_dmat", __pyx_clineno, __pyx_lineno, __pyx_filename, 1, 0);
+  __Pyx_pretend_to_initialize(&__pyx_r);
   __pyx_L0:;
+  __Pyx_TraceReturn(Py_None, 0);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
@@ -3083,12 +3396,14 @@ static arma::dmat __pyx_f_7l0learn_13testing_utils_c_dmat_dot_dmat(arma::dmat __
 
 static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew1(PyObject *__pyx_v_a) {
   PyObject *__pyx_r = NULL;
+  __Pyx_TraceDeclarations
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("PyArray_MultiIterNew1", 0);
+  __Pyx_TraceCall("PyArray_MultiIterNew1", __pyx_f[1], 735, 0, __PYX_ERR(1, 735, __pyx_L1_error));
 
   /* "../../../../opt/anaconda3/envs/l0learn-test2/lib/python3.9/site-packages/numpy/__init__.pxd":736
  * 
@@ -3097,6 +3412,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew1(PyObject *__
  * 
  * cdef inline object PyArray_MultiIterNew2(a, b):
  */
+  __Pyx_TraceLine(736,0,__PYX_ERR(1, 736, __pyx_L1_error))
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_1 = PyArray_MultiIterNew(1, ((void *)__pyx_v_a)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 736, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
@@ -3119,6 +3435,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew1(PyObject *__
   __pyx_r = 0;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_TraceReturn(__pyx_r, 0);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
@@ -3133,12 +3450,14 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew1(PyObject *__
 
 static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew2(PyObject *__pyx_v_a, PyObject *__pyx_v_b) {
   PyObject *__pyx_r = NULL;
+  __Pyx_TraceDeclarations
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("PyArray_MultiIterNew2", 0);
+  __Pyx_TraceCall("PyArray_MultiIterNew2", __pyx_f[1], 738, 0, __PYX_ERR(1, 738, __pyx_L1_error));
 
   /* "../../../../opt/anaconda3/envs/l0learn-test2/lib/python3.9/site-packages/numpy/__init__.pxd":739
  * 
@@ -3147,6 +3466,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew2(PyObject *__
  * 
  * cdef inline object PyArray_MultiIterNew3(a, b, c):
  */
+  __Pyx_TraceLine(739,0,__PYX_ERR(1, 739, __pyx_L1_error))
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_1 = PyArray_MultiIterNew(2, ((void *)__pyx_v_a), ((void *)__pyx_v_b)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 739, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
@@ -3169,6 +3489,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew2(PyObject *__
   __pyx_r = 0;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_TraceReturn(__pyx_r, 0);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
@@ -3183,12 +3504,14 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew2(PyObject *__
 
 static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew3(PyObject *__pyx_v_a, PyObject *__pyx_v_b, PyObject *__pyx_v_c) {
   PyObject *__pyx_r = NULL;
+  __Pyx_TraceDeclarations
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("PyArray_MultiIterNew3", 0);
+  __Pyx_TraceCall("PyArray_MultiIterNew3", __pyx_f[1], 741, 0, __PYX_ERR(1, 741, __pyx_L1_error));
 
   /* "../../../../opt/anaconda3/envs/l0learn-test2/lib/python3.9/site-packages/numpy/__init__.pxd":742
  * 
@@ -3197,6 +3520,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew3(PyObject *__
  * 
  * cdef inline object PyArray_MultiIterNew4(a, b, c, d):
  */
+  __Pyx_TraceLine(742,0,__PYX_ERR(1, 742, __pyx_L1_error))
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_1 = PyArray_MultiIterNew(3, ((void *)__pyx_v_a), ((void *)__pyx_v_b), ((void *)__pyx_v_c)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 742, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
@@ -3219,6 +3543,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew3(PyObject *__
   __pyx_r = 0;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_TraceReturn(__pyx_r, 0);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
@@ -3233,12 +3558,14 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew3(PyObject *__
 
 static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew4(PyObject *__pyx_v_a, PyObject *__pyx_v_b, PyObject *__pyx_v_c, PyObject *__pyx_v_d) {
   PyObject *__pyx_r = NULL;
+  __Pyx_TraceDeclarations
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("PyArray_MultiIterNew4", 0);
+  __Pyx_TraceCall("PyArray_MultiIterNew4", __pyx_f[1], 744, 0, __PYX_ERR(1, 744, __pyx_L1_error));
 
   /* "../../../../opt/anaconda3/envs/l0learn-test2/lib/python3.9/site-packages/numpy/__init__.pxd":745
  * 
@@ -3247,6 +3574,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew4(PyObject *__
  * 
  * cdef inline object PyArray_MultiIterNew5(a, b, c, d, e):
  */
+  __Pyx_TraceLine(745,0,__PYX_ERR(1, 745, __pyx_L1_error))
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_1 = PyArray_MultiIterNew(4, ((void *)__pyx_v_a), ((void *)__pyx_v_b), ((void *)__pyx_v_c), ((void *)__pyx_v_d)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 745, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
@@ -3269,6 +3597,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew4(PyObject *__
   __pyx_r = 0;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_TraceReturn(__pyx_r, 0);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
@@ -3283,12 +3612,14 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew4(PyObject *__
 
 static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew5(PyObject *__pyx_v_a, PyObject *__pyx_v_b, PyObject *__pyx_v_c, PyObject *__pyx_v_d, PyObject *__pyx_v_e) {
   PyObject *__pyx_r = NULL;
+  __Pyx_TraceDeclarations
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("PyArray_MultiIterNew5", 0);
+  __Pyx_TraceCall("PyArray_MultiIterNew5", __pyx_f[1], 747, 0, __PYX_ERR(1, 747, __pyx_L1_error));
 
   /* "../../../../opt/anaconda3/envs/l0learn-test2/lib/python3.9/site-packages/numpy/__init__.pxd":748
  * 
@@ -3297,6 +3628,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew5(PyObject *__
  * 
  * cdef inline tuple PyDataType_SHAPE(dtype d):
  */
+  __Pyx_TraceLine(748,0,__PYX_ERR(1, 748, __pyx_L1_error))
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_1 = PyArray_MultiIterNew(5, ((void *)__pyx_v_a), ((void *)__pyx_v_b), ((void *)__pyx_v_c), ((void *)__pyx_v_d), ((void *)__pyx_v_e)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 748, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
@@ -3319,6 +3651,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew5(PyObject *__
   __pyx_r = 0;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_TraceReturn(__pyx_r, 0);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
@@ -3333,9 +3666,14 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew5(PyObject *__
 
 static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyDataType_SHAPE(PyArray_Descr *__pyx_v_d) {
   PyObject *__pyx_r = NULL;
+  __Pyx_TraceDeclarations
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("PyDataType_SHAPE", 0);
+  __Pyx_TraceCall("PyDataType_SHAPE", __pyx_f[1], 750, 0, __PYX_ERR(1, 750, __pyx_L1_error));
 
   /* "../../../../opt/anaconda3/envs/l0learn-test2/lib/python3.9/site-packages/numpy/__init__.pxd":751
  * 
@@ -3344,6 +3682,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyDataType_SHAPE(PyArray_Descr *__
  *         return <tuple>d.subarray.shape
  *     else:
  */
+  __Pyx_TraceLine(751,0,__PYX_ERR(1, 751, __pyx_L1_error))
   __pyx_t_1 = (PyDataType_HASSUBARRAY(__pyx_v_d) != 0);
   if (__pyx_t_1) {
 
@@ -3354,6 +3693,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyDataType_SHAPE(PyArray_Descr *__
  *     else:
  *         return ()
  */
+    __Pyx_TraceLine(752,0,__PYX_ERR(1, 752, __pyx_L1_error))
     __Pyx_XDECREF(__pyx_r);
     __Pyx_INCREF(((PyObject*)__pyx_v_d->subarray->shape));
     __pyx_r = ((PyObject*)__pyx_v_d->subarray->shape);
@@ -3375,6 +3715,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyDataType_SHAPE(PyArray_Descr *__
  * 
  * 
  */
+  __Pyx_TraceLine(754,0,__PYX_ERR(1, 754, __pyx_L1_error))
   /*else*/ {
     __Pyx_XDECREF(__pyx_r);
     __Pyx_INCREF(__pyx_empty_tuple);
@@ -3391,8 +3732,12 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyDataType_SHAPE(PyArray_Descr *__
  */
 
   /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_AddTraceback("numpy.PyDataType_SHAPE", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = 0;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_TraceReturn(__pyx_r, 0);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
@@ -3406,8 +3751,13 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyDataType_SHAPE(PyArray_Descr *__
  */
 
 static CYTHON_INLINE void __pyx_f_5numpy_set_array_base(PyArrayObject *__pyx_v_arr, PyObject *__pyx_v_base) {
+  __Pyx_TraceDeclarations
   __Pyx_RefNannyDeclarations
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("set_array_base", 0);
+  __Pyx_TraceCall("set_array_base", __pyx_f[1], 929, 0, __PYX_ERR(1, 929, __pyx_L1_error));
 
   /* "../../../../opt/anaconda3/envs/l0learn-test2/lib/python3.9/site-packages/numpy/__init__.pxd":930
  * 
@@ -3416,6 +3766,7 @@ static CYTHON_INLINE void __pyx_f_5numpy_set_array_base(PyArrayObject *__pyx_v_a
  *     PyArray_SetBaseObject(arr, base)
  * 
  */
+  __Pyx_TraceLine(930,0,__PYX_ERR(1, 930, __pyx_L1_error))
   Py_INCREF(__pyx_v_base);
 
   /* "../../../../opt/anaconda3/envs/l0learn-test2/lib/python3.9/site-packages/numpy/__init__.pxd":931
@@ -3425,6 +3776,7 @@ static CYTHON_INLINE void __pyx_f_5numpy_set_array_base(PyArrayObject *__pyx_v_a
  * 
  * cdef inline object get_array_base(ndarray arr):
  */
+  __Pyx_TraceLine(931,0,__PYX_ERR(1, 931, __pyx_L1_error))
   (void)(PyArray_SetBaseObject(__pyx_v_arr, __pyx_v_base));
 
   /* "../../../../opt/anaconda3/envs/l0learn-test2/lib/python3.9/site-packages/numpy/__init__.pxd":929
@@ -3436,6 +3788,11 @@ static CYTHON_INLINE void __pyx_f_5numpy_set_array_base(PyArrayObject *__pyx_v_a
  */
 
   /* function exit code */
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __Pyx_WriteUnraisable("numpy.set_array_base", __pyx_clineno, __pyx_lineno, __pyx_filename, 1, 0);
+  __pyx_L0:;
+  __Pyx_TraceReturn(Py_None, 0);
   __Pyx_RefNannyFinishContext();
 }
 
@@ -3450,9 +3807,14 @@ static CYTHON_INLINE void __pyx_f_5numpy_set_array_base(PyArrayObject *__pyx_v_a
 static CYTHON_INLINE PyObject *__pyx_f_5numpy_get_array_base(PyArrayObject *__pyx_v_arr) {
   PyObject *__pyx_v_base;
   PyObject *__pyx_r = NULL;
+  __Pyx_TraceDeclarations
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("get_array_base", 0);
+  __Pyx_TraceCall("get_array_base", __pyx_f[1], 933, 0, __PYX_ERR(1, 933, __pyx_L1_error));
 
   /* "../../../../opt/anaconda3/envs/l0learn-test2/lib/python3.9/site-packages/numpy/__init__.pxd":934
  * 
@@ -3461,6 +3823,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_get_array_base(PyArrayObject *__py
  *     if base is NULL:
  *         return None
  */
+  __Pyx_TraceLine(934,0,__PYX_ERR(1, 934, __pyx_L1_error))
   __pyx_v_base = PyArray_BASE(__pyx_v_arr);
 
   /* "../../../../opt/anaconda3/envs/l0learn-test2/lib/python3.9/site-packages/numpy/__init__.pxd":935
@@ -3470,6 +3833,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_get_array_base(PyArrayObject *__py
  *         return None
  *     return <object>base
  */
+  __Pyx_TraceLine(935,0,__PYX_ERR(1, 935, __pyx_L1_error))
   __pyx_t_1 = ((__pyx_v_base == NULL) != 0);
   if (__pyx_t_1) {
 
@@ -3480,6 +3844,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_get_array_base(PyArrayObject *__py
  *     return <object>base
  * 
  */
+    __Pyx_TraceLine(936,0,__PYX_ERR(1, 936, __pyx_L1_error))
     __Pyx_XDECREF(__pyx_r);
     __pyx_r = Py_None; __Pyx_INCREF(Py_None);
     goto __pyx_L0;
@@ -3500,6 +3865,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_get_array_base(PyArrayObject *__py
  * 
  * # Versions of the import_* functions which are more suitable for
  */
+  __Pyx_TraceLine(937,0,__PYX_ERR(1, 937, __pyx_L1_error))
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(((PyObject *)__pyx_v_base));
   __pyx_r = ((PyObject *)__pyx_v_base);
@@ -3514,8 +3880,12 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_get_array_base(PyArrayObject *__py
  */
 
   /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_AddTraceback("numpy.get_array_base", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = 0;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_TraceReturn(__pyx_r, 0);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
@@ -3530,6 +3900,7 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_get_array_base(PyArrayObject *__py
 
 static CYTHON_INLINE int __pyx_f_5numpy_import_array(void) {
   int __pyx_r;
+  __Pyx_TraceDeclarations
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   PyObject *__pyx_t_2 = NULL;
@@ -3543,6 +3914,7 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_array(void) {
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("import_array", 0);
+  __Pyx_TraceCall("import_array", __pyx_f[1], 941, 0, __PYX_ERR(1, 941, __pyx_L1_error));
 
   /* "../../../../opt/anaconda3/envs/l0learn-test2/lib/python3.9/site-packages/numpy/__init__.pxd":942
  * # Cython code.
@@ -3551,6 +3923,7 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_array(void) {
  *         __pyx_import_array()
  *     except Exception:
  */
+  __Pyx_TraceLine(942,0,__PYX_ERR(1, 942, __pyx_L1_error))
   {
     __Pyx_PyThreadState_declare
     __Pyx_PyThreadState_assign
@@ -3567,6 +3940,7 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_array(void) {
  *     except Exception:
  *         raise ImportError("numpy.core.multiarray failed to import")
  */
+      __Pyx_TraceLine(943,0,__PYX_ERR(1, 943, __pyx_L3_error))
       __pyx_t_4 = _import_array(); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(1, 943, __pyx_L3_error)
 
       /* "../../../../opt/anaconda3/envs/l0learn-test2/lib/python3.9/site-packages/numpy/__init__.pxd":942
@@ -3590,6 +3964,7 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_array(void) {
  *         raise ImportError("numpy.core.multiarray failed to import")
  * 
  */
+    __Pyx_TraceLine(944,0,__PYX_ERR(1, 944, __pyx_L5_except_error))
     __pyx_t_4 = __Pyx_PyErr_ExceptionMatches(((PyObject *)(&((PyTypeObject*)PyExc_Exception)[0])));
     if (__pyx_t_4) {
       __Pyx_AddTraceback("numpy.import_array", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -3605,7 +3980,8 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_array(void) {
  * 
  * cdef inline int import_umath() except -1:
  */
-      __pyx_t_8 = __Pyx_PyObject_Call(__pyx_builtin_ImportError, __pyx_tuple_, NULL); if (unlikely(!__pyx_t_8)) __PYX_ERR(1, 945, __pyx_L5_except_error)
+      __Pyx_TraceLine(945,0,__PYX_ERR(1, 945, __pyx_L5_except_error))
+      __pyx_t_8 = __Pyx_PyObject_Call(__pyx_builtin_ImportError, __pyx_tuple__8, NULL); if (unlikely(!__pyx_t_8)) __PYX_ERR(1, 945, __pyx_L5_except_error)
       __Pyx_GOTREF(__pyx_t_8);
       __Pyx_Raise(__pyx_t_8, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
@@ -3648,6 +4024,7 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_array(void) {
   __Pyx_AddTraceback("numpy.import_array", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = -1;
   __pyx_L0:;
+  __Pyx_TraceReturn(Py_None, 0);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
@@ -3662,6 +4039,7 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_array(void) {
 
 static CYTHON_INLINE int __pyx_f_5numpy_import_umath(void) {
   int __pyx_r;
+  __Pyx_TraceDeclarations
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   PyObject *__pyx_t_2 = NULL;
@@ -3675,6 +4053,7 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_umath(void) {
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("import_umath", 0);
+  __Pyx_TraceCall("import_umath", __pyx_f[1], 947, 0, __PYX_ERR(1, 947, __pyx_L1_error));
 
   /* "../../../../opt/anaconda3/envs/l0learn-test2/lib/python3.9/site-packages/numpy/__init__.pxd":948
  * 
@@ -3683,6 +4062,7 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_umath(void) {
  *         _import_umath()
  *     except Exception:
  */
+  __Pyx_TraceLine(948,0,__PYX_ERR(1, 948, __pyx_L1_error))
   {
     __Pyx_PyThreadState_declare
     __Pyx_PyThreadState_assign
@@ -3699,6 +4079,7 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_umath(void) {
  *     except Exception:
  *         raise ImportError("numpy.core.umath failed to import")
  */
+      __Pyx_TraceLine(949,0,__PYX_ERR(1, 949, __pyx_L3_error))
       __pyx_t_4 = _import_umath(); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(1, 949, __pyx_L3_error)
 
       /* "../../../../opt/anaconda3/envs/l0learn-test2/lib/python3.9/site-packages/numpy/__init__.pxd":948
@@ -3722,6 +4103,7 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_umath(void) {
  *         raise ImportError("numpy.core.umath failed to import")
  * 
  */
+    __Pyx_TraceLine(950,0,__PYX_ERR(1, 950, __pyx_L5_except_error))
     __pyx_t_4 = __Pyx_PyErr_ExceptionMatches(((PyObject *)(&((PyTypeObject*)PyExc_Exception)[0])));
     if (__pyx_t_4) {
       __Pyx_AddTraceback("numpy.import_umath", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -3737,7 +4119,8 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_umath(void) {
  * 
  * cdef inline int import_ufunc() except -1:
  */
-      __pyx_t_8 = __Pyx_PyObject_Call(__pyx_builtin_ImportError, __pyx_tuple__2, NULL); if (unlikely(!__pyx_t_8)) __PYX_ERR(1, 951, __pyx_L5_except_error)
+      __Pyx_TraceLine(951,0,__PYX_ERR(1, 951, __pyx_L5_except_error))
+      __pyx_t_8 = __Pyx_PyObject_Call(__pyx_builtin_ImportError, __pyx_tuple__9, NULL); if (unlikely(!__pyx_t_8)) __PYX_ERR(1, 951, __pyx_L5_except_error)
       __Pyx_GOTREF(__pyx_t_8);
       __Pyx_Raise(__pyx_t_8, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
@@ -3780,6 +4163,7 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_umath(void) {
   __Pyx_AddTraceback("numpy.import_umath", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = -1;
   __pyx_L0:;
+  __Pyx_TraceReturn(Py_None, 0);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
@@ -3794,6 +4178,7 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_umath(void) {
 
 static CYTHON_INLINE int __pyx_f_5numpy_import_ufunc(void) {
   int __pyx_r;
+  __Pyx_TraceDeclarations
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   PyObject *__pyx_t_2 = NULL;
@@ -3807,6 +4192,7 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_ufunc(void) {
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("import_ufunc", 0);
+  __Pyx_TraceCall("import_ufunc", __pyx_f[1], 953, 0, __PYX_ERR(1, 953, __pyx_L1_error));
 
   /* "../../../../opt/anaconda3/envs/l0learn-test2/lib/python3.9/site-packages/numpy/__init__.pxd":954
  * 
@@ -3815,6 +4201,7 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_ufunc(void) {
  *         _import_umath()
  *     except Exception:
  */
+  __Pyx_TraceLine(954,0,__PYX_ERR(1, 954, __pyx_L1_error))
   {
     __Pyx_PyThreadState_declare
     __Pyx_PyThreadState_assign
@@ -3831,6 +4218,7 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_ufunc(void) {
  *     except Exception:
  *         raise ImportError("numpy.core.umath failed to import")
  */
+      __Pyx_TraceLine(955,0,__PYX_ERR(1, 955, __pyx_L3_error))
       __pyx_t_4 = _import_umath(); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(1, 955, __pyx_L3_error)
 
       /* "../../../../opt/anaconda3/envs/l0learn-test2/lib/python3.9/site-packages/numpy/__init__.pxd":954
@@ -3854,6 +4242,7 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_ufunc(void) {
  *         raise ImportError("numpy.core.umath failed to import")
  * 
  */
+    __Pyx_TraceLine(956,0,__PYX_ERR(1, 956, __pyx_L5_except_error))
     __pyx_t_4 = __Pyx_PyErr_ExceptionMatches(((PyObject *)(&((PyTypeObject*)PyExc_Exception)[0])));
     if (__pyx_t_4) {
       __Pyx_AddTraceback("numpy.import_ufunc", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -3869,7 +4258,8 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_ufunc(void) {
  * 
  * cdef extern from *:
  */
-      __pyx_t_8 = __Pyx_PyObject_Call(__pyx_builtin_ImportError, __pyx_tuple__2, NULL); if (unlikely(!__pyx_t_8)) __PYX_ERR(1, 957, __pyx_L5_except_error)
+      __Pyx_TraceLine(957,0,__PYX_ERR(1, 957, __pyx_L5_except_error))
+      __pyx_t_8 = __Pyx_PyObject_Call(__pyx_builtin_ImportError, __pyx_tuple__9, NULL); if (unlikely(!__pyx_t_8)) __PYX_ERR(1, 957, __pyx_L5_except_error)
       __Pyx_GOTREF(__pyx_t_8);
       __Pyx_Raise(__pyx_t_8, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
@@ -3912,6 +4302,7 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_ufunc(void) {
   __Pyx_AddTraceback("numpy.import_ufunc", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = -1;
   __pyx_L0:;
+  __Pyx_TraceReturn(Py_None, 0);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
@@ -3926,8 +4317,13 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_ufunc(void) {
 
 static CYTHON_INLINE int __pyx_f_5numpy_is_timedelta64_object(PyObject *__pyx_v_obj) {
   int __pyx_r;
+  __Pyx_TraceDeclarations
   __Pyx_RefNannyDeclarations
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("is_timedelta64_object", 0);
+  __Pyx_TraceCall("is_timedelta64_object", __pyx_f[1], 967, 0, __PYX_ERR(1, 967, __pyx_L1_error));
 
   /* "../../../../opt/anaconda3/envs/l0learn-test2/lib/python3.9/site-packages/numpy/__init__.pxd":979
  *     bool
@@ -3936,6 +4332,7 @@ static CYTHON_INLINE int __pyx_f_5numpy_is_timedelta64_object(PyObject *__pyx_v_
  * 
  * 
  */
+  __Pyx_TraceLine(979,0,__PYX_ERR(1, 979, __pyx_L1_error))
   __pyx_r = PyObject_TypeCheck(__pyx_v_obj, (&PyTimedeltaArrType_Type));
   goto __pyx_L0;
 
@@ -3948,7 +4345,11 @@ static CYTHON_INLINE int __pyx_f_5numpy_is_timedelta64_object(PyObject *__pyx_v_
  */
 
   /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_WriteUnraisable("numpy.is_timedelta64_object", __pyx_clineno, __pyx_lineno, __pyx_filename, 1, 0);
+  __pyx_r = 0;
   __pyx_L0:;
+  __Pyx_TraceReturn(Py_None, 0);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
@@ -3963,8 +4364,13 @@ static CYTHON_INLINE int __pyx_f_5numpy_is_timedelta64_object(PyObject *__pyx_v_
 
 static CYTHON_INLINE int __pyx_f_5numpy_is_datetime64_object(PyObject *__pyx_v_obj) {
   int __pyx_r;
+  __Pyx_TraceDeclarations
   __Pyx_RefNannyDeclarations
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("is_datetime64_object", 0);
+  __Pyx_TraceCall("is_datetime64_object", __pyx_f[1], 982, 0, __PYX_ERR(1, 982, __pyx_L1_error));
 
   /* "../../../../opt/anaconda3/envs/l0learn-test2/lib/python3.9/site-packages/numpy/__init__.pxd":994
  *     bool
@@ -3973,6 +4379,7 @@ static CYTHON_INLINE int __pyx_f_5numpy_is_datetime64_object(PyObject *__pyx_v_o
  * 
  * 
  */
+  __Pyx_TraceLine(994,0,__PYX_ERR(1, 994, __pyx_L1_error))
   __pyx_r = PyObject_TypeCheck(__pyx_v_obj, (&PyDatetimeArrType_Type));
   goto __pyx_L0;
 
@@ -3985,7 +4392,11 @@ static CYTHON_INLINE int __pyx_f_5numpy_is_datetime64_object(PyObject *__pyx_v_o
  */
 
   /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_WriteUnraisable("numpy.is_datetime64_object", __pyx_clineno, __pyx_lineno, __pyx_filename, 1, 0);
+  __pyx_r = 0;
   __pyx_L0:;
+  __Pyx_TraceReturn(Py_None, 0);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
@@ -4000,6 +4411,11 @@ static CYTHON_INLINE int __pyx_f_5numpy_is_datetime64_object(PyObject *__pyx_v_o
 
 static CYTHON_INLINE npy_datetime __pyx_f_5numpy_get_datetime64_value(PyObject *__pyx_v_obj) {
   npy_datetime __pyx_r;
+  __Pyx_TraceDeclarations
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_TraceCall("get_datetime64_value", __pyx_f[1], 997, 1, __PYX_ERR(1, 997, __pyx_L1_error));
 
   /* "../../../../opt/anaconda3/envs/l0learn-test2/lib/python3.9/site-packages/numpy/__init__.pxd":1004
  *     also needed.  That can be found using `get_datetime64_unit`.
@@ -4008,6 +4424,7 @@ static CYTHON_INLINE npy_datetime __pyx_f_5numpy_get_datetime64_value(PyObject *
  * 
  * 
  */
+  __Pyx_TraceLine(1004,1,__PYX_ERR(1, 1004, __pyx_L1_error))
   __pyx_r = ((PyDatetimeScalarObject *)__pyx_v_obj)->obval;
   goto __pyx_L0;
 
@@ -4020,7 +4437,11 @@ static CYTHON_INLINE npy_datetime __pyx_f_5numpy_get_datetime64_value(PyObject *
  */
 
   /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_WriteUnraisable("numpy.get_datetime64_value", __pyx_clineno, __pyx_lineno, __pyx_filename, 1, 1);
+  __pyx_r = 0;
   __pyx_L0:;
+  __Pyx_TraceReturn(Py_None, 1);
   return __pyx_r;
 }
 
@@ -4034,6 +4455,11 @@ static CYTHON_INLINE npy_datetime __pyx_f_5numpy_get_datetime64_value(PyObject *
 
 static CYTHON_INLINE npy_timedelta __pyx_f_5numpy_get_timedelta64_value(PyObject *__pyx_v_obj) {
   npy_timedelta __pyx_r;
+  __Pyx_TraceDeclarations
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_TraceCall("get_timedelta64_value", __pyx_f[1], 1007, 1, __PYX_ERR(1, 1007, __pyx_L1_error));
 
   /* "../../../../opt/anaconda3/envs/l0learn-test2/lib/python3.9/site-packages/numpy/__init__.pxd":1011
  *     returns the int64 value underlying scalar numpy timedelta64 object
@@ -4042,6 +4468,7 @@ static CYTHON_INLINE npy_timedelta __pyx_f_5numpy_get_timedelta64_value(PyObject
  * 
  * 
  */
+  __Pyx_TraceLine(1011,1,__PYX_ERR(1, 1011, __pyx_L1_error))
   __pyx_r = ((PyTimedeltaScalarObject *)__pyx_v_obj)->obval;
   goto __pyx_L0;
 
@@ -4054,7 +4481,11 @@ static CYTHON_INLINE npy_timedelta __pyx_f_5numpy_get_timedelta64_value(PyObject
  */
 
   /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_WriteUnraisable("numpy.get_timedelta64_value", __pyx_clineno, __pyx_lineno, __pyx_filename, 1, 1);
+  __pyx_r = 0;
   __pyx_L0:;
+  __Pyx_TraceReturn(Py_None, 1);
   return __pyx_r;
 }
 
@@ -4068,12 +4499,18 @@ static CYTHON_INLINE npy_timedelta __pyx_f_5numpy_get_timedelta64_value(PyObject
 
 static CYTHON_INLINE NPY_DATETIMEUNIT __pyx_f_5numpy_get_datetime64_unit(PyObject *__pyx_v_obj) {
   NPY_DATETIMEUNIT __pyx_r;
+  __Pyx_TraceDeclarations
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_TraceCall("get_datetime64_unit", __pyx_f[1], 1014, 1, __PYX_ERR(1, 1014, __pyx_L1_error));
 
   /* "../../../../opt/anaconda3/envs/l0learn-test2/lib/python3.9/site-packages/numpy/__init__.pxd":1018
  *     returns the unit part of the dtype for a numpy datetime64 object.
  *     """
  *     return <NPY_DATETIMEUNIT>(<PyDatetimeScalarObject*>obj).obmeta.base             # <<<<<<<<<<<<<<
  */
+  __Pyx_TraceLine(1018,1,__PYX_ERR(1, 1018, __pyx_L1_error))
   __pyx_r = ((NPY_DATETIMEUNIT)((PyDatetimeScalarObject *)__pyx_v_obj)->obmeta.base);
   goto __pyx_L0;
 
@@ -4086,7 +4523,11 @@ static CYTHON_INLINE NPY_DATETIMEUNIT __pyx_f_5numpy_get_datetime64_unit(PyObjec
  */
 
   /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_WriteUnraisable("numpy.get_datetime64_unit", __pyx_clineno, __pyx_lineno, __pyx_filename, 1, 1);
+  __pyx_r = (NPY_DATETIMEUNIT) 0;
   __pyx_L0:;
+  __Pyx_TraceReturn(Py_None, 1);
   return __pyx_r;
 }
 
@@ -4182,9 +4623,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * 
  * cdef inline int import_umath() except -1:
  */
-  __pyx_tuple_ = PyTuple_Pack(1, __pyx_kp_u_numpy_core_multiarray_failed_to); if (unlikely(!__pyx_tuple_)) __PYX_ERR(1, 945, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple_);
-  __Pyx_GIVEREF(__pyx_tuple_);
+  __pyx_tuple__8 = PyTuple_Pack(1, __pyx_kp_u_numpy_core_multiarray_failed_to); if (unlikely(!__pyx_tuple__8)) __PYX_ERR(1, 945, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__8);
+  __Pyx_GIVEREF(__pyx_tuple__8);
 
   /* "../../../../opt/anaconda3/envs/l0learn-test2/lib/python3.9/site-packages/numpy/__init__.pxd":951
  *         _import_umath()
@@ -4193,9 +4634,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * 
  * cdef inline int import_ufunc() except -1:
  */
-  __pyx_tuple__2 = PyTuple_Pack(1, __pyx_kp_u_numpy_core_umath_failed_to_impor); if (unlikely(!__pyx_tuple__2)) __PYX_ERR(1, 951, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__2);
-  __Pyx_GIVEREF(__pyx_tuple__2);
+  __pyx_tuple__9 = PyTuple_Pack(1, __pyx_kp_u_numpy_core_umath_failed_to_impor); if (unlikely(!__pyx_tuple__9)) __PYX_ERR(1, 951, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__9);
+  __Pyx_GIVEREF(__pyx_tuple__9);
 
   /* "l0learn/testing_utils.pyx":11
  * 
@@ -4204,10 +4645,10 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *     return  c_list_csc_to_arma_csc_to_list(x)
  * 
  */
-  __pyx_tuple__3 = PyTuple_Pack(1, __pyx_n_s_x); if (unlikely(!__pyx_tuple__3)) __PYX_ERR(0, 11, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__3);
-  __Pyx_GIVEREF(__pyx_tuple__3);
-  __pyx_codeobj__4 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__3, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_l0learn_testing_utils_pyx, __pyx_n_s_list_csc_to_arma_csc_to_list, 11, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__4)) __PYX_ERR(0, 11, __pyx_L1_error)
+  __pyx_tuple__10 = PyTuple_Pack(1, __pyx_n_s_x); if (unlikely(!__pyx_tuple__10)) __PYX_ERR(0, 11, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__10);
+  __Pyx_GIVEREF(__pyx_tuple__10);
+  __pyx_codeobj_ = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__10, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_l0learn_testing_utils_pyx, __pyx_n_s_list_csc_to_arma_csc_to_list, 11, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj_)) __PYX_ERR(0, 11, __pyx_L1_error)
 
   /* "l0learn/testing_utils.pyx":21
  * 
@@ -4216,10 +4657,10 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *     return  c_list_dvec_to_arma_dvec_to_list(x)
  * 
  */
-  __pyx_tuple__5 = PyTuple_Pack(1, __pyx_n_s_x); if (unlikely(!__pyx_tuple__5)) __PYX_ERR(0, 21, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__5);
-  __Pyx_GIVEREF(__pyx_tuple__5);
-  __pyx_codeobj__6 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__5, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_l0learn_testing_utils_pyx, __pyx_n_s_list_dvec_to_arma_dvec_to_list, 21, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__6)) __PYX_ERR(0, 21, __pyx_L1_error)
+  __pyx_tuple__11 = PyTuple_Pack(1, __pyx_n_s_x); if (unlikely(!__pyx_tuple__11)) __PYX_ERR(0, 21, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__11);
+  __Pyx_GIVEREF(__pyx_tuple__11);
+  __pyx_codeobj__2 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__11, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_l0learn_testing_utils_pyx, __pyx_n_s_list_dvec_to_arma_dvec_to_list, 21, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__2)) __PYX_ERR(0, 21, __pyx_L1_error)
 
   /* "l0learn/testing_utils.pyx":31
  * 
@@ -4228,10 +4669,10 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *     cdef np.ndarray[np.double_t, ndim=2] x_pass
  *     x_pass = c_dmat_np_to_arma_to_np(x)
  */
-  __pyx_tuple__7 = PyTuple_Pack(2, __pyx_n_s_x, __pyx_n_s_x_pass); if (unlikely(!__pyx_tuple__7)) __PYX_ERR(0, 31, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__7);
-  __Pyx_GIVEREF(__pyx_tuple__7);
-  __pyx_codeobj__8 = (PyObject*)__Pyx_PyCode_New(1, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__7, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_l0learn_testing_utils_pyx, __pyx_n_s_dmat_np_to_arma_to_np, 31, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__8)) __PYX_ERR(0, 31, __pyx_L1_error)
+  __pyx_tuple__12 = PyTuple_Pack(2, __pyx_n_s_x, __pyx_n_s_x_pass); if (unlikely(!__pyx_tuple__12)) __PYX_ERR(0, 31, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__12);
+  __Pyx_GIVEREF(__pyx_tuple__12);
+  __pyx_codeobj__3 = (PyObject*)__Pyx_PyCode_New(1, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__12, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_l0learn_testing_utils_pyx, __pyx_n_s_dmat_np_to_arma_to_np, 31, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__3)) __PYX_ERR(0, 31, __pyx_L1_error)
 
   /* "l0learn/testing_utils.pyx":46
  * 
@@ -4240,10 +4681,10 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *     cdef np.ndarray[np.uint64_t, ndim=1] x_pass
  *     x_pass = c_uvec_np_to_arma_to_np(x)
  */
-  __pyx_tuple__9 = PyTuple_Pack(2, __pyx_n_s_x, __pyx_n_s_x_pass); if (unlikely(!__pyx_tuple__9)) __PYX_ERR(0, 46, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__9);
-  __Pyx_GIVEREF(__pyx_tuple__9);
-  __pyx_codeobj__10 = (PyObject*)__Pyx_PyCode_New(1, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__9, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_l0learn_testing_utils_pyx, __pyx_n_s_uvec_np_to_arma_to_np, 46, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__10)) __PYX_ERR(0, 46, __pyx_L1_error)
+  __pyx_tuple__13 = PyTuple_Pack(2, __pyx_n_s_x, __pyx_n_s_x_pass); if (unlikely(!__pyx_tuple__13)) __PYX_ERR(0, 46, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__13);
+  __Pyx_GIVEREF(__pyx_tuple__13);
+  __pyx_codeobj__4 = (PyObject*)__Pyx_PyCode_New(1, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__13, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_l0learn_testing_utils_pyx, __pyx_n_s_uvec_np_to_arma_to_np, 46, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__4)) __PYX_ERR(0, 46, __pyx_L1_error)
 
   /* "l0learn/testing_utils.pyx":61
  * 
@@ -4252,10 +4693,10 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *     cdef np.ndarray[np.double_t, ndim=1] x_pass
  *     x_pass = c_dvec_np_to_arma_to_np(x)
  */
-  __pyx_tuple__11 = PyTuple_Pack(2, __pyx_n_s_x, __pyx_n_s_x_pass); if (unlikely(!__pyx_tuple__11)) __PYX_ERR(0, 61, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__11);
-  __Pyx_GIVEREF(__pyx_tuple__11);
-  __pyx_codeobj__12 = (PyObject*)__Pyx_PyCode_New(1, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__11, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_l0learn_testing_utils_pyx, __pyx_n_s_dvec_np_to_arma_to_np, 61, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__12)) __PYX_ERR(0, 61, __pyx_L1_error)
+  __pyx_tuple__14 = PyTuple_Pack(2, __pyx_n_s_x, __pyx_n_s_x_pass); if (unlikely(!__pyx_tuple__14)) __PYX_ERR(0, 61, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__14);
+  __Pyx_GIVEREF(__pyx_tuple__14);
+  __pyx_codeobj__5 = (PyObject*)__Pyx_PyCode_New(1, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__14, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_l0learn_testing_utils_pyx, __pyx_n_s_dvec_np_to_arma_to_np, 61, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__5)) __PYX_ERR(0, 61, __pyx_L1_error)
 
   /* "l0learn/testing_utils.pyx":76
  * 
@@ -4264,10 +4705,10 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *     return c_sp_dmat_np_to_arma_to_np(x)
  * 
  */
-  __pyx_tuple__13 = PyTuple_Pack(1, __pyx_n_s_x); if (unlikely(!__pyx_tuple__13)) __PYX_ERR(0, 76, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__13);
-  __Pyx_GIVEREF(__pyx_tuple__13);
-  __pyx_codeobj__14 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__13, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_l0learn_testing_utils_pyx, __pyx_n_s_sp_dmat_np_to_arma_to_np, 76, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__14)) __PYX_ERR(0, 76, __pyx_L1_error)
+  __pyx_tuple__15 = PyTuple_Pack(1, __pyx_n_s_x); if (unlikely(!__pyx_tuple__15)) __PYX_ERR(0, 76, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__15);
+  __Pyx_GIVEREF(__pyx_tuple__15);
+  __pyx_codeobj__6 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__15, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_l0learn_testing_utils_pyx, __pyx_n_s_sp_dmat_np_to_arma_to_np, 76, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__6)) __PYX_ERR(0, 76, __pyx_L1_error)
 
   /* "l0learn/testing_utils.pyx":87
  * 
@@ -4276,10 +4717,10 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *     cdef dmat arma_x = numpy_to_dmat_d(x)
  *     cdef dmat arma_y = numpy_to_dmat_d(y)
  */
-  __pyx_tuple__15 = PyTuple_Pack(6, __pyx_n_s_x, __pyx_n_s_y, __pyx_n_s_arma_x, __pyx_n_s_arma_y, __pyx_n_s_arma_xy, __pyx_n_s_np_xy); if (unlikely(!__pyx_tuple__15)) __PYX_ERR(0, 87, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__15);
-  __Pyx_GIVEREF(__pyx_tuple__15);
-  __pyx_codeobj__16 = (PyObject*)__Pyx_PyCode_New(2, 0, 6, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__15, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_l0learn_testing_utils_pyx, __pyx_n_s_dmat_dot_dmat, 87, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__16)) __PYX_ERR(0, 87, __pyx_L1_error)
+  __pyx_tuple__16 = PyTuple_Pack(6, __pyx_n_s_x, __pyx_n_s_y, __pyx_n_s_arma_x, __pyx_n_s_arma_y, __pyx_n_s_arma_xy, __pyx_n_s_np_xy); if (unlikely(!__pyx_tuple__16)) __PYX_ERR(0, 87, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__16);
+  __Pyx_GIVEREF(__pyx_tuple__16);
+  __pyx_codeobj__7 = (PyObject*)__Pyx_PyCode_New(2, 0, 6, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__16, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_l0learn_testing_utils_pyx, __pyx_n_s_dmat_dot_dmat, 87, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__7)) __PYX_ERR(0, 87, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -4539,6 +4980,7 @@ static CYTHON_SMALL_CODE int __pyx_pymod_exec_testing_utils(PyObject *__pyx_pyin
 #endif
 #endif
 {
+  __Pyx_TraceDeclarations
   PyObject *__pyx_t_1 = NULL;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
@@ -4644,6 +5086,7 @@ if (!__Pyx_RefNanny) {
   #if defined(__Pyx_Generator_USED) || defined(__Pyx_Coroutine_USED)
   if (__Pyx_patch_abc() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   #endif
+  __Pyx_TraceCall("__Pyx_PyMODINIT_FUNC PyInit_testing_utils(void)", __pyx_f[0], 1, 0, __PYX_ERR(0, 1, __pyx_L1_error));
 
   /* "l0learn/testing_utils.pyx":2
  * cimport cython
@@ -4651,6 +5094,7 @@ if (!__Pyx_RefNanny) {
  * cimport numpy as np
  * 
  */
+  __Pyx_TraceLine(2,0,__PYX_ERR(0, 2, __pyx_L1_error))
   __pyx_t_1 = __Pyx_Import(__pyx_n_s_numpy, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 2, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_np, __pyx_t_1) < 0) __PYX_ERR(0, 2, __pyx_L1_error)
@@ -4663,10 +5107,21 @@ if (!__Pyx_RefNanny) {
  *     return  c_list_csc_to_arma_csc_to_list(x)
  * 
  */
+  __Pyx_TraceLine(11,0,__PYX_ERR(0, 11, __pyx_L1_error))
   __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_7l0learn_13testing_utils_1list_csc_to_arma_csc_to_list, NULL, __pyx_n_s_l0learn_testing_utils); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 11, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_list_csc_to_arma_csc_to_list, __pyx_t_1) < 0) __PYX_ERR(0, 11, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "l0learn/testing_utils.pyx":15
+ * 
+ * 
+ * cdef list c_list_csc_to_arma_csc_to_list(list x):             # <<<<<<<<<<<<<<
+ *     cdef field[sp_dmat] f = list_to_sp_dmat_field(x)
+ *     cdef lst = sp_dmat_field_to_list(f)
+ */
+  __Pyx_TraceLine(15,0,__PYX_ERR(0, 15, __pyx_L1_error))
+
 
   /* "l0learn/testing_utils.pyx":21
  * 
@@ -4675,10 +5130,21 @@ if (!__Pyx_RefNanny) {
  *     return  c_list_dvec_to_arma_dvec_to_list(x)
  * 
  */
+  __Pyx_TraceLine(21,0,__PYX_ERR(0, 21, __pyx_L1_error))
   __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_7l0learn_13testing_utils_3list_dvec_to_arma_dvec_to_list, NULL, __pyx_n_s_l0learn_testing_utils); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 21, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_list_dvec_to_arma_dvec_to_list, __pyx_t_1) < 0) __PYX_ERR(0, 21, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "l0learn/testing_utils.pyx":25
+ * 
+ * 
+ * cdef list c_list_dvec_to_arma_dvec_to_list(list x):             # <<<<<<<<<<<<<<
+ *     cdef field[dvec] f = list_to_dvec_field(x)
+ *     cdef lst = dvec_field_to_list(f)
+ */
+  __Pyx_TraceLine(25,0,__PYX_ERR(0, 25, __pyx_L1_error))
+
 
   /* "l0learn/testing_utils.pyx":31
  * 
@@ -4687,10 +5153,21 @@ if (!__Pyx_RefNanny) {
  *     cdef np.ndarray[np.double_t, ndim=2] x_pass
  *     x_pass = c_dmat_np_to_arma_to_np(x)
  */
+  __Pyx_TraceLine(31,0,__PYX_ERR(0, 31, __pyx_L1_error))
   __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_7l0learn_13testing_utils_5dmat_np_to_arma_to_np, NULL, __pyx_n_s_l0learn_testing_utils); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 31, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_dmat_np_to_arma_to_np, __pyx_t_1) < 0) __PYX_ERR(0, 31, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "l0learn/testing_utils.pyx":38
+ * 
+ * 
+ * cdef np.ndarray[np.double_t, ndim=2] c_dmat_np_to_arma_to_np(np.ndarray[np.double_t, ndim=2] x):             # <<<<<<<<<<<<<<
+ *     cdef dmat arma_x = numpy_to_dmat_d(x)
+ * 
+ */
+  __Pyx_TraceLine(38,0,__PYX_ERR(0, 38, __pyx_L1_error))
+
 
   /* "l0learn/testing_utils.pyx":46
  * 
@@ -4699,10 +5176,21 @@ if (!__Pyx_RefNanny) {
  *     cdef np.ndarray[np.uint64_t, ndim=1] x_pass
  *     x_pass = c_uvec_np_to_arma_to_np(x)
  */
+  __Pyx_TraceLine(46,0,__PYX_ERR(0, 46, __pyx_L1_error))
   __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_7l0learn_13testing_utils_7uvec_np_to_arma_to_np, NULL, __pyx_n_s_l0learn_testing_utils); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 46, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_uvec_np_to_arma_to_np, __pyx_t_1) < 0) __PYX_ERR(0, 46, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "l0learn/testing_utils.pyx":53
+ * 
+ * 
+ * cdef np.ndarray[np.uint64_t, ndim=1] c_uvec_np_to_arma_to_np(np.ndarray[np.uint64_t, ndim=1] x):             # <<<<<<<<<<<<<<
+ *     cdef uvec arma_x = numpy_to_uvec_d(x)
+ * 
+ */
+  __Pyx_TraceLine(53,0,__PYX_ERR(0, 53, __pyx_L1_error))
+
 
   /* "l0learn/testing_utils.pyx":61
  * 
@@ -4711,10 +5199,21 @@ if (!__Pyx_RefNanny) {
  *     cdef np.ndarray[np.double_t, ndim=1] x_pass
  *     x_pass = c_dvec_np_to_arma_to_np(x)
  */
+  __Pyx_TraceLine(61,0,__PYX_ERR(0, 61, __pyx_L1_error))
   __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_7l0learn_13testing_utils_9dvec_np_to_arma_to_np, NULL, __pyx_n_s_l0learn_testing_utils); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 61, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_dvec_np_to_arma_to_np, __pyx_t_1) < 0) __PYX_ERR(0, 61, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "l0learn/testing_utils.pyx":68
+ * 
+ * 
+ * cdef np.ndarray[np.uint64_t, ndim=1] c_dvec_np_to_arma_to_np(np.ndarray[np.double_t, ndim=1] x):             # <<<<<<<<<<<<<<
+ *     cdef dvec arma_x = numpy_to_dvec_d(x)
+ * 
+ */
+  __Pyx_TraceLine(68,0,__PYX_ERR(0, 68, __pyx_L1_error))
+
 
   /* "l0learn/testing_utils.pyx":76
  * 
@@ -4723,10 +5222,21 @@ if (!__Pyx_RefNanny) {
  *     return c_sp_dmat_np_to_arma_to_np(x)
  * 
  */
+  __Pyx_TraceLine(76,0,__PYX_ERR(0, 76, __pyx_L1_error))
   __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_7l0learn_13testing_utils_11sp_dmat_np_to_arma_to_np, NULL, __pyx_n_s_l0learn_testing_utils); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 76, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_sp_dmat_np_to_arma_to_np, __pyx_t_1) < 0) __PYX_ERR(0, 76, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "l0learn/testing_utils.pyx":80
+ * 
+ * 
+ * cdef c_sp_dmat_np_to_arma_to_np(x):             # <<<<<<<<<<<<<<
+ *     cdef sp_dmat arma_x = numpy_to_sp_dmat_d(x)
+ * 
+ */
+  __Pyx_TraceLine(80,0,__PYX_ERR(0, 80, __pyx_L1_error))
+
 
   /* "l0learn/testing_utils.pyx":87
  * 
@@ -4735,20 +5245,182 @@ if (!__Pyx_RefNanny) {
  *     cdef dmat arma_x = numpy_to_dmat_d(x)
  *     cdef dmat arma_y = numpy_to_dmat_d(y)
  */
+  __Pyx_TraceLine(87,0,__PYX_ERR(0, 87, __pyx_L1_error))
   __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_7l0learn_13testing_utils_13dmat_dot_dmat, NULL, __pyx_n_s_l0learn_testing_utils); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 87, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_dmat_dot_dmat, __pyx_t_1) < 0) __PYX_ERR(0, 87, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "l0learn/testing_utils.pyx":98
+ * 
+ * 
+ * cdef dmat c_dmat_dot_dmat(dmat arma_x,  dmat arma_y):             # <<<<<<<<<<<<<<
+ *     cdef dmat arma_xy = arma_x*arma_y
+ * 
+ */
+  __Pyx_TraceLine(98,0,__PYX_ERR(0, 98, __pyx_L1_error))
+
 
   /* "l0learn/testing_utils.pyx":1
  * cimport cython             # <<<<<<<<<<<<<<
  * import numpy as np
  * cimport numpy as np
  */
+  __Pyx_TraceLine(1,0,__PYX_ERR(0, 1, __pyx_L1_error))
   __pyx_t_1 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_test, __pyx_t_1) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "../../../../opt/anaconda3/envs/l0learn-test2/lib/python3.9/site-packages/numpy/__init__.pxd":735
+ * ctypedef npy_cdouble     complex_t
+ * 
+ * cdef inline object PyArray_MultiIterNew1(a):             # <<<<<<<<<<<<<<
+ *     return PyArray_MultiIterNew(1, <void*>a)
+ * 
+ */
+  __Pyx_TraceLine(735,0,__PYX_ERR(1, 735, __pyx_L1_error))
+
+
+  /* "../../../../opt/anaconda3/envs/l0learn-test2/lib/python3.9/site-packages/numpy/__init__.pxd":738
+ *     return PyArray_MultiIterNew(1, <void*>a)
+ * 
+ * cdef inline object PyArray_MultiIterNew2(a, b):             # <<<<<<<<<<<<<<
+ *     return PyArray_MultiIterNew(2, <void*>a, <void*>b)
+ * 
+ */
+  __Pyx_TraceLine(738,0,__PYX_ERR(1, 738, __pyx_L1_error))
+
+
+  /* "../../../../opt/anaconda3/envs/l0learn-test2/lib/python3.9/site-packages/numpy/__init__.pxd":741
+ *     return PyArray_MultiIterNew(2, <void*>a, <void*>b)
+ * 
+ * cdef inline object PyArray_MultiIterNew3(a, b, c):             # <<<<<<<<<<<<<<
+ *     return PyArray_MultiIterNew(3, <void*>a, <void*>b, <void*> c)
+ * 
+ */
+  __Pyx_TraceLine(741,0,__PYX_ERR(1, 741, __pyx_L1_error))
+
+
+  /* "../../../../opt/anaconda3/envs/l0learn-test2/lib/python3.9/site-packages/numpy/__init__.pxd":744
+ *     return PyArray_MultiIterNew(3, <void*>a, <void*>b, <void*> c)
+ * 
+ * cdef inline object PyArray_MultiIterNew4(a, b, c, d):             # <<<<<<<<<<<<<<
+ *     return PyArray_MultiIterNew(4, <void*>a, <void*>b, <void*>c, <void*> d)
+ * 
+ */
+  __Pyx_TraceLine(744,0,__PYX_ERR(1, 744, __pyx_L1_error))
+
+
+  /* "../../../../opt/anaconda3/envs/l0learn-test2/lib/python3.9/site-packages/numpy/__init__.pxd":747
+ *     return PyArray_MultiIterNew(4, <void*>a, <void*>b, <void*>c, <void*> d)
+ * 
+ * cdef inline object PyArray_MultiIterNew5(a, b, c, d, e):             # <<<<<<<<<<<<<<
+ *     return PyArray_MultiIterNew(5, <void*>a, <void*>b, <void*>c, <void*> d, <void*> e)
+ * 
+ */
+  __Pyx_TraceLine(747,0,__PYX_ERR(1, 747, __pyx_L1_error))
+
+
+  /* "../../../../opt/anaconda3/envs/l0learn-test2/lib/python3.9/site-packages/numpy/__init__.pxd":750
+ *     return PyArray_MultiIterNew(5, <void*>a, <void*>b, <void*>c, <void*> d, <void*> e)
+ * 
+ * cdef inline tuple PyDataType_SHAPE(dtype d):             # <<<<<<<<<<<<<<
+ *     if PyDataType_HASSUBARRAY(d):
+ *         return <tuple>d.subarray.shape
+ */
+  __Pyx_TraceLine(750,0,__PYX_ERR(1, 750, __pyx_L1_error))
+
+
+  /* "../../../../opt/anaconda3/envs/l0learn-test2/lib/python3.9/site-packages/numpy/__init__.pxd":929
+ *     int _import_umath() except -1
+ * 
+ * cdef inline void set_array_base(ndarray arr, object base):             # <<<<<<<<<<<<<<
+ *     Py_INCREF(base) # important to do this before stealing the reference below!
+ *     PyArray_SetBaseObject(arr, base)
+ */
+  __Pyx_TraceLine(929,0,__PYX_ERR(1, 929, __pyx_L1_error))
+
+
+  /* "../../../../opt/anaconda3/envs/l0learn-test2/lib/python3.9/site-packages/numpy/__init__.pxd":933
+ *     PyArray_SetBaseObject(arr, base)
+ * 
+ * cdef inline object get_array_base(ndarray arr):             # <<<<<<<<<<<<<<
+ *     base = PyArray_BASE(arr)
+ *     if base is NULL:
+ */
+  __Pyx_TraceLine(933,0,__PYX_ERR(1, 933, __pyx_L1_error))
+
+
+  /* "../../../../opt/anaconda3/envs/l0learn-test2/lib/python3.9/site-packages/numpy/__init__.pxd":941
+ * # Versions of the import_* functions which are more suitable for
+ * # Cython code.
+ * cdef inline int import_array() except -1:             # <<<<<<<<<<<<<<
+ *     try:
+ *         __pyx_import_array()
+ */
+  __Pyx_TraceLine(941,0,__PYX_ERR(1, 941, __pyx_L1_error))
+
+
+  /* "../../../../opt/anaconda3/envs/l0learn-test2/lib/python3.9/site-packages/numpy/__init__.pxd":947
+ *         raise ImportError("numpy.core.multiarray failed to import")
+ * 
+ * cdef inline int import_umath() except -1:             # <<<<<<<<<<<<<<
+ *     try:
+ *         _import_umath()
+ */
+  __Pyx_TraceLine(947,0,__PYX_ERR(1, 947, __pyx_L1_error))
+
+
+  /* "../../../../opt/anaconda3/envs/l0learn-test2/lib/python3.9/site-packages/numpy/__init__.pxd":953
+ *         raise ImportError("numpy.core.umath failed to import")
+ * 
+ * cdef inline int import_ufunc() except -1:             # <<<<<<<<<<<<<<
+ *     try:
+ *         _import_umath()
+ */
+  __Pyx_TraceLine(953,0,__PYX_ERR(1, 953, __pyx_L1_error))
+
+
+  /* "../../../../opt/anaconda3/envs/l0learn-test2/lib/python3.9/site-packages/numpy/__init__.pxd":967
+ * 
+ * 
+ * cdef inline bint is_timedelta64_object(object obj):             # <<<<<<<<<<<<<<
+ *     """
+ *     Cython equivalent of `isinstance(obj, np.timedelta64)`
+ */
+  __Pyx_TraceLine(967,0,__PYX_ERR(1, 967, __pyx_L1_error))
+
+
+  /* "../../../../opt/anaconda3/envs/l0learn-test2/lib/python3.9/site-packages/numpy/__init__.pxd":982
+ * 
+ * 
+ * cdef inline bint is_datetime64_object(object obj):             # <<<<<<<<<<<<<<
+ *     """
+ *     Cython equivalent of `isinstance(obj, np.datetime64)`
+ */
+  __Pyx_TraceLine(982,0,__PYX_ERR(1, 982, __pyx_L1_error))
+
+
+  /* "../../../../opt/anaconda3/envs/l0learn-test2/lib/python3.9/site-packages/numpy/__init__.pxd":997
+ * 
+ * 
+ * cdef inline npy_datetime get_datetime64_value(object obj) nogil:             # <<<<<<<<<<<<<<
+ *     """
+ *     returns the int64 value underlying scalar numpy datetime64 object
+ */
+  __Pyx_TraceLine(997,0,__PYX_ERR(1, 997, __pyx_L1_error))
+
+
+  /* "../../../../opt/anaconda3/envs/l0learn-test2/lib/python3.9/site-packages/numpy/__init__.pxd":1007
+ * 
+ * 
+ * cdef inline npy_timedelta get_timedelta64_value(object obj) nogil:             # <<<<<<<<<<<<<<
+ *     """
+ *     returns the int64 value underlying scalar numpy timedelta64 object
+ */
+  __Pyx_TraceLine(1007,0,__PYX_ERR(1, 1007, __pyx_L1_error))
+
 
   /* "../../../../opt/anaconda3/envs/l0learn-test2/lib/python3.9/site-packages/numpy/__init__.pxd":1014
  * 
@@ -4757,6 +5429,9 @@ if (!__Pyx_RefNanny) {
  *     """
  *     returns the unit part of the dtype for a numpy datetime64 object.
  */
+  __Pyx_TraceLine(1014,0,__PYX_ERR(1, 1014, __pyx_L1_error))
+
+  __Pyx_TraceReturn(Py_None, 0);
 
   /*--- Wrapped vars code ---*/
 
@@ -4797,6 +5472,122 @@ end:
     Py_XDECREF(p);
     Py_XDECREF(m);
     return (__Pyx_RefNannyAPIStruct *)r;
+}
+#endif
+
+/* PyErrFetchRestore */
+#if CYTHON_FAST_THREAD_STATE
+static CYTHON_INLINE void __Pyx_ErrRestoreInState(PyThreadState *tstate, PyObject *type, PyObject *value, PyObject *tb) {
+    PyObject *tmp_type, *tmp_value, *tmp_tb;
+    tmp_type = tstate->curexc_type;
+    tmp_value = tstate->curexc_value;
+    tmp_tb = tstate->curexc_traceback;
+    tstate->curexc_type = type;
+    tstate->curexc_value = value;
+    tstate->curexc_traceback = tb;
+    Py_XDECREF(tmp_type);
+    Py_XDECREF(tmp_value);
+    Py_XDECREF(tmp_tb);
+}
+static CYTHON_INLINE void __Pyx_ErrFetchInState(PyThreadState *tstate, PyObject **type, PyObject **value, PyObject **tb) {
+    *type = tstate->curexc_type;
+    *value = tstate->curexc_value;
+    *tb = tstate->curexc_traceback;
+    tstate->curexc_type = 0;
+    tstate->curexc_value = 0;
+    tstate->curexc_traceback = 0;
+}
+#endif
+
+/* Profile */
+#if CYTHON_PROFILE
+static int __Pyx_TraceSetupAndCall(PyCodeObject** code,
+                                   PyFrameObject** frame,
+                                   PyThreadState* tstate,
+                                   const char *funcname,
+                                   const char *srcfile,
+                                   int firstlineno) {
+    PyObject *type, *value, *traceback;
+    int retval;
+    if (*frame == NULL || !CYTHON_PROFILE_REUSE_FRAME) {
+        if (*code == NULL) {
+            *code = __Pyx_createFrameCodeObject(funcname, srcfile, firstlineno);
+            if (*code == NULL) return 0;
+        }
+        *frame = PyFrame_New(
+            tstate,                          /*PyThreadState *tstate*/
+            *code,                           /*PyCodeObject *code*/
+            __pyx_d,                  /*PyObject *globals*/
+            0                                /*PyObject *locals*/
+        );
+        if (*frame == NULL) return 0;
+        if (CYTHON_TRACE && (*frame)->f_trace == NULL) {
+            Py_INCREF(Py_None);
+            (*frame)->f_trace = Py_None;
+        }
+#if PY_VERSION_HEX < 0x030400B1
+    } else {
+        (*frame)->f_tstate = tstate;
+#endif
+    }
+    __Pyx_PyFrame_SetLineNumber(*frame, firstlineno);
+    retval = 1;
+    tstate->tracing++;
+    __Pyx_SetTracing(tstate, 0);
+    __Pyx_ErrFetchInState(tstate, &type, &value, &traceback);
+    #if CYTHON_TRACE
+    if (tstate->c_tracefunc)
+        retval = tstate->c_tracefunc(tstate->c_traceobj, *frame, PyTrace_CALL, NULL) == 0;
+    if (retval && tstate->c_profilefunc)
+    #endif
+        retval = tstate->c_profilefunc(tstate->c_profileobj, *frame, PyTrace_CALL, NULL) == 0;
+    __Pyx_SetTracing(tstate, (tstate->c_profilefunc || (CYTHON_TRACE && tstate->c_tracefunc)));
+    tstate->tracing--;
+    if (retval) {
+        __Pyx_ErrRestoreInState(tstate, type, value, traceback);
+        return __Pyx_IsTracing(tstate, 0, 0) && retval;
+    } else {
+        Py_XDECREF(type);
+        Py_XDECREF(value);
+        Py_XDECREF(traceback);
+        return -1;
+    }
+}
+static PyCodeObject *__Pyx_createFrameCodeObject(const char *funcname, const char *srcfile, int firstlineno) {
+    PyCodeObject *py_code = 0;
+#if PY_MAJOR_VERSION >= 3
+    py_code = PyCode_NewEmpty(srcfile, funcname, firstlineno);
+    if (likely(py_code)) {
+        py_code->co_flags |= CO_OPTIMIZED | CO_NEWLOCALS;
+    }
+#else
+    PyObject *py_srcfile = 0;
+    PyObject *py_funcname = 0;
+    py_funcname = PyString_FromString(funcname);
+    if (unlikely(!py_funcname)) goto bad;
+    py_srcfile = PyString_FromString(srcfile);
+    if (unlikely(!py_srcfile)) goto bad;
+    py_code = PyCode_New(
+        0,
+        0,
+        0,
+        CO_OPTIMIZED | CO_NEWLOCALS,
+        __pyx_empty_bytes,     /*PyObject *code,*/
+        __pyx_empty_tuple,     /*PyObject *consts,*/
+        __pyx_empty_tuple,     /*PyObject *names,*/
+        __pyx_empty_tuple,     /*PyObject *varnames,*/
+        __pyx_empty_tuple,     /*PyObject *freevars,*/
+        __pyx_empty_tuple,     /*PyObject *cellvars,*/
+        py_srcfile,       /*PyObject *filename,*/
+        py_funcname,      /*PyObject *name,*/
+        firstlineno,
+        __pyx_empty_bytes      /*PyObject *lnotab*/
+    );
+bad:
+    Py_XDECREF(py_srcfile);
+    Py_XDECREF(py_funcname);
+#endif
+    return py_code;
 }
 #endif
 
@@ -5379,30 +6170,6 @@ fail:;
      "Buffer acquisition failed on assignment; and then reacquiring the old buffer failed too!");
 }
 
-/* PyErrFetchRestore */
-  #if CYTHON_FAST_THREAD_STATE
-static CYTHON_INLINE void __Pyx_ErrRestoreInState(PyThreadState *tstate, PyObject *type, PyObject *value, PyObject *tb) {
-    PyObject *tmp_type, *tmp_value, *tmp_tb;
-    tmp_type = tstate->curexc_type;
-    tmp_value = tstate->curexc_value;
-    tmp_tb = tstate->curexc_traceback;
-    tstate->curexc_type = type;
-    tstate->curexc_value = value;
-    tstate->curexc_traceback = tb;
-    Py_XDECREF(tmp_type);
-    Py_XDECREF(tmp_value);
-    Py_XDECREF(tmp_tb);
-}
-static CYTHON_INLINE void __Pyx_ErrFetchInState(PyThreadState *tstate, PyObject **type, PyObject **value, PyObject **tb) {
-    *type = tstate->curexc_type;
-    *value = tstate->curexc_value;
-    *tb = tstate->curexc_traceback;
-    tstate->curexc_type = 0;
-    tstate->curexc_value = 0;
-    tstate->curexc_traceback = 0;
-}
-#endif
-
 /* RaiseArgTupleInvalid */
   static void __Pyx_RaiseArgtupleInvalid(
     const char* func_name,
@@ -5543,6 +6310,48 @@ invalid_keyword:
     #endif
 bad:
     return -1;
+}
+
+/* WriteUnraisableException */
+  static void __Pyx_WriteUnraisable(const char *name, CYTHON_UNUSED int clineno,
+                                  CYTHON_UNUSED int lineno, CYTHON_UNUSED const char *filename,
+                                  int full_traceback, CYTHON_UNUSED int nogil) {
+    PyObject *old_exc, *old_val, *old_tb;
+    PyObject *ctx;
+    __Pyx_PyThreadState_declare
+#ifdef WITH_THREAD
+    PyGILState_STATE state;
+    if (nogil)
+        state = PyGILState_Ensure();
+#ifdef _MSC_VER
+    else state = (PyGILState_STATE)-1;
+#endif
+#endif
+    __Pyx_PyThreadState_assign
+    __Pyx_ErrFetch(&old_exc, &old_val, &old_tb);
+    if (full_traceback) {
+        Py_XINCREF(old_exc);
+        Py_XINCREF(old_val);
+        Py_XINCREF(old_tb);
+        __Pyx_ErrRestore(old_exc, old_val, old_tb);
+        PyErr_PrintEx(1);
+    }
+    #if PY_MAJOR_VERSION < 3
+    ctx = PyString_FromString(name);
+    #else
+    ctx = PyUnicode_FromString(name);
+    #endif
+    __Pyx_ErrRestore(old_exc, old_val, old_tb);
+    if (!ctx) {
+        PyErr_WriteUnraisable(Py_None);
+    } else {
+        PyErr_WriteUnraisable(ctx);
+        Py_DECREF(ctx);
+    }
+#ifdef WITH_THREAD
+    if (nogil)
+        PyGILState_Release(state);
+#endif
 }
 
 /* PyObjectGetAttrStr */
