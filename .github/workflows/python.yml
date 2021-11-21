@@ -48,6 +48,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install wheel
+          pip install Cython  # this should not be needed, but somehow is... pyproject.toml should have this in [build.system]
           pip install pytest-cov
           pip install coveralls
           pip install -e ".[test]"
