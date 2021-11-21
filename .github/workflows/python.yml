@@ -50,8 +50,8 @@ jobs:
           pip install wheel
           pip install pytest-cov
           pip install coveralls
-          python setup.py build_ext --force --inplace  # force to recompile with COVERAGE_MODE
           pip install -e ".[test]"
+          python setup.py build_ext --force --inplace  # force to recompile with COVERAGE_MODE
       - name: Run Tests and Coverage
         run: python -m pytest --cov=l0learn
       - name: Coveralls
