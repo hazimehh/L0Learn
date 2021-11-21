@@ -44,11 +44,14 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Install dependencies
         run: |
+          import os
           python -m pip install --upgrade pip
           pip install wheel
           pip install pytest-cov
           pip install coveralls
-          pip install -e ".[test]" 
+          os.environ["L0LEARN_COVERAGE_MODE"] = "1"
+          python setup.py build_ext --force --inplace  # force to recompile with COVERAGE_MODE
+          pip install -e ".[test]"
       - name: Run Tests and Coverage
         run: python -m pytest --cov=l0learn
       - name: Coveralls
