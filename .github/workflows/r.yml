@@ -40,7 +40,9 @@ jobs:
       - uses: TNonet/actions/setup-r-dependencies@master
         with:
           cache-version: 1
-          extra-packages: covr
+          extra-packages: |
+            covr
+            xml2
           working-directory: R
 
       - name: Test coverage
