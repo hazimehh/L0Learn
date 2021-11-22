@@ -44,5 +44,8 @@ jobs:
           working-directory: R
 
       - name: Test coverage
-        run: covr::package_coverage()
+        run: |
+          covr::package_coverage(
+            type = "none",
+            code = "testthat::test_package('L0Learn', reporter = testthat::JunitReporter$new(file = 'test-results.xml'))")
         shell: Rscript {0}
