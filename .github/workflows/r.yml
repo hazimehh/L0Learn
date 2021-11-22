@@ -31,11 +31,14 @@ jobs:
           pandoc-version: '2.7.3' 
       - name: Install dependencies
         run: |
-          install.packages(c("remotes", "rcmdcheck"))
+          install.packages(c("remotes", "rcmdcheck", "devtools"))
           remotes::install_deps(dependencies = TRUE)
         shell: Rscript {0}
       - name: Check
         run: rcmdcheck::rcmdcheck("R", args = "--no-manual", error_on = "error", check_dir = "check")
+        shell: Rscript {0}
+      - name: Run Tests
+        run: devtools::test()
         shell: Rscript {0}
       - uses: TNonet/actions/setup-r-dependencies@master
         with:
