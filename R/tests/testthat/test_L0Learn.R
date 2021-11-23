@@ -120,10 +120,10 @@ test_that("L0Learn excludeFirstK is still subject to L1 norms", {
   # Therefore, as L1 grows we can expect that the columns go to 0.
 
 
-  x1 <- L0Learn.fit(X_real, y_fake, penalty = "L0", excludeFirstK = K, maxSuppSize = p)
+  x1 <- L0Learn.fit(X_real, y_fake, penalty = "L0", excludeFirstK = K-1, maxSuppSize = p)
 
-  expect_equal(length(x1$suppSize[[1]]), 1)
-  expect_equal(x1$suppSize[[1]][1], 10)
+  expect_equal(length(x1$suppSize[[1]]), 2)
+  expect_equal(x1$suppSize[[1]][2], 10)
 
   # TODO: Fix Crash when excludeFirstK >= p
   # x2 <- L0Learn.fit(X_real, y_fake, penalty = "L0L1", excludeFirstK = K, maxSuppSize = 10)

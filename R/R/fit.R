@@ -227,6 +227,10 @@ L0Learn.fit <- function(x, y, loss="SquaredError", penalty="L0", algorithm="CD",
     
     p = dim(x)[[2]]
     
+    if ((excludeFirstK < 0) || (excludeFirstK >= p)){
+        stop("The specified excludeFirstK parameter must be an integer between 0 and p-1")
+    }
+    
     withBounds = FALSE
     
     if ((!identical(lows, -Inf)) || (!identical(highs, Inf))){
