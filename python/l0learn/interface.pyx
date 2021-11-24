@@ -13,34 +13,34 @@ from l0learn.cyarma cimport dmat, sp_dmat, numpy_to_sp_dmat_d, numpy_to_dmat_d, 
 import l0learn.models
 from l0learn.models import FitModel, CVFitModel
 
-def np_to_arma_check(arr):
-    # TODO: Add checks for Behaved and OwnsData
-    if isinstance(arr, np.ndarray):
-        if not arr.flags['F_CONTIGUOUS']:
-            raise ValueError("expected arr to be F_CONTIGUOUS.")
-    elif isinstance(arr, csc_matrix):
-        if not arr.data.flags['F_CONTIGUOUS']:
-            raise ValueError("expected arr.data to be F_CONTIGUOUS.")
-        if not arr.indices.flags['F_CONTIGUOUS']:
-            raise ValueError("expected arr.indices to be F_CONTIGUOUS.")
-        if not arr.indptr.flags['F_CONTIGUOUS']:
-            raise ValueError("expected arr.indptr to be F_CONTIGUOUS.")
-    else:
-        raise NotImplementedError(f"expected arr to be of type {np.ndarray} or {csc_matrix}, but got {type(arr)}.")
-
-    if arr.ndim == 0:
-            raise ValueError("expected 'arr.ndim' to be 1 or 2, but got 0. Should be passed as scalar")
-    elif arr.ndim > 2:
-        raise NotImplementedError(f"expected 'arr.ndim' to be 1 or 2, but got {arr.ndim}. Not supported")
-
-    if np.product(arr.shape) == 0:
-        raise ValueError(f"expected non-degenerate dimensions of arr, but got {arr.ndim}")
-
-    if not np.issubdtype(arr.dtype, np.number):
-        raise ValueError(f"expected numerical dtype, but got {arr.dtype}")
-
-    if not np.isrealobj(arr):
-        raise ValueError(f"expected non-complex dtype, but got {arr.dtype}")
+# def np_to_arma_check(arr):
+#     # TODO: Add checks for Behaved and OwnsData
+#     if isinstance(arr, np.ndarray):
+#         if not arr.flags['F_CONTIGUOUS']:
+#             raise ValueError("expected arr to be F_CONTIGUOUS.")
+#     elif isinstance(arr, csc_matrix):
+#         if not arr.data.flags['F_CONTIGUOUS']:
+#             raise ValueError("expected arr.data to be F_CONTIGUOUS.")
+#         if not arr.indices.flags['F_CONTIGUOUS']:
+#             raise ValueError("expected arr.indices to be F_CONTIGUOUS.")
+#         if not arr.indptr.flags['F_CONTIGUOUS']:
+#             raise ValueError("expected arr.indptr to be F_CONTIGUOUS.")
+#     else:
+#         raise NotImplementedError(f"expected arr to be of type {np.ndarray} or {csc_matrix}, but got {type(arr)}.")
+#
+#     if arr.ndim == 0:
+#             raise ValueError("expected 'arr.ndim' to be 1 or 2, but got 0. Should be passed as scalar")
+#     elif arr.ndim > 2:
+#         raise NotImplementedError(f"expected 'arr.ndim' to be 1 or 2, but got {arr.ndim}. Not supported")
+#
+#     if np.product(arr.shape) == 0:
+#         raise ValueError(f"expected non-degenerate dimensions of arr, but got {arr.ndim}")
+#
+#     if not np.issubdtype(arr.dtype, np.number):
+#         raise ValueError(f"expected numerical dtype, but got {arr.dtype}")
+#
+#     if not np.isrealobj(arr):
+#         raise ValueError(f"expected non-complex dtype, but got {arr.dtype}")
 
 
 SUPPORTED_LOSS = ("SquaredError", "Logistic", "SquaredHinge")
