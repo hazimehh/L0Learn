@@ -1,5 +1,3 @@
-import warnings
-
 import pytest
 import numpy as np
 import l0learn
@@ -214,7 +212,7 @@ def test_scale_down_factor_bad_checks(f, scale_down_factor):
 
 @pytest.mark.parametrize("screen_size", [-1, 2.0])
 @pytest.mark.parametrize("f", [l0learn.fit, l0learn.cvfit])
-def test_scale_down_factor_bad_checks(f, screen_size):
+def test_screen_size_bad_checks(f, screen_size):
     # Check size of matrix X
     x = np.random.random(size=(N, N))
     y = np.random.random(size=(N,))
@@ -269,6 +267,20 @@ def test_classification_loss_bad_lambda_grid_L0_checks(f, loss):
         _ = f(x, y, loss=loss, penalty="L0", lambda_grid=lambda_grid, num_gamma=None, num_lambda=None)
 
     _ = f(x, y, loss=loss, penalty="L0", lambda_grid=[[10]], num_gamma=None, num_lambda=None)
+
+
+@pytest.mark.parametrize("f", [l0learn.fit, l0learn.cvfit])
+def test_bad_lambda_grid_L0_checks(f):
+    # Check size of matrix X
+    x = np.random.random(size=(N, N))
+    y = np.random.random(size=N)
+    lambda_grid = [[10], [10]]
+
+    with pytest.raises(ValueError):
+        _ = f(x, y, penalty="L0", lambda_grid=lambda_grid, num_gamma=None, num_lambda=None)
+
+    _ = f(x, y, penalty="L0", lambda_grid=[[10]], num_gamma=None, num_lambda=None)
+
 
 
 @pytest.mark.parametrize("penalty", ["L0L1", "L0L2"])
@@ -326,14 +338,13 @@ def test_lambda_grid_bad_over_defined_checks(f, penalty):
     _ = f(x, y, penalty=penalty, lambda_grid=[[10], [10]], num_lambda=None, num_gamma=None)
 
 
-@pytest.mark.parametrize("penalty_lambda_grid", [("L0", [[10], [10]]),
-                                                 ("L0", [[-1]]),
+@pytest.mark.parametrize("penalty_lambda_grid", [("L0L1", [[-1]]),
                                                  ("L0", [[10, 11]]),])
 @pytest.mark.parametrize("f", [l0learn.fit, l0learn.cvfit])
 def test_lambda_grid_bad_checks(f, penalty_lambda_grid):
     penalty, lambda_grid = penalty_lambda_grid
     x = np.random.random(size=(N, N))
-    y = np.random.randint(0, 2, size=N)
+    y = np.random.random(size=N)
 
     with pytest.raises(ValueError):
         _ = f(x, y, penalty=penalty, lambda_grid=lambda_grid, num_gamma=None, num_lambda=None)
@@ -356,7 +367,7 @@ def test_with_bounds_bad_checks(f, bounds):
     lows, highs = bounds
 
     x = np.random.random(size=(N, N))
-    y = np.random.randint(0, 2, size=N)
+    y = np.random.random(size=N)
 
     with pytest.raises(ValueError):
         _ = f(x, y, lows=lows, highs=highs)
