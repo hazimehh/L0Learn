@@ -150,7 +150,7 @@ def test_max_iter_bad_checks(f, max_iter):
 
 @pytest.mark.parametrize("rtol", [1.0, -0.1])
 @pytest.mark.parametrize("f", [l0learn.fit, l0learn.cvfit])
-def test_max_iter_bad_checks(f, rtol):
+def test_rtol_bad_checks(f, rtol):
     # Check size of matrix X
     x = np.random.random(size=(N, N))
     y = np.random.random(size=(N,))
@@ -160,7 +160,7 @@ def test_max_iter_bad_checks(f, rtol):
 
 
 @pytest.mark.parametrize("f", [l0learn.fit, l0learn.cvfit])
-def test_max_iter_bad_checks(f):
+def test_atol_bad_checks(f):
     # Check size of matrix X
     x = np.random.random(size=(N, N))
     y = np.random.random(size=(N,))
