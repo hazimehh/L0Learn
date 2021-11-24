@@ -74,8 +74,22 @@ def _fit_check(X: Union[np.ndarray, csc_matrix],
                lows: Union[np.ndarray, float],
                highs: Union[np.ndarray, float]) -> Dict[str, Any]:
 
-    if not isinstance(X, (np.ndarray, csc_matrix)) or X.dtype != np.float64 or X.ndim != 2 or not np.product(X.shape) or not X.flags.contiguous:
-        raise ValueError(f"expected X to be a 2D continuous non-degenerate real numpy or csc_matrix, but got {X}.")
+    if isinstance(X, (np.ndarray, csc_matrix)):
+        if X.dtype != np.float64:
+            raise ValueError(f"expected X to have dtype {np.float64}, but got {X.dtype}")
+        if X.ndim != 2:
+            raise ValueError(f"expected X to be 2D, but got {X.ndim}D")
+        if not np.product(X.shape):
+            raise ValueError(f"expected X to have non-degenerate axis, but got {X.shape}")
+        # if isinstance(X, np.ndarray):
+        #     if not X.flags.contiguous:
+        #         raise ValueError(f"expected X to be contiguous, but is not.")
+        # else: # isinstance(X, csc_matrix):
+        #     if not (X.indptr.flags.contiguous and X.indices.flags.contiguous and X.data.flags.continuous):
+        #         raise ValueError(f"expected X to have contiguous `indptr`, `indices`, and `data`, but is not.")
+    else:
+        raise ValueError(f"expected X to be a {np.ndarray} or a {csc_matrix}, but got {type(X)}.")
+
     n, p = X.shape
     if not isinstance(y, np.ndarray) or not np.isrealobj(y) or y.ndim != 1 or len(y) != n:
         raise ValueError(f"expected y to be a 1D real numpy, but got {y}.")

@@ -1,8 +1,16 @@
 import pytest
 import numpy as np
+from scipy.sparse import csc_matrix
+
 import l0learn
 
 N = 50
+
+@pytest.mark.parametrize("f", [l0learn.fit, l0learn.cvfit])
+def test_X_sparse_support(f):
+    x = np.random.random(size=(N, N))
+    y = np.random.random(size=(N,))
+    _ = l0learn.fit(csc_matrix(x), y, intercept=False)
 
 @pytest.mark.parametrize("x", [np.random.random(size=(N, N, N)),  # Wrong Size
                                "A String",  # Wrong Type
@@ -10,7 +18,7 @@ N = 50
                                np.random.random(size=(N, N)).astype(int),  # Wrong dtype
                                np.random.random(size=(0, N))])  # degenerate 2D array
 @pytest.mark.parametrize("f", [l0learn.fit, l0learn.cvfit])
-def test_X_bad_checks(f, x):
+def test_X_dense_bad_checks(f, x):
     # Check size of matrix X
     y = np.random.random(size=(N,))
     with pytest.raises(ValueError):
