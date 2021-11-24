@@ -1,7 +1,9 @@
+"""
+.. module:: models
+"""
 import warnings
 from dataclasses import dataclass, field
-from functools import wraps
-from typing import List, Dict, Any, Optional, Tuple, Union, Sequence, Callable
+from typing import List, Dict, Any, Optional, Tuple, Union, Sequence
 
 import numpy as np
 import pandas as pd
@@ -182,6 +184,7 @@ def squared_hinge_loss(y_true: np.ndarray,
 
 @dataclass(frozen=True, repr=False, eq=False)
 class FitModel:
+    """ FitModel returned by calling l0learn.fit(...) """
     settings: Dict[str, Any]
     lambda_0: List[List[float]] = field(repr=False)
     gamma: List[float] = field(repr=False)
@@ -190,11 +193,26 @@ class FitModel:
     intercepts: List[List[float]] = field(repr=False)
     converged: List[List[bool]] = field(repr=False)
 
-    def characteristics_as_pandas_table(self, new_data: Optional[Tuple[List[float],
-                                                                       List[List[float]],
-                                                                       List[List[int]],
-                                                                       List[List[float]],
-                                                                       List[List[bool]]]] = None) -> pd.DataFrame:
+    def _characteristics_as_pandas_table(self, new_data: Optional[Tuple[List[float],
+                                                                        List[List[float]],
+                                                                        List[List[int]],
+                                                                        List[List[float]],
+                                                                        List[List[bool]]]] = None) -> pd.DataFrame:
+        """ Formats FitModel's data as a Pandas DataFrame where each row is a solution in the regularization path.
+        The DataFrame is in of solutions being founnd.
+
+        Parameters
+        ----------
+        new_data : Optional Tuple
+            Should be a valid subset of `self`'s instance values that represent a consecutive subsequence of solutions
+
+        Returns
+        -------
+        characteristics_table : pd.DataFrame:
+            Pandas DataFrame of characteristics of the solution path referenced by new_data, if provided, or by the
+            instance values of self. Specifically:
+                (self.gamma, self.lambda_0, self.support_size, self.intercepts, self.converged)
+        """
         if new_data is not None:
             gamma, lambda_0, support_size, intercepts, converged = new_data
         else:
@@ -223,7 +241,7 @@ class FitModel:
         return pd.concat(tables).reset_index(drop=True)
 
     def _repr_html_(self):
-        return self.characteristics_as_pandas_table()._repr_html_()
+        return self._characteristics_as_pandas_table()._repr_html_()
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({self.settings})"
@@ -232,25 +250,40 @@ class FitModel:
               lambda_0: Optional[float] = None,
               gamma: Optional[float] = None,
               include_intercept: bool = True) -> csc_matrix:
-        """ Extracts the coefficient according to lambda_0 and gamma
+        """ Extracts the coefficient according to `lambda_0`, `gamma`, and `include_intercept`
 
-        If both lambda_0 and gamma are not supplied, then a matrix of coefficients for all the solutions in the
+        Values for lambda_0` and `gamma` do not need to be exact. The closest values, respectively, found in the
+         regularization path will be used
+
+        If both `lambda_0` and `gamma` are not supplied, then a matrix of coefficients for all the solutions in the
         regularization path is returned.
 
-        If lambda_0 is supplied but gamma is not, the smallest value of gamma is used.
+        If `lambda_0` is supplied but `gamma` is not, the smallest value of `gamma` is used.
 
-        If gamma is supplied but not lambda_0, then a matrix of coefficients for all the solutions in the
-        regularization path for gamma is returned.
+        If `gamma` is supplied but not `lambda_0`, then a matrix of coefficients for all the solutions in the
+        regularization path for `gamma` is returned.
 
         Parameters
         ----------
         lambda_0 : float, optional
+            If provided, designates which solutions will be returned based of `lambda_0` and `gamma`
+
         gamma : float, optional
+            If provided, designates which solutions will be returned based of `gamma` and `lambda_0`
+
         include_intercept : bool, default True
+            If provided, will include the intercepts as the first row of the coefficient matrix
 
         Returns
         -------
         coeff: csc_matrix
+            Matrix of fit coefficients from the regularization path
+            Has shape (p, num_solutions) if `include_intercept` is True or (p+1, num_solutions) otherwise.
+                where num_solutions is defined by `lambda_0` and `gamma`.
+
+            coeff[i, :] refers to features i's coefficient across the returned solutions
+            coeff[:, j] refers to solution j's coefficient
+            coeff[i, j] refers to features i's coefficient for solution j
 
         """
         if gamma is None:
@@ -283,6 +316,48 @@ class FitModel:
     def characteristics(self,
                         lambda_0: Optional[float] = None,
                         gamma: Optional[float] = None) -> pd.DataFrame:
+        """ Formats the characteristics of the solutions that correspond to the specificed `lambda_0` and `gamma` as a
+        pandas DataFrame where each row is a solution in the regularization path.
+            The DataFrame is in of solutions being found.
+
+        Parameters
+        ----------
+        lambda_0 : float, optional
+            If provided, designates which solutions will be returned based of `lambda_0` and `gamma`
+            See FitModel.coeff for details on `lambda_0` specifications
+            :meth:`l0learn.models.FitModel.coeff`
+
+        gamma : float, optional
+            If provided, designates which solutions will be returned based of `gamma` and `lambda_0`
+            See FitModel.coeff for details on `lambda_0` specifications
+            :meth:`l0learn.models.FitModel.coeff`
+
+        Returns
+        -------
+        characteristics : pd.DataFrame:
+            Pandas DataFrame of characteristics of the solution path referenced by `lambda_0` and `gamma`
+
+            The characteristics table has the following columns with the following interpretations:
+                gamma: The value of the L1 or L2 regularization parameter used in the specific solution of
+                    regularization path referred to by the row of the characteristic table.
+
+                    Inspect FitModel.settings for specific of L1 vs L2
+                lambda_0: The value of the L0 regularization parameter used in the specific solution of
+                    regularization path referred to by the row of the characteristic table.
+
+                support_size: The number of non-zero coefficients found in the specific solution of
+                    regularization path referred to by the row of the characteristic table.
+
+                    Inspect FitModel.settings for the max support size was specified
+
+                intercepts: The value of the intercept term found in the specific solution of
+                    regularization path referred to by the row of the characteristic table.
+
+                    Inspect FitModel.settings if tunable intercept was used or not
+
+                converged: Whether or not the specific solution of regularization path referred to by the row of the
+                    characteristic table converged or not.
+        """
 
         if gamma is None:
             if lambda_0 is None:
@@ -314,7 +389,7 @@ class FitModel:
                 support_size = [[self.support_size[gamma_index][lambda_index]]]
                 converged = [[self.converged[gamma_index][lambda_index]]]
 
-        return self.characteristics_as_pandas_table(new_data=(gamma, lambda_0, support_size, intercepts, converged))
+        return self._characteristics_as_pandas_table(new_data=(gamma, lambda_0, support_size, intercepts, converged))
 
     def plot(self, gamma: float = 0, show_lines: bool = False, **kwargs):
         """ Plots the regularization path for a given gamma.
@@ -323,9 +398,13 @@ class FitModel:
         ----------
         gamma : float
             The value of gamma at which to plot
+            Values for `gamma` do not need to be exact. The closest values, respectively, found in the regularization
+                path will be used
+
         show_lines : bool
             If True, the lines connecting the points in the plot are shown.
         kwargs : dict of str to any
+
             Key Word arguments passed to matplotlib.pyplot
 
         Notes
@@ -380,17 +459,55 @@ class FitModel:
               gamma: Optional[float] = None,
               training: bool = False,
               include_characteristics: bool = False) -> Union[pd.DataFrame, np.ndarray]:
-        """
+        """ Scores the performance of solutions in the regularization path at predicting `y_hat` based
+        on features in `x`.
+
+        Scoring function used is specified by the FitModel.settings #TODO Add sphinx reference to seetings
 
         Parameters
         ----------
-        x
-        y
-        lambda_0
-        gamma
+        x : np.ndarray of shape (N, P)
+            Features or design matrix to predict `y_hat` from
+            Does not inclue an intercept term as the model will automatically add one if specified in
+                FitMode.settings
+
+        y : np.ndarray of shape (N, )
+            Observations or ground truths of `y` which will be compared with `y_hat`
+
+            See FitModel.predict for details on predictions
+            :meth:`l0learn.models.FitModel.predict`
+
+        lambda_0 : float, optional
+            If provided, designates which solutions will be returned based of `lambda_0` and `gamma`
+            See FitModel.coeff for details on `lambda_0` specifications
+            :meth:`l0learn.models.FitModel.coeff`
+
+        gamma : float, optional
+            If provided, designates which solutions will be returned based of `gamma` and `lambda_0`
+            See FitModel.coeff for details on `lambda_0` specifications
+            :meth:`l0learn.models.FitModel.coeff`
+
+        training: bool, default False
+            Whether or not to include regularization losses when calculating model performance.
+
+            If `training` is True, all penalties according to FitModel.settings will be applied.
+            Otherwise, only the loss function will be calculated based on `y` and `y_hat`
+
+        include_characteristics: bool, default False
+            Whether or not to include the characteristics of each solution. This will result in `score` beginning
+            returned as a Pandas DataFrame similar to FitModel.characteristics, but with an additional column for score
+
+            See FitModel.characteristics for details on characteristics
+            :meth:`l0learn.models.FitModel.characteristics`
 
         Returns
         -------
+        score: np.ndarray of shape (num_solutions) or pd.Dataframe of length num_solutions
+
+            Where score[i] is the loss function between y and y_hat based on the ith solution of the regularization path
+                specified by `gamma` and `lamda_0` values.
+
+            If `include_characteristics` is True, score will be added as a column of the characteristics table
 
         """
         predictions = self.predict(x=x, lambda_0=lambda_0, gamma=gamma)
@@ -430,16 +547,22 @@ class FitModel:
         ----------
         x: array-like
             An array of feature observations on which predictions are made.
-            X should have shape (N, P). Intercept terms will be added by the predict function is specified during
-             original training.
-        lambda_0 : float, optional
-            Which lambda_0 value to use for predictions
+            X should have shape (N, P).
+                Intercept terms will be added by the predict function if specified during original training.
+                #TODO Sphinx Reference for Settings
 
-            See FitModel.coeff for details on lambda_0 specifications
+        lambda_0 : float, optional
+            Which `lambda_0` value to use for predictions
+
+            See FitModel.coeff for details on `lambda_0` specifications
+            :meth:`l0learn.models.FitModel.coeff`
+
         gamma : float, optional
             Which gamma value to use for predictions
 
-            See FitModel.coeff for details on gamma specifications
+            See FitModel.coeff for details on `lambda_0` specifications
+            :meth:`l0learn.models.FitModel.coeff`
+
         Returns
         -------
         predictions : np.ndarray
@@ -447,11 +570,9 @@ class FitModel:
 
             For logistic regression (loss specified as "Logistic"), values are non-threshold
 
-            When multiple coeffs are specified due to the settings of lambda_0 and gamma the prediction array is still
-            as expected with:
-
-            predictions[i, j] (row i, column j) refers to predicted response for observation i using coefficients from
-            solution j.
+            When multiple coeffs are specified due to the settings of `lambda_0` and `gamma` the prediction array is
+            formatted with standard convention:
+                predictions[i, j] refer to predicted response for observation i using coefficients from solution j.
         """
         coeffs = self.coeff(lambda_0=lambda_0,
                             gamma=gamma,
