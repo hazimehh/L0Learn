@@ -152,6 +152,9 @@ def logistic_loss(y_true: np.ndarray,
     # ExpyXB = arma::exp(this->y % (*(this->X) * this->B + this->b0));
     # return arma::sum(arma::log(1 + 1 / expyXB)) + regularization
 
+    if y_pred.ndim == 2:
+        y_true = y_true[:, np.newaxis]
+
     y_pred = np.clip(y_pred, eps, 1 - eps)
 
     log_loss = -(y_true*np.log(y_pred) + (1-y_true)*np.log(1-y_pred)).sum(axis=0)
@@ -176,6 +179,8 @@ def squared_hinge_loss(y_true: np.ndarray,
     # arma::uvec indices = arma::find(onemyxb > 0);
     # return arma::sum(onemyxb.elem(indices) % onemyxb.elem(indices)) + this->lambda0 * n_nonzero(
     #     B) + this->lambda1 * arma::norm(B, 1) + this->lambda2 * l2norm * l2norm;
+    if y_pred.ndim == 2:
+        y_true = y_true[:, np.newaxis]
 
     square_one_minus_y_XB = np.square(np.max(1 - y_true * y_pred, 0)).sum(axis=0)
     return square_one_minus_y_XB + reg_loss
@@ -513,7 +518,7 @@ class FitModel:
         characteristics = self.characteristics(lambda_0=lambda_0, gamma=gamma)
 
         if training:
-            coeffs = self.coeff(lambda_0=lambda_0, gamma=gamma)
+            coeffs = self.coeff(lambda_0=lambda_0, gamma=gamma, include_intercept=False)
             l0 = characteristics.get('l0', 0)
             l1 = characteristics.get('l1', 0)
             l2 = characteristics.get('l2', 0)
