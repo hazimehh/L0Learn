@@ -37,9 +37,6 @@ def regularization_loss(coeffs: csc_matrix,
     -----
 
     """
-    if coeffs.ndim != 2:
-        raise NotImplementedError("expected coeffs to be a 2D array")
-
     l0 = np.asarray(l0)
     l1 = np.asarray(l1)
     l2 = np.asarray(l2)
@@ -133,7 +130,7 @@ def squared_error(y_true: np.ndarray,
     if y_pred.ndim == 2:
         y_true = y_true[:, np.newaxis]
 
-    squared_residuals = 0.5 * np.square(y_true - y_pred)
+    squared_residuals = 0.5 * np.square(y_true - y_pred).sum(axis=0)
 
     return squared_residuals + reg_loss
 
@@ -143,7 +140,8 @@ def logistic_loss(y_true: np.ndarray,
                   coeffs: Optional[csc_matrix] = None,
                   l0: float = 0,
                   l1: float = 0,
-                  l2: float = 0, ) -> Union[float, np.ndarray]:
+                  l2: float = 0,
+                  eps: float = 1e-15) -> Union[float, np.ndarray]:
     # TODO: Check this formula. If there is an error here, there might be an error in the C++ code for Logistic.
 
     reg_loss = 0
@@ -154,8 +152,9 @@ def logistic_loss(y_true: np.ndarray,
     # ExpyXB = arma::exp(this->y % (*(this->X) * this->B + this->b0));
     # return arma::sum(arma::log(1 + 1 / expyXB)) + regularization
 
-    exp_y_XB = np.exp(y_true * np.log(y_pred))
-    log_loss = np.log(1 + 1 / exp_y_XB)
+    y_pred = np.clip(y_pred, eps, 1 - eps)
+
+    log_loss = -(y_true*np.log(y_pred) + (1-y_true)*np.log(1-y_pred)).sum(axis=0)
 
     return log_loss + reg_loss
 
@@ -178,7 +177,7 @@ def squared_hinge_loss(y_true: np.ndarray,
     # return arma::sum(onemyxb.elem(indices) % onemyxb.elem(indices)) + this->lambda0 * n_nonzero(
     #     B) + this->lambda1 * arma::norm(B, 1) + this->lambda2 * l2norm * l2norm;
 
-    square_one_minus_y_XB = np.square(np.max(1 - y_true * y_pred, 0))
+    square_one_minus_y_XB = np.square(np.max(1 - y_true * y_pred, 0)).sum(axis=0)
     return square_one_minus_y_XB + reg_loss
 
 
@@ -438,7 +437,7 @@ class FitModel:
         f, ax = plt.subplots(**kwargs)
 
         if show_lines:
-            linestyle = kwargs.pop("linestyle", "_.")
+            linestyle = kwargs.pop("linestyle", "-.")
         else:
             linestyle = kwargs.pop("linestyle", "None")
 
@@ -629,7 +628,7 @@ def gen_synthetic(n: int,
                   rho: float = 0,
                   b0: float = 0,
                   snr: float = 1
-                  ) -> Dict[str, Union[float, np.ndarray]]:
+                  ) -> Dict[str, Union[float, np.ndarray]]: # pragma: no cover
     """
     Generates a synthetic dataset as follows:
         1) Sample every element in data matrix X from N(0,1).
@@ -690,7 +689,7 @@ def gen_synthetic(n: int,
     return {"X": X, "y": y, "B": B, "e": e, "b0": b0}
 
 
-def cor_matrix(p: int, base_cor: float):
+def cor_matrix(p: int, base_cor: float): # pragma: no cover
     if not (0 < base_cor < 1):
         raise ValueError(f"Expected base_cor to be a float between 0 and 1 exclusively, but got {base_cor}")
 
@@ -709,7 +708,7 @@ def gen_synthetic_high_corr(n: int,
                             snr: float = 1,
                             mu: float = 0,
                             base_cor: float = 0.8,
-                            ) -> Dict[str, Union[float, np.ndarray]]:
+                            ) -> Dict[str, Union[float, np.ndarray]]:  # pragma: no cover
     """
     Generates a synthetic dataset as follows:
         1) Generate a correlation matrix, SIG,  where item [i, j] = base_core^|i-j|.
@@ -787,7 +786,7 @@ def gen_synthetic_logistic(n: int,
                            s: float = 1,
                            mu: Optional[float] = None,
                            base_cor: Optional[float] = None,
-                           ) -> Dict[str, Union[float, np.ndarray]]:
+                           ) -> Dict[str, Union[float, np.ndarray]]:  # pragma: no cover
     """
     Generates a synthetic dataset as follows:
         1) Generate a data matrix, X, drawn from either N(0, 1) (see gen_synthetic) or a multivariate_normal(mu, sigma)

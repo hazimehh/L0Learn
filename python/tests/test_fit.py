@@ -6,11 +6,15 @@ import l0learn
 
 N = 50
 
+
 @pytest.mark.parametrize("f", [l0learn.fit, l0learn.cvfit])
 def test_X_sparse_support(f):
     x = np.random.random(size=(N, N))
+    x_sparse = csc_matrix(x)
     y = np.random.random(size=(N,))
-    _ = l0learn.fit(csc_matrix(x), y, intercept=False)
+    model_fit = f(x_sparse, y, intercept=False)
+    assert max(model_fit.support_size[0]) == N
+
 
 @pytest.mark.parametrize("x", [np.random.random(size=(N, N, N)),  # Wrong Size
                                "A String",  # Wrong Type
@@ -381,10 +385,10 @@ def test_with_bounds_bad_checks(f, bounds):
         _ = f(x, y, lows=lows, highs=highs)
 
 
-@pytest.mark.parametrize("num_folds", [-1, 0, 1, N, 2.0])
+@pytest.mark.parametrize("num_folds", [-1, 0, 1, N+1, 2.0])
 def test_cvfit_num_folds_bad_check(num_folds):
     x = np.random.random(size=(N, N))
-    y = np.random.randint(0, 2, size=N)
+    y = np.random.random(size=N)
 
     with pytest.raises(ValueError):
         _ = l0learn.cvfit(x, y, num_folds=num_folds)

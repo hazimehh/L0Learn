@@ -223,7 +223,7 @@ def _fit_check(X: Union[np.ndarray, csc_matrix],
             raise ValueError(f"expected highs to be a non-negative float, but got {highs}")
         if highs < float('inf'):
             with_bounds = True
-    elif isinstance(highs, np.ndarray) and highs.ndim == 1 and len(highs) == p and (highs >= 0):
+    elif isinstance(highs, np.ndarray) and highs.ndim == 1 and len(highs) == p and all(highs >= 0):
         with_bounds = True
     else:
         raise ValueError(f"expected highs to be a non-negative float, or a 1D numpy array of length {p} of "
@@ -468,12 +468,7 @@ def fit(X: Union[np.ndarray, csc_matrix],
     lows = check['lows']
     highs = check['highs']
 
-    cdef vector[vector[double]] c_lambda_grid
-    try:
-        c_lambda_grid = lambda_grid
-    except TypeError:
-        raise ValueError(f"expected lambda_grid to be a list of list of doubles, but got {lambda_grid}")
-
+    cdef vector[vector[double]] c_lambda_grid = lambda_grid
     cdef string c_loss = loss.encode('UTF-8')
     cdef string c_penalty = penalty.encode('UTF-8')
     cdef string c_algorithim = algorithm.encode('UTF-8')
@@ -616,12 +611,7 @@ def cvfit(X: Union[np.ndarray, csc_matrix],
         raise ValueError(f"expected num_folds parameter to be a positive integer less than {p}, but got {num_folds}")
 
 
-    cdef vector[vector[double]] c_lambda_grid
-    try:
-        c_lambda_grid = lambda_grid
-    except TypeError:
-        raise ValueError(f"expected lambda_grid to be a list of list of doubles, but got {lambda_grid}")
-
+    cdef vector[vector[double]] c_lambda_grid = lambda_grid
     cdef string c_loss = loss.encode('UTF-8')
     cdef string c_penalty = penalty.encode('UTF-8')
     cdef string c_algorithim = algorithm.encode('UTF-8')
