@@ -1,41 +1,97 @@
-
 <!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
-    <title>Introduction &#8212; l0learn  documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Introduction &mdash; l0learn  documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="fit function" href="code.html" />
-    <link rel="prev" title="Welcome to l0learn’s documentation!" href="index.html" />
-   
-  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+    <link rel="prev" title="Welcome to l0learn’s documentation!" href="index.html" /> 
+</head>
 
-  </head><body>
-  
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> l0learn
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#Installation">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#Tutorial">Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#Fitting-L0-Regression-Models">Fitting L0 Regression Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Fitting-L0L2-and-L0L1-Regression-Models">Fitting L0L2 and L0L1 Regression Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Higher-quality-Solutions-using-Local-Search">Higher-quality Solutions using Local Search</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Cross-validation">Cross-validation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Fitting-Classification-Models">Fitting Classification Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Advanced-Options">Advanced Options</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Sparse-Matrix-Support">Sparse Matrix Support</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Selection-on-Subset-of-Variables">Selection on Subset of Variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Coefficient-Bounds">Coefficient Bounds</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#User-specified-Lambda-Grids">User-specified Lambda Grids</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#More-Details">More Details</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#References">References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="code.html"><cite>fit</cite> function</a></li>
+<li class="toctree-l1"><a class="reference internal" href="code.html#cvfit-function"><cite>cvfit</cite> function</a></li>
+<li class="toctree-l1"><a class="reference internal" href="code.html#fitmodels">FitModels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="code.html#cvfitmodels">CVFitModels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="code.html#generating-functions">Generating Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="code.html#scoring-functions">Scoring Functions</a></li>
+</ul>
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          
+        </div>
+      </div>
+    </nav>
 
-          <div class="body" role="main">
-            
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">l0learn</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Introduction</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/tutorial.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
   
 <style>
 /* CSS for nbsphinx extension */
@@ -283,9 +339,31 @@ div.rendered_html tbody tr:nth-child(odd) {
 div.rendered_html tbody tr:hover {
   background: rgba(66, 165, 245, 0.2);
 }
+
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
 </style>
 <section id="Introduction">
-<h1>Introduction<a class="headerlink" href="#Introduction" title="Permalink to this headline">¶</a></h1>
+<h1>Introduction<a class="headerlink" href="#Introduction" title="Permalink to this headline"></a></h1>
 <p><code class="docutils literal notranslate"><span class="pre">l0learn</span></code> is a fast toolkit for L0-regularized learning. L0 regularization selects the best subset of features and can outperform commonly used feature selection methods (e.g., L1 and MCP) under many sparse learning regimes. The toolkit can (approximately) solve the following three problems</p>
 <p><span class="math">\begin{equation}
 \min_{\beta_0, \beta} \sum_{i=1}^{n} \ell(y_i, \beta_0+ \langle x_i, \beta \rangle) + \lambda ||\beta||_0 \quad \quad (L0)
@@ -309,7 +387,7 @@ dynamically selecting the regularization parameter <span class="math notranslate
 <p>The toolkit is implemented in C++ along with an easy-to-use Python interface. In this vignette, we provide a tutorial on using the Python interface. Particularly, we will demonstrate how use L0Learn’s main functions for fitting models, cross-validation, and visualization.</p>
 </section>
 <section id="Installation">
-<h1>Installation<a class="headerlink" href="#Installation" title="Permalink to this headline">¶</a></h1>
+<h1>Installation<a class="headerlink" href="#Installation" title="Permalink to this headline"></a></h1>
 <p>L0Learn can be installed directly from pip by executing:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">pip install l0learn</span>
 </pre></div>
@@ -317,7 +395,7 @@ dynamically selecting the regularization parameter <span class="math notranslate
 <p>If you face installation issues, please refer to the <a class="reference external" href="https://github.com/hazimehh/L0Learn/wiki/Installation-Troubleshooting">Installation Troubleshooting Wiki</a>. If the issue is not resolved, you can submit an issue on <a class="reference external" href="https://github.com/hazimehh/L0Learn">L0Learn’s Github Repo</a>.</p>
 </section>
 <section id="Tutorial">
-<h1>Tutorial<a class="headerlink" href="#Tutorial" title="Permalink to this headline">¶</a></h1>
+<h1>Tutorial<a class="headerlink" href="#Tutorial" title="Permalink to this headline"></a></h1>
 <p>To demonstrate how <code class="docutils literal notranslate"><span class="pre">l0learn</span></code> works, we will first generate a synthetic dataset and then proceed to fitting L0-regularized models. The synthetic dataset (y,X) will be generated from a sparse linear model as follows:</p>
 <ul class="simple">
 <li><p>X is a 500x1000 design matrix with iid standard normal entries</p></li>
@@ -360,7 +438,7 @@ dynamically selecting the regularization parameter <span class="math notranslate
 </div>
 <p>We will start by fitting a simple L0 model and then proceed to the case of L0L2 and L0L1.</p>
 <section id="Fitting-L0-Regression-Models">
-<h2>Fitting L0 Regression Models<a class="headerlink" href="#Fitting-L0-Regression-Models" title="Permalink to this headline">¶</a></h2>
+<h2>Fitting L0 Regression Models<a class="headerlink" href="#Fitting-L0-Regression-Models" title="Permalink to this headline"></a></h2>
 <p>To fit a path of solutions for the L0-regularized model with at most 20 non-zeros using coordinate descent (CD), we use the <a class="reference internal" href="code.html#l0learn.models.gen_synthetic"><span class="std std-ref">l0learn.fit</span></a> function as follows:</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
@@ -651,7 +729,7 @@ array([[0.00215713],
 </div>
 </section>
 <section id="Fitting-L0L2-and-L0L1-Regression-Models">
-<h2>Fitting L0L2 and L0L1 Regression Models<a class="headerlink" href="#Fitting-L0L2-and-L0L1-Regression-Models" title="Permalink to this headline">¶</a></h2>
+<h2>Fitting L0L2 and L0L1 Regression Models<a class="headerlink" href="#Fitting-L0L2-and-L0L1-Regression-Models" title="Permalink to this headline"></a></h2>
 <p>We have demonstrated the simple case of using an L0 penalty. We can also fit more elaborate models that combine L0 regularization with shrinkage-inducing penalties like the L1 norm or squared L2 norm. Adding shrinkage helps in avoiding overfitting and typically improves the predictive performance of the models. Next, we will discuss how to fit a model using the L0L2 penalty for a two-dimensional grid of :math:<code class="docutils literal notranslate"><span class="pre">\lambda</span></code> and :math:<code class="docutils literal notranslate"><span class="pre">\gamma</span></code> values. Recall that by default, <code class="docutils literal notranslate"><span class="pre">l0learn</span></code>
 automatically selects the :math:<code class="docutils literal notranslate"><span class="pre">\lambda</span></code> sequence, so we only need to specify the :math:<code class="docutils literal notranslate"><span class="pre">\gamma</span></code> sequence. Suppose we want to fit an L0L2 model with a maximum of 20 non-zeros and a sequence of 5 :math:<code class="docutils literal notranslate"><span class="pre">\gamma</span></code> values ranging between 0.0001 and 10. We can do so by calling <a class="reference internal" href="code.html#l0learn.fit"><span class="std std-ref">l0learn.fit</span></a> with :code:<code class="docutils literal notranslate"><span class="pre">penalty=&quot;L0L2&quot;</span></code>, :code:<code class="docutils literal notranslate"><span class="pre">num_gamma=5</span></code>, :code:<code class="docutils literal notranslate"><span class="pre">gamma_min=0.0001</span></code>, and :code:<code class="docutils literal notranslate"><span class="pre">gamma_max=10</span></code> as follows:</p>
 <div class="nbinput nblast docutils container">
@@ -888,12 +966,12 @@ automatically selects the :math:<code class="docutils literal notranslate"><span
 <p>Finally, we note that fitting an L0L1 model can be done by just changing the <code class="docutils literal notranslate"><span class="pre">penalty</span></code> to “L0L1” in the above (in this case <code class="docutils literal notranslate"><span class="pre">gamma_max</span></code> will be ignored since it is automatically selected by the toolkit; see the reference manual for more details.)</p>
 </section>
 <section id="Higher-quality-Solutions-using-Local-Search">
-<h2>Higher-quality Solutions using Local Search<a class="headerlink" href="#Higher-quality-Solutions-using-Local-Search" title="Permalink to this headline">¶</a></h2>
+<h2>Higher-quality Solutions using Local Search<a class="headerlink" href="#Higher-quality-Solutions-using-Local-Search" title="Permalink to this headline"></a></h2>
 <p>By default, <code class="docutils literal notranslate"><span class="pre">l0learn</span></code> uses coordinate descent (CD) to fit models. Since the objective function is non-convex, the choice of the optimization algorithm can have a significant effect on the solution quality (different algorithms can lead to solutions with very different objective values). A more elaborate algorithm based on combinatorial search can be used by setting the parameter <code class="docutils literal notranslate"><span class="pre">algorithm=&quot;CDPSI&quot;</span></code> in the call to <code class="docutils literal notranslate"><span class="pre">l0learn.fit</span></code>. <code class="docutils literal notranslate"><span class="pre">CDPSI</span></code> typically leads to higher-quality solutions compared
 to CD, especially when the features are highly correlated. CDPSI is slower than CD, however, for typical applications it terminates in the order of seconds.</p>
 </section>
 <section id="Cross-validation">
-<h2>Cross-validation<a class="headerlink" href="#Cross-validation" title="Permalink to this headline">¶</a></h2>
+<h2>Cross-validation<a class="headerlink" href="#Cross-validation" title="Permalink to this headline"></a></h2>
 <p>We will demonstrate how to use K-fold cross-validation (CV) to select the optimal values of the tuning parameters <span class="math notranslate nohighlight">\(\lambda\)</span> and <span class="math notranslate nohighlight">\(\gamma\)</span>. To perform CV, we use the <a class="reference internal" href="code.html#l0learn.cvfit"><span class="std std-ref">l0learn.cvfit</span></a> function, which takes the same parameters as <a class="reference internal" href="code.html#l0learn.fit"><span class="std std-ref">l0learn.fit</span></a>, in addition to the number of folds using the <code class="docutils literal notranslate"><span class="pre">num_folds</span></code> parameter and a seed value using the <code class="docutils literal notranslate"><span class="pre">seed</span></code> parameter (this is used when randomly shuffling the data before performing CV).</p>
 <p>For example, to perform 5-fold CV using the <code class="docutils literal notranslate"><span class="pre">L0L2</span></code> penalty (over a range of 5 <code class="docutils literal notranslate"><span class="pre">gamma</span></code> values between 0.0001 and 0.1) with a maximum of 50 non-zeros, we run:</p>
 <div class="nbinput nblast docutils container">
@@ -1055,7 +1133,7 @@ Optimal lambda =  0.0016080760437896327
 </div>
 </section>
 <section id="Fitting-Classification-Models">
-<h2>Fitting Classification Models<a class="headerlink" href="#Fitting-Classification-Models" title="Permalink to this headline">¶</a></h2>
+<h2>Fitting Classification Models<a class="headerlink" href="#Fitting-Classification-Models" title="Permalink to this headline"></a></h2>
 <p>All the commands and plots we have seen in the case of regression extend to classification. We currently support logistic regression (using the parameter <code class="docutils literal notranslate"><span class="pre">loss=&quot;Logistic&quot;</span></code>) and a smoothed version of SVM (using the parameter <code class="docutils literal notranslate"><span class="pre">loss=&quot;SquaredHinge&quot;</span></code>). To give some examples, we first generate a synthetic classification dataset (similar to the one we generated in the case of regression):</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[72]:
@@ -1380,9 +1458,9 @@ Optimal lambda =  0.0016080760437896327
 <p>Finally, we note that L0Learn also supports a smoothed version of SVM by using squared hinge loss <code class="docutils literal notranslate"><span class="pre">loss</span> <span class="pre">=</span> <span class="pre">&quot;SquaredHinge&quot;</span></code>. The only difference from logistic regression is that the <code class="docutils literal notranslate"><span class="pre">predict</span></code> function returns <span class="math notranslate nohighlight">\(\beta_0 + \langle x, \beta \rangle\)</span> (where <span class="math notranslate nohighlight">\(x\)</span> is the testing sample), instead of returning probabilities. The latter predictions can be assigned to the appropriate classes by using a thresholding function (e.g., the sign function).</p>
 </section>
 <section id="Advanced-Options">
-<h2>Advanced Options<a class="headerlink" href="#Advanced-Options" title="Permalink to this headline">¶</a></h2>
+<h2>Advanced Options<a class="headerlink" href="#Advanced-Options" title="Permalink to this headline"></a></h2>
 <section id="Sparse-Matrix-Support">
-<h3>Sparse Matrix Support<a class="headerlink" href="#Sparse-Matrix-Support" title="Permalink to this headline">¶</a></h3>
+<h3>Sparse Matrix Support<a class="headerlink" href="#Sparse-Matrix-Support" title="Permalink to this headline"></a></h3>
 <p>Starting in version 2.0.0, L0Learn supports sparse matrices of type <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csc_matrix.html">scipy.sparse.csc_matrix</a>. If your sparse matrix uses a different storage format, please convert it to <code class="docutils literal notranslate"><span class="pre">csc_matrix</span></code> before using it in <code class="docutils literal notranslate"><span class="pre">l0learn</span></code>. <code class="docutils literal notranslate"><span class="pre">l0learn</span></code> keeps the matrix sparse internally and thus is highly efficient if the matrix is sufficiently sparse. The API for sparse matrices is the same as that of dense matrices, so all the
 demonstrations in this vignette also apply for sparse matrices. For example, we can fit an L0-regularized model on a sparse matrix as follows:</p>
 <div class="nbinput docutils container">
@@ -1565,7 +1643,7 @@ demonstrations in this vignette also apply for sparse matrices. For example, we 
 </div>
 </section>
 <section id="Selection-on-Subset-of-Variables">
-<h3>Selection on Subset of Variables<a class="headerlink" href="#Selection-on-Subset-of-Variables" title="Permalink to this headline">¶</a></h3>
+<h3>Selection on Subset of Variables<a class="headerlink" href="#Selection-on-Subset-of-Variables" title="Permalink to this headline"></a></h3>
 <p>In certain applications, it is desirable to always include some of the variables in the model and perform variable selection on others. <code class="docutils literal notranslate"><span class="pre">l0learn</span></code> supports this option through the <code class="docutils literal notranslate"><span class="pre">exclude_first_k</span></code> parameter. Specifically, setting <code class="docutils literal notranslate"><span class="pre">exclude_first_k</span> <span class="pre">=</span> <span class="pre">K</span></code> (where K is a non-negative integer) instructs <code class="docutils literal notranslate"><span class="pre">l0learn</span></code> to exclude the first K variables in the data matrix <code class="docutils literal notranslate"><span class="pre">X</span></code> from the L0-norm penalty (those K variables will still be penalized using the L2 or L1 norm penalties.). For example, below we
 fit an <code class="docutils literal notranslate"><span class="pre">L0</span></code> model and exclude the first 3 variables from selection by setting <code class="docutils literal notranslate"><span class="pre">excludeFirstK</span> <span class="pre">=</span> <span class="pre">3</span></code>:</p>
 <div class="nbinput docutils container">
@@ -1690,7 +1768,7 @@ fit an <code class="docutils literal notranslate"><span class="pre">L0</span></c
 <p>We can see in the plot above that first 3 variables, (0, 1, 2) are included in all the solutions of the path</p>
 </section>
 <section id="Coefficient-Bounds">
-<h3>Coefficient Bounds<a class="headerlink" href="#Coefficient-Bounds" title="Permalink to this headline">¶</a></h3>
+<h3>Coefficient Bounds<a class="headerlink" href="#Coefficient-Bounds" title="Permalink to this headline"></a></h3>
 <p>Starting in version 2.0.0, <code class="docutils literal notranslate"><span class="pre">l0learn</span></code> supports bounds for CD algorithms for all losses and penalties. (We plan to support bound constraints for the CDPSI algorithm in the future). By default, <code class="docutils literal notranslate"><span class="pre">l0learn</span></code> does not apply bounds, i.e., it assumes <span class="math notranslate nohighlight">\(-\infty &lt;= \beta_i &lt;= \infty\)</span> for all i. Users can supply the same bounds for all coefficients by setting the parameters <code class="docutils literal notranslate"><span class="pre">lows</span></code> and <code class="docutils literal notranslate"><span class="pre">highs</span></code> to scalar values (these should satisfy: <code class="docutils literal notranslate"><span class="pre">lows</span> <span class="pre">&lt;=</span> <span class="pre">0</span></code>, <code class="docutils literal notranslate"><span class="pre">lows</span> <span class="pre">!=</span> <span class="pre">highs</span></code>, and <code class="docutils literal notranslate"><span class="pre">highs</span> <span class="pre">&gt;=</span> <span class="pre">0</span></code>). To use
 different bounds for the coefficients, <code class="docutils literal notranslate"><span class="pre">lows</span></code> and <code class="docutils literal notranslate"><span class="pre">highs</span></code> can be both set to vectors of length <code class="docutils literal notranslate"><span class="pre">p</span></code> (where the i-th entry corresponds to the bound on coefficient i).</p>
 <p>All of the following examples are valid.</p>
@@ -1757,7 +1835,7 @@ minimum value of coefficient = -0.1 &gt;= -0.1
 </div>
 </section>
 <section id="User-specified-Lambda-Grids">
-<h3>User-specified Lambda Grids<a class="headerlink" href="#User-specified-Lambda-Grids" title="Permalink to this headline">¶</a></h3>
+<h3>User-specified Lambda Grids<a class="headerlink" href="#User-specified-Lambda-Grids" title="Permalink to this headline"></a></h3>
 <p>By default, <code class="docutils literal notranslate"><span class="pre">l0learn</span></code> selects the sequence of lambda values in an efficient manner to avoid wasted computation (since close <span class="math notranslate nohighlight">\(\lambda\)</span> values can typically lead to the same solution). Advanced users of the toolkit can change this default behavior and supply their own sequence of <span class="math notranslate nohighlight">\(\lambda\)</span> values. This can be done supplying the <span class="math notranslate nohighlight">\(\lambda\)</span> values through the parameter <code class="docutils literal notranslate"><span class="pre">lambda_grid</span></code>. When <code class="docutils literal notranslate"><span class="pre">lambda_grid</span></code> is supplied, we require <code class="docutils literal notranslate"><span class="pre">num_gamma</span></code> and <code class="docutils literal notranslate"><span class="pre">num_lambda</span></code> to be <code class="docutils literal notranslate"><span class="pre">None</span></code> to
 ensure the is no ambiguity in the solution path requested.</p>
 <p>Specifically, the value assigned to <code class="docutils literal notranslate"><span class="pre">lambda_grid</span></code> should be a list of lists/arrays of decreasing positive values (floats). The length of <code class="docutils literal notranslate"><span class="pre">lambda_grid</span></code> (the number of lists stored) specifies the number of gamma parameters that will fill between <code class="docutils literal notranslate"><span class="pre">gamma_min</span></code>, and <code class="docutils literal notranslate"><span class="pre">gamma_max</span></code>. In the case of L0 penalty, <code class="docutils literal notranslate"><span class="pre">lambda_grid</span></code> must be a list of length 1. In case of L0L2/L0L1 <code class="docutils literal notranslate"><span class="pre">lambda_grid</span></code> can have any number of sub-lists stored. The ith element in <code class="docutils literal notranslate"><span class="pre">lambda_grid</span></code> should be a <strong>strictly
@@ -2028,7 +2106,7 @@ decreasing</strong> sequence of positive lambda values which are used by the alg
 </section>
 </section>
 <section id="More-Details">
-<h1>More Details<a class="headerlink" href="#More-Details" title="Permalink to this headline">¶</a></h1>
+<h1>More Details<a class="headerlink" href="#More-Details" title="Permalink to this headline"></a></h1>
 <p>For more details please inspect the doc strings of:</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="code.html#l0learn.models.CVFitModel"><span class="std std-ref">l0learn.models.CVFitModel</span></a></p></li>
@@ -2038,95 +2116,40 @@ decreasing</strong> sequence of positive lambda values which are used by the alg
 </ul>
 </section>
 <section id="References">
-<h1>References<a class="headerlink" href="#References" title="Permalink to this headline">¶</a></h1>
+<h1>References<a class="headerlink" href="#References" title="Permalink to this headline"></a></h1>
 <p>Hussein Hazimeh and Rahul Mazumder. <a class="reference external" href="https://pubsonline.informs.org/doi/10.1287/opre.2019.1919">Fast Best Subset Selection: Coordinate Descent and Local Combinatorial Optimization Algorithms</a>. Operations Research (2020).</p>
 <p>Antoine Dedieu, Hussein Hazimeh, and Rahul Mazumder. <a class="reference external" href="https://arxiv.org/abs/2001.06471">Learning Sparse Classifiers: Continuous and Mixed Integer Optimization Perspectives</a>. JMLR (to appear).</p>
 </section>
 
 
+           </div>
           </div>
-          
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to l0learn’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="code.html" class="btn btn-neutral float-right" title="fit function" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Hussein Hazimeh, Rahul Mazumder, and Tim Nonet.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="index.html">l0learn</a></h1>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
 
-
-
-
-
-
-
-
-<h3>Navigation</h3>
-<ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="#Installation">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="#Tutorial">Tutorial</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#Fitting-L0-Regression-Models">Fitting L0 Regression Models</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#Fitting-L0L2-and-L0L1-Regression-Models">Fitting L0L2 and L0L1 Regression Models</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#Higher-quality-Solutions-using-Local-Search">Higher-quality Solutions using Local Search</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#Cross-validation">Cross-validation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#Fitting-Classification-Models">Fitting Classification Models</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#Advanced-Options">Advanced Options</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="#More-Details">More Details</a></li>
-<li class="toctree-l1"><a class="reference internal" href="#References">References</a></li>
-<li class="toctree-l1"><a class="reference internal" href="code.html"><cite>fit</cite> function</a></li>
-<li class="toctree-l1"><a class="reference internal" href="code.html#cvfit-function"><cite>cvfit</cite> function</a></li>
-<li class="toctree-l1"><a class="reference internal" href="code.html#fitmodels">FitModels</a></li>
-<li class="toctree-l1"><a class="reference internal" href="code.html#cvfitmodels">CVFitModels</a></li>
-<li class="toctree-l1"><a class="reference internal" href="code.html#generating-functions">Generating Functions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="code.html#scoring-functions">Scoring Functions</a></li>
-</ul>
-
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="index.html" title="previous chapter">Welcome to l0learn’s documentation!</a></li>
-      <li>Next: <a href="code.html" title="next chapter"><cite>fit</cite> function</a></li>
-  </ul></li>
-</ul>
-</div>
-<div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</div>
-<script>$('#searchbox').show(0);</script>
-
-
-
-
-
-
-
-
-        </div>
-      </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="footer">
-      &copy;2021, Hussein Hazimeh, Rahul Mazumder, and Tim Nonet.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.3.0</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
-      
-      |
-      <a href="_sources/tutorial.ipynb.txt"
-          rel="nofollow">Page source</a>
-    </div>
-
-    
-
-    
-  </body>
+</body>
 </html>
