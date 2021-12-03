@@ -1,0 +1,2132 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Introduction &#8212; l0learn  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="fit function" href="code.html" />
+    <link rel="prev" title="Welcome to l0learn’s documentation!" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt *,
+div.nbinput.container div.input_area pre,
+div.nboutput.container div.output_area pre,
+div.nbinput.container div.input_area .highlight,
+div.nboutput.container div.output_area .highlight {
+    border: none;
+    padding: 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+div.nbinput.container > div[class*=highlight],
+div.nboutput.container > div[class*=highlight] {
+    margin: 0;
+}
+
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt * {
+    background: none;
+}
+
+div.nboutput.container div.output_area .highlight,
+div.nboutput.container div.output_area pre {
+    background: unset;
+}
+
+div.nboutput.container div.output_area div.highlight {
+    color: unset;  /* override Pygments text color */
+}
+
+/* avoid gaps between output lines */
+div.nboutput.container div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput.container,
+div.nboutput.container {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput.container,
+    div.nboutput.container {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput.container {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast.container {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput.container div.prompt pre {
+    color: #307FC1;
+}
+
+/* output prompt */
+div.nboutput.container div.prompt pre {
+    color: #BF5B3D;
+}
+
+/* all prompts */
+div.nbinput.container div.prompt,
+div.nboutput.container div.prompt {
+    width: 4.5ex;
+    padding-top: 5px;
+    position: relative;
+    user-select: none;
+}
+
+div.nbinput.container div.prompt > div,
+div.nboutput.container div.prompt > div {
+    position: absolute;
+    right: 0;
+    margin-right: 0.3ex;
+}
+
+@media (max-width: 540px) {
+    div.nbinput.container div.prompt,
+    div.nboutput.container div.prompt {
+        width: unset;
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput.container div.prompt.empty {
+        padding: 0;
+    }
+
+    div.nbinput.container div.prompt > div,
+    div.nboutput.container div.prompt > div {
+        position: unset;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput.container div.prompt pre,
+div.nboutput.container div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput.container div.input_area,
+div.nboutput.container div.output_area {
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput.container div.input_area,
+    div.nboutput.container div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput.container div.input_area {
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    /*background: #f5f5f5;*/
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput.container div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput.container div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput.container div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+
+
+div.nbinput.container div.input_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight].math,
+div.nboutput.container div.output_area.rendered_html,
+div.nboutput.container div.output_area > div.output_javascript,
+div.nboutput.container div.output_area:not(.rendered_html) > img{
+    padding: 5px;
+    margin: 0;
+}
+
+/* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
+div.nbinput.container div.input_area > div[class^='highlight'],
+div.nboutput.container div.output_area > div[class^='highlight']{
+    overflow-y: hidden;
+}
+
+/* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
+.prompt a.copybtn {
+    display: none;
+}
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+div.rendered_html th {
+  font-weight: bold;
+}
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+</style>
+<section id="Introduction">
+<h1>Introduction<a class="headerlink" href="#Introduction" title="Permalink to this headline">¶</a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">l0learn</span></code> is a fast toolkit for L0-regularized learning. L0 regularization selects the best subset of features and can outperform commonly used feature selection methods (e.g., L1 and MCP) under many sparse learning regimes. The toolkit can (approximately) solve the following three problems</p>
+<p><span class="math">\begin{equation}
+\min_{\beta_0, \beta} \sum_{i=1}^{n} \ell(y_i, \beta_0+ \langle x_i, \beta \rangle) + \lambda ||\beta||_0 \quad \quad (L0)
+\end{equation}</span></p>
+<p><span class="math">\begin{equation}
+\min_{\beta_0, \beta} \sum_{i=1}^{n} \ell(y_i, \beta_0+ \langle x_i, \beta \rangle) + \lambda ||\beta||_0 + \gamma||\beta||_1 \quad (L0L1)
+\end{equation}</span></p>
+<p><span class="math">\begin{equation}
+\min_{\beta_0, \beta} \sum_{i=1}^{n} \ell(y_i, \beta_0+ \langle x_i, \beta \rangle) + \lambda ||\beta||_0 + \gamma||\beta||_2^2  \quad (L0L2)
+\end{equation}</span></p>
+<p>where <span class="math notranslate nohighlight">\(\ell\)</span> is the loss function, <span class="math notranslate nohighlight">\(\beta_0\)</span> is the intercept, <span class="math notranslate nohighlight">\(\beta\)</span> is the vector of coefficients, and <span class="math notranslate nohighlight">\(||\beta||_0\)</span> denotes the L0 norm of <span class="math notranslate nohighlight">\(\beta\)</span>, i.e., the number of non-zeros in <span class="math notranslate nohighlight">\(\beta\)</span>. We support both regression and classification using either one of the following loss functions:</p>
+<ul class="simple">
+<li><p>Squared error loss</p></li>
+<li><p>Logistic loss (logistic regression)</p></li>
+<li><p>Squared hinge loss (smoothed version of SVM).</p></li>
+</ul>
+<p>The parameter <span class="math notranslate nohighlight">\(\lambda\)</span> controls the strength of the L0 regularization (larger <span class="math notranslate nohighlight">\(\lambda\)</span> leads to less non-zeros). The parameter <span class="math notranslate nohighlight">\(\gamma\)</span> controls the strength of the shrinkage component (which is the L1 norm in case of L0L1 or squared L2 norm in case of L0L2); adding a shrinkage term to L0 can be very effective in avoiding overfitting and typically leads to better predictive models. The fitting is done over a grid of <span class="math notranslate nohighlight">\(\lambda\)</span> and <span class="math notranslate nohighlight">\(\gamma\)</span> values to generate a
+regularization path.</p>
+<p>The algorithms provided in l0learn` are based on cyclic coordinate descent and local combinatorial search. Many computational tricks and heuristics are used to speed up the algorithms and improve the solution quality. These heuristics include warm starts, active set convergence, correlation screening, greedy cycling order, and efficient methods for updating the residuals through exploiting sparsity and problem dimensions. Moreover, we employed a new computationally efficient method for
+dynamically selecting the regularization parameter <span class="math notranslate nohighlight">\(\lambda\)</span> in the path. For more details on the algorithms used, please refer to our paper <a class="reference external" href="https://pubsonline.informs.org/doi/10.1287/opre.2019.1919">Fast Best Subset Selection: Coordinate Descent and Local Combinatorial Optimization Algorithms</a>.</p>
+<p>The toolkit is implemented in C++ along with an easy-to-use Python interface. In this vignette, we provide a tutorial on using the Python interface. Particularly, we will demonstrate how use L0Learn’s main functions for fitting models, cross-validation, and visualization.</p>
+</section>
+<section id="Installation">
+<h1>Installation<a class="headerlink" href="#Installation" title="Permalink to this headline">¶</a></h1>
+<p>L0Learn can be installed directly from pip by executing:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">pip install l0learn</span>
+</pre></div>
+</div>
+<p>If you face installation issues, please refer to the <a class="reference external" href="https://github.com/hazimehh/L0Learn/wiki/Installation-Troubleshooting">Installation Troubleshooting Wiki</a>. If the issue is not resolved, you can submit an issue on <a class="reference external" href="https://github.com/hazimehh/L0Learn">L0Learn’s Github Repo</a>.</p>
+</section>
+<section id="Tutorial">
+<h1>Tutorial<a class="headerlink" href="#Tutorial" title="Permalink to this headline">¶</a></h1>
+<p>To demonstrate how <code class="docutils literal notranslate"><span class="pre">l0learn</span></code> works, we will first generate a synthetic dataset and then proceed to fitting L0-regularized models. The synthetic dataset (y,X) will be generated from a sparse linear model as follows:</p>
+<ul class="simple">
+<li><p>X is a 500x1000 design matrix with iid standard normal entries</p></li>
+<li><p>B is a 1000x1 vector with the first 10 entries set to 1 and the rest are zeros.</p></li>
+<li><p>e is a 500x1 vector with iid standard normal entries</p></li>
+<li><p>y is a 500x1 response vector such that y = XB + e</p></li>
+</ul>
+<p>This dataset can be generated in python as follows:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span> <span class="c1"># fix the seed to get a reproducible result</span>
+<span class="n">n</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">k</span> <span class="o">=</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">10</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">p</span><span class="p">))</span>
+<span class="n">B</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+<span class="n">B</span><span class="p">[:</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">e</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="n">n</span><span class="p">,))</span><span class="o">/</span><span class="mi">2</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">X</span><span class="nd">@B</span> <span class="o">+</span> <span class="n">e</span>
+</pre></div>
+</div>
+</div>
+<p>More expressive and complete functions for generating datasets can be found are available in l0learn.models. The available functions are:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="code.html#l0learn.models.gen_synthetic"><span class="std std-ref">l0learn.models.gen_synthetic()</span></a></p></li>
+<li><p><a class="reference internal" href="code.html#l0learn.models.gen_synthetic_high_corr"><span class="std std-ref">l0learn.models.gen_synthetic_high_corr()</span></a></p></li>
+<li><p><a class="reference internal" href="code.html#l0learn.models.gen_synthetic_logistic"><span class="std std-ref">l0learn.models.gen_synthetic_logistic()</span></a></p></li>
+</ul>
+<p>We will use <code class="docutils literal notranslate"><span class="pre">l0learn</span></code> to estimate B from the data (y,X). First we load L0Learn:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">l0learn</span>
+</pre></div>
+</div>
+</div>
+<p>We will start by fitting a simple L0 model and then proceed to the case of L0L2 and L0L1.</p>
+<section id="Fitting-L0-Regression-Models">
+<h2>Fitting L0 Regression Models<a class="headerlink" href="#Fitting-L0-Regression-Models" title="Permalink to this headline">¶</a></h2>
+<p>To fit a path of solutions for the L0-regularized model with at most 20 non-zeros using coordinate descent (CD), we use the <a class="reference internal" href="code.html#l0learn.models.gen_synthetic"><span class="std std-ref">l0learn.fit</span></a> function as follows:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fit_model</span> <span class="o">=</span> <span class="n">l0learn</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">penalty</span><span class="o">=</span><span class="s2">&quot;L0&quot;</span><span class="p">,</span> <span class="n">max_support_size</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>This will generate solutions for a sequence of <span class="math notranslate nohighlight">\(\lambda\)</span> values (chosen automatically by the algorithm). To view the sequence of <span class="math notranslate nohighlight">\(\lambda\)</span> along with the associated support sizes (i.e., the number of non-zeros), we use the built-in rich display from <a class="reference external" href="https://ipython.readthedocs.io/en/stable/config/integrating.html+">ipython Rich Display</a> for iPython Notebooks. When running this tutorial in a more standard python environment, use the function
+l0learn.models.FitModel.characteristics to display the sequence of solutions.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fit_model</span>
+<span class="c1"># fit_model.characteristics()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>l0</th>
+      <th>support_size</th>
+      <th>intercept</th>
+      <th>converged</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0.079546</td>
+      <td>0</td>
+      <td>-0.156704</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>0.078750</td>
+      <td>1</td>
+      <td>-0.147182</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0.065862</td>
+      <td>2</td>
+      <td>-0.161024</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>0.050464</td>
+      <td>3</td>
+      <td>-0.002500</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0.044517</td>
+      <td>5</td>
+      <td>-0.041058</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>0.041672</td>
+      <td>7</td>
+      <td>-0.058013</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>0.039705</td>
+      <td>8</td>
+      <td>-0.061685</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>0.032715</td>
+      <td>10</td>
+      <td>0.002157</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>0.000212</td>
+      <td>11</td>
+      <td>-0.000857</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>0.000187</td>
+      <td>12</td>
+      <td>-0.002161</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>0.000178</td>
+      <td>13</td>
+      <td>-0.001199</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>11</th>
+      <td>0.000159</td>
+      <td>15</td>
+      <td>-0.007959</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <td>0.000141</td>
+      <td>16</td>
+      <td>-0.009603</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>13</th>
+      <td>0.000133</td>
+      <td>18</td>
+      <td>-0.015697</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>14</th>
+      <td>0.000132</td>
+      <td>21</td>
+      <td>-0.012732</td>
+      <td>True</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<p>To extract the estimated B for particular values of <span class="math notranslate nohighlight">\(\lambda\)</span> and <span class="math notranslate nohighlight">\(\gamma\)</span>, we use the function l0learn.models.FitModel.coeff. For example, the solution at <span class="math notranslate nohighlight">\(\lambda = 0.032715\)</span> (which corresponds to a support size of 10 + plus an intercept term) can be extracted using:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fit_model</span><span class="o">.</span><span class="n">coeff</span><span class="p">(</span><span class="n">lambda_0</span><span class="o">=</span><span class="mf">0.032715</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;1001x1 sparse matrix of type &#39;&lt;class &#39;numpy.float64&#39;&gt;&#39;
+        with 11 stored elements in Compressed Sparse Column format&gt;
+</pre></div></div>
+</div>
+<p>The output is a sparse matrix of type <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csc_matrix.html">scipy.sparse.csc_matrix</a>. Depending on the <code class="docutils literal notranslate"><span class="pre">include_intercept</span></code> parameter of l0learn.models.FitModel.coeff, The first element in the vector is the intercept and the rest are the B coefficients. Aside from the intercept, the only non-zeros in the above solution are coordinates 0, 1, 2, 3, …, 9, which are the non-zero coordinates
+in the true support (used to generated the data). Thus, this solution successfully recovers the true support. Note that on some BLAS implementations, the <code class="docutils literal notranslate"><span class="pre">lambda</span></code> value we used above (i.e., <code class="docutils literal notranslate"><span class="pre">0.032715</span></code>) might be slightly different due to the limitations of numerical precision. Moreover, all the solutions in the regularization path can be extracted at once by calling l0learn.models.FitModel.coeff without specifying a <code class="docutils literal notranslate"><span class="pre">lambda_0</span></code> or <code class="docutils literal notranslate"><span class="pre">gamma</span></code> value.</p>
+<p>The sequence of <span class="math notranslate nohighlight">\(\lambda\)</span> generated by <code class="docutils literal notranslate"><span class="pre">L0Learn</span></code> is stored in the object <code class="docutils literal notranslate"><span class="pre">fit_model</span></code>. Specifically, <code class="docutils literal notranslate"><span class="pre">fit_model.lambda_0</span></code> is a list, where each element of the list is a sequence of <span class="math notranslate nohighlight">\(\lambda\)</span> values corresponding to a single value of <span class="math notranslate nohighlight">\(\gamma\)</span>. When using an L0 penalty , which has only one value of <span class="math notranslate nohighlight">\(\gamma\)</span> (i.e., 0), we can access the sequence of <span class="math notranslate nohighlight">\(\lambda\)</span> values using <code class="docutils literal notranslate"><span class="pre">fit.lambda_0[0]</span></code>. Thus, <span class="math notranslate nohighlight">\(\lambda=0.032715\)</span> we used previously can be accessed using
+<code class="docutils literal notranslate"><span class="pre">fit_model.lambda_0[0][7]</span></code> (since it is the 8th value in the output of :code:<code class="docutils literal notranslate"><span class="pre">fit.characteristics()</span></code>). The previous solution can also be extracted using <code class="docutils literal notranslate"><span class="pre">fit_model.coeff(lambda_0=0.032,</span> <span class="pre">gamma=0)</span></code>.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;fit_model.lambda_0[0][7] = </span><span class="si">{</span><span class="n">fit_model</span><span class="o">.</span><span class="n">lambda_0</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">7</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">fit_model</span><span class="o">.</span><span class="n">coeff</span><span class="p">(</span><span class="n">lambda_0</span><span class="o">=</span><span class="mf">0.032715</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+fit_model.lambda_0[0][7] = 0.03271533058913737
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+array([[0.00215713],
+       [1.02014176],
+       [0.97338278],
+       ...,
+       [0.        ],
+       [0.        ],
+       [0.        ]])
+</pre></div></div>
+</div>
+<p>We can make predictions using a specific solution in the grid using the function <code class="docutils literal notranslate"><span class="pre">fit_model.predict(newx,</span> <span class="pre">lambda,</span> <span class="pre">gamma)</span></code> where <code class="docutils literal notranslate"><span class="pre">newx</span></code> is a testing sample (vector or matrix). For example, to predict the response for the samples in the data matrix X using the solution with <span class="math notranslate nohighlight">\(\lambda=0.0058037\)</span>, we call the prediction function as follows:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="k">with</span> <span class="n">np</span><span class="o">.</span><span class="n">printoptions</span><span class="p">(</span><span class="n">threshold</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">fit_model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">X</span><span class="p">,</span> <span class="n">lambda_0</span><span class="o">=</span><span class="mf">0.032715</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[[-2.68272239]
+ [-3.667317  ]
+ [-1.77309853]
+ ...
+ [ 2.25545111]
+ [-0.77364234]
+ [-2.15002055]]
+</pre></div></div>
+</div>
+<p>We can also visualize the regularization path by plotting the coefficients of the estimated B versus the support size (i.e., the number of non-zeros) using the l0learn.models.FitModel.plot() method as follows:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">ax</span> <span class="o">=</span> <span class="n">fit_model</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">include_legend</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/tutorial_18_0.png" src="_images/tutorial_18_0.png" />
+</div>
+</div>
+<p>The legend of the plot presents the variables in the order they entered the regularization path. For example, variable 7 is the first variable to enter the path, and variable 6 is the second to enter. Thus, roughly speaking, we can view the first <span class="math notranslate nohighlight">\(k\)</span> variables in the legend as the best subset of size <span class="math notranslate nohighlight">\(k\)</span>. To show the lines connecting the points in the plot, we can set the parameter :code:<code class="docutils literal notranslate"><span class="pre">show_lines=True</span></code> in the <code class="docutils literal notranslate"><span class="pre">plot</span></code> function, i.e., call
+:code:<code class="docutils literal notranslate"><span class="pre">fit.plot(fit,</span> <span class="pre">gamma=0,</span> <span class="pre">show_lines=True)</span></code>. Moreover, we note that the plot function returns a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/version/0.21/visualization.html">matplotlib.axes._subplots.AxesSubplot</a> object, which can be further customized using the <code class="docutils literal notranslate"><span class="pre">matplotlib</span></code> package. In addition, both the l0learn.models.FitModel.plot() and l0learn.models.CVFitModel.cv_plot() accept
+:code:<code class="docutils literal notranslate"><span class="pre">**kwargs</span></code> parameter to allow for customization of the plotting behavior.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fit_model</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">show_lines</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;AxesSubplot:xlabel=&#39;Support Size&#39;, ylabel=&#39;Coefficient Value&#39;&gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/tutorial_20_1.png" src="_images/tutorial_20_1.png" />
+</div>
+</div>
+</section>
+<section id="Fitting-L0L2-and-L0L1-Regression-Models">
+<h2>Fitting L0L2 and L0L1 Regression Models<a class="headerlink" href="#Fitting-L0L2-and-L0L1-Regression-Models" title="Permalink to this headline">¶</a></h2>
+<p>We have demonstrated the simple case of using an L0 penalty. We can also fit more elaborate models that combine L0 regularization with shrinkage-inducing penalties like the L1 norm or squared L2 norm. Adding shrinkage helps in avoiding overfitting and typically improves the predictive performance of the models. Next, we will discuss how to fit a model using the L0L2 penalty for a two-dimensional grid of :math:<code class="docutils literal notranslate"><span class="pre">\lambda</span></code> and :math:<code class="docutils literal notranslate"><span class="pre">\gamma</span></code> values. Recall that by default, <code class="docutils literal notranslate"><span class="pre">l0learn</span></code>
+automatically selects the :math:<code class="docutils literal notranslate"><span class="pre">\lambda</span></code> sequence, so we only need to specify the :math:<code class="docutils literal notranslate"><span class="pre">\gamma</span></code> sequence. Suppose we want to fit an L0L2 model with a maximum of 20 non-zeros and a sequence of 5 :math:<code class="docutils literal notranslate"><span class="pre">\gamma</span></code> values ranging between 0.0001 and 10. We can do so by calling <a class="reference internal" href="code.html#l0learn.fit"><span class="std std-ref">l0learn.fit</span></a> with :code:<code class="docutils literal notranslate"><span class="pre">penalty=&quot;L0L2&quot;</span></code>, :code:<code class="docutils literal notranslate"><span class="pre">num_gamma=5</span></code>, :code:<code class="docutils literal notranslate"><span class="pre">gamma_min=0.0001</span></code>, and :code:<code class="docutils literal notranslate"><span class="pre">gamma_max=10</span></code> as follows:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fit_model_2</span> <span class="o">=</span> <span class="n">l0learn</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">penalty</span><span class="o">=</span><span class="s2">&quot;L0L2&quot;</span><span class="p">,</span> <span class="n">num_gamma</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span> <span class="n">gamma_min</span> <span class="o">=</span> <span class="mf">0.0001</span><span class="p">,</span> <span class="n">gamma_max</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="n">max_support_size</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">l0learn</span></code> will generate a grid of 5 :math:<code class="docutils literal notranslate"><span class="pre">\gamma</span></code> values equi-spaced on the logarithmic scale between 0.0001 and 10. Similar to the case for L0, we can display a summary of the regularization path using the l0learn.models.FitModel.characteristics function as follows:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fit_model_2</span> <span class="c1"># Using ipython Rich Display</span>
+<span class="c1"># fit_model_2.characteristics()  # For non Rich Display</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>l0</th>
+      <th>support_size</th>
+      <th>intercept</th>
+      <th>converged</th>
+      <th>l2</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0.003788</td>
+      <td>0</td>
+      <td>-0.156704</td>
+      <td>True</td>
+      <td>10.0000</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>0.003750</td>
+      <td>1</td>
+      <td>-0.156250</td>
+      <td>True</td>
+      <td>10.0000</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0.002911</td>
+      <td>2</td>
+      <td>-0.148003</td>
+      <td>True</td>
+      <td>10.0000</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>0.002654</td>
+      <td>3</td>
+      <td>-0.148650</td>
+      <td>True</td>
+      <td>10.0000</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0.002597</td>
+      <td>3</td>
+      <td>-0.148650</td>
+      <td>True</td>
+      <td>10.0000</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>128</th>
+      <td>0.000216</td>
+      <td>10</td>
+      <td>0.002130</td>
+      <td>True</td>
+      <td>0.0001</td>
+    </tr>
+    <tr>
+      <th>129</th>
+      <td>0.000173</td>
+      <td>13</td>
+      <td>-0.003684</td>
+      <td>True</td>
+      <td>0.0001</td>
+    </tr>
+    <tr>
+      <th>130</th>
+      <td>0.000167</td>
+      <td>13</td>
+      <td>-0.003685</td>
+      <td>True</td>
+      <td>0.0001</td>
+    </tr>
+    <tr>
+      <th>131</th>
+      <td>0.000134</td>
+      <td>18</td>
+      <td>-0.015724</td>
+      <td>True</td>
+      <td>0.0001</td>
+    </tr>
+    <tr>
+      <th>132</th>
+      <td>0.000130</td>
+      <td>21</td>
+      <td>-0.012762</td>
+      <td>True</td>
+      <td>0.0001</td>
+    </tr>
+  </tbody>
+</table>
+<p>133 rows × 5 columns</p>
+</div></div>
+</div>
+<p>The sequence of <span class="math notranslate nohighlight">\(\gamma\)</span> values can be accessed using <code class="docutils literal notranslate"><span class="pre">fit_model_2.gamma</span></code>. To extract a solution we use the l0learn.models.FitModel.coeff method. For example, extracting the solution at <span class="math notranslate nohighlight">\(\lambda=0.0016\)</span> and <span class="math notranslate nohighlight">\(\gamma=10\)</span> can be done using:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[40]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fit_model_2</span><span class="o">.</span><span class="n">coeff</span><span class="p">(</span><span class="n">lambda_0</span><span class="o">=</span><span class="mf">0.0016</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[40]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;1001x1 sparse matrix of type &#39;&lt;class &#39;numpy.float64&#39;&gt;&#39;
+        with 11 stored elements in Compressed Sparse Column format&gt;
+</pre></div></div>
+</div>
+<p>Similarly, we can predict the response at this pair of <span class="math notranslate nohighlight">\(\lambda\)</span> and <span class="math notranslate nohighlight">\(\gamma\)</span> for the matrix X using</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[41]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="k">with</span> <span class="n">np</span><span class="o">.</span><span class="n">printoptions</span><span class="p">(</span><span class="n">threshold</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">fit_model_2</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">X</span><span class="p">,</span> <span class="n">lambda_0</span><span class="o">=</span><span class="mf">0.0016</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mi">10</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[[-0.31499242]
+ [-0.3474209 ]
+ [-0.23997924]
+ ...
+ [-0.06707991]
+ [-0.18562493]
+ [-0.25608131]]
+</pre></div></div>
+</div>
+<p>The regularization path can also be plotted at a specific <span class="math notranslate nohighlight">\(\gamma\)</span> using <code class="docutils literal notranslate"><span class="pre">fit_model_2.plot(gamma=10)</span></code>. Here we can see the influence of ratio of <span class="math notranslate nohighlight">\(\gamma\)</span> and <span class="math notranslate nohighlight">\(\lambda\)</span>. Since <span class="math notranslate nohighlight">\(\gamma\)</span> is so large (<span class="math notranslate nohighlight">\(10\)</span>) maintaining sparisity, then <span class="math notranslate nohighlight">\(\lambda\)</span> can be quite small <span class="math notranslate nohighlight">\(0.0016\)</span> which this results in a very stable estimate of the magnitude of the coeffs.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[44]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fit_model_2</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">gamma</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">show_lines</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/Users/tnonet/Documents/GitHub/L0Learn/python/l0learn/models.py:438: UserWarning: Duplicate solution seen at support size 3. Plotting only first solution
+  warnings.warn(f&#34;Duplicate solution seen at support size {support_size}. Plotting only first solution&#34;)
+/Users/tnonet/Documents/GitHub/L0Learn/python/l0learn/models.py:438: UserWarning: Duplicate solution seen at support size 10. Plotting only first solution
+  warnings.warn(f&#34;Duplicate solution seen at support size {support_size}. Plotting only first solution&#34;)
+/Users/tnonet/Documents/GitHub/L0Learn/python/l0learn/models.py:438: UserWarning: Duplicate solution seen at support size 11. Plotting only first solution
+  warnings.warn(f&#34;Duplicate solution seen at support size {support_size}. Plotting only first solution&#34;)
+/Users/tnonet/Documents/GitHub/L0Learn/python/l0learn/models.py:438: UserWarning: Duplicate solution seen at support size 12. Plotting only first solution
+  warnings.warn(f&#34;Duplicate solution seen at support size {support_size}. Plotting only first solution&#34;)
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[44]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;AxesSubplot:xlabel=&#39;Support Size&#39;, ylabel=&#39;Coefficient Value&#39;&gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/tutorial_30_2.png" src="_images/tutorial_30_2.png" />
+</div>
+</div>
+<p>Finally, we note that fitting an L0L1 model can be done by just changing the <code class="docutils literal notranslate"><span class="pre">penalty</span></code> to “L0L1” in the above (in this case <code class="docutils literal notranslate"><span class="pre">gamma_max</span></code> will be ignored since it is automatically selected by the toolkit; see the reference manual for more details.)</p>
+</section>
+<section id="Higher-quality-Solutions-using-Local-Search">
+<h2>Higher-quality Solutions using Local Search<a class="headerlink" href="#Higher-quality-Solutions-using-Local-Search" title="Permalink to this headline">¶</a></h2>
+<p>By default, <code class="docutils literal notranslate"><span class="pre">l0learn</span></code> uses coordinate descent (CD) to fit models. Since the objective function is non-convex, the choice of the optimization algorithm can have a significant effect on the solution quality (different algorithms can lead to solutions with very different objective values). A more elaborate algorithm based on combinatorial search can be used by setting the parameter <code class="docutils literal notranslate"><span class="pre">algorithm=&quot;CDPSI&quot;</span></code> in the call to <code class="docutils literal notranslate"><span class="pre">l0learn.fit</span></code>. <code class="docutils literal notranslate"><span class="pre">CDPSI</span></code> typically leads to higher-quality solutions compared
+to CD, especially when the features are highly correlated. CDPSI is slower than CD, however, for typical applications it terminates in the order of seconds.</p>
+</section>
+<section id="Cross-validation">
+<h2>Cross-validation<a class="headerlink" href="#Cross-validation" title="Permalink to this headline">¶</a></h2>
+<p>We will demonstrate how to use K-fold cross-validation (CV) to select the optimal values of the tuning parameters <span class="math notranslate nohighlight">\(\lambda\)</span> and <span class="math notranslate nohighlight">\(\gamma\)</span>. To perform CV, we use the <a class="reference internal" href="code.html#l0learn.cvfit"><span class="std std-ref">l0learn.cvfit</span></a> function, which takes the same parameters as <a class="reference internal" href="code.html#l0learn.fit"><span class="std std-ref">l0learn.fit</span></a>, in addition to the number of folds using the <code class="docutils literal notranslate"><span class="pre">num_folds</span></code> parameter and a seed value using the <code class="docutils literal notranslate"><span class="pre">seed</span></code> parameter (this is used when randomly shuffling the data before performing CV).</p>
+<p>For example, to perform 5-fold CV using the <code class="docutils literal notranslate"><span class="pre">L0L2</span></code> penalty (over a range of 5 <code class="docutils literal notranslate"><span class="pre">gamma</span></code> values between 0.0001 and 0.1) with a maximum of 50 non-zeros, we run:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[45]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">cv_fit_result</span> <span class="o">=</span> <span class="n">l0learn</span><span class="o">.</span><span class="n">cvfit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">num_folds</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">penalty</span><span class="o">=</span><span class="s2">&quot;L0L2&quot;</span><span class="p">,</span> <span class="n">num_gamma</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">gamma_min</span><span class="o">=</span><span class="mf">0.0001</span><span class="p">,</span> <span class="n">gamma_max</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">max_support_size</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>Note that the object returned during cross validation is <a class="reference internal" href="code.html#l0learn.models.CVFitModel"><span class="std std-ref">l0learn.models.CVFitModel</span></a> which subclasses <a class="reference internal" href="code.html#l0learn.models.FitModel"><span class="std std-ref">l0learn.models.FitModel</span></a> and thus has the same methods and underlinying structure. The cross-validation errors can be accessed using the <code class="docutils literal notranslate"><span class="pre">cv_means</span></code> attribute of a <code class="docutils literal notranslate"><span class="pre">CVFitModel</span></code>: <code class="docutils literal notranslate"><span class="pre">cv_fit_result.cv_means</span></code> is a list where the ith element, <code class="docutils literal notranslate"><span class="pre">cv_fit_result.cv_means[i]</span></code>, stores the cross-validation errors for the ith
+value of gamma <code class="docutils literal notranslate"><span class="pre">cv_fit_result.gamma[i]</span></code>). To find the minimum cross-validation error for every <code class="docutils literal notranslate"><span class="pre">gamma</span></code>, we apply the :code:<code class="docutils literal notranslate"><span class="pre">np.argmin</span></code> function for every element in the list :<code class="docutils literal notranslate"><span class="pre">cv_fit_result.cv_means</span></code>, as follows:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[52]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">gamma_mins</span> <span class="o">=</span> <span class="p">[(</span><span class="n">i</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">cv_mean</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">cv_mean</span><span class="p">))</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">cv_mean</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cv_fit_result</span><span class="o">.</span><span class="n">cv_means</span><span class="p">)]</span>
+<span class="n">gamma_mins</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[52]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[(0, 8, 0.5313128699361661),
+ (1, 8, 0.2669789604993652),
+ (2, 8, 0.2558807301729078),
+ (3, 20, 0.25555788170828786),
+ (4, 19, 0.2555564968851251)]
+</pre></div></div>
+</div>
+<p>The above output indicates that the 5th value of gamma achieves the lowest CV error (<code class="docutils literal notranslate"><span class="pre">=0.255</span></code>). We can plot the CV errors against the support size for the 5th value of gamma, i.e., <code class="docutils literal notranslate"><span class="pre">gamma</span> <span class="pre">=</span> <span class="pre">cv_fit_result.gamma[4]</span></code>, using:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[50]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">cv_fit_result</span><span class="o">.</span><span class="n">cv_plot</span><span class="p">(</span><span class="n">gamma</span> <span class="o">=</span> <span class="n">cv_fit_result</span><span class="o">.</span><span class="n">gamma</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span>
+<span class="n">cv_fit_result</span><span class="o">.</span><span class="n">cv_sds</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[50]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;AxesSubplot:xlabel=&#39;Support Size&#39;, ylabel=&#39;Cross-Validation Error&#39;&gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/tutorial_36_1.png" src="_images/tutorial_36_1.png" />
+</div>
+</div>
+<p>The above plot is produced using the <a class="reference external" href="https://pandas.pydata.org/pandas-docs/version/0.21/visualization.html">matplotlib</a> package and returns a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/version/0.21/visualization.html">matplotlib.axes._subplots.AxesSubplot</a> which can be further customized by the user. We can also note that we have error bars in the cross validation error which is stored in <code class="docutils literal notranslate"><span class="pre">cv_sds</span></code> attribute and can be accessed with <code class="docutils literal notranslate"><span class="pre">cv_fit_result.cv_sds</span></code>. To extract the optimal
+<span class="math notranslate nohighlight">\(\lambda\)</span> (i.e., the one with minimum CV error) in this plot, we execute the following:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[57]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">optimal_gamma_index</span><span class="p">,</span> <span class="n">optimal_lambda_index</span><span class="p">,</span> <span class="n">min_error</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">gamma_mins</span><span class="p">,</span> <span class="n">key</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="n">t</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">optimal_gamma_index</span><span class="p">,</span> <span class="n">optimal_lambda_index</span><span class="p">,</span> <span class="n">min_error</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Optimal lambda = &quot;</span><span class="p">,</span> <span class="n">fit_model_2</span><span class="o">.</span><span class="n">lambda_0</span><span class="p">[</span><span class="n">optimal_gamma_index</span><span class="p">][</span><span class="n">optimal_lambda_index</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+4 19 0.2555564968851251
+Optimal lambda =  0.0016080760437896327
+</pre></div></div>
+</div>
+<p>To print the solution corresponding to the optimal gamma/lambda pair:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[58]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">cv_fit_result</span><span class="o">.</span><span class="n">coeff</span><span class="p">(</span><span class="n">lambda_0</span><span class="o">=</span><span class="n">fit_model_2</span><span class="o">.</span><span class="n">lambda_0</span><span class="p">[</span><span class="n">optimal_gamma_index</span><span class="p">][</span><span class="n">optimal_lambda_index</span><span class="p">],</span>
+                    <span class="n">gamma</span><span class="o">=</span><span class="n">fit_model_2</span><span class="o">.</span><span class="n">gamma</span><span class="p">[</span><span class="n">optimal_gamma_index</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[58]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;1001x1 sparse matrix of type &#39;&lt;class &#39;numpy.float64&#39;&gt;&#39;
+        with 11 stored elements in Compressed Sparse Column format&gt;
+</pre></div></div>
+</div>
+<p>The optimal solution (above) selected by cross-validation correctly recovers the support of the true vector of coefficients used to generate the model.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[70]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">beta_vector</span> <span class="o">=</span> <span class="n">cv_fit_result</span><span class="o">.</span><span class="n">coeff</span><span class="p">(</span><span class="n">lambda_0</span><span class="o">=</span><span class="n">fit_model_2</span><span class="o">.</span><span class="n">lambda_0</span><span class="p">[</span><span class="n">optimal_gamma_index</span><span class="p">][</span><span class="n">optimal_lambda_index</span><span class="p">],</span>
+                    <span class="n">gamma</span><span class="o">=</span><span class="n">fit_model_2</span><span class="o">.</span><span class="n">gamma</span><span class="p">[</span><span class="n">optimal_gamma_index</span><span class="p">],</span>
+                    <span class="n">include_intercept</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span>
+
+<span class="k">with</span> <span class="n">np</span><span class="o">.</span><span class="n">printoptions</span><span class="p">(</span><span class="n">threshold</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">edgeitems</span><span class="o">=</span><span class="mi">15</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">([</span><span class="n">beta_vector</span><span class="p">,</span> <span class="n">B</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)]))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[[1.01994648 1.        ]
+ [0.97317979 1.        ]
+ [0.99813347 1.        ]
+ [0.99669481 1.        ]
+ [1.01128182 1.        ]
+ [1.00190748 1.        ]
+ [1.01272103 1.        ]
+ [0.99204841 1.        ]
+ [0.99607406 1.        ]
+ [1.0266543  1.        ]
+ [0.         0.        ]
+ [0.         0.        ]
+ [0.         0.        ]
+ [0.         0.        ]
+ [0.         0.        ]
+ ...
+ [0.         0.        ]
+ [0.         0.        ]
+ [0.         0.        ]
+ [0.         0.        ]
+ [0.         0.        ]
+ [0.         0.        ]
+ [0.         0.        ]
+ [0.         0.        ]
+ [0.         0.        ]
+ [0.         0.        ]
+ [0.         0.        ]
+ [0.         0.        ]
+ [0.         0.        ]
+ [0.         0.        ]
+ [0.         0.        ]]
+</pre></div></div>
+</div>
+</section>
+<section id="Fitting-Classification-Models">
+<h2>Fitting Classification Models<a class="headerlink" href="#Fitting-Classification-Models" title="Permalink to this headline">¶</a></h2>
+<p>All the commands and plots we have seen in the case of regression extend to classification. We currently support logistic regression (using the parameter <code class="docutils literal notranslate"><span class="pre">loss=&quot;Logistic&quot;</span></code>) and a smoothed version of SVM (using the parameter <code class="docutils literal notranslate"><span class="pre">loss=&quot;SquaredHinge&quot;</span></code>). To give some examples, we first generate a synthetic classification dataset (similar to the one we generated in the case of regression):</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[72]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span> <span class="c1"># fix the seed to get a reproducible result</span>
+<span class="n">n</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">k</span> <span class="o">=</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">10</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">p</span><span class="p">))</span>
+<span class="n">B</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+<span class="n">B</span><span class="p">[:</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">e</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="n">n</span><span class="p">,))</span><span class="o">/</span><span class="mi">2</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">X</span><span class="nd">@B</span> <span class="o">+</span> <span class="n">e</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>More expressive and complete functions for generating datasets can be found are available in l0learn.models. The available functions are:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="code.html#l0learn.models.gen_synthetic"><span class="std std-ref">l0learn.models.gen_synthetic()</span></a></p></li>
+<li><p><a class="reference internal" href="code.html#l0learn.models.gen_synthetic_high_corr"><span class="std std-ref">l0learn.models.gen_synthetic_high_corr()</span></a></p></li>
+<li><p><a class="reference internal" href="code.html#l0learn.models.gen_synthetic_logistic"><span class="std std-ref">l0learn.models.gen_synthetic_logistic()</span></a></p></li>
+</ul>
+<p>An L0-regularized logistic regression model can be fit by specificying <code class="docutils literal notranslate"><span class="pre">loss</span> <span class="pre">=</span> <span class="pre">&quot;Logistic&quot;</span></code> as follows:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[117]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fit_model_3</span> <span class="o">=</span> <span class="n">l0learn</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">loss</span><span class="o">=</span><span class="s2">&quot;Logistic&quot;</span><span class="p">,</span> <span class="n">max_support_size</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<span class="n">fit_model_3</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[117]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>l0</th>
+      <th>support_size</th>
+      <th>intercept</th>
+      <th>converged</th>
+      <th>l2</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>25.225336</td>
+      <td>1</td>
+      <td>-0.036989</td>
+      <td>True</td>
+      <td>1.000000e-07</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>19.432053</td>
+      <td>2</td>
+      <td>-0.043199</td>
+      <td>True</td>
+      <td>1.000000e-07</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>18.928603</td>
+      <td>2</td>
+      <td>-0.043230</td>
+      <td>True</td>
+      <td>1.000000e-07</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>15.142882</td>
+      <td>2</td>
+      <td>-0.043245</td>
+      <td>True</td>
+      <td>1.000000e-07</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>12.114306</td>
+      <td>9</td>
+      <td>0.004044</td>
+      <td>True</td>
+      <td>1.000000e-07</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>7.411211</td>
+      <td>10</td>
+      <td>0.188422</td>
+      <td>False</td>
+      <td>1.000000e-07</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>7.188875</td>
+      <td>10</td>
+      <td>0.219990</td>
+      <td>False</td>
+      <td>1.000000e-07</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>5.751100</td>
+      <td>10</td>
+      <td>0.234899</td>
+      <td>False</td>
+      <td>1.000000e-07</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>4.600880</td>
+      <td>10</td>
+      <td>0.242631</td>
+      <td>False</td>
+      <td>1.000000e-07</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>3.680704</td>
+      <td>10</td>
+      <td>0.243655</td>
+      <td>True</td>
+      <td>1.000000e-07</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>2.944563</td>
+      <td>10</td>
+      <td>0.243993</td>
+      <td>True</td>
+      <td>1.000000e-07</td>
+    </tr>
+    <tr>
+      <th>11</th>
+      <td>2.355651</td>
+      <td>10</td>
+      <td>0.244295</td>
+      <td>True</td>
+      <td>1.000000e-07</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <td>1.884520</td>
+      <td>10</td>
+      <td>0.244520</td>
+      <td>True</td>
+      <td>1.000000e-07</td>
+    </tr>
+    <tr>
+      <th>13</th>
+      <td>1.507616</td>
+      <td>10</td>
+      <td>0.244716</td>
+      <td>True</td>
+      <td>1.000000e-07</td>
+    </tr>
+    <tr>
+      <th>14</th>
+      <td>1.206093</td>
+      <td>10</td>
+      <td>0.244886</td>
+      <td>True</td>
+      <td>1.000000e-07</td>
+    </tr>
+    <tr>
+      <th>15</th>
+      <td>0.964874</td>
+      <td>10</td>
+      <td>0.245011</td>
+      <td>True</td>
+      <td>1.000000e-07</td>
+    </tr>
+    <tr>
+      <th>16</th>
+      <td>0.771900</td>
+      <td>10</td>
+      <td>0.245133</td>
+      <td>True</td>
+      <td>1.000000e-07</td>
+    </tr>
+    <tr>
+      <th>17</th>
+      <td>0.617520</td>
+      <td>12</td>
+      <td>0.178144</td>
+      <td>False</td>
+      <td>1.000000e-07</td>
+    </tr>
+    <tr>
+      <th>18</th>
+      <td>0.598994</td>
+      <td>12</td>
+      <td>0.196406</td>
+      <td>False</td>
+      <td>1.000000e-07</td>
+    </tr>
+    <tr>
+      <th>19</th>
+      <td>0.479195</td>
+      <td>12</td>
+      <td>0.208883</td>
+      <td>False</td>
+      <td>1.000000e-07</td>
+    </tr>
+    <tr>
+      <th>20</th>
+      <td>0.383356</td>
+      <td>15</td>
+      <td>0.192033</td>
+      <td>False</td>
+      <td>1.000000e-07</td>
+    </tr>
+    <tr>
+      <th>21</th>
+      <td>0.371856</td>
+      <td>15</td>
+      <td>0.221470</td>
+      <td>False</td>
+      <td>1.000000e-07</td>
+    </tr>
+    <tr>
+      <th>22</th>
+      <td>0.297484</td>
+      <td>15</td>
+      <td>0.246182</td>
+      <td>False</td>
+      <td>1.000000e-07</td>
+    </tr>
+    <tr>
+      <th>23</th>
+      <td>0.237988</td>
+      <td>16</td>
+      <td>-0.110626</td>
+      <td>False</td>
+      <td>1.000000e-07</td>
+    </tr>
+    <tr>
+      <th>24</th>
+      <td>0.230848</td>
+      <td>16</td>
+      <td>-0.118558</td>
+      <td>False</td>
+      <td>1.000000e-07</td>
+    </tr>
+    <tr>
+      <th>25</th>
+      <td>0.184678</td>
+      <td>16</td>
+      <td>-0.124533</td>
+      <td>False</td>
+      <td>1.000000e-07</td>
+    </tr>
+    <tr>
+      <th>26</th>
+      <td>0.147743</td>
+      <td>21</td>
+      <td>-0.211002</td>
+      <td>False</td>
+      <td>1.000000e-07</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<p>The output above indicates that <span class="math notranslate nohighlight">\(\gamma=10^{-7}\)</span> by default we use a small ridge regularization (with <span class="math notranslate nohighlight">\(\gamma=10^{-7}\)</span>) to ensure the existence of a unique solution. To extract the coefficients of the solution with <span class="math notranslate nohighlight">\(\lambda = 8.69435\)</span> we use the following code. Notice that we can ignore the specification of gamma as there is only one gamma used in L0 Logistic regression:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[83]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">fit_model_3</span><span class="o">.</span><span class="n">coeff</span><span class="p">(</span><span class="n">lambda_0</span><span class="o">=</span><span class="mf">7.411211</span><span class="p">)</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<p>The above indicates that the 10 non-zeros in the estimated model match those we used in generating the data (i.e, L0 regularization correctly recovered the true support). We can also make predictions at the latter <span class="math notranslate nohighlight">\(\lambda\)</span> using:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[84]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="k">with</span> <span class="n">np</span><span class="o">.</span><span class="n">printoptions</span><span class="p">(</span><span class="n">threshold</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+   <span class="nb">print</span><span class="p">(</span><span class="n">fit_model_3</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">lambda_0</span><span class="o">=</span><span class="mf">7.411211</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[[1.69583037e-04]
+ [4.92440655e-06]
+ [3.92195535e-03]
+ ...
+ [9.99161941e-01]
+ [1.69035746e-01]
+ [9.99171256e-04]]
+</pre></div></div>
+</div>
+<p>Each row in the above is the probability that the corresponding sample belongs to class <span class="math notranslate nohighlight">\(1\)</span>. Other models (i.e., L0L2 and L0L1) can be similarly fit by specifying <code class="docutils literal notranslate"><span class="pre">loss</span> <span class="pre">=</span> <span class="pre">&quot;Logistic&quot;</span></code>.</p>
+<p>Finally, we note that L0Learn also supports a smoothed version of SVM by using squared hinge loss <code class="docutils literal notranslate"><span class="pre">loss</span> <span class="pre">=</span> <span class="pre">&quot;SquaredHinge&quot;</span></code>. The only difference from logistic regression is that the <code class="docutils literal notranslate"><span class="pre">predict</span></code> function returns <span class="math notranslate nohighlight">\(\beta_0 + \langle x, \beta \rangle\)</span> (where <span class="math notranslate nohighlight">\(x\)</span> is the testing sample), instead of returning probabilities. The latter predictions can be assigned to the appropriate classes by using a thresholding function (e.g., the sign function).</p>
+</section>
+<section id="Advanced-Options">
+<h2>Advanced Options<a class="headerlink" href="#Advanced-Options" title="Permalink to this headline">¶</a></h2>
+<section id="Sparse-Matrix-Support">
+<h3>Sparse Matrix Support<a class="headerlink" href="#Sparse-Matrix-Support" title="Permalink to this headline">¶</a></h3>
+<p>Starting in version 2.0.0, L0Learn supports sparse matrices of type <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csc_matrix.html">scipy.sparse.csc_matrix</a>. If your sparse matrix uses a different storage format, please convert it to <code class="docutils literal notranslate"><span class="pre">csc_matrix</span></code> before using it in <code class="docutils literal notranslate"><span class="pre">l0learn</span></code>. <code class="docutils literal notranslate"><span class="pre">l0learn</span></code> keeps the matrix sparse internally and thus is highly efficient if the matrix is sufficiently sparse. The API for sparse matrices is the same as that of dense matrices, so all the
+demonstrations in this vignette also apply for sparse matrices. For example, we can fit an L0-regularized model on a sparse matrix as follows:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[90]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">random</span>
+<span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">norm</span>
+
+
+<span class="n">X_sparse</span> <span class="o">=</span> <span class="n">random</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;csc&#39;</span><span class="p">,</span> <span class="n">data_rvs</span><span class="o">=</span><span class="n">norm</span><span class="p">()</span><span class="o">.</span><span class="n">rvs</span><span class="p">)</span>
+<span class="n">y_sparse</span> <span class="o">=</span> <span class="p">(</span><span class="n">X_sparse</span><span class="nd">@B</span> <span class="o">+</span> <span class="n">e</span><span class="p">)</span>
+
+<span class="n">fit_model_sparse</span> <span class="o">=</span> <span class="n">l0learn</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_sparse</span><span class="p">,</span> <span class="n">y_sparse</span><span class="p">,</span> <span class="n">penalty</span><span class="o">=</span><span class="s2">&quot;L0&quot;</span><span class="p">,</span> <span class="n">max_support_size</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+
+<span class="n">fit_model_sparse</span><span class="o">.</span><span class="n">characteristics</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[90]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>l0</th>
+      <th>support_size</th>
+      <th>intercept</th>
+      <th>converged</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0.031892</td>
+      <td>0</td>
+      <td>0.009325</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>0.031573</td>
+      <td>1</td>
+      <td>0.004882</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0.020606</td>
+      <td>2</td>
+      <td>-0.002187</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>0.014442</td>
+      <td>3</td>
+      <td>-0.004111</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0.013932</td>
+      <td>4</td>
+      <td>-0.002556</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>0.010854</td>
+      <td>5</td>
+      <td>0.002987</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>0.009286</td>
+      <td>6</td>
+      <td>0.002048</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>0.009191</td>
+      <td>7</td>
+      <td>-0.001371</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>0.008771</td>
+      <td>8</td>
+      <td>-0.000533</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>0.008151</td>
+      <td>9</td>
+      <td>0.000064</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>0.006480</td>
+      <td>11</td>
+      <td>0.001587</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>11</th>
+      <td>0.006364</td>
+      <td>12</td>
+      <td>-0.003636</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <td>0.005760</td>
+      <td>13</td>
+      <td>-0.003866</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>13</th>
+      <td>0.005560</td>
+      <td>15</td>
+      <td>-0.004211</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>14</th>
+      <td>0.005264</td>
+      <td>17</td>
+      <td>0.001497</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>15</th>
+      <td>0.004637</td>
+      <td>18</td>
+      <td>-0.000797</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>16</th>
+      <td>0.004515</td>
+      <td>19</td>
+      <td>-0.002634</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>17</th>
+      <td>0.004113</td>
+      <td>22</td>
+      <td>0.001419</td>
+      <td>True</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+</section>
+<section id="Selection-on-Subset-of-Variables">
+<h3>Selection on Subset of Variables<a class="headerlink" href="#Selection-on-Subset-of-Variables" title="Permalink to this headline">¶</a></h3>
+<p>In certain applications, it is desirable to always include some of the variables in the model and perform variable selection on others. <code class="docutils literal notranslate"><span class="pre">l0learn</span></code> supports this option through the <code class="docutils literal notranslate"><span class="pre">exclude_first_k</span></code> parameter. Specifically, setting <code class="docutils literal notranslate"><span class="pre">exclude_first_k</span> <span class="pre">=</span> <span class="pre">K</span></code> (where K is a non-negative integer) instructs <code class="docutils literal notranslate"><span class="pre">l0learn</span></code> to exclude the first K variables in the data matrix <code class="docutils literal notranslate"><span class="pre">X</span></code> from the L0-norm penalty (those K variables will still be penalized using the L2 or L1 norm penalties.). For example, below we
+fit an <code class="docutils literal notranslate"><span class="pre">L0</span></code> model and exclude the first 3 variables from selection by setting <code class="docutils literal notranslate"><span class="pre">excludeFirstK</span> <span class="pre">=</span> <span class="pre">3</span></code>:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[94]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fit_model_k</span> <span class="o">=</span> <span class="n">l0learn</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">penalty</span><span class="o">=</span><span class="s2">&quot;L0&quot;</span><span class="p">,</span> <span class="n">max_support_size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">exclude_first_k</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">fit_model_k</span><span class="o">.</span><span class="n">characteristics</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[94]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>l0</th>
+      <th>support_size</th>
+      <th>intercept</th>
+      <th>converged</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0.050464</td>
+      <td>3</td>
+      <td>-0.017599</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>0.044333</td>
+      <td>4</td>
+      <td>-0.021333</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0.032770</td>
+      <td>5</td>
+      <td>-0.027624</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>0.029367</td>
+      <td>7</td>
+      <td>-0.029115</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0.024710</td>
+      <td>8</td>
+      <td>-0.021199</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>0.021393</td>
+      <td>9</td>
+      <td>0.010249</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>0.014785</td>
+      <td>10</td>
+      <td>0.016812</td>
+      <td>True</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<p>Plotting the regularization path:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[93]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fit_model_k</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">show_lines</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[93]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;AxesSubplot:xlabel=&#39;Support Size&#39;, ylabel=&#39;Coefficient Value&#39;&gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/tutorial_57_1.png" src="_images/tutorial_57_1.png" />
+</div>
+</div>
+<p>We can see in the plot above that first 3 variables, (0, 1, 2) are included in all the solutions of the path</p>
+</section>
+<section id="Coefficient-Bounds">
+<h3>Coefficient Bounds<a class="headerlink" href="#Coefficient-Bounds" title="Permalink to this headline">¶</a></h3>
+<p>Starting in version 2.0.0, <code class="docutils literal notranslate"><span class="pre">l0learn</span></code> supports bounds for CD algorithms for all losses and penalties. (We plan to support bound constraints for the CDPSI algorithm in the future). By default, <code class="docutils literal notranslate"><span class="pre">l0learn</span></code> does not apply bounds, i.e., it assumes <span class="math notranslate nohighlight">\(-\infty &lt;= \beta_i &lt;= \infty\)</span> for all i. Users can supply the same bounds for all coefficients by setting the parameters <code class="docutils literal notranslate"><span class="pre">lows</span></code> and <code class="docutils literal notranslate"><span class="pre">highs</span></code> to scalar values (these should satisfy: <code class="docutils literal notranslate"><span class="pre">lows</span> <span class="pre">&lt;=</span> <span class="pre">0</span></code>, <code class="docutils literal notranslate"><span class="pre">lows</span> <span class="pre">!=</span> <span class="pre">highs</span></code>, and <code class="docutils literal notranslate"><span class="pre">highs</span> <span class="pre">&gt;=</span> <span class="pre">0</span></code>). To use
+different bounds for the coefficients, <code class="docutils literal notranslate"><span class="pre">lows</span></code> and <code class="docutils literal notranslate"><span class="pre">highs</span></code> can be both set to vectors of length <code class="docutils literal notranslate"><span class="pre">p</span></code> (where the i-th entry corresponds to the bound on coefficient i).</p>
+<p>All of the following examples are valid.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[107]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">l0learn</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">penalty</span><span class="o">=</span><span class="s2">&quot;L0&quot;</span><span class="p">,</span> <span class="n">lows</span><span class="o">=-</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">l0learn</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">penalty</span><span class="o">=</span><span class="s2">&quot;L0&quot;</span><span class="p">,</span> <span class="n">highs</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">l0learn</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">penalty</span><span class="o">=</span><span class="s2">&quot;L0&quot;</span><span class="p">,</span> <span class="n">lows</span><span class="o">=-</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">highs</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+
+<span class="n">max_value</span> <span class="o">=</span> <span class="mf">0.25</span>
+<span class="n">highs_array</span> <span class="o">=</span> <span class="n">max_value</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+<span class="n">highs_array</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.1</span>
+<span class="n">fit_model_bounds</span> <span class="o">=</span> <span class="n">l0learn</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">penalty</span><span class="o">=</span><span class="s2">&quot;L0&quot;</span><span class="p">,</span> <span class="n">lows</span><span class="o">=-</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">highs</span><span class="o">=</span><span class="n">highs_array</span><span class="p">,</span> <span class="n">max_support_size</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>We can see the coefficients are subject to the bounds.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[110]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fit_model_bounds</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">show_lines</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;maximum value of coefficients = </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">fit_model_bounds</span><span class="o">.</span><span class="n">coeffs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="si">}</span><span class="s2"> &lt;= </span><span class="si">{</span><span class="n">max_value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;maximum value of first coefficient = </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">fit_model_bounds</span><span class="o">.</span><span class="n">coeffs</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span> <span class="p">:])</span><span class="si">}</span><span class="s2"> &lt;= 0.1&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;minimum value of coefficient = </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">fit_model_bounds</span><span class="o">.</span><span class="n">coeffs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="si">}</span><span class="s2"> &gt;= -0.1&quot;</span><span class="p">)</span>
+
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/Users/tnonet/Documents/GitHub/L0Learn/python/l0learn/models.py:438: UserWarning: Duplicate solution seen at support size 0. Plotting only first solution
+  warnings.warn(f&#34;Duplicate solution seen at support size {support_size}. Plotting only first solution&#34;)
+/Users/tnonet/Documents/GitHub/L0Learn/python/l0learn/models.py:438: UserWarning: Duplicate solution seen at support size 6. Plotting only first solution
+  warnings.warn(f&#34;Duplicate solution seen at support size {support_size}. Plotting only first solution&#34;)
+/Users/tnonet/Documents/GitHub/L0Learn/python/l0learn/models.py:438: UserWarning: Duplicate solution seen at support size 8. Plotting only first solution
+  warnings.warn(f&#34;Duplicate solution seen at support size {support_size}. Plotting only first solution&#34;)
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+maximum value of coefficients = 0.25 &lt;= 0.25
+maximum value of first coefficient = 0.1 &lt;= 0.1
+minimum value of coefficient = -0.1 &gt;= -0.1
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/tutorial_61_2.png" src="_images/tutorial_61_2.png" />
+</div>
+</div>
+</section>
+<section id="User-specified-Lambda-Grids">
+<h3>User-specified Lambda Grids<a class="headerlink" href="#User-specified-Lambda-Grids" title="Permalink to this headline">¶</a></h3>
+<p>By default, <code class="docutils literal notranslate"><span class="pre">l0learn</span></code> selects the sequence of lambda values in an efficient manner to avoid wasted computation (since close <span class="math notranslate nohighlight">\(\lambda\)</span> values can typically lead to the same solution). Advanced users of the toolkit can change this default behavior and supply their own sequence of <span class="math notranslate nohighlight">\(\lambda\)</span> values. This can be done supplying the <span class="math notranslate nohighlight">\(\lambda\)</span> values through the parameter <code class="docutils literal notranslate"><span class="pre">lambda_grid</span></code>. When <code class="docutils literal notranslate"><span class="pre">lambda_grid</span></code> is supplied, we require <code class="docutils literal notranslate"><span class="pre">num_gamma</span></code> and <code class="docutils literal notranslate"><span class="pre">num_lambda</span></code> to be <code class="docutils literal notranslate"><span class="pre">None</span></code> to
+ensure the is no ambiguity in the solution path requested.</p>
+<p>Specifically, the value assigned to <code class="docutils literal notranslate"><span class="pre">lambda_grid</span></code> should be a list of lists/arrays of decreasing positive values (floats). The length of <code class="docutils literal notranslate"><span class="pre">lambda_grid</span></code> (the number of lists stored) specifies the number of gamma parameters that will fill between <code class="docutils literal notranslate"><span class="pre">gamma_min</span></code>, and <code class="docutils literal notranslate"><span class="pre">gamma_max</span></code>. In the case of L0 penalty, <code class="docutils literal notranslate"><span class="pre">lambda_grid</span></code> must be a list of length 1. In case of L0L2/L0L1 <code class="docutils literal notranslate"><span class="pre">lambda_grid</span></code> can have any number of sub-lists stored. The ith element in <code class="docutils literal notranslate"><span class="pre">lambda_grid</span></code> should be a <strong>strictly
+decreasing</strong> sequence of positive lambda values which are used by the algorithm for the ith value of gamma. For example, to fit an L0 model with the sequence of user-specified lambda values: 1, 1e-1, 1e-2, 1e-3, 1e-4, we run the following:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[113]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">user_lambda_grid</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mf">1e-1</span><span class="p">,</span> <span class="mf">1e-2</span><span class="p">,</span> <span class="mf">1e-3</span><span class="p">,</span> <span class="mf">1e-4</span><span class="p">]]</span>
+<span class="n">fit_grid</span> <span class="o">=</span> <span class="n">l0learn</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">penalty</span><span class="o">=</span><span class="s2">&quot;L0&quot;</span><span class="p">,</span> <span class="n">lambda_grid</span><span class="o">=</span><span class="n">user_lambda_grid</span><span class="p">,</span> <span class="n">max_support_size</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">num_lambda</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">num_gamma</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>To verify the results we print the fit object:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[114]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fit_grid</span>
+<span class="c1"># Use fit_grid.characteristics() for those without rich dispalys</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[114]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>l0</th>
+      <th>support_size</th>
+      <th>intercept</th>
+      <th>converged</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1.0000</td>
+      <td>0</td>
+      <td>-0.016000</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>0.1000</td>
+      <td>0</td>
+      <td>-0.016000</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0.0100</td>
+      <td>10</td>
+      <td>0.016811</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>0.0010</td>
+      <td>62</td>
+      <td>0.018729</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0.0001</td>
+      <td>267</td>
+      <td>0.051675</td>
+      <td>True</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<p>Note that the <span class="math notranslate nohighlight">\(\lambda\)</span> values above are the desired values. For L0L2 and L0L1 penalties, the same can be done where the <code class="docutils literal notranslate"><span class="pre">lambda_grid</span></code> parameter.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[115]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">user_lambda_grid_L2</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mf">1e-1</span><span class="p">,</span> <span class="mf">1e-2</span><span class="p">,</span> <span class="mf">1e-3</span><span class="p">,</span> <span class="mf">1e-4</span><span class="p">],</span>
+                       <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.002</span><span class="p">,</span> <span class="mf">0.001</span><span class="p">,</span> <span class="mf">1e-5</span><span class="p">],</span>
+                       <span class="p">[</span><span class="mf">1e-4</span><span class="p">,</span> <span class="mf">1e-5</span><span class="p">]]</span>
+
+<span class="c1"># user_lambda_grid_L2[[i]] must be a sequence of positive decreasing reals.</span>
+<span class="n">fit_grid_L2</span> <span class="o">=</span> <span class="n">l0learn</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">penalty</span><span class="o">=</span><span class="s2">&quot;L0L2&quot;</span><span class="p">,</span> <span class="n">lambda_grid</span><span class="o">=</span><span class="n">user_lambda_grid_L2</span><span class="p">,</span> <span class="n">max_support_size</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">num_lambda</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">num_gamma</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[116]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython2 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fit_grid_L2</span>
+<span class="c1"># Use fit_grid_L2.characteristics() for those without rich dispalys</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[116]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>l0</th>
+      <th>support_size</th>
+      <th>intercept</th>
+      <th>converged</th>
+      <th>l2</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1.00000</td>
+      <td>0</td>
+      <td>-0.016000</td>
+      <td>True</td>
+      <td>10.000000</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>0.10000</td>
+      <td>0</td>
+      <td>-0.016000</td>
+      <td>True</td>
+      <td>10.000000</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0.01000</td>
+      <td>0</td>
+      <td>-0.016000</td>
+      <td>True</td>
+      <td>10.000000</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>0.00100</td>
+      <td>9</td>
+      <td>-0.014394</td>
+      <td>True</td>
+      <td>10.000000</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0.00010</td>
+      <td>134</td>
+      <td>-0.012180</td>
+      <td>True</td>
+      <td>10.000000</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>10.00000</td>
+      <td>0</td>
+      <td>-0.016000</td>
+      <td>True</td>
+      <td>0.031623</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>2.00000</td>
+      <td>0</td>
+      <td>-0.016000</td>
+      <td>True</td>
+      <td>0.031623</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>1.00000</td>
+      <td>0</td>
+      <td>-0.016000</td>
+      <td>True</td>
+      <td>0.031623</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>0.01000</td>
+      <td>10</td>
+      <td>0.015045</td>
+      <td>True</td>
+      <td>0.031623</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>0.00200</td>
+      <td>28</td>
+      <td>0.001483</td>
+      <td>True</td>
+      <td>0.031623</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>0.00100</td>
+      <td>58</td>
+      <td>0.002821</td>
+      <td>True</td>
+      <td>0.031623</td>
+    </tr>
+    <tr>
+      <th>11</th>
+      <td>0.00001</td>
+      <td>582</td>
+      <td>0.021913</td>
+      <td>True</td>
+      <td>0.031623</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <td>0.00010</td>
+      <td>311</td>
+      <td>0.048700</td>
+      <td>True</td>
+      <td>0.000100</td>
+    </tr>
+    <tr>
+      <th>13</th>
+      <td>0.00001</td>
+      <td>411</td>
+      <td>0.047991</td>
+      <td>False</td>
+      <td>0.000100</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+</section>
+</section>
+</section>
+<section id="More-Details">
+<h1>More Details<a class="headerlink" href="#More-Details" title="Permalink to this headline">¶</a></h1>
+<p>For more details please inspect the doc strings of:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="code.html#l0learn.models.CVFitModel"><span class="std std-ref">l0learn.models.CVFitModel</span></a></p></li>
+<li><p><a class="reference internal" href="code.html#l0learn.models.FitModel"><span class="std std-ref">l0learn.models.FitModel</span></a></p></li>
+<li><p><a class="reference internal" href="code.html#l0learn.fit"><span class="std std-ref">l0learn.fit</span></a></p></li>
+<li><p><a class="reference internal" href="code.html#l0learn.cvfit"><span class="std std-ref">l0learn.cvfit</span></a></p></li>
+</ul>
+</section>
+<section id="References">
+<h1>References<a class="headerlink" href="#References" title="Permalink to this headline">¶</a></h1>
+<p>Hussein Hazimeh and Rahul Mazumder. <a class="reference external" href="https://pubsonline.informs.org/doi/10.1287/opre.2019.1919">Fast Best Subset Selection: Coordinate Descent and Local Combinatorial Optimization Algorithms</a>. Operations Research (2020).</p>
+<p>Antoine Dedieu, Hussein Hazimeh, and Rahul Mazumder. <a class="reference external" href="https://arxiv.org/abs/2001.06471">Learning Sparse Classifiers: Continuous and Mixed Integer Optimization Perspectives</a>. JMLR (to appear).</p>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">l0learn</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#Installation">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#Tutorial">Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#Fitting-L0-Regression-Models">Fitting L0 Regression Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Fitting-L0L2-and-L0L1-Regression-Models">Fitting L0L2 and L0L1 Regression Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Higher-quality-Solutions-using-Local-Search">Higher-quality Solutions using Local Search</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Cross-validation">Cross-validation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Fitting-Classification-Models">Fitting Classification Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Advanced-Options">Advanced Options</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#More-Details">More Details</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#References">References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="code.html"><cite>fit</cite> function</a></li>
+<li class="toctree-l1"><a class="reference internal" href="code.html#cvfit-function"><cite>cvfit</cite> function</a></li>
+<li class="toctree-l1"><a class="reference internal" href="code.html#fitmodels">FitModels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="code.html#cvfitmodels">CVFitModels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="code.html#generating-functions">Generating Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="code.html#scoring-functions">Scoring Functions</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">Welcome to l0learn’s documentation!</a></li>
+      <li>Next: <a href="code.html" title="next chapter"><cite>fit</cite> function</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, Hussein Hazimeh, Rahul Mazumder, and Tim Nonet.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.3.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/tutorial.ipynb.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

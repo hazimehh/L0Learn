@@ -1,0 +1,639 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>fit function &#8212; l0learn  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Introduction" href="tutorial.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="fit-function">
+<h1><cite>fit</cite> function<a class="headerlink" href="#fit-function" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="l0learn.fit">
+<span class="sig-prename descclassname"><span class="pre">l0learn.</span></span><span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">X:</span> <span class="pre">Union[np.ndarray,</span> <span class="pre">csc_matrix],</span> <span class="pre">y:</span> <span class="pre">np.ndarray,</span> <span class="pre">unicode</span> <span class="pre">loss:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">u'SquaredError',</span> <span class="pre">unicode</span> <span class="pre">penalty:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">u'L0',</span> <span class="pre">unicode</span> <span class="pre">algorithm:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">u'CD',</span> <span class="pre">max_support_size:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">100,</span> <span class="pre">num_lambda:</span> <span class="pre">Optional[int]</span> <span class="pre">=</span> <span class="pre">100,</span> <span class="pre">num_gamma:</span> <span class="pre">Optional[int]</span> <span class="pre">=</span> <span class="pre">1,</span> <span class="pre">double</span> <span class="pre">gamma_max:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">10.,</span> <span class="pre">double</span> <span class="pre">gamma_min:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">.0001,</span> <span class="pre">partial_sort:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True,</span> <span class="pre">max_iter:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">200,</span> <span class="pre">double</span> <span class="pre">rtol:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">1e-6,</span> <span class="pre">double</span> <span class="pre">atol:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">1e-9,</span> <span class="pre">active_set:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True,</span> <span class="pre">active_set_num:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">3,</span> <span class="pre">max_swaps:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">100,</span> <span class="pre">double</span> <span class="pre">scale_down_factor:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.8,</span> <span class="pre">screen_size:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">1000,</span> <span class="pre">lambda_grid:</span> <span class="pre">Optional[List[Sequence[float]]]</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">exclude_first_k:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">0,</span> <span class="pre">intercept:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True,</span> <span class="pre">lows:</span> <span class="pre">Union[np.ndarray,</span> <span class="pre">float]</span> <span class="pre">=</span> <span class="pre">-float(u'inf'),</span> <span class="pre">highs:</span> <span class="pre">Union[np.ndarray,</span> <span class="pre">float]</span> <span class="pre">=</span> <span class="pre">+float(u'inf')</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#l0learn.models.FitModel" title="l0learn.models.FitModel"><span class="pre">l0learn.models.FitModel</span></a></span></span><a class="headerlink" href="#l0learn.fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the regularization path for the specified loss function and penalty function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>np.ndarray</em><em> or </em><em>csc_matrix of shape</em><em> (</em><em>N</em><em>, </em><em>P</em><em>)</em>) – Data Matrix where rows of X are observations and columns of X are features</p></li>
+<li><p><strong>y</strong> (<em>np.ndarray of shape</em><em> (</em><em>P</em><em>)</em>) – The response vector where y[i] corresponds to X[i, :]
+For classification, a binary vector (-1, 1) is requried .</p></li>
+<li><p><strong>loss</strong> (<em>str</em>) – <dl class="simple">
+<dt>The loss function. Currently supports the choices:</dt><dd><p>”SquaredError” (for regression),
+“Logistic” (for logistic regression), and
+“SquaredHinge” (for smooth SVM).</p>
+</dd>
+</dl>
+</p></li>
+<li><p><strong>penalty</strong> (<em>str</em>) – <p>The type of regularization.
+This can take either one of the following choices:</p>
+<blockquote>
+<div><p>”L0”,
+“L0L2”, and
+“L0L1”</p>
+</div></blockquote>
+</p></li>
+<li><p><strong>algorithm</strong> (<em>str</em>) – The type of algorithm used to minimize the objective function. Currently “CD” and “CDPSI” are are supported.
+“CD” is a variant of cyclic coordinate descent and runs very fast. “CDPSI” performs local combinatorial search
+on top of CD and typically achieves higher quality solutions (at the expense of increased running time).</p></li>
+<li><p><strong>max_support_size</strong> (<em>int</em>) – Must be greater than 0.
+The maximum support size at which to terminate the regularization path. We recommend setting this to a small
+fraction of min(n,p) (e.g. 0.05 * min(n,p)) as L0 regularization typically selects a small portion of non-zeros.</p></li>
+<li><p><strong>num_lambda</strong> (<em>int</em><em>, </em><em>optional</em>) – The number of lambda values to select in the regularization path.
+This value must be None if lambda_grid is supplied.When supplied, must be greater than 0.
+Note: lambda is the regularization parameter corresponding to the L0 norm.</p></li>
+<li><p><strong>num_gamma</strong> (<em>int</em><em>, </em><em>optional</em>) – The number of gamma values to select in the regularization path.
+This value must be None if lambda_grid is supplied. When supplied, must be greater than 0.
+Note:  gamma is the regularization parameter corresponding to L1 or L2, depending on the chosen penalty).</p></li>
+<li><p><strong>gamma_max</strong> (<em>float</em>) – <p>The maximum value of gamma when using the L0L2 penalty.
+This value must be greater than 0.</p>
+<p>Note: For the L0L1 penalty this is automatically selected.</p>
+</p></li>
+<li><p><strong>gamma_min</strong> (<em>float</em>) – The minimum value of Gamma when using the L0L2 penalty.
+This value must be greater than 0 but less than gamma_max.
+Note: For the L0L1 penalty, the minimum value of gamma in the grid is set to gammaMin * gammaMax.</p></li>
+<li><p><strong>partial_sort</strong> (<em>bool</em>) – If TRUE partial sorting will be used for sorting the coordinates to do greedy cycling (see our paper for
+for details). Otherwise, full sorting is used. #TODO: Add link for paper</p></li>
+<li><p><strong>max_iter</strong> (<em>int</em>) – The maximum number of iterations (full cycles) for CD per grid point. The algorithm may not use the full number
+of iteration per grid point if convergence is found (defined by rtol and atol parameter)
+Must be greater than 0</p></li>
+<li><p><strong>rtol</strong> (<em>float</em>) – The relative tolerance which decides when to terminate optimization as based on the relative change in the
+objective between iterations.
+Must be greater than 0 and less than 1.</p></li>
+<li><p><strong>atol</strong> (<em>float</em>) – The absolute tolerance which decides when to terminate optimization as based on the absolute L2 norm of the
+residuals
+Must be greater than 0</p></li>
+<li><p><strong>active_set</strong> (<em>bool</em>) – If TRUE, performs active set updates. (see our paper for for details). #TODO: Add link for paper</p></li>
+<li><p><strong>active_set_num</strong> (<em>int</em>) – <p>The number of consecutive times a support should appear before declaring support stabilization.
+(see our paper for for details). #TODO: Add link for paper</p>
+<p>Must be greater than 0.</p>
+</p></li>
+<li><p><strong>max_swaps</strong> (<em>int</em>) – The maximum number of swaps used by CDPSI for each grid point.
+Must be greater than 0. Ignored by CD algorithims.</p></li>
+<li><p><strong>scale_down_factor</strong> (<em>float</em>) – <p>Roughly amount each lambda value is scaled by between grid points. Larger values lead to closer lambdas and
+typically to smaller gaps between the support sizes.</p>
+<p>For details, see our paper - Section 5 on Adaptive Selection of Tuning Parameters). #TODO: Add link for paper</p>
+<p>Must be greater than 0 and less than 1 (strictly for both.)</p>
+</p></li>
+<li><p><strong>screen_size</strong> (<em>int</em>) – <p>The number of coordinates to cycle over when performing initial correlation screening. #TODO: Add link for paper</p>
+<p>Must be greater than 0 and less than number of columns of X.</p>
+</p></li>
+<li><p><strong>lambda_grid</strong> (<em>list of list of floats</em>) – <p>A grid of lambda values to use in computing the regularization path. This is by default an empty list
+and is ignored. When specified, lambda_grid should be a list of list of floats, where the ith element</p>
+<blockquote>
+<div><p>(corresponding to the ith gamma) should be a decreasing sequence of lambda values. The length of this sequence
+is directly the number of lambdas to be tried for that gamma.</p>
+</div></blockquote>
+<p>In the the “L0” penalty case, lambda_grid should be a list of 1.
+In the “L0LX” penalty cases, lambda_grid can be a list of any length. The length of lambda_grid will be the
+number of gamma values tried.</p>
+<p>See the example notebook for more details.</p>
+<p>Note: When lambda_grid is supplied, num_gamma and num_lambda must be None.</p>
+</p></li>
+<li><p><strong>exclude_first_k</strong> (<em>int</em>) – <p>The first exclude_first_k features in X will be excluded from variable selection. In other words, the first
+exclude_first_k variables will not be included in the L0-norm penalty however they will  be included in the
+L1 or L2 norm penalties, if they are specified.</p>
+<p>Must be a positive integer less than the columns of X.</p>
+</p></li>
+<li><p><strong>intercept</strong> (<em>bool</em>) – If False, no intercept term is included or fit in the regularization path
+Intercept terms are not regularized by L0 or L1/L2.</p></li>
+<li><p><strong>lows</strong> (<em>np array</em><em> or </em><em>float</em>) – <p>Lower bounds for coefficients. Either a scalar for all coefficients to have the same bound or a vector of
+size p (number of columns of X) where lows[i] is the lower bound for coefficient i.</p>
+<p>Lower bounds can not be above 0 (i.e. we can not specify that all coefficients must be larger than a &gt; 0).
+Lower bounds can be set to 0 iff the corresponding upper bound for that coefficient is also not 0.</p>
+</p></li>
+<li><p><strong>highs</strong> (<em>np array</em><em> or </em><em>float</em>) – <p>Upper bounds for coefficients. Either a scalar for all coefficients to have the same bound or a vector of
+size p (number of columns of X) where highs[i] is the upper bound for coefficient i.</p>
+<p>Upper bounds can not be below 0 (i.e. we can not specify that all coefficients must be smaller than a &lt; 0).
+Upper bounds can be set to 0 iff the corresponding lower bound for that coefficient is also not 0.</p>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>fit_model</strong> – FitModel instance containing all relevant information from the solution path.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#l0learn.models.FitModel" title="l0learn.models.FitModel">l0learn.models.FitModel</a></p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#l0learn.cvfit" title="l0learn.cvfit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">l0learn.cvfit</span></code></a>, <a class="reference internal" href="#l0learn.models.FitModel" title="l0learn.models.FitModel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">l0learn.models.FitModel</span></code></a></p>
+</div>
+<p class="rubric">Examples</p>
+<p>&gt;&gt;&gt;fit_model = l0learn.fit(X, y, penalty=”L0”, max_support_size=20)</p>
+</dd></dl>
+
+</section>
+<section id="cvfit-function">
+<h1><cite>cvfit</cite> function<a class="headerlink" href="#cvfit-function" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="l0learn.cvfit">
+<span class="sig-prename descclassname"><span class="pre">l0learn.</span></span><span class="sig-name descname"><span class="pre">cvfit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">X:</span> <span class="pre">Union[np.ndarray,</span> <span class="pre">csc_matrix],</span> <span class="pre">y:</span> <span class="pre">np.ndarray,</span> <span class="pre">unicode</span> <span class="pre">loss:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">u'SquaredError',</span> <span class="pre">unicode</span> <span class="pre">penalty:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">u'L0',</span> <span class="pre">unicode</span> <span class="pre">algorithm:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">u'CD',</span> <span class="pre">num_folds:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">10,</span> <span class="pre">seed:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">1,</span> <span class="pre">max_support_size:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">100,</span> <span class="pre">num_lambda:</span> <span class="pre">Optional[int]</span> <span class="pre">=</span> <span class="pre">100,</span> <span class="pre">num_gamma:</span> <span class="pre">Optional[int]</span> <span class="pre">=</span> <span class="pre">1,</span> <span class="pre">double</span> <span class="pre">gamma_max:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">10.,</span> <span class="pre">double</span> <span class="pre">gamma_min:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">.0001,</span> <span class="pre">partial_sort:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True,</span> <span class="pre">max_iter:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">200,</span> <span class="pre">double</span> <span class="pre">rtol:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">1e-6,</span> <span class="pre">double</span> <span class="pre">atol:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">1e-9,</span> <span class="pre">active_set:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True,</span> <span class="pre">active_set_num:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">3,</span> <span class="pre">max_swaps:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">100,</span> <span class="pre">double</span> <span class="pre">scale_down_factor:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.8,</span> <span class="pre">screen_size:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">1000,</span> <span class="pre">lambda_grid:</span> <span class="pre">Optional[List[Sequence[float]]]</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">exclude_first_k:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">0,</span> <span class="pre">intercept:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True,</span> <span class="pre">lows:</span> <span class="pre">Union[np.ndarray,</span> <span class="pre">float]</span> <span class="pre">=</span> <span class="pre">-float(u'inf'),</span> <span class="pre">highs:</span> <span class="pre">Union[np.ndarray,</span> <span class="pre">float]</span> <span class="pre">=</span> <span class="pre">+float(u'inf')</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#l0learn.models.CVFitModel" title="l0learn.models.CVFitModel"><span class="pre">l0learn.models.CVFitModel</span></a></span></span><a class="headerlink" href="#l0learn.cvfit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the regularization path for the specified loss function and penalty function and performs K-fold
+cross-validation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>np.ndarray</em><em> or </em><em>csc_matrix of shape</em><em> (</em><em>N</em><em>, </em><em>P</em><em>)</em>) – Data Matrix where rows of X are observations and columns of X are features</p></li>
+<li><p><strong>y</strong> (<em>np.ndarray of shape</em><em> (</em><em>P</em><em>)</em>) – The response vector where y[i] corresponds to X[i, :]
+For classification, a binary vector (-1, 1) is requried .</p></li>
+<li><p><strong>loss</strong> (<em>str</em>) – <dl class="simple">
+<dt>The loss function. Currently supports the choices:</dt><dd><p>”SquaredError” (for regression),
+“Logistic” (for logistic regression), and
+“SquaredHinge” (for smooth SVM).</p>
+</dd>
+</dl>
+</p></li>
+<li><p><strong>penalty</strong> (<em>str</em>) – <p>The type of regularization.
+This can take either one of the following choices:</p>
+<blockquote>
+<div><p>”L0”,
+“L0L2”, and
+“L0L1”</p>
+</div></blockquote>
+</p></li>
+<li><p><strong>algorithm</strong> (<em>str</em>) – The type of algorithm used to minimize the objective function. Currently “CD” and “CDPSI” are are supported.
+“CD” is a variant of cyclic coordinate descent and runs very fast. “CDPSI” performs local combinatorial search
+on top of CD and typically achieves higher quality solutions (at the expense of increased running time).</p></li>
+<li><p><strong>num_folds</strong> (<em>int</em>) – Must be greater than 1 and less than N (number of .
+The number of folds for cross-validation.</p></li>
+<li><p><strong>max_support_size</strong> (<em>int</em>) – Must be greater than 0.
+The maximum support size at which to terminate the regularization path. We recommend setting this to a small
+fraction of min(n,p) (e.g. 0.05 * min(n,p)) as L0 regularization typically selects a small portion of non-zeros.</p></li>
+<li><p><strong>num_lambda</strong> (<em>int</em><em>, </em><em>optional</em>) – The number of lambda values to select in the regularization path.
+This value must be None if lambda_grid is supplied.When supplied, must be greater than 0.
+Note: lambda is the regularization parameter corresponding to the L0 norm.</p></li>
+<li><p><strong>num_gamma</strong> (<em>int</em><em>, </em><em>optional</em>) – The number of gamma values to select in the regularization path.
+This value must be None if lambda_grid is supplied. When supplied, must be greater than 0.
+Note:  gamma is the regularization parameter corresponding to L1 or L2, depending on the chosen penalty).</p></li>
+<li><p><strong>gamma_max</strong> (<em>float</em>) – <p>The maximum value of gamma when using the L0L2 penalty.
+This value must be greater than 0.</p>
+<p>Note: For the L0L1 penalty this is automatically selected.</p>
+</p></li>
+<li><p><strong>gamma_min</strong> (<em>float</em>) – The minimum value of Gamma when using the L0L2 penalty.
+This value must be greater than 0 but less than gamma_max.
+Note: For the L0L1 penalty, the minimum value of gamma in the grid is set to gammaMin * gammaMax.</p></li>
+<li><p><strong>partial_sort</strong> (<em>bool</em>) – If TRUE partial sorting will be used for sorting the coordinates to do greedy cycling (see our paper for
+for details). Otherwise, full sorting is used. #TODO: Add link for paper</p></li>
+<li><p><strong>max_iter</strong> (<em>int</em>) – The maximum number of iterations (full cycles) for CD per grid point. The algorithm may not use the full number
+of iteration per grid point if convergence is found (defined by rtol and atol parameter)
+Must be greater than 0</p></li>
+<li><p><strong>rtol</strong> (<em>float</em>) – The relative tolerance which decides when to terminate optimization as based on the relative change in the
+objective between iterations.
+Must be greater than 0 and less than 1.</p></li>
+<li><p><strong>atol</strong> (<em>float</em>) – The absolute tolerance which decides when to terminate optimization as based on the absolute L2 norm of the
+residuals
+Must be greater than 0</p></li>
+<li><p><strong>active_set</strong> (<em>bool</em>) – If TRUE, performs active set updates. (see our paper for for details). #TODO: Add link for paper</p></li>
+<li><p><strong>active_set_num</strong> (<em>int</em>) – <p>The number of consecutive times a support should appear before declaring support stabilization.
+(see our paper for for details). #TODO: Add link for paper</p>
+<p>Must be greater than 0.</p>
+</p></li>
+<li><p><strong>max_swaps</strong> (<em>int</em>) – The maximum number of swaps used by CDPSI for each grid point.
+Must be greater than 0. Ignored by CD algorithims.</p></li>
+<li><p><strong>scale_down_factor</strong> (<em>float</em>) – <p>Roughly amount each lambda value is scaled by between grid points. Larger values lead to closer lambdas and
+typically to smaller gaps between the support sizes.</p>
+<p>For details, see our paper - Section 5 on Adaptive Selection of Tuning Parameters). #TODO: Add link for paper</p>
+<p>Must be greater than 0 and less than 1 (strictly for both.)</p>
+</p></li>
+<li><p><strong>screen_size</strong> (<em>int</em>) – <p>The number of coordinates to cycle over when performing initial correlation screening. #TODO: Add link for paper</p>
+<p>Must be greater than 0 and less than number of columns of X.</p>
+</p></li>
+<li><p><strong>lambda_grid</strong> (<em>list of list of floats</em>) – <p>A grid of lambda values to use in computing the regularization path. This is by default an empty list
+and is ignored. When specified, lambda_grid should be a list of list of floats, where the ith element</p>
+<blockquote>
+<div><p>(corresponding to the ith gamma) should be a decreasing sequence of lambda values. The length of this sequence
+is directly the number of lambdas to be tried for that gamma.</p>
+</div></blockquote>
+<p>In the the “L0” penalty case, lambda_grid should be a list of 1.
+In the “L0LX” penalty cases, lambda_grid can be a list of any length. The length of lambda_grid will be the
+number of gamma values tried.</p>
+<p>See the example notebook for more details.</p>
+<p>Note: When lambda_grid is supplied, num_gamma and num_lambda must be None.</p>
+</p></li>
+<li><p><strong>exclude_first_k</strong> (<em>int</em>) – <p>The first exclude_first_k features in X will be excluded from variable selection. In other words, the first
+exclude_first_k variables will not be included in the L0-norm penalty however they will  be included in the
+L1 or L2 norm penalties, if they are specified.</p>
+<p>Must be a positive integer less than the columns of X.</p>
+</p></li>
+<li><p><strong>intercept</strong> (<em>bool</em>) – If False, no intercept term is included or fit in the regularization path
+Intercept terms are not regularized by L0 or L1/L2.</p></li>
+<li><p><strong>lows</strong> (<em>np array</em><em> or </em><em>float</em>) – <p>Lower bounds for coefficients. Either a scalar for all coefficients to have the same bound or a vector of
+size p (number of columns of X) where lows[i] is the lower bound for coefficient i.</p>
+<p>Lower bounds can not be above 0 (i.e. we can not specify that all coefficients must be larger than a &gt; 0).
+Lower bounds can be set to 0 iff the corresponding upper bound for that coefficient is also not 0.</p>
+</p></li>
+<li><p><strong>highs</strong> (<em>np array</em><em> or </em><em>float</em>) – <p>Upper bounds for coefficients. Either a scalar for all coefficients to have the same bound or a vector of
+size p (number of columns of X) where highs[i] is the upper bound for coefficient i.</p>
+<p>Upper bounds can not be below 0 (i.e. we can not specify that all coefficients must be smaller than a &lt; 0).
+Upper bounds can be set to 0 iff the corresponding lower bound for that coefficient is also not 0.</p>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>fit_model</strong> – FitModel instance containing all relevant information from the solution path.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#l0learn.models.FitModel" title="l0learn.models.FitModel">l0learn.models.FitModel</a></p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#l0learn.cvfit" title="l0learn.cvfit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">l0learn.cvfit</span></code></a>, <a class="reference internal" href="#l0learn.models.FitModel" title="l0learn.models.FitModel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">l0learn.models.FitModel</span></code></a></p>
+</div>
+<p class="rubric">Examples</p>
+<p>&gt;&gt;&gt;fit_model = l0learn.fit(X, y, penalty=”L0”, max_support_size=20)</p>
+</dd></dl>
+
+</section>
+<section id="fitmodels">
+<h1>FitModels<a class="headerlink" href="#fitmodels" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="l0learn.models.FitModel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">l0learn.models.</span></span><span class="sig-name descname"><span class="pre">FitModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">settings</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lambda_0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">support_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coeffs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">scipy.sparse.csc.csc_matrix</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intercepts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">converged</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#l0learn.models.FitModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>FitModel returned by calling l0learn.fit(…)</p>
+</dd></dl>
+
+</section>
+<section id="cvfitmodels">
+<h1>CVFitModels<a class="headerlink" href="#cvfitmodels" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="l0learn.models.CVFitModel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">l0learn.models.</span></span><span class="sig-name descname"><span class="pre">CVFitModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">settings</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lambda_0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">support_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coeffs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">scipy.sparse.csc.csc_matrix</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intercepts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">converged</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cv_means</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cv_sds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#l0learn.models.CVFitModel" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="generating-functions">
+<h1>Generating Functions<a class="headerlink" href="#generating-functions" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="l0learn.models.gen_synthetic">
+<span class="sig-prename descclassname"><span class="pre">l0learn.models.</span></span><span class="sig-name descname"><span class="pre">gen_synthetic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rho</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">snr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#l0learn.models.gen_synthetic" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Generates a synthetic dataset as follows:</dt><dd><ol class="arabic simple">
+<li><p>Sample every element in data matrix X from N(0,1).</p></li>
+<li><p>Generate a vector B with the first k entries set to 1 and the rest are zeros.</p></li>
+<li><p>Sample every element in the noise vector e from N(0,A) where A is selected so y, X, B have snr as specified.</p></li>
+<li><p>Set y = XB + b0 + e.</p></li>
+</ol>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n</strong> (<em>int</em>) – Number of samples</p></li>
+<li><p><strong>p</strong> (<em>int</em>) – Number of features</p></li>
+<li><p><strong>k</strong> (<em>int</em>) – Number of non-zeros in true vector of coefficients</p></li>
+<li><p><strong>seed</strong> (<em>int</em><em>, </em><em>optional</em>) – The seed used for randomly generating the data
+If None, numbers will be random</p></li>
+<li><p><strong>rho</strong> (<em>float</em><em>, </em><em>default 0.</em>) – The threshold for setting X values to 0. if <a href="#id1"><span class="problematic" id="id2">|X[i, j]|</span></a> &lt; rho =&gt; X[i, j] &lt;- 0</p></li>
+<li><p><strong>b0</strong> (<em>float</em><em>, </em><em>default 0</em>) – The intercept value to translate y by.</p></li>
+<li><p><strong>snr</strong> (<em>float</em><em>, </em><em>default 1</em>) – <p>Desired Signal-to-Noise ratio. This sets the magnitude of the error term ‘e’.</p>
+<p>Note: SNR is defined as  SNR = Var(XB)/Var(e)</p>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><p><strong>Data</strong> –</p>
+<dl class="simple">
+<dt>A dict containing:</dt><dd><p>the data matrix X,
+the response vector y,
+the coefficients B,
+the error vector e,
+the intercept term b0.</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Dict</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>&gt;&gt;&gt;data = gen_synthetic(n=500,p=1000,k=10,seed=1)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="l0learn.models.gen_synthetic_high_corr">
+<span class="sig-prename descclassname"><span class="pre">l0learn.models.</span></span><span class="sig-name descname"><span class="pre">gen_synthetic_high_corr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rho</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">snr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base_cor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.8</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#l0learn.models.gen_synthetic_high_corr" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Generates a synthetic dataset as follows:</dt><dd><ol class="arabic simple">
+<li><p>Generate a correlation matrix, SIG,  where item [i, j] = base_core^|i-j|.</p></li>
+<li><p>Draw from a Multivariate Normal Distribution using (mu and SIG) to generate X.</p></li>
+<li><p>Generate a vector B with every ~p/k entry set to 1 and the rest are zeros.</p></li>
+<li><p>Sample every element in the noise vector e from N(0,A) where A is selected so y, X, B have snr as specified.</p></li>
+<li><p>Set y = XB + b0 + e.</p></li>
+</ol>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n</strong> (<em>int</em>) – Number of samples</p></li>
+<li><p><strong>p</strong> (<em>int</em>) – Number of features</p></li>
+<li><p><strong>k</strong> (<em>int</em>) – Number of non-zeros in true vector of coefficients</p></li>
+<li><p><strong>seed</strong> (<em>int</em>) – The seed used for randomly generating the data</p></li>
+<li><p><strong>rho</strong> (<em>float</em>) – The threshold for setting values to 0.  if <a href="#id3"><span class="problematic" id="id4">|X[i, j]|</span></a> &lt; rho =&gt; X[i, j] &lt;- 0</p></li>
+<li><p><strong>b0</strong> (<em>float</em>) – intercept value to scale y by.</p></li>
+<li><p><strong>snr</strong> (<em>float</em>) – desired Signal-to-Noise ratio. This sets the magnitude of the error term ‘e’.
+SNR is defined as  SNR = Var(XB)/Var(e)</p></li>
+<li><p><strong>mu</strong> (<em>float</em>) – The mean for drawing from the Multivariate Normal Distribution. A scalar of vector of length p.</p></li>
+<li><p><strong>base_cor</strong> (<em>float</em>) – The base correlation, A in [i, j] = A^|i-j|.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><p><strong>data</strong> –</p>
+<dl class="simple">
+<dt>A dict containing:</dt><dd><p>the data matrix X,
+the response vector y,
+the coefficients B,
+the error vector e,
+the intercept term b0.</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>&gt;&gt;&gt;gen_synthetic_high_corr(n=500,p=1000,k=10,seed=1)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="l0learn.models.gen_synthetic_logistic">
+<span class="sig-prename descclassname"><span class="pre">l0learn.models.</span></span><span class="sig-name descname"><span class="pre">gen_synthetic_logistic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rho</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base_cor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#l0learn.models.gen_synthetic_logistic" title="Permalink to this definition">¶</a></dt>
+<dd><dl>
+<dt>Generates a synthetic dataset as follows:</dt><dd><ol class="arabic">
+<li><dl class="simple">
+<dt>Generate a data matrix, X, drawn from either N(0, 1) (see gen_synthetic) or a multivariate_normal(mu, sigma)</dt><dd><p>(See gen_synthetic_high_corr)
+gen_synthetic_logistic delegates these caluclations to the respective functions.</p>
+</dd>
+</dl>
+</li>
+<li><p>Generate a vector B with k entries set to 1 and the rest are zeros.</p></li>
+<li><dl>
+<dt>Every coordinate yi of the outcome vector y exists in {0, 1}^n is sampled independently from a Bernoulli</dt><dd><dl class="simple">
+<dt>distribution with success probability:</dt><dd><p>P(yi = 1|xi) = 1/(1 + exp(-s&lt;xi, B&gt;))</p>
+</dd>
+</dl>
+<p>Source <a class="reference external" href="https://arxiv.org/pdf/2001.06471.pdf">https://arxiv.org/pdf/2001.06471.pdf</a> Section 5.1 Data Generation</p>
+</dd>
+</dl>
+</li>
+</ol>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n</strong> (<em>int</em>) – Number of samples</p></li>
+<li><p><strong>p</strong> (<em>int</em>) – Number of features</p></li>
+<li><p><strong>k</strong> (<em>int</em>) – Number of non-zeros in true vector of coefficients</p></li>
+<li><p><strong>seed</strong> (<em>int</em>) – The seed used for randomly generating the data</p></li>
+<li><p><strong>rho</strong> (<em>float</em>) – The threshold for setting values to 0.  if <a href="#id5"><span class="problematic" id="id6">|X[i, j]|</span></a> &gt; rho =&gt; X[i, j] &lt;- 0</p></li>
+<li><p><strong>b0</strong> (<em>float</em>) – The intercept value to scale the log odds of y by.
+As b0 -&gt; +inf, y will contain more 1s
+As b0 -&gt; -inf, y will contain more 0s</p></li>
+<li><p><strong>s</strong> (<em>float</em>) – Signal-to-noise parameter. As s -&gt; +Inf, the data generated becomes linearly separable.</p></li>
+<li><p><strong>mu</strong> (<em>float</em><em>, </em><em>optional</em>) – The mean for drawing from the Multivariate Normal Distribution. A scalar of vector of length p.
+If mu and base_cor are not specified, will be drawn from N(0, 1) using gen_synthetic.
+If mu and base_cor are specified will be drawn from multivariate_normal(mu, sigma) see gen_synthetic_high_corr</p></li>
+<li><p><strong>base_cor</strong> (<em>float</em>) – The base correlation, A in [i, j] = A^|i-j|.
+If mu and base_cor are not specified, will be drawn from N(0, 1)
+If mu and base_cor are specified will be drawn from multivariate_normal(mu, sigma) see gen_synthetic_high_corr</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><p><strong>data</strong> –</p>
+<dl class="simple">
+<dt>A dict containing:</dt><dd><p>the data matrix X
+the response vector y,
+the coefficients B,
+the intercept term b0.</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="scoring-functions">
+<h1>Scoring Functions<a class="headerlink" href="#scoring-functions" title="Permalink to this headline">¶</a></h1>
+<p>These functions are called by <code class="xref py py-meth docutils literal notranslate"><span class="pre">l0learn.models.FitModel.score()</span></code> and <code class="xref py py-meth docutils literal notranslate"><span class="pre">l0learn.models.CVFitModel.score()</span></code>.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="l0learn.models.regularization_loss">
+<span class="sig-prename descclassname"><span class="pre">l0learn.models.</span></span><span class="sig-name descname"><span class="pre">regularization_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coeffs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">scipy.sparse.csc.csc_matrix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#l0learn.models.regularization_loss" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the regularization loss for a path of (or individual) solution(s).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>coeffs</strong> – </p></li>
+<li><p><strong>l0</strong> – </p></li>
+<li><p><strong>l1</strong> – </p></li>
+<li><p><strong>l2</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><p><strong>loss</strong> –</p>
+<dl class="simple">
+<dt>Let the shape of coeffs be (P, K) and l0, l1, and l2 by either a float or a sequence of length K</dt><dd><dl class="simple">
+<dt>Then loss will be of shape: (K, ) with the following layout:</dt><dd><p>loss[i] = l0[i]*||coeffs[:, i||_0 + l1[i]*||coeffs[:, i||_1 + l2[i]*||coeffs[:, i||_2</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float or np.ndarray of shape (K,) where K is the number of solutions in coeffs</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="l0learn.models.squared_error">
+<span class="sig-prename descclassname"><span class="pre">l0learn.models.</span></span><span class="sig-name descname"><span class="pre">squared_error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y_true</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_pred</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coeffs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">scipy.sparse.csc.csc_matrix</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="headerlink" href="#l0learn.models.squared_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates Squared Error loss of solution with optional regularization</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y_true</strong> (<em>np.ndarray of shape</em><em> (</em><em>m</em><em>, </em><em>)</em>) – </p></li>
+<li><p><strong>y_pred</strong> (<em>np.ndarray of shape</em><em> (</em><em>m</em><em>, </em><em>) or </em><em>(</em><em>m</em><em>, </em><em>k</em><em>)</em>) – </p></li>
+<li><p><strong>coeffs</strong> (<em>np.ndarray of shape</em><em> (</em><em>p</em><em>, </em><em>k</em><em>)</em><em>, </em><em>optional</em>) – </p></li>
+<li><p><strong>l0</strong> (<em>float</em><em> or </em><em>sequence of floats of shape</em><em> (</em><em>l</em><em>)</em>) – </p></li>
+<li><p><strong>l1</strong> (<em>float</em><em> or </em><em>sequence of floats of shape</em><em> (</em><em>l</em><em>)</em>) – </p></li>
+<li><p><strong>l2</strong> (<em>float</em><em> or </em><em>sequence of floats of shape</em><em> (</em><em>l</em><em>)</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>squared_error</strong> – Shape (,) if y_pred is 1D  or = (k,) if y_pred is 2D</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="l0learn.models.logistic_loss">
+<span class="sig-prename descclassname"><span class="pre">l0learn.models.</span></span><span class="sig-name descname"><span class="pre">logistic_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y_true</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_pred</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coeffs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">scipy.sparse.csc.csc_matrix</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1e-15</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="headerlink" href="#l0learn.models.logistic_loss" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates Logistic Loss of solution with optional regularization</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y_true</strong> (<em>np.ndarray of shape</em><em> (</em><em>m</em><em>, </em><em>)</em>) – </p></li>
+<li><p><strong>y_pred</strong> (<em>np.ndarray of shape</em><em> (</em><em>m</em><em>, </em><em>) or </em><em>(</em><em>m</em><em>, </em><em>k</em><em>)</em>) – </p></li>
+<li><p><strong>coeffs</strong> (<em>np.ndarray of shape</em><em> (</em><em>p</em><em>, </em><em>k</em><em>)</em><em>, </em><em>optional</em>) – </p></li>
+<li><p><strong>l0</strong> (<em>float</em><em> or </em><em>sequence of floats of shape</em><em> (</em><em>l</em><em>)</em>) – </p></li>
+<li><p><strong>l1</strong> (<em>float</em><em> or </em><em>sequence of floats of shape</em><em> (</em><em>l</em><em>)</em>) – </p></li>
+<li><p><strong>l2</strong> (<em>float</em><em> or </em><em>sequence of floats of shape</em><em> (</em><em>l</em><em>)</em>) – </p></li>
+<li><p><strong>eps</strong> (<em>float</em><em>, </em><em>default=1e-15</em>) – Logistic loss is undefined for p=0 or p=1, so probabilities are clipped to max(eps, min(1 - eps, p)).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>logistic_loss</strong> – Shape (,) if y_pred is 1D  or = (k,) if y_pred is 2D</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="l0learn.models.squared_hinge_loss">
+<span class="sig-prename descclassname"><span class="pre">l0learn.models.</span></span><span class="sig-name descname"><span class="pre">squared_hinge_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y_true</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_pred</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coeffs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">scipy.sparse.csc.csc_matrix</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="headerlink" href="#l0learn.models.squared_hinge_loss" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates Logistic Loss of solution with optional regularization</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y_true</strong> (<em>np.ndarray of shape</em><em> (</em><em>m</em><em>, </em><em>)</em>) – </p></li>
+<li><p><strong>y_pred</strong> (<em>np.ndarray of shape</em><em> (</em><em>m</em><em>, </em><em>) or </em><em>(</em><em>m</em><em>, </em><em>k</em><em>)</em>) – </p></li>
+<li><p><strong>coeffs</strong> (<em>np.ndarray of shape</em><em> (</em><em>p</em><em>, </em><em>k</em><em>)</em><em>, </em><em>optional</em>) – </p></li>
+<li><p><strong>l0</strong> (<em>float</em><em> or </em><em>sequence of floats of shape</em><em> (</em><em>l</em><em>)</em>) – </p></li>
+<li><p><strong>l1</strong> (<em>float</em><em> or </em><em>sequence of floats of shape</em><em> (</em><em>l</em><em>)</em>) – </p></li>
+<li><p><strong>l2</strong> (<em>float</em><em> or </em><em>sequence of floats of shape</em><em> (</em><em>l</em><em>)</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>squared_hinge_loss</strong> – Shape (,) if y_pred is 1D  or = (k,) if y_pred is 2D</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">l0learn</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html#Installation">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html#Tutorial">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html#More-Details">More Details</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html#References">References</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#"><cite>fit</cite> function</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#cvfit-function"><cite>cvfit</cite> function</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#fitmodels">FitModels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#cvfitmodels">CVFitModels</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#generating-functions">Generating Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#scoring-functions">Scoring Functions</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="tutorial.html" title="previous chapter">Introduction</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2021, Hussein Hazimeh, Rahul Mazumder, and Tim Nonet.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.3.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/code.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
