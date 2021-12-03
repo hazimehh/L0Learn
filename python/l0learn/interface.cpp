@@ -1912,6 +1912,7 @@ static const char __pyx_k_results[] = "results";
 static const char __pyx_k_FitModel[] = "FitModel";
 static const char __pyx_k_Logistic[] = "Logistic";
 static const char __pyx_k_Optional[] = "Optional";
+static const char __pyx_k_Sequence[] = "Sequence";
 static const char __pyx_k_argwhere[] = "argwhere";
 static const char __pyx_k_cv_means[] = "cv_means";
 static const char __pyx_k_lambda_0[] = "lambda_0";
@@ -1947,6 +1948,7 @@ static const char __pyx_k_with_bounds[] = "with_bounds";
 static const char __pyx_k_SquaredError[] = "SquaredError";
 static const char __pyx_k_SquaredHinge[] = "SquaredHinge";
 static const char __pyx_k_c_algorithim[] = "c_algorithim";
+static const char __pyx_k_fit_line_261[] = "fit (line 261)";
 static const char __pyx_k_partial_sort[] = "partial_sort";
 static const char __pyx_k_scipy_sparse[] = "scipy.sparse";
 static const char __pyx_k_second_value[] = "second_value";
@@ -1955,6 +1957,7 @@ static const char __pyx_k_unique_items[] = "unique_items";
 static const char __pyx_k_c_lambda_grid[] = "c_lambda_grid";
 static const char __pyx_k_SUPPORTED_LOSS[] = "SUPPORTED_LOSS";
 static const char __pyx_k_active_set_num[] = "active_set_num";
+static const char __pyx_k_cvfit_line_549[] = "cvfit (line 549)";
 static const char __pyx_k_l0learn_models[] = "l0learn.models";
 static const char __pyx_k_bad_lambda_grid[] = "bad_lambda_grid";
 static const char __pyx_k_exclude_first_k[] = "exclude_first_k";
@@ -1978,6 +1981,7 @@ static const char __pyx_k_expected_X_to_be_2D_but_got[] = "expected X to be 2D, 
 static const char __pyx_k_containing_an_increasing_value[] = "] containing an increasing value.";
 static const char __pyx_k_expected_y_vector_to_have_type[] = "expected y vector to have type ";
 static const char __pyx_k_of_non_negative_floats_but_got[] = " of non-negative floats, but got ";
+static const char __pyx_k_Computes_the_regularization_pat[] = "\n    Computes the regularization path for the specified loss function and penalty function.\n\n    Parameters\n    ----------\n    X : np.ndarray or csc_matrix of shape (N, P)\n        Data Matrix where rows of X are observations and columns of X are features\n\n    y : np.ndarray of shape (P)\n        The response vector where y[i] corresponds to X[i, :]\n        For classification, a binary vector (-1, 1) is requried .\n\n    loss : str\n        The loss function. Currently supports the choices:\n            \"SquaredError\" (for regression),\n            \"Logistic\" (for logistic regression), and\n            \"SquaredHinge\" (for smooth SVM).\n\n    penalty : str\n        The type of regularization.\n        This can take either one of the following choices:\n            \"L0\",\n            \"L0L2\", and\n            \"L0L1\"\n\n    algorithm : str\n        The type of algorithm used to minimize the objective function. Currently \"CD\" and \"CDPSI\" are are supported.\n        \"CD\" is a variant of cyclic coordinate descent and runs very fast. \"CDPSI\" performs local combinatorial search\n        on top of CD and typically achieves higher quality solutions (at the expense of increased running time).\n\n    max_support_size : int\n        Must be greater than 0.\n        The maximum support size at which to terminate the regularization path. We recommend setting this to a small\n        fraction of min(n,p) (e.g. 0.05 * min(n,p)) as L0 regularization typically selects a small portion of non-zeros.\n\n    num_lambda : int, optional\n        The number of lambda values to select in the regularization path.\n        This value must be None if lambda_grid is supplied.When supplied, must be greater than 0.\n        Note: lambda is the regularization parameter corresponding to the L0 norm.\n\n    num_gamma: int, optional\n        The number of gamma values to select in the regularization path.\n        This value must be None if lambda_grid is supplied. When suppl""ied, must be greater than 0.\n        Note:  gamma is the regularization parameter corresponding to L1 or L2, depending on the chosen penalty).\n\n    gamma_max : float\n        The maximum value of gamma when using the L0L2 penalty.\n        This value must be greater than 0.\n\n        Note: For the L0L1 penalty this is automatically selected.\n\n    gamma_min : float\n        The minimum value of Gamma when using the L0L2 penalty.\n        This value must be greater than 0 but less than gamma_max.\n        Note: For the L0L1 penalty, the minimum value of gamma in the grid is set to gammaMin * gammaMax.\n\n    partial_sort : bool\n        If TRUE partial sorting will be used for sorting the coordinates to do greedy cycling (see our paper for\n        for details). Otherwise, full sorting is used. #TODO: Add link for paper\n\n    max_iter : int\n        The maximum number of iterations (full cycles) for CD per grid point. The algorithm may not use the full number\n        of iteration per grid point if convergence is found (defined by rtol and atol parameter)\n        Must be greater than 0\n\n    rtol : float\n        The relative tolerance which decides when to terminate optimization as based on the relative change in the\n        objective between iterations.\n        Must be greater than 0 and less than 1.\n\n    atol : float\n        The absolute tolerance which decides when to terminate optimization as based on the absolute L2 norm of the\n        residuals\n        Must be greater than 0\n\n    active_set : bool\n        If TRUE, performs active set updates. (see our paper for for details). #TODO: Add link for paper\n\n    active_set_num : int\n        The number of consecutive times a support should appear before declaring support stabilization.\n        (see our paper for for details). #TODO: Add link for paper\n\n        Must be greater than 0.\n\n    max_swaps : int\n        The maximum number of swaps used by CDPSI for each grid point.\n        Must be ""greater than 0. Ignored by CD algorithims.\n\n    scale_down_factor : float\n        Roughly amount each lambda value is scaled by between grid points. Larger values lead to closer lambdas and\n        typically to smaller gaps between the support sizes.\n\n        For details, see our paper - Section 5 on Adaptive Selection of Tuning Parameters). #TODO: Add link for paper\n\n        Must be greater than 0 and less than 1 (strictly for both.)\n\n    screen_size : int\n        The number of coordinates to cycle over when performing initial correlation screening. #TODO: Add link for paper\n\n        Must be greater than 0 and less than number of columns of X.\n\n    lambda_grid : list of list of floats\n        A grid of lambda values to use in computing the regularization path. This is by default an empty list\n        and is ignored. When specified, lambda_grid should be a list of list of floats, where the ith element\n         (corresponding to the ith gamma) should be a decreasing sequence of lambda values. The length of this sequence\n         is directly the number of lambdas to be tried for that gamma.\n\n        In the the \"L0\" penalty case, lambda_grid should be a list of 1.\n        In the \"L0LX\" penalty cases, lambda_grid can be a list of any length. The length of lambda_grid will be the\n        number of gamma values tried.\n\n        See the example notebook for more details.\n\n        Note: When lambda_grid is supplied, num_gamma and num_lambda must be None.\n\n    exclude_first_k : int\n        The first exclude_first_k features in X will be excluded from variable selection. In other words, the first\n        exclude_first_k variables will not be included in the L0-norm penalty however they will  be included in the\n        L1 or L2 norm penalties, if they are specified.\n\n        Must be a positive integer less than the columns of X.\n\n    intercept : bool\n        If False, no intercept term is included or fit in the regularization path\n     ""   Intercept terms are not regularized by L0 or L1/L2.\n\n    lows : np array or float\n        Lower bounds for coefficients. Either a scalar for all coefficients to have the same bound or a vector of\n        size p (number of columns of X) where lows[i] is the lower bound for coefficient i.\n\n        Lower bounds can not be above 0 (i.e. we can not specify that all coefficients must be larger than a > 0).\n        Lower bounds can be set to 0 iff the corresponding upper bound for that coefficient is also not 0.\n\n    highs : np array or float\n        Upper bounds for coefficients. Either a scalar for all coefficients to have the same bound or a vector of\n        size p (number of columns of X) where highs[i] is the upper bound for coefficient i.\n\n        Upper bounds can not be below 0 (i.e. we can not specify that all coefficients must be smaller than a < 0).\n        Upper bounds can be set to 0 iff the corresponding lower bound for that coefficient is also not 0.\n\n    Returns\n    -------\n    fit_model : l0learn.models.FitModel\n        FitModel instance containing all relevant information from the solution path.\n\n    See Also\n    -------\n    l0learn.cvfit\n    l0learn.models.FitModel\n\n    Examples\n    --------\n    >>>fit_model = l0learn.fit(X, y, penalty=\"L0\", max_support_size=20)\n    ";
 static const char __pyx_k_Expected_each_element_of_lambda[] = "Expected each element of lambda_grid to be a list of decreasing value, but got lambda_grid[";
 static const char __pyx_k_L0_Penalty_requires_lambda_grid[] = "L0 Penalty requires 'lambda_grid' to be a list of length 1, but got ";
 static const char __pyx_k_expected_algorithm_parameter_to[] = "expected algorithm parameter to be on of ";
@@ -2013,6 +2017,7 @@ static const char __pyx_k_expected_to_be_high_to_be_elemen[] = "expected to be h
 static const char __pyx_k_expected_y_to_be_a_1D_real_numpy[] = "expected y to be a 1D real numpy, but got ";
 static const char __pyx_k_expected_y_vector_to_only_have_t[] = "expected y vector to only have two unique values (Binary Classification), but got ";
 static const char __pyx_k_numpy_core_umath_failed_to_impor[] = "numpy.core.umath failed to import";
+static const char __pyx_k_Computes_the_regularization_pat_2[] = " Computes the regularization path for the specified loss function and penalty function and performs K-fold\n    cross-validation.\n\n    Parameters\n    ----------\n    X : np.ndarray or csc_matrix of shape (N, P)\n        Data Matrix where rows of X are observations and columns of X are features\n\n    y : np.ndarray of shape (P)\n        The response vector where y[i] corresponds to X[i, :]\n        For classification, a binary vector (-1, 1) is requried .\n\n    loss : str\n        The loss function. Currently supports the choices:\n            \"SquaredError\" (for regression),\n            \"Logistic\" (for logistic regression), and\n            \"SquaredHinge\" (for smooth SVM).\n\n    penalty : str\n        The type of regularization.\n        This can take either one of the following choices:\n            \"L0\",\n            \"L0L2\", and\n            \"L0L1\"\n\n    algorithm : str\n        The type of algorithm used to minimize the objective function. Currently \"CD\" and \"CDPSI\" are are supported.\n        \"CD\" is a variant of cyclic coordinate descent and runs very fast. \"CDPSI\" performs local combinatorial search\n        on top of CD and typically achieves higher quality solutions (at the expense of increased running time).\n\n    num_folds : int\n        Must be greater than 1 and less than N (number of .\n        The number of folds for cross-validation.\n\n    max_support_size : int\n        Must be greater than 0.\n        The maximum support size at which to terminate the regularization path. We recommend setting this to a small\n        fraction of min(n,p) (e.g. 0.05 * min(n,p)) as L0 regularization typically selects a small portion of non-zeros.\n\n    num_lambda : int, optional\n        The number of lambda values to select in the regularization path.\n        This value must be None if lambda_grid is supplied.When supplied, must be greater than 0.\n        Note: lambda is the regularization parameter corresponding to the L0 norm.\n""\n    num_gamma: int, optional\n        The number of gamma values to select in the regularization path.\n        This value must be None if lambda_grid is supplied. When supplied, must be greater than 0.\n        Note:  gamma is the regularization parameter corresponding to L1 or L2, depending on the chosen penalty).\n\n    gamma_max : float\n        The maximum value of gamma when using the L0L2 penalty.\n        This value must be greater than 0.\n\n        Note: For the L0L1 penalty this is automatically selected.\n\n    gamma_min : float\n        The minimum value of Gamma when using the L0L2 penalty.\n        This value must be greater than 0 but less than gamma_max.\n        Note: For the L0L1 penalty, the minimum value of gamma in the grid is set to gammaMin * gammaMax.\n\n    partial_sort : bool\n        If TRUE partial sorting will be used for sorting the coordinates to do greedy cycling (see our paper for\n        for details). Otherwise, full sorting is used. #TODO: Add link for paper\n\n    max_iter : int\n        The maximum number of iterations (full cycles) for CD per grid point. The algorithm may not use the full number\n        of iteration per grid point if convergence is found (defined by rtol and atol parameter)\n        Must be greater than 0\n\n    rtol : float\n        The relative tolerance which decides when to terminate optimization as based on the relative change in the\n        objective between iterations.\n        Must be greater than 0 and less than 1.\n\n    atol : float\n        The absolute tolerance which decides when to terminate optimization as based on the absolute L2 norm of the\n        residuals\n        Must be greater than 0\n\n    active_set : bool\n        If TRUE, performs active set updates. (see our paper for for details). #TODO: Add link for paper\n\n    active_set_num : int\n        The number of consecutive times a support should appear before declaring support stabilization.\n        (see our paper for for details""). #TODO: Add link for paper\n\n        Must be greater than 0.\n\n    max_swaps : int\n        The maximum number of swaps used by CDPSI for each grid point.\n        Must be greater than 0. Ignored by CD algorithims.\n\n    scale_down_factor : float\n        Roughly amount each lambda value is scaled by between grid points. Larger values lead to closer lambdas and\n        typically to smaller gaps between the support sizes.\n\n        For details, see our paper - Section 5 on Adaptive Selection of Tuning Parameters). #TODO: Add link for paper\n\n        Must be greater than 0 and less than 1 (strictly for both.)\n\n    screen_size : int\n        The number of coordinates to cycle over when performing initial correlation screening. #TODO: Add link for paper\n\n        Must be greater than 0 and less than number of columns of X.\n\n    lambda_grid : list of list of floats\n        A grid of lambda values to use in computing the regularization path. This is by default an empty list\n        and is ignored. When specified, lambda_grid should be a list of list of floats, where the ith element\n         (corresponding to the ith gamma) should be a decreasing sequence of lambda values. The length of this sequence\n         is directly the number of lambdas to be tried for that gamma.\n\n        In the the \"L0\" penalty case, lambda_grid should be a list of 1.\n        In the \"L0LX\" penalty cases, lambda_grid can be a list of any length. The length of lambda_grid will be the\n        number of gamma values tried.\n\n        See the example notebook for more details.\n\n        Note: When lambda_grid is supplied, num_gamma and num_lambda must be None.\n\n    exclude_first_k : int\n        The first exclude_first_k features in X will be excluded from variable selection. In other words, the first\n        exclude_first_k variables will not be included in the L0-norm penalty however they will  be included in the\n        L1 or L2 norm penalties, if they are specified.""\n\n        Must be a positive integer less than the columns of X.\n\n    intercept : bool\n        If False, no intercept term is included or fit in the regularization path\n        Intercept terms are not regularized by L0 or L1/L2.\n\n    lows : np array or float\n        Lower bounds for coefficients. Either a scalar for all coefficients to have the same bound or a vector of\n        size p (number of columns of X) where lows[i] is the lower bound for coefficient i.\n\n        Lower bounds can not be above 0 (i.e. we can not specify that all coefficients must be larger than a > 0).\n        Lower bounds can be set to 0 iff the corresponding upper bound for that coefficient is also not 0.\n\n    highs : np array or float\n        Upper bounds for coefficients. Either a scalar for all coefficients to have the same bound or a vector of\n        size p (number of columns of X) where highs[i] is the upper bound for coefficient i.\n\n        Upper bounds can not be below 0 (i.e. we can not specify that all coefficients must be smaller than a < 0).\n        Upper bounds can be set to 0 iff the corresponding lower bound for that coefficient is also not 0.\n\n    Returns\n    -------\n    fit_model : l0learn.models.FitModel\n        FitModel instance containing all relevant information from the solution path.\n\n    See Also\n    -------\n    l0learn.cvfit\n    l0learn.models.FitModel\n\n    Examples\n    --------\n    >>>fit_model = l0learn.fit(X, y, penalty=\"L0\", max_support_size=20)\n    ";
 static const char __pyx_k_expected_gamma_max_parameter_to_2[] = "expected gamma_max parameter to be a positive float less than gamma_max, but got ";
 static const char __pyx_k_expected_highs_to_be_a_non_negat_2[] = "expected highs to be a non-negative float, or a 1D numpy array of length ";
 static const char __pyx_k_expected_lows_to_be_a_non_positi_2[] = "expected lows to be a non-positive float, or a 1D numpy array of length ";
@@ -2022,6 +2027,8 @@ static PyObject *__pyx_n_u_CD;
 static PyObject *__pyx_n_u_CDPSI;
 static PyObject *__pyx_n_s_CLASSIFICATION_LOSS;
 static PyObject *__pyx_n_s_CVFitModel;
+static PyObject *__pyx_kp_u_Computes_the_regularization_pat;
+static PyObject *__pyx_kp_u_Computes_the_regularization_pat_2;
 static PyObject *__pyx_n_u_D;
 static PyObject *__pyx_n_s_Dict;
 static PyObject *__pyx_kp_u_Expected_all_values_of_lambda_gr;
@@ -2039,6 +2046,7 @@ static PyObject *__pyx_n_s_Optional;
 static PyObject *__pyx_n_s_SUPPORTED_ALGORITHM;
 static PyObject *__pyx_n_s_SUPPORTED_LOSS;
 static PyObject *__pyx_n_s_SUPPORTED_PENALTY;
+static PyObject *__pyx_n_s_Sequence;
 static PyObject *__pyx_n_u_SquaredError;
 static PyObject *__pyx_n_u_SquaredHinge;
 static PyObject *__pyx_n_s_Union;
@@ -2077,6 +2085,7 @@ static PyObject *__pyx_n_s_current;
 static PyObject *__pyx_n_s_cv_means;
 static PyObject *__pyx_n_s_cv_sds;
 static PyObject *__pyx_n_s_cvfit;
+static PyObject *__pyx_kp_u_cvfit_line_549;
 static PyObject *__pyx_n_s_diff;
 static PyObject *__pyx_n_s_dtype;
 static PyObject *__pyx_n_s_enumerate;
@@ -2120,6 +2129,7 @@ static PyObject *__pyx_kp_u_expected_y_vector_to_only_have_t;
 static PyObject *__pyx_n_s_first_value;
 static PyObject *__pyx_n_s_fit;
 static PyObject *__pyx_n_s_fit_check;
+static PyObject *__pyx_kp_u_fit_line_261;
 static PyObject *__pyx_n_s_float64;
 static PyObject *__pyx_n_s_gamma;
 static PyObject *__pyx_n_s_gamma_max;
@@ -2241,7 +2251,7 @@ static PyObject *__pyx_codeobj__17;
 
 /* Python wrapper */
 static PyObject *__pyx_pw_7l0learn_9interface_1_fit_check(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_7l0learn_9interface__fit_check[] = "_fit_check(X: Union[np.ndarray, csc_matrix], y: np.ndarray, unicode loss: str, unicode penalty: str, unicode algorithm: str, max_support_size: int, num_lambda: Union[int, None], num_gamma: Union[int, None], double gamma_max: float, double gamma_min: float, partial_sort: bool, max_iter: int, double rtol: float, double atol: float, active_set: bool, active_set_num: int, max_swaps: int, double scale_down_factor: float, screen_size: int, lambda_grid: Union[List[List[float]], None], exclude_first_k: int, intercept: bool, lows: Union[np.ndarray, float], highs: Union[np.ndarray, float]) -> Dict[str, Any]";
+static char __pyx_doc_7l0learn_9interface__fit_check[] = "_fit_check(X: Union[np.ndarray, csc_matrix], y: np.ndarray, unicode loss: str, unicode penalty: str, unicode algorithm: str, max_support_size: int, num_lambda: Union[int, None], num_gamma: Union[int, None], double gamma_max: float, double gamma_min: float, partial_sort: bool, max_iter: int, double rtol: float, double atol: float, active_set: bool, active_set_num: int, max_swaps: int, double scale_down_factor: float, screen_size: int, lambda_grid: Union[List[Sequence[float]], None], exclude_first_k: int, intercept: bool, lows: Union[np.ndarray, float], highs: Union[np.ndarray, float]) -> Dict[str, Any]";
 static PyMethodDef __pyx_mdef_7l0learn_9interface_1_fit_check = {"_fit_check", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_7l0learn_9interface_1_fit_check, METH_VARARGS|METH_KEYWORDS, __pyx_doc_7l0learn_9interface__fit_check};
 static PyObject *__pyx_pw_7l0learn_9interface_1_fit_check(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_X = 0;
@@ -6351,7 +6361,7 @@ static PyObject *__pyx_pf_7l0learn_9interface__fit_check(CYTHON_UNUSED PyObject 
 
 /* Python wrapper */
 static PyObject *__pyx_pw_7l0learn_9interface_3fit(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_7l0learn_9interface_2fit[] = "fit(X: Union[np.ndarray, csc_matrix], y: np.ndarray, unicode loss: str = u'SquaredError', unicode penalty: str = u'L0', unicode algorithm: str = u'CD', max_support_size: int = 100, num_lambda: Optional[int] = 100, num_gamma: Optional[int] = 1, double gamma_max: float = 10., double gamma_min: float = .0001, partial_sort: bool = True, max_iter: int = 200, double rtol: float = 1e-6, double atol: float = 1e-9, active_set: bool = True, active_set_num: int = 3, max_swaps: int = 100, double scale_down_factor: float = 0.8, screen_size: int = 1000, lambda_grid: Optional[List[List[float]]] = None, exclude_first_k: int = 0, intercept: bool = True, lows: Union[np.ndarray, float] = -float(u'inf'), highs: Union[np.ndarray, float] = +float(u'inf')) -> l0learn.models.FitModel\n\n    Computes the regularization path for the specified loss function and penalty function.\n\n    Parameters\n    ----------\n    X : np.ndarray or csc_matrix of shape (N, P)\n        Data Matrix where rows of X are observations and columns of X are features\n\n    y : np.ndarray of shape (P)\n        The response vector where y[i] corresponds to X[i, :]\n        For classification, a binary vector (-1, 1) is requried .\n\n    loss : str\n        The loss function. Currently supports the choices:\n            \"SquaredError\" (for regression),\n            \"Logistic\" (for logistic regression), and\n            \"SquaredHinge\" (for smooth SVM).\n\n    penalty : str\n        The type of regularization.\n        This can take either one of the following choices:\n            \"L0\",\n            \"L0L2\", and\n            \"L0L1\"\n\n    algorithm : str\n        The type of algorithm used to minimize the objective function. Currently \"CD\" and \"CDPSI\" are are supported.\n        \"CD\" is a variant of cyclic coordinate descent and runs very fast. \"CDPSI\" performs local combinatorial search\n        on top of CD and typically achieves higher quality solutions (at the expense of increased running time).""\n\n    max_support_size : int\n        Must be greater than 0.\n        The maximum support size at which to terminate the regularization path. We recommend setting this to a small\n        fraction of min(n,p) (e.g. 0.05 * min(n,p)) as L0 regularization typically selects a small portion of non-zeros.\n\n    num_lambda : int, optional\n        The number of lambda values to select in the regularization path.\n        This value must be None if lambda_grid is supplied.When supplied, must be greater than 0.\n        Note: lambda is the regularization parameter corresponding to the L0 norm.\n\n    num_gamma: int, optional\n        The number of gamma values to select in the regularization path.\n        This value must be None if lambda_grid is supplied. When supplied, must be greater than 0.\n        Note:  gamma is the regularization parameter corresponding to L1 or L2, depending on the chosen penalty).\n\n    gamma_max : float\n        The maximum value of gamma when using the L0L2 penalty.\n        This value must be greater than 0.\n\n        Note: For the L0L1 penalty this is automatically selected.\n\n    gamma_min : float\n        The minimum value of Gamma when using the L0L2 penalty.\n        This value must be greater than 0 but less than gamma_max.\n        Note: For the L0L1 penalty, the minimum value of gamma in the grid is set to gammaMin * gammaMax.\n\n    partial_sort : bool\n        If TRUE partial sorting will be used for sorting the coordinates to do greedy cycling (see our paper for\n        for details). Otherwise, full sorting is used. #TODO: Add link for paper\n\n    max_iter : int\n        The maximum number of iterations (full cycles) for CD per grid point. The algorithm may not use the full number\n        of iteration per grid point if convergence is found (defined by rtol and atol parameter)\n        Must be greater than 0\n\n    rtol : float\n        The relative tolerance which decides when to terminate optimization as based on the relat""ive change in the\n        objective between iterations.\n        Must be greater than 0 and less than 1.\n\n    atol : float\n        The absolute tolerance which decides when to terminate optimization as based on the absolute L2 norm of the\n        residuals\n        Must be greater than 0\n\n    active_set : bool\n        If TRUE, performs active set updates. (see our paper for for details). #TODO: Add link for paper\n\n    active_set_num : int\n        The number of consecutive times a support should appear before declaring support stabilization.\n        (see our paper for for details). #TODO: Add link for paper\n\n        Must be greater than 0.\n\n    max_swaps : int\n        The maximum number of swaps used by CDPSI for each grid point.\n        Must be greater than 0. Ignored by CD algorithims.\n\n    scale_down_factor : float\n        Roughly amount each lambda value is scaled by between grid points. Larger values lead to closer lambdas and\n        typically to smaller gaps between the support sizes.\n\n        For details, see our paper - Section 5 on Adaptive Selection of Tuning Parameters). #TODO: Add link for paper\n\n        Must be greater than 0 and less than 1 (strictly for both.)\n\n    screen_size : int\n        The number of coordinates to cycle over when performing initial correlation screening. #TODO: Add link for paper\n\n        Must be greater than 0 and less than number of columns of X.\n\n    lambda_grid : list of list of floats\n        A grid of lambda values to use in computing the regularization path. This is by default an empty list\n        and is ignored. When specified, lambda_grid should be a list of list of floats, where the ith element\n         (corresponding to the ith gamma) should be a decreasing sequence of lambda values. The length of this sequence\n         is directly the number of lambdas to be tried for that gamma.\n\n        In the the \"L0\" penalty case, lambda_grid should be a list of 1.\n        In the \"L0LX""\" penalty cases, lambda_grid can be a list of any length. The length of lambda_grid will be the\n        number of gamma values tried.\n\n        See the example notebook for more details.\n\n        Note: When lambda_grid is supplied, num_gamma and num_lambda must be None.\n\n    exclude_first_k : int\n        The first exclude_first_k features in X will be excluded from variable selection. In other words, the first\n        exclude_first_k variables will not be included in the L0-norm penalty however they will  be included in the\n        L1 or L2 norm penalties, if they are specified.\n\n        Must be a positive integer less than the columns of X.\n\n    intercept : bool\n        If False, no intercept term is included or fit in the regularization path\n        Intercept terms are not regularized by L0 or L1/L2.\n\n    lows : np array or float\n        Lower bounds for coefficients. Either a scalar for all coefficients to have the same bound or a vector of\n        size p (number of columns of X) where lows[i] is the lower bound for coefficient i.\n\n        Lower bounds can not be above 0 (i.e. we can not specify that all coefficients must be larger than a > 0).\n        Lower bounds can be set to 0 iff the corresponding upper bound for that coefficient is also not 0.\n\n    highs : np array or float\n        Upper bounds for coefficients. Either a scalar for all coefficients to have the same bound or a vector of\n        size p (number of columns of X) where highs[i] is the upper bound for coefficient i.\n\n        Upper bounds can not be below 0 (i.e. we can not specify that all coefficients must be smaller than a < 0).\n        Upper bounds can be set to 0 iff the corresponding lower bound for that coefficient is also not 0.\n\n    Returns\n    -------\n\n\n    Examples\n    --------\n    ";
+static char __pyx_doc_7l0learn_9interface_2fit[] = "fit(X: Union[np.ndarray, csc_matrix], y: np.ndarray, unicode loss: str = u'SquaredError', unicode penalty: str = u'L0', unicode algorithm: str = u'CD', max_support_size: int = 100, num_lambda: Optional[int] = 100, num_gamma: Optional[int] = 1, double gamma_max: float = 10., double gamma_min: float = .0001, partial_sort: bool = True, max_iter: int = 200, double rtol: float = 1e-6, double atol: float = 1e-9, active_set: bool = True, active_set_num: int = 3, max_swaps: int = 100, double scale_down_factor: float = 0.8, screen_size: int = 1000, lambda_grid: Optional[List[Sequence[float]]] = None, exclude_first_k: int = 0, intercept: bool = True, lows: Union[np.ndarray, float] = -float(u'inf'), highs: Union[np.ndarray, float] = +float(u'inf')) -> l0learn.models.FitModel\n\n    Computes the regularization path for the specified loss function and penalty function.\n\n    Parameters\n    ----------\n    X : np.ndarray or csc_matrix of shape (N, P)\n        Data Matrix where rows of X are observations and columns of X are features\n\n    y : np.ndarray of shape (P)\n        The response vector where y[i] corresponds to X[i, :]\n        For classification, a binary vector (-1, 1) is requried .\n\n    loss : str\n        The loss function. Currently supports the choices:\n            \"SquaredError\" (for regression),\n            \"Logistic\" (for logistic regression), and\n            \"SquaredHinge\" (for smooth SVM).\n\n    penalty : str\n        The type of regularization.\n        This can take either one of the following choices:\n            \"L0\",\n            \"L0L2\", and\n            \"L0L1\"\n\n    algorithm : str\n        The type of algorithm used to minimize the objective function. Currently \"CD\" and \"CDPSI\" are are supported.\n        \"CD\" is a variant of cyclic coordinate descent and runs very fast. \"CDPSI\" performs local combinatorial search\n        on top of CD and typically achieves higher quality solutions (at the expense of increased running tim""e).\n\n    max_support_size : int\n        Must be greater than 0.\n        The maximum support size at which to terminate the regularization path. We recommend setting this to a small\n        fraction of min(n,p) (e.g. 0.05 * min(n,p)) as L0 regularization typically selects a small portion of non-zeros.\n\n    num_lambda : int, optional\n        The number of lambda values to select in the regularization path.\n        This value must be None if lambda_grid is supplied.When supplied, must be greater than 0.\n        Note: lambda is the regularization parameter corresponding to the L0 norm.\n\n    num_gamma: int, optional\n        The number of gamma values to select in the regularization path.\n        This value must be None if lambda_grid is supplied. When supplied, must be greater than 0.\n        Note:  gamma is the regularization parameter corresponding to L1 or L2, depending on the chosen penalty).\n\n    gamma_max : float\n        The maximum value of gamma when using the L0L2 penalty.\n        This value must be greater than 0.\n\n        Note: For the L0L1 penalty this is automatically selected.\n\n    gamma_min : float\n        The minimum value of Gamma when using the L0L2 penalty.\n        This value must be greater than 0 but less than gamma_max.\n        Note: For the L0L1 penalty, the minimum value of gamma in the grid is set to gammaMin * gammaMax.\n\n    partial_sort : bool\n        If TRUE partial sorting will be used for sorting the coordinates to do greedy cycling (see our paper for\n        for details). Otherwise, full sorting is used. #TODO: Add link for paper\n\n    max_iter : int\n        The maximum number of iterations (full cycles) for CD per grid point. The algorithm may not use the full number\n        of iteration per grid point if convergence is found (defined by rtol and atol parameter)\n        Must be greater than 0\n\n    rtol : float\n        The relative tolerance which decides when to terminate optimization as based on the re""lative change in the\n        objective between iterations.\n        Must be greater than 0 and less than 1.\n\n    atol : float\n        The absolute tolerance which decides when to terminate optimization as based on the absolute L2 norm of the\n        residuals\n        Must be greater than 0\n\n    active_set : bool\n        If TRUE, performs active set updates. (see our paper for for details). #TODO: Add link for paper\n\n    active_set_num : int\n        The number of consecutive times a support should appear before declaring support stabilization.\n        (see our paper for for details). #TODO: Add link for paper\n\n        Must be greater than 0.\n\n    max_swaps : int\n        The maximum number of swaps used by CDPSI for each grid point.\n        Must be greater than 0. Ignored by CD algorithims.\n\n    scale_down_factor : float\n        Roughly amount each lambda value is scaled by between grid points. Larger values lead to closer lambdas and\n        typically to smaller gaps between the support sizes.\n\n        For details, see our paper - Section 5 on Adaptive Selection of Tuning Parameters). #TODO: Add link for paper\n\n        Must be greater than 0 and less than 1 (strictly for both.)\n\n    screen_size : int\n        The number of coordinates to cycle over when performing initial correlation screening. #TODO: Add link for paper\n\n        Must be greater than 0 and less than number of columns of X.\n\n    lambda_grid : list of list of floats\n        A grid of lambda values to use in computing the regularization path. This is by default an empty list\n        and is ignored. When specified, lambda_grid should be a list of list of floats, where the ith element\n         (corresponding to the ith gamma) should be a decreasing sequence of lambda values. The length of this sequence\n         is directly the number of lambdas to be tried for that gamma.\n\n        In the the \"L0\" penalty case, lambda_grid should be a list of 1.\n        In the \"L0L""X\" penalty cases, lambda_grid can be a list of any length. The length of lambda_grid will be the\n        number of gamma values tried.\n\n        See the example notebook for more details.\n\n        Note: When lambda_grid is supplied, num_gamma and num_lambda must be None.\n\n    exclude_first_k : int\n        The first exclude_first_k features in X will be excluded from variable selection. In other words, the first\n        exclude_first_k variables will not be included in the L0-norm penalty however they will  be included in the\n        L1 or L2 norm penalties, if they are specified.\n\n        Must be a positive integer less than the columns of X.\n\n    intercept : bool\n        If False, no intercept term is included or fit in the regularization path\n        Intercept terms are not regularized by L0 or L1/L2.\n\n    lows : np array or float\n        Lower bounds for coefficients. Either a scalar for all coefficients to have the same bound or a vector of\n        size p (number of columns of X) where lows[i] is the lower bound for coefficient i.\n\n        Lower bounds can not be above 0 (i.e. we can not specify that all coefficients must be larger than a > 0).\n        Lower bounds can be set to 0 iff the corresponding upper bound for that coefficient is also not 0.\n\n    highs : np array or float\n        Upper bounds for coefficients. Either a scalar for all coefficients to have the same bound or a vector of\n        size p (number of columns of X) where highs[i] is the upper bound for coefficient i.\n\n        Upper bounds can not be below 0 (i.e. we can not specify that all coefficients must be smaller than a < 0).\n        Upper bounds can be set to 0 iff the corresponding lower bound for that coefficient is also not 0.\n\n    Returns\n    -------\n    fit_model : l0learn.models.FitModel\n        FitModel instance containing all relevant information from the solution path.\n\n    See Also\n    -------\n    l0learn.cvfit\n    l0learn.models.FitModel""\n\n    Examples\n    --------\n    >>>fit_model = l0learn.fit(X, y, penalty=\"L0\", max_support_size=20)\n    ";
 static PyMethodDef __pyx_mdef_7l0learn_9interface_3fit = {"fit", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_7l0learn_9interface_3fit, METH_VARARGS|METH_KEYWORDS, __pyx_doc_7l0learn_9interface_2fit};
 static PyObject *__pyx_pw_7l0learn_9interface_3fit(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_X = 0;
@@ -6419,7 +6429,7 @@ static PyObject *__pyx_pw_7l0learn_9interface_3fit(PyObject *__pyx_self, PyObjec
     /* "l0learn/interface.pyx":280
  *         scale_down_factor: float = 0.8,
  *         screen_size: int = 1000,
- *         lambda_grid: Optional[List[List[float]]] = None,             # <<<<<<<<<<<<<<
+ *         lambda_grid: Optional[List[Sequence[float]]] = None,             # <<<<<<<<<<<<<<
  *         exclude_first_k: int = 0,
  *         intercept: bool = True,
  */
@@ -6427,7 +6437,7 @@ static PyObject *__pyx_pw_7l0learn_9interface_3fit(PyObject *__pyx_self, PyObjec
     values[20] = ((PyObject *)__pyx_int_0);
 
     /* "l0learn/interface.pyx":282
- *         lambda_grid: Optional[List[List[float]]] = None,
+ *         lambda_grid: Optional[List[Sequence[float]]] = None,
  *         exclude_first_k: int = 0,
  *         intercept: bool = True,             # <<<<<<<<<<<<<<
  *         lows: Union[np.ndarray, float] = -float('inf'),
@@ -6811,425 +6821,425 @@ static PyObject *__pyx_pf_7l0learn_9interface_2fit(CYTHON_UNUSED PyObject *__pyx
   __Pyx_INCREF(__pyx_v_lows);
   __Pyx_INCREF(__pyx_v_highs);
 
-  /* "l0learn/interface.pyx":432
- *     --------
+  /* "l0learn/interface.pyx":439
+ *     >>>fit_model = l0learn.fit(X, y, penalty="L0", max_support_size=20)
  *     """
  *     check = _fit_check(X=X,             # <<<<<<<<<<<<<<
  *                        y=y,
  *                        loss=loss,
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_fit_check); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 432, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_fit_check); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 439, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyDict_NewPresized(24); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 432, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyDict_NewPresized(24); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 439, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_X, __pyx_v_X) < 0) __PYX_ERR(0, 432, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_X, __pyx_v_X) < 0) __PYX_ERR(0, 439, __pyx_L1_error)
 
-  /* "l0learn/interface.pyx":433
+  /* "l0learn/interface.pyx":440
  *     """
  *     check = _fit_check(X=X,
  *                        y=y,             # <<<<<<<<<<<<<<
  *                        loss=loss,
  *                        penalty=penalty,
  */
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_y, __pyx_v_y) < 0) __PYX_ERR(0, 432, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_y, __pyx_v_y) < 0) __PYX_ERR(0, 439, __pyx_L1_error)
 
-  /* "l0learn/interface.pyx":434
+  /* "l0learn/interface.pyx":441
  *     check = _fit_check(X=X,
  *                        y=y,
  *                        loss=loss,             # <<<<<<<<<<<<<<
  *                        penalty=penalty,
  *                        algorithm=algorithm,
  */
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_loss, __pyx_v_loss) < 0) __PYX_ERR(0, 432, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_loss, __pyx_v_loss) < 0) __PYX_ERR(0, 439, __pyx_L1_error)
 
-  /* "l0learn/interface.pyx":435
+  /* "l0learn/interface.pyx":442
  *                        y=y,
  *                        loss=loss,
  *                        penalty=penalty,             # <<<<<<<<<<<<<<
  *                        algorithm=algorithm,
  *                        max_support_size=max_support_size,
  */
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_penalty, __pyx_v_penalty) < 0) __PYX_ERR(0, 432, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_penalty, __pyx_v_penalty) < 0) __PYX_ERR(0, 439, __pyx_L1_error)
 
-  /* "l0learn/interface.pyx":436
+  /* "l0learn/interface.pyx":443
  *                        loss=loss,
  *                        penalty=penalty,
  *                        algorithm=algorithm,             # <<<<<<<<<<<<<<
  *                        max_support_size=max_support_size,
  *                        num_lambda=num_lambda,
  */
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_algorithm, __pyx_v_algorithm) < 0) __PYX_ERR(0, 432, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_algorithm, __pyx_v_algorithm) < 0) __PYX_ERR(0, 439, __pyx_L1_error)
 
-  /* "l0learn/interface.pyx":437
+  /* "l0learn/interface.pyx":444
  *                        penalty=penalty,
  *                        algorithm=algorithm,
  *                        max_support_size=max_support_size,             # <<<<<<<<<<<<<<
  *                        num_lambda=num_lambda,
  *                        num_gamma=num_gamma,
  */
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_max_support_size, __pyx_v_max_support_size) < 0) __PYX_ERR(0, 432, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_max_support_size, __pyx_v_max_support_size) < 0) __PYX_ERR(0, 439, __pyx_L1_error)
 
-  /* "l0learn/interface.pyx":438
+  /* "l0learn/interface.pyx":445
  *                        algorithm=algorithm,
  *                        max_support_size=max_support_size,
  *                        num_lambda=num_lambda,             # <<<<<<<<<<<<<<
  *                        num_gamma=num_gamma,
  *                        gamma_max=gamma_max,
  */
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_num_lambda, __pyx_v_num_lambda) < 0) __PYX_ERR(0, 432, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_num_lambda, __pyx_v_num_lambda) < 0) __PYX_ERR(0, 439, __pyx_L1_error)
 
-  /* "l0learn/interface.pyx":439
+  /* "l0learn/interface.pyx":446
  *                        max_support_size=max_support_size,
  *                        num_lambda=num_lambda,
  *                        num_gamma=num_gamma,             # <<<<<<<<<<<<<<
  *                        gamma_max=gamma_max,
  *                        gamma_min=gamma_min,
  */
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_num_gamma, __pyx_v_num_gamma) < 0) __PYX_ERR(0, 432, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_num_gamma, __pyx_v_num_gamma) < 0) __PYX_ERR(0, 439, __pyx_L1_error)
 
-  /* "l0learn/interface.pyx":440
+  /* "l0learn/interface.pyx":447
  *                        num_lambda=num_lambda,
  *                        num_gamma=num_gamma,
  *                        gamma_max=gamma_max,             # <<<<<<<<<<<<<<
  *                        gamma_min=gamma_min,
  *                        partial_sort=partial_sort,
  */
-  __pyx_t_3 = PyFloat_FromDouble(__pyx_v_gamma_max); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 440, __pyx_L1_error)
+  __pyx_t_3 = PyFloat_FromDouble(__pyx_v_gamma_max); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 447, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_gamma_max, __pyx_t_3) < 0) __PYX_ERR(0, 432, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_gamma_max, __pyx_t_3) < 0) __PYX_ERR(0, 439, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "l0learn/interface.pyx":441
+  /* "l0learn/interface.pyx":448
  *                        num_gamma=num_gamma,
  *                        gamma_max=gamma_max,
  *                        gamma_min=gamma_min,             # <<<<<<<<<<<<<<
  *                        partial_sort=partial_sort,
  *                        max_iter=max_iter,
  */
-  __pyx_t_3 = PyFloat_FromDouble(__pyx_v_gamma_min); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 441, __pyx_L1_error)
+  __pyx_t_3 = PyFloat_FromDouble(__pyx_v_gamma_min); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 448, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_gamma_min, __pyx_t_3) < 0) __PYX_ERR(0, 432, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_gamma_min, __pyx_t_3) < 0) __PYX_ERR(0, 439, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "l0learn/interface.pyx":442
+  /* "l0learn/interface.pyx":449
  *                        gamma_max=gamma_max,
  *                        gamma_min=gamma_min,
  *                        partial_sort=partial_sort,             # <<<<<<<<<<<<<<
  *                        max_iter=max_iter,
  *                        rtol=rtol,
  */
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_partial_sort, __pyx_v_partial_sort) < 0) __PYX_ERR(0, 432, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_partial_sort, __pyx_v_partial_sort) < 0) __PYX_ERR(0, 439, __pyx_L1_error)
 
-  /* "l0learn/interface.pyx":443
+  /* "l0learn/interface.pyx":450
  *                        gamma_min=gamma_min,
  *                        partial_sort=partial_sort,
  *                        max_iter=max_iter,             # <<<<<<<<<<<<<<
  *                        rtol=rtol,
  *                        atol=atol,
  */
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_max_iter, __pyx_v_max_iter) < 0) __PYX_ERR(0, 432, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_max_iter, __pyx_v_max_iter) < 0) __PYX_ERR(0, 439, __pyx_L1_error)
 
-  /* "l0learn/interface.pyx":444
+  /* "l0learn/interface.pyx":451
  *                        partial_sort=partial_sort,
  *                        max_iter=max_iter,
  *                        rtol=rtol,             # <<<<<<<<<<<<<<
  *                        atol=atol,
  *                        active_set=active_set,
  */
-  __pyx_t_3 = PyFloat_FromDouble(__pyx_v_rtol); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 444, __pyx_L1_error)
+  __pyx_t_3 = PyFloat_FromDouble(__pyx_v_rtol); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 451, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_rtol, __pyx_t_3) < 0) __PYX_ERR(0, 432, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_rtol, __pyx_t_3) < 0) __PYX_ERR(0, 439, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "l0learn/interface.pyx":445
+  /* "l0learn/interface.pyx":452
  *                        max_iter=max_iter,
  *                        rtol=rtol,
  *                        atol=atol,             # <<<<<<<<<<<<<<
  *                        active_set=active_set,
  *                        active_set_num=active_set_num,
  */
-  __pyx_t_3 = PyFloat_FromDouble(__pyx_v_atol); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 445, __pyx_L1_error)
+  __pyx_t_3 = PyFloat_FromDouble(__pyx_v_atol); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 452, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_atol, __pyx_t_3) < 0) __PYX_ERR(0, 432, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_atol, __pyx_t_3) < 0) __PYX_ERR(0, 439, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "l0learn/interface.pyx":446
+  /* "l0learn/interface.pyx":453
  *                        rtol=rtol,
  *                        atol=atol,
  *                        active_set=active_set,             # <<<<<<<<<<<<<<
  *                        active_set_num=active_set_num,
  *                        max_swaps=max_swaps,
  */
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_active_set, __pyx_v_active_set) < 0) __PYX_ERR(0, 432, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_active_set, __pyx_v_active_set) < 0) __PYX_ERR(0, 439, __pyx_L1_error)
 
-  /* "l0learn/interface.pyx":447
+  /* "l0learn/interface.pyx":454
  *                        atol=atol,
  *                        active_set=active_set,
  *                        active_set_num=active_set_num,             # <<<<<<<<<<<<<<
  *                        max_swaps=max_swaps,
  *                        scale_down_factor=scale_down_factor,
  */
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_active_set_num, __pyx_v_active_set_num) < 0) __PYX_ERR(0, 432, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_active_set_num, __pyx_v_active_set_num) < 0) __PYX_ERR(0, 439, __pyx_L1_error)
 
-  /* "l0learn/interface.pyx":448
+  /* "l0learn/interface.pyx":455
  *                        active_set=active_set,
  *                        active_set_num=active_set_num,
  *                        max_swaps=max_swaps,             # <<<<<<<<<<<<<<
  *                        scale_down_factor=scale_down_factor,
  *                        screen_size=screen_size,
  */
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_max_swaps, __pyx_v_max_swaps) < 0) __PYX_ERR(0, 432, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_max_swaps, __pyx_v_max_swaps) < 0) __PYX_ERR(0, 439, __pyx_L1_error)
 
-  /* "l0learn/interface.pyx":449
+  /* "l0learn/interface.pyx":456
  *                        active_set_num=active_set_num,
  *                        max_swaps=max_swaps,
  *                        scale_down_factor=scale_down_factor,             # <<<<<<<<<<<<<<
  *                        screen_size=screen_size,
  *                        lambda_grid=lambda_grid,
  */
-  __pyx_t_3 = PyFloat_FromDouble(__pyx_v_scale_down_factor); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 449, __pyx_L1_error)
+  __pyx_t_3 = PyFloat_FromDouble(__pyx_v_scale_down_factor); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 456, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_scale_down_factor, __pyx_t_3) < 0) __PYX_ERR(0, 432, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_scale_down_factor, __pyx_t_3) < 0) __PYX_ERR(0, 439, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "l0learn/interface.pyx":450
+  /* "l0learn/interface.pyx":457
  *                        max_swaps=max_swaps,
  *                        scale_down_factor=scale_down_factor,
  *                        screen_size=screen_size,             # <<<<<<<<<<<<<<
  *                        lambda_grid=lambda_grid,
  *                        exclude_first_k=exclude_first_k,
  */
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_screen_size, __pyx_v_screen_size) < 0) __PYX_ERR(0, 432, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_screen_size, __pyx_v_screen_size) < 0) __PYX_ERR(0, 439, __pyx_L1_error)
 
-  /* "l0learn/interface.pyx":451
+  /* "l0learn/interface.pyx":458
  *                        scale_down_factor=scale_down_factor,
  *                        screen_size=screen_size,
  *                        lambda_grid=lambda_grid,             # <<<<<<<<<<<<<<
  *                        exclude_first_k=exclude_first_k,
  *                        intercept=intercept,
  */
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_lambda_grid, __pyx_v_lambda_grid) < 0) __PYX_ERR(0, 432, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_lambda_grid, __pyx_v_lambda_grid) < 0) __PYX_ERR(0, 439, __pyx_L1_error)
 
-  /* "l0learn/interface.pyx":452
+  /* "l0learn/interface.pyx":459
  *                        screen_size=screen_size,
  *                        lambda_grid=lambda_grid,
  *                        exclude_first_k=exclude_first_k,             # <<<<<<<<<<<<<<
  *                        intercept=intercept,
  *                        lows=lows,
  */
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_exclude_first_k, __pyx_v_exclude_first_k) < 0) __PYX_ERR(0, 432, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_exclude_first_k, __pyx_v_exclude_first_k) < 0) __PYX_ERR(0, 439, __pyx_L1_error)
 
-  /* "l0learn/interface.pyx":453
+  /* "l0learn/interface.pyx":460
  *                        lambda_grid=lambda_grid,
  *                        exclude_first_k=exclude_first_k,
  *                        intercept=intercept,             # <<<<<<<<<<<<<<
  *                        lows=lows,
  *                        highs=highs)
  */
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_intercept, __pyx_v_intercept) < 0) __PYX_ERR(0, 432, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_intercept, __pyx_v_intercept) < 0) __PYX_ERR(0, 439, __pyx_L1_error)
 
-  /* "l0learn/interface.pyx":454
+  /* "l0learn/interface.pyx":461
  *                        exclude_first_k=exclude_first_k,
  *                        intercept=intercept,
  *                        lows=lows,             # <<<<<<<<<<<<<<
  *                        highs=highs)
  * 
  */
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_lows, __pyx_v_lows) < 0) __PYX_ERR(0, 432, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_lows, __pyx_v_lows) < 0) __PYX_ERR(0, 439, __pyx_L1_error)
 
-  /* "l0learn/interface.pyx":455
+  /* "l0learn/interface.pyx":462
  *                        intercept=intercept,
  *                        lows=lows,
  *                        highs=highs)             # <<<<<<<<<<<<<<
  * 
  *     max_support_size = check["max_support_size"]
  */
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_highs, __pyx_v_highs) < 0) __PYX_ERR(0, 432, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_highs, __pyx_v_highs) < 0) __PYX_ERR(0, 439, __pyx_L1_error)
 
-  /* "l0learn/interface.pyx":432
- *     --------
+  /* "l0learn/interface.pyx":439
+ *     >>>fit_model = l0learn.fit(X, y, penalty="L0", max_support_size=20)
  *     """
  *     check = _fit_check(X=X,             # <<<<<<<<<<<<<<
  *                        y=y,
  *                        loss=loss,
  */
-  __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_empty_tuple, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 432, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_empty_tuple, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 439, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_check = __pyx_t_3;
   __pyx_t_3 = 0;
 
-  /* "l0learn/interface.pyx":457
+  /* "l0learn/interface.pyx":464
  *                        highs=highs)
  * 
  *     max_support_size = check["max_support_size"]             # <<<<<<<<<<<<<<
  *     screen_size = check["screen_size"]
  *     y = check['y']
  */
-  __pyx_t_3 = __Pyx_PyObject_Dict_GetItem(__pyx_v_check, __pyx_n_u_max_support_size); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 457, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_Dict_GetItem(__pyx_v_check, __pyx_n_u_max_support_size); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 464, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF_SET(__pyx_v_max_support_size, __pyx_t_3);
   __pyx_t_3 = 0;
 
-  /* "l0learn/interface.pyx":458
+  /* "l0learn/interface.pyx":465
  * 
  *     max_support_size = check["max_support_size"]
  *     screen_size = check["screen_size"]             # <<<<<<<<<<<<<<
  *     y = check['y']
  *     penalty = check['penalty']
  */
-  __pyx_t_3 = __Pyx_PyObject_Dict_GetItem(__pyx_v_check, __pyx_n_u_screen_size); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 458, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_Dict_GetItem(__pyx_v_check, __pyx_n_u_screen_size); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 465, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF_SET(__pyx_v_screen_size, __pyx_t_3);
   __pyx_t_3 = 0;
 
-  /* "l0learn/interface.pyx":459
+  /* "l0learn/interface.pyx":466
  *     max_support_size = check["max_support_size"]
  *     screen_size = check["screen_size"]
  *     y = check['y']             # <<<<<<<<<<<<<<
  *     penalty = check['penalty']
  *     gamma_max = check['gamma_max']
  */
-  __pyx_t_3 = __Pyx_PyObject_Dict_GetItem(__pyx_v_check, __pyx_n_u_y); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 459, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_Dict_GetItem(__pyx_v_check, __pyx_n_u_y); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 466, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF_SET(__pyx_v_y, __pyx_t_3);
   __pyx_t_3 = 0;
 
-  /* "l0learn/interface.pyx":460
+  /* "l0learn/interface.pyx":467
  *     screen_size = check["screen_size"]
  *     y = check['y']
  *     penalty = check['penalty']             # <<<<<<<<<<<<<<
  *     gamma_max = check['gamma_max']
  *     gamma_min = check['gamma_min']
  */
-  __pyx_t_3 = __Pyx_PyObject_Dict_GetItem(__pyx_v_check, __pyx_n_u_penalty); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 460, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_Dict_GetItem(__pyx_v_check, __pyx_n_u_penalty); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 467, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (!(likely(PyUnicode_CheckExact(__pyx_t_3))||((__pyx_t_3) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "unicode", Py_TYPE(__pyx_t_3)->tp_name), 0))) __PYX_ERR(0, 460, __pyx_L1_error)
+  if (!(likely(PyUnicode_CheckExact(__pyx_t_3))||((__pyx_t_3) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "unicode", Py_TYPE(__pyx_t_3)->tp_name), 0))) __PYX_ERR(0, 467, __pyx_L1_error)
   __Pyx_DECREF_SET(__pyx_v_penalty, ((PyObject*)__pyx_t_3));
   __pyx_t_3 = 0;
 
-  /* "l0learn/interface.pyx":461
+  /* "l0learn/interface.pyx":468
  *     y = check['y']
  *     penalty = check['penalty']
  *     gamma_max = check['gamma_max']             # <<<<<<<<<<<<<<
  *     gamma_min = check['gamma_min']
  *     lambda_grid = check['lambda_grid']
  */
-  __pyx_t_3 = __Pyx_PyObject_Dict_GetItem(__pyx_v_check, __pyx_n_u_gamma_max); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 461, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_Dict_GetItem(__pyx_v_check, __pyx_n_u_gamma_max); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 468, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __pyx_PyFloat_AsDouble(__pyx_t_3); if (unlikely((__pyx_t_4 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 461, __pyx_L1_error)
+  __pyx_t_4 = __pyx_PyFloat_AsDouble(__pyx_t_3); if (unlikely((__pyx_t_4 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 468, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_v_gamma_max = __pyx_t_4;
 
-  /* "l0learn/interface.pyx":462
+  /* "l0learn/interface.pyx":469
  *     penalty = check['penalty']
  *     gamma_max = check['gamma_max']
  *     gamma_min = check['gamma_min']             # <<<<<<<<<<<<<<
  *     lambda_grid = check['lambda_grid']
  *     num_gamma = check['num_gamma']
  */
-  __pyx_t_3 = __Pyx_PyObject_Dict_GetItem(__pyx_v_check, __pyx_n_u_gamma_min); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 462, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_Dict_GetItem(__pyx_v_check, __pyx_n_u_gamma_min); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 469, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __pyx_PyFloat_AsDouble(__pyx_t_3); if (unlikely((__pyx_t_4 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 462, __pyx_L1_error)
+  __pyx_t_4 = __pyx_PyFloat_AsDouble(__pyx_t_3); if (unlikely((__pyx_t_4 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 469, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_v_gamma_min = __pyx_t_4;
 
-  /* "l0learn/interface.pyx":463
+  /* "l0learn/interface.pyx":470
  *     gamma_max = check['gamma_max']
  *     gamma_min = check['gamma_min']
  *     lambda_grid = check['lambda_grid']             # <<<<<<<<<<<<<<
  *     num_gamma = check['num_gamma']
  *     num_lambda = check['num_lambda']
  */
-  __pyx_t_3 = __Pyx_PyObject_Dict_GetItem(__pyx_v_check, __pyx_n_u_lambda_grid); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 463, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_Dict_GetItem(__pyx_v_check, __pyx_n_u_lambda_grid); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 470, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF_SET(__pyx_v_lambda_grid, __pyx_t_3);
   __pyx_t_3 = 0;
 
-  /* "l0learn/interface.pyx":464
+  /* "l0learn/interface.pyx":471
  *     gamma_min = check['gamma_min']
  *     lambda_grid = check['lambda_grid']
  *     num_gamma = check['num_gamma']             # <<<<<<<<<<<<<<
  *     num_lambda = check['num_lambda']
  *     auto_lambda = check['auto_lambda']
  */
-  __pyx_t_3 = __Pyx_PyObject_Dict_GetItem(__pyx_v_check, __pyx_n_u_num_gamma); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 464, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_Dict_GetItem(__pyx_v_check, __pyx_n_u_num_gamma); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 471, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF_SET(__pyx_v_num_gamma, __pyx_t_3);
   __pyx_t_3 = 0;
 
-  /* "l0learn/interface.pyx":465
+  /* "l0learn/interface.pyx":472
  *     lambda_grid = check['lambda_grid']
  *     num_gamma = check['num_gamma']
  *     num_lambda = check['num_lambda']             # <<<<<<<<<<<<<<
  *     auto_lambda = check['auto_lambda']
  *     with_bounds = check['with_bounds']
  */
-  __pyx_t_3 = __Pyx_PyObject_Dict_GetItem(__pyx_v_check, __pyx_n_u_num_lambda); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 465, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_Dict_GetItem(__pyx_v_check, __pyx_n_u_num_lambda); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 472, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF_SET(__pyx_v_num_lambda, __pyx_t_3);
   __pyx_t_3 = 0;
 
-  /* "l0learn/interface.pyx":466
+  /* "l0learn/interface.pyx":473
  *     num_gamma = check['num_gamma']
  *     num_lambda = check['num_lambda']
  *     auto_lambda = check['auto_lambda']             # <<<<<<<<<<<<<<
  *     with_bounds = check['with_bounds']
  *     lows = check['lows']
  */
-  __pyx_t_3 = __Pyx_PyObject_Dict_GetItem(__pyx_v_check, __pyx_n_u_auto_lambda); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 466, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_Dict_GetItem(__pyx_v_check, __pyx_n_u_auto_lambda); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 473, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_v_auto_lambda = __pyx_t_3;
   __pyx_t_3 = 0;
 
-  /* "l0learn/interface.pyx":467
+  /* "l0learn/interface.pyx":474
  *     num_lambda = check['num_lambda']
  *     auto_lambda = check['auto_lambda']
  *     with_bounds = check['with_bounds']             # <<<<<<<<<<<<<<
  *     lows = check['lows']
  *     highs = check['highs']
  */
-  __pyx_t_3 = __Pyx_PyObject_Dict_GetItem(__pyx_v_check, __pyx_n_u_with_bounds); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 467, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_Dict_GetItem(__pyx_v_check, __pyx_n_u_with_bounds); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 474, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_v_with_bounds = __pyx_t_3;
   __pyx_t_3 = 0;
 
-  /* "l0learn/interface.pyx":468
+  /* "l0learn/interface.pyx":475
  *     auto_lambda = check['auto_lambda']
  *     with_bounds = check['with_bounds']
  *     lows = check['lows']             # <<<<<<<<<<<<<<
  *     highs = check['highs']
  * 
  */
-  __pyx_t_3 = __Pyx_PyObject_Dict_GetItem(__pyx_v_check, __pyx_n_u_lows); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 468, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_Dict_GetItem(__pyx_v_check, __pyx_n_u_lows); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 475, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF_SET(__pyx_v_lows, __pyx_t_3);
   __pyx_t_3 = 0;
 
-  /* "l0learn/interface.pyx":469
+  /* "l0learn/interface.pyx":476
  *     with_bounds = check['with_bounds']
  *     lows = check['lows']
  *     highs = check['highs']             # <<<<<<<<<<<<<<
  * 
  *     cdef vector[vector[double]] c_lambda_grid = lambda_grid
  */
-  __pyx_t_3 = __Pyx_PyObject_Dict_GetItem(__pyx_v_check, __pyx_n_u_highs); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 469, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_Dict_GetItem(__pyx_v_check, __pyx_n_u_highs); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 476, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF_SET(__pyx_v_highs, __pyx_t_3);
   __pyx_t_3 = 0;
 
-  /* "l0learn/interface.pyx":471
+  /* "l0learn/interface.pyx":478
  *     highs = check['highs']
  * 
  *     cdef vector[vector[double]] c_lambda_grid = lambda_grid             # <<<<<<<<<<<<<<
  *     cdef string c_loss = loss.encode('UTF-8')
  *     cdef string c_penalty = penalty.encode('UTF-8')
  */
-  __pyx_t_5 = __pyx_convert_vector_from_py_std_3a__3a_vector_3c_double_3e___(__pyx_v_lambda_grid); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 471, __pyx_L1_error)
+  __pyx_t_5 = __pyx_convert_vector_from_py_std_3a__3a_vector_3c_double_3e___(__pyx_v_lambda_grid); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 478, __pyx_L1_error)
   __pyx_v_c_lambda_grid = __pyx_t_5;
 
-  /* "l0learn/interface.pyx":472
+  /* "l0learn/interface.pyx":479
  * 
  *     cdef vector[vector[double]] c_lambda_grid = lambda_grid
  *     cdef string c_loss = loss.encode('UTF-8')             # <<<<<<<<<<<<<<
@@ -7238,15 +7248,15 @@ static PyObject *__pyx_pf_7l0learn_9interface_2fit(CYTHON_UNUSED PyObject *__pyx
  */
   if (unlikely(__pyx_v_loss == Py_None)) {
     PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "encode");
-    __PYX_ERR(0, 472, __pyx_L1_error)
+    __PYX_ERR(0, 479, __pyx_L1_error)
   }
-  __pyx_t_3 = PyUnicode_AsUTF8String(__pyx_v_loss); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 472, __pyx_L1_error)
+  __pyx_t_3 = PyUnicode_AsUTF8String(__pyx_v_loss); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 479, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_6 = __pyx_convert_string_from_py_std__in_string(__pyx_t_3); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 472, __pyx_L1_error)
+  __pyx_t_6 = __pyx_convert_string_from_py_std__in_string(__pyx_t_3); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 479, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_v_c_loss = __pyx_t_6;
 
-  /* "l0learn/interface.pyx":473
+  /* "l0learn/interface.pyx":480
  *     cdef vector[vector[double]] c_lambda_grid = lambda_grid
  *     cdef string c_loss = loss.encode('UTF-8')
  *     cdef string c_penalty = penalty.encode('UTF-8')             # <<<<<<<<<<<<<<
@@ -7255,15 +7265,15 @@ static PyObject *__pyx_pf_7l0learn_9interface_2fit(CYTHON_UNUSED PyObject *__pyx
  */
   if (unlikely(__pyx_v_penalty == Py_None)) {
     PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "encode");
-    __PYX_ERR(0, 473, __pyx_L1_error)
+    __PYX_ERR(0, 480, __pyx_L1_error)
   }
-  __pyx_t_3 = PyUnicode_AsUTF8String(__pyx_v_penalty); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 473, __pyx_L1_error)
+  __pyx_t_3 = PyUnicode_AsUTF8String(__pyx_v_penalty); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 480, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_6 = __pyx_convert_string_from_py_std__in_string(__pyx_t_3); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 473, __pyx_L1_error)
+  __pyx_t_6 = __pyx_convert_string_from_py_std__in_string(__pyx_t_3); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 480, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_v_c_penalty = __pyx_t_6;
 
-  /* "l0learn/interface.pyx":474
+  /* "l0learn/interface.pyx":481
  *     cdef string c_loss = loss.encode('UTF-8')
  *     cdef string c_penalty = penalty.encode('UTF-8')
  *     cdef string c_algorithim = algorithm.encode('UTF-8')             # <<<<<<<<<<<<<<
@@ -7272,185 +7282,185 @@ static PyObject *__pyx_pf_7l0learn_9interface_2fit(CYTHON_UNUSED PyObject *__pyx
  */
   if (unlikely(__pyx_v_algorithm == Py_None)) {
     PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "encode");
-    __PYX_ERR(0, 474, __pyx_L1_error)
+    __PYX_ERR(0, 481, __pyx_L1_error)
   }
-  __pyx_t_3 = PyUnicode_AsUTF8String(__pyx_v_algorithm); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 474, __pyx_L1_error)
+  __pyx_t_3 = PyUnicode_AsUTF8String(__pyx_v_algorithm); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 481, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_6 = __pyx_convert_string_from_py_std__in_string(__pyx_t_3); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 474, __pyx_L1_error)
+  __pyx_t_6 = __pyx_convert_string_from_py_std__in_string(__pyx_t_3); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 481, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_v_c_algorithim = __pyx_t_6;
 
-  /* "l0learn/interface.pyx":477
+  /* "l0learn/interface.pyx":484
  * 
  *     cdef fitmodel c_results
  *     if isinstance(X, np.ndarray):             # <<<<<<<<<<<<<<
  *         c_results = _L0LearnFit_dense(X=numpy_to_dmat_d(X),
  *                                       y=numpy_to_dvec_d(y),
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 477, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 484, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_ndarray); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 477, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_ndarray); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 484, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_7 = PyObject_IsInstance(__pyx_v_X, __pyx_t_2); if (unlikely(__pyx_t_7 == ((int)-1))) __PYX_ERR(0, 477, __pyx_L1_error)
+  __pyx_t_7 = PyObject_IsInstance(__pyx_v_X, __pyx_t_2); if (unlikely(__pyx_t_7 == ((int)-1))) __PYX_ERR(0, 484, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_t_8 = (__pyx_t_7 != 0);
   if (__pyx_t_8) {
 
-    /* "l0learn/interface.pyx":478
+    /* "l0learn/interface.pyx":485
  *     cdef fitmodel c_results
  *     if isinstance(X, np.ndarray):
  *         c_results = _L0LearnFit_dense(X=numpy_to_dmat_d(X),             # <<<<<<<<<<<<<<
  *                                       y=numpy_to_dvec_d(y),
  *                                       Loss=c_loss,
  */
-    if (!(likely(((__pyx_v_X) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_X, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 478, __pyx_L1_error)
+    if (!(likely(((__pyx_v_X) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_X, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 485, __pyx_L1_error)
 
-    /* "l0learn/interface.pyx":479
+    /* "l0learn/interface.pyx":486
  *     if isinstance(X, np.ndarray):
  *         c_results = _L0LearnFit_dense(X=numpy_to_dmat_d(X),
  *                                       y=numpy_to_dvec_d(y),             # <<<<<<<<<<<<<<
  *                                       Loss=c_loss,
  *                                       Penalty=c_penalty,
  */
-    if (!(likely(((__pyx_v_y) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_y, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 479, __pyx_L1_error)
+    if (!(likely(((__pyx_v_y) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_y, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 486, __pyx_L1_error)
 
-    /* "l0learn/interface.pyx":483
+    /* "l0learn/interface.pyx":490
  *                                       Penalty=c_penalty,
  *                                       Algorithm=c_algorithim,
  *                                       NnzStopNum=max_support_size,             # <<<<<<<<<<<<<<
  *                                       G_ncols=num_lambda,
  *                                       G_nrows=num_gamma,
  */
-    __pyx_t_9 = __Pyx_PyInt_As_size_t(__pyx_v_max_support_size); if (unlikely((__pyx_t_9 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 483, __pyx_L1_error)
+    __pyx_t_9 = __Pyx_PyInt_As_size_t(__pyx_v_max_support_size); if (unlikely((__pyx_t_9 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 490, __pyx_L1_error)
 
-    /* "l0learn/interface.pyx":484
+    /* "l0learn/interface.pyx":491
  *                                       Algorithm=c_algorithim,
  *                                       NnzStopNum=max_support_size,
  *                                       G_ncols=num_lambda,             # <<<<<<<<<<<<<<
  *                                       G_nrows=num_gamma,
  *                                       Lambda2Max=gamma_max,
  */
-    __pyx_t_10 = __Pyx_PyInt_As_size_t(__pyx_v_num_lambda); if (unlikely((__pyx_t_10 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 484, __pyx_L1_error)
+    __pyx_t_10 = __Pyx_PyInt_As_size_t(__pyx_v_num_lambda); if (unlikely((__pyx_t_10 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 491, __pyx_L1_error)
 
-    /* "l0learn/interface.pyx":485
+    /* "l0learn/interface.pyx":492
  *                                       NnzStopNum=max_support_size,
  *                                       G_ncols=num_lambda,
  *                                       G_nrows=num_gamma,             # <<<<<<<<<<<<<<
  *                                       Lambda2Max=gamma_max,
  *                                       Lambda2Min=gamma_min,
  */
-    __pyx_t_11 = __Pyx_PyInt_As_size_t(__pyx_v_num_gamma); if (unlikely((__pyx_t_11 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 485, __pyx_L1_error)
+    __pyx_t_11 = __Pyx_PyInt_As_size_t(__pyx_v_num_gamma); if (unlikely((__pyx_t_11 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 492, __pyx_L1_error)
 
-    /* "l0learn/interface.pyx":488
+    /* "l0learn/interface.pyx":495
  *                                       Lambda2Max=gamma_max,
  *                                       Lambda2Min=gamma_min,
  *                                       PartialSort=partial_sort,             # <<<<<<<<<<<<<<
  *                                       MaxIters=max_iter,
  *                                       rtol=rtol,
  */
-    __pyx_t_12 = __Pyx_PyObject_IsTrue(__pyx_v_partial_sort); if (unlikely((__pyx_t_12 == ((bool)-1)) && PyErr_Occurred())) __PYX_ERR(0, 488, __pyx_L1_error)
+    __pyx_t_12 = __Pyx_PyObject_IsTrue(__pyx_v_partial_sort); if (unlikely((__pyx_t_12 == ((bool)-1)) && PyErr_Occurred())) __PYX_ERR(0, 495, __pyx_L1_error)
 
-    /* "l0learn/interface.pyx":489
+    /* "l0learn/interface.pyx":496
  *                                       Lambda2Min=gamma_min,
  *                                       PartialSort=partial_sort,
  *                                       MaxIters=max_iter,             # <<<<<<<<<<<<<<
  *                                       rtol=rtol,
  *                                       atol=atol,
  */
-    __pyx_t_13 = __Pyx_PyInt_As_size_t(__pyx_v_max_iter); if (unlikely((__pyx_t_13 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 489, __pyx_L1_error)
+    __pyx_t_13 = __Pyx_PyInt_As_size_t(__pyx_v_max_iter); if (unlikely((__pyx_t_13 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 496, __pyx_L1_error)
 
-    /* "l0learn/interface.pyx":492
+    /* "l0learn/interface.pyx":499
  *                                       rtol=rtol,
  *                                       atol=atol,
  *                                       ActiveSet=active_set,             # <<<<<<<<<<<<<<
  *                                       ActiveSetNum=active_set_num,
  *                                       MaxNumSwaps=max_swaps,
  */
-    __pyx_t_14 = __Pyx_PyObject_IsTrue(__pyx_v_active_set); if (unlikely((__pyx_t_14 == ((bool)-1)) && PyErr_Occurred())) __PYX_ERR(0, 492, __pyx_L1_error)
+    __pyx_t_14 = __Pyx_PyObject_IsTrue(__pyx_v_active_set); if (unlikely((__pyx_t_14 == ((bool)-1)) && PyErr_Occurred())) __PYX_ERR(0, 499, __pyx_L1_error)
 
-    /* "l0learn/interface.pyx":493
+    /* "l0learn/interface.pyx":500
  *                                       atol=atol,
  *                                       ActiveSet=active_set,
  *                                       ActiveSetNum=active_set_num,             # <<<<<<<<<<<<<<
  *                                       MaxNumSwaps=max_swaps,
  *                                       ScaleDownFactor=scale_down_factor,
  */
-    __pyx_t_15 = __Pyx_PyInt_As_size_t(__pyx_v_active_set_num); if (unlikely((__pyx_t_15 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 493, __pyx_L1_error)
+    __pyx_t_15 = __Pyx_PyInt_As_size_t(__pyx_v_active_set_num); if (unlikely((__pyx_t_15 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 500, __pyx_L1_error)
 
-    /* "l0learn/interface.pyx":494
+    /* "l0learn/interface.pyx":501
  *                                       ActiveSet=active_set,
  *                                       ActiveSetNum=active_set_num,
  *                                       MaxNumSwaps=max_swaps,             # <<<<<<<<<<<<<<
  *                                       ScaleDownFactor=scale_down_factor,
  *                                       ScreenSize=screen_size,
  */
-    __pyx_t_16 = __Pyx_PyInt_As_size_t(__pyx_v_max_swaps); if (unlikely((__pyx_t_16 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 494, __pyx_L1_error)
+    __pyx_t_16 = __Pyx_PyInt_As_size_t(__pyx_v_max_swaps); if (unlikely((__pyx_t_16 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 501, __pyx_L1_error)
 
-    /* "l0learn/interface.pyx":496
+    /* "l0learn/interface.pyx":503
  *                                       MaxNumSwaps=max_swaps,
  *                                       ScaleDownFactor=scale_down_factor,
  *                                       ScreenSize=screen_size,             # <<<<<<<<<<<<<<
  *                                       LambdaU=not auto_lambda,
  *                                       Lambdas=c_lambda_grid,
  */
-    __pyx_t_17 = __Pyx_PyInt_As_size_t(__pyx_v_screen_size); if (unlikely((__pyx_t_17 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 496, __pyx_L1_error)
+    __pyx_t_17 = __Pyx_PyInt_As_size_t(__pyx_v_screen_size); if (unlikely((__pyx_t_17 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 503, __pyx_L1_error)
 
-    /* "l0learn/interface.pyx":497
+    /* "l0learn/interface.pyx":504
  *                                       ScaleDownFactor=scale_down_factor,
  *                                       ScreenSize=screen_size,
  *                                       LambdaU=not auto_lambda,             # <<<<<<<<<<<<<<
  *                                       Lambdas=c_lambda_grid,
  *                                       ExcludeFirstK=exclude_first_k,
  */
-    __pyx_t_8 = __Pyx_PyObject_IsTrue(__pyx_v_auto_lambda); if (unlikely(__pyx_t_8 < 0)) __PYX_ERR(0, 497, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_PyObject_IsTrue(__pyx_v_auto_lambda); if (unlikely(__pyx_t_8 < 0)) __PYX_ERR(0, 504, __pyx_L1_error)
 
-    /* "l0learn/interface.pyx":499
+    /* "l0learn/interface.pyx":506
  *                                       LambdaU=not auto_lambda,
  *                                       Lambdas=c_lambda_grid,
  *                                       ExcludeFirstK=exclude_first_k,             # <<<<<<<<<<<<<<
  *                                       Intercept=intercept,
  *                                       withBounds=with_bounds,
  */
-    __pyx_t_18 = __Pyx_PyInt_As_size_t(__pyx_v_exclude_first_k); if (unlikely((__pyx_t_18 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 499, __pyx_L1_error)
+    __pyx_t_18 = __Pyx_PyInt_As_size_t(__pyx_v_exclude_first_k); if (unlikely((__pyx_t_18 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 506, __pyx_L1_error)
 
-    /* "l0learn/interface.pyx":500
+    /* "l0learn/interface.pyx":507
  *                                       Lambdas=c_lambda_grid,
  *                                       ExcludeFirstK=exclude_first_k,
  *                                       Intercept=intercept,             # <<<<<<<<<<<<<<
  *                                       withBounds=with_bounds,
  *                                       Lows=numpy_to_dvec_d(lows),
  */
-    __pyx_t_19 = __Pyx_PyObject_IsTrue(__pyx_v_intercept); if (unlikely((__pyx_t_19 == ((bool)-1)) && PyErr_Occurred())) __PYX_ERR(0, 500, __pyx_L1_error)
+    __pyx_t_19 = __Pyx_PyObject_IsTrue(__pyx_v_intercept); if (unlikely((__pyx_t_19 == ((bool)-1)) && PyErr_Occurred())) __PYX_ERR(0, 507, __pyx_L1_error)
 
-    /* "l0learn/interface.pyx":501
+    /* "l0learn/interface.pyx":508
  *                                       ExcludeFirstK=exclude_first_k,
  *                                       Intercept=intercept,
  *                                       withBounds=with_bounds,             # <<<<<<<<<<<<<<
  *                                       Lows=numpy_to_dvec_d(lows),
  *                                       Highs=numpy_to_dvec_d(highs))
  */
-    __pyx_t_20 = __Pyx_PyObject_IsTrue(__pyx_v_with_bounds); if (unlikely((__pyx_t_20 == ((bool)-1)) && PyErr_Occurred())) __PYX_ERR(0, 501, __pyx_L1_error)
+    __pyx_t_20 = __Pyx_PyObject_IsTrue(__pyx_v_with_bounds); if (unlikely((__pyx_t_20 == ((bool)-1)) && PyErr_Occurred())) __PYX_ERR(0, 508, __pyx_L1_error)
 
-    /* "l0learn/interface.pyx":502
+    /* "l0learn/interface.pyx":509
  *                                       Intercept=intercept,
  *                                       withBounds=with_bounds,
  *                                       Lows=numpy_to_dvec_d(lows),             # <<<<<<<<<<<<<<
  *                                       Highs=numpy_to_dvec_d(highs))
  *     else: # isinstance(X, csc_matrix)
  */
-    if (!(likely(((__pyx_v_lows) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_lows, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 502, __pyx_L1_error)
+    if (!(likely(((__pyx_v_lows) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_lows, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 509, __pyx_L1_error)
 
-    /* "l0learn/interface.pyx":503
+    /* "l0learn/interface.pyx":510
  *                                       withBounds=with_bounds,
  *                                       Lows=numpy_to_dvec_d(lows),
  *                                       Highs=numpy_to_dvec_d(highs))             # <<<<<<<<<<<<<<
  *     else: # isinstance(X, csc_matrix)
  *         c_results = _L0LearnFit_sparse(X=numpy_to_sp_dmat_d(X),
  */
-    if (!(likely(((__pyx_v_highs) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_highs, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 503, __pyx_L1_error)
+    if (!(likely(((__pyx_v_highs) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_highs, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 510, __pyx_L1_error)
 
-    /* "l0learn/interface.pyx":478
+    /* "l0learn/interface.pyx":485
  *     cdef fitmodel c_results
  *     if isinstance(X, np.ndarray):
  *         c_results = _L0LearnFit_dense(X=numpy_to_dmat_d(X),             # <<<<<<<<<<<<<<
@@ -7459,7 +7469,7 @@ static PyObject *__pyx_pf_7l0learn_9interface_2fit(CYTHON_UNUSED PyObject *__pyx
  */
     __pyx_v_c_results = __pyx_f_7l0learn_9interface__L0LearnFit_dense(__pyx_f_7l0learn_6cyarma_numpy_to_dmat_d(((PyArrayObject *)__pyx_v_X)), __pyx_f_7l0learn_6cyarma_numpy_to_dvec_d(((PyArrayObject *)__pyx_v_y)), __pyx_v_c_loss, __pyx_v_c_penalty, __pyx_v_c_algorithim, __pyx_t_9, __pyx_t_10, __pyx_t_11, __pyx_v_gamma_max, __pyx_v_gamma_min, __pyx_t_12, __pyx_t_13, __pyx_v_rtol, __pyx_v_atol, __pyx_t_14, __pyx_t_15, __pyx_t_16, __pyx_v_scale_down_factor, __pyx_t_17, (!__pyx_t_8), __pyx_v_c_lambda_grid, __pyx_t_18, __pyx_t_19, __pyx_t_20, __pyx_f_7l0learn_6cyarma_numpy_to_dvec_d(((PyArrayObject *)__pyx_v_lows)), __pyx_f_7l0learn_6cyarma_numpy_to_dvec_d(((PyArrayObject *)__pyx_v_highs)));
 
-    /* "l0learn/interface.pyx":477
+    /* "l0learn/interface.pyx":484
  * 
  *     cdef fitmodel c_results
  *     if isinstance(X, np.ndarray):             # <<<<<<<<<<<<<<
@@ -7469,7 +7479,7 @@ static PyObject *__pyx_pf_7l0learn_9interface_2fit(CYTHON_UNUSED PyObject *__pyx
     goto __pyx_L3;
   }
 
-  /* "l0learn/interface.pyx":505
+  /* "l0learn/interface.pyx":512
  *                                       Highs=numpy_to_dvec_d(highs))
  *     else: # isinstance(X, csc_matrix)
  *         c_results = _L0LearnFit_sparse(X=numpy_to_sp_dmat_d(X),             # <<<<<<<<<<<<<<
@@ -7478,151 +7488,151 @@ static PyObject *__pyx_pf_7l0learn_9interface_2fit(CYTHON_UNUSED PyObject *__pyx
  */
   /*else*/ {
 
-    /* "l0learn/interface.pyx":506
+    /* "l0learn/interface.pyx":513
  *     else: # isinstance(X, csc_matrix)
  *         c_results = _L0LearnFit_sparse(X=numpy_to_sp_dmat_d(X),
  *                                        y=numpy_to_dvec_d(y),             # <<<<<<<<<<<<<<
  *                                        Loss=c_loss,
  *                                        Penalty=c_penalty,
  */
-    if (!(likely(((__pyx_v_y) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_y, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 506, __pyx_L1_error)
+    if (!(likely(((__pyx_v_y) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_y, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 513, __pyx_L1_error)
 
-    /* "l0learn/interface.pyx":510
+    /* "l0learn/interface.pyx":517
  *                                        Penalty=c_penalty,
  *                                        Algorithm=c_algorithim,
  *                                        NnzStopNum=max_support_size,             # <<<<<<<<<<<<<<
  *                                        G_ncols=num_lambda,
  *                                        G_nrows=num_gamma,
  */
-    __pyx_t_18 = __Pyx_PyInt_As_size_t(__pyx_v_max_support_size); if (unlikely((__pyx_t_18 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 510, __pyx_L1_error)
+    __pyx_t_18 = __Pyx_PyInt_As_size_t(__pyx_v_max_support_size); if (unlikely((__pyx_t_18 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 517, __pyx_L1_error)
 
-    /* "l0learn/interface.pyx":511
+    /* "l0learn/interface.pyx":518
  *                                        Algorithm=c_algorithim,
  *                                        NnzStopNum=max_support_size,
  *                                        G_ncols=num_lambda,             # <<<<<<<<<<<<<<
  *                                        G_nrows=num_gamma,
  *                                        Lambda2Max=gamma_max,
  */
-    __pyx_t_17 = __Pyx_PyInt_As_size_t(__pyx_v_num_lambda); if (unlikely((__pyx_t_17 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 511, __pyx_L1_error)
+    __pyx_t_17 = __Pyx_PyInt_As_size_t(__pyx_v_num_lambda); if (unlikely((__pyx_t_17 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 518, __pyx_L1_error)
 
-    /* "l0learn/interface.pyx":512
+    /* "l0learn/interface.pyx":519
  *                                        NnzStopNum=max_support_size,
  *                                        G_ncols=num_lambda,
  *                                        G_nrows=num_gamma,             # <<<<<<<<<<<<<<
  *                                        Lambda2Max=gamma_max,
  *                                        Lambda2Min=gamma_min,
  */
-    __pyx_t_16 = __Pyx_PyInt_As_size_t(__pyx_v_num_gamma); if (unlikely((__pyx_t_16 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 512, __pyx_L1_error)
+    __pyx_t_16 = __Pyx_PyInt_As_size_t(__pyx_v_num_gamma); if (unlikely((__pyx_t_16 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 519, __pyx_L1_error)
 
-    /* "l0learn/interface.pyx":515
+    /* "l0learn/interface.pyx":522
  *                                        Lambda2Max=gamma_max,
  *                                        Lambda2Min=gamma_min,
  *                                        PartialSort=partial_sort,             # <<<<<<<<<<<<<<
  *                                        MaxIters=max_iter,
  *                                        rtol=rtol,
  */
-    __pyx_t_20 = __Pyx_PyObject_IsTrue(__pyx_v_partial_sort); if (unlikely((__pyx_t_20 == ((bool)-1)) && PyErr_Occurred())) __PYX_ERR(0, 515, __pyx_L1_error)
+    __pyx_t_20 = __Pyx_PyObject_IsTrue(__pyx_v_partial_sort); if (unlikely((__pyx_t_20 == ((bool)-1)) && PyErr_Occurred())) __PYX_ERR(0, 522, __pyx_L1_error)
 
-    /* "l0learn/interface.pyx":516
+    /* "l0learn/interface.pyx":523
  *                                        Lambda2Min=gamma_min,
  *                                        PartialSort=partial_sort,
  *                                        MaxIters=max_iter,             # <<<<<<<<<<<<<<
  *                                        rtol=rtol,
  *                                        atol=atol,
  */
-    __pyx_t_15 = __Pyx_PyInt_As_size_t(__pyx_v_max_iter); if (unlikely((__pyx_t_15 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 516, __pyx_L1_error)
+    __pyx_t_15 = __Pyx_PyInt_As_size_t(__pyx_v_max_iter); if (unlikely((__pyx_t_15 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 523, __pyx_L1_error)
 
-    /* "l0learn/interface.pyx":519
+    /* "l0learn/interface.pyx":526
  *                                        rtol=rtol,
  *                                        atol=atol,
  *                                        ActiveSet=active_set,             # <<<<<<<<<<<<<<
  *                                        ActiveSetNum=active_set_num,
  *                                        MaxNumSwaps=max_swaps,
  */
-    __pyx_t_19 = __Pyx_PyObject_IsTrue(__pyx_v_active_set); if (unlikely((__pyx_t_19 == ((bool)-1)) && PyErr_Occurred())) __PYX_ERR(0, 519, __pyx_L1_error)
+    __pyx_t_19 = __Pyx_PyObject_IsTrue(__pyx_v_active_set); if (unlikely((__pyx_t_19 == ((bool)-1)) && PyErr_Occurred())) __PYX_ERR(0, 526, __pyx_L1_error)
 
-    /* "l0learn/interface.pyx":520
+    /* "l0learn/interface.pyx":527
  *                                        atol=atol,
  *                                        ActiveSet=active_set,
  *                                        ActiveSetNum=active_set_num,             # <<<<<<<<<<<<<<
  *                                        MaxNumSwaps=max_swaps,
  *                                        ScaleDownFactor=scale_down_factor,
  */
-    __pyx_t_13 = __Pyx_PyInt_As_size_t(__pyx_v_active_set_num); if (unlikely((__pyx_t_13 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 520, __pyx_L1_error)
+    __pyx_t_13 = __Pyx_PyInt_As_size_t(__pyx_v_active_set_num); if (unlikely((__pyx_t_13 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 527, __pyx_L1_error)
 
-    /* "l0learn/interface.pyx":521
+    /* "l0learn/interface.pyx":528
  *                                        ActiveSet=active_set,
  *                                        ActiveSetNum=active_set_num,
  *                                        MaxNumSwaps=max_swaps,             # <<<<<<<<<<<<<<
  *                                        ScaleDownFactor=scale_down_factor,
  *                                        ScreenSize=screen_size,
  */
-    __pyx_t_11 = __Pyx_PyInt_As_size_t(__pyx_v_max_swaps); if (unlikely((__pyx_t_11 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 521, __pyx_L1_error)
+    __pyx_t_11 = __Pyx_PyInt_As_size_t(__pyx_v_max_swaps); if (unlikely((__pyx_t_11 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 528, __pyx_L1_error)
 
-    /* "l0learn/interface.pyx":523
+    /* "l0learn/interface.pyx":530
  *                                        MaxNumSwaps=max_swaps,
  *                                        ScaleDownFactor=scale_down_factor,
  *                                        ScreenSize=screen_size,             # <<<<<<<<<<<<<<
  *                                        LambdaU=not auto_lambda,
  *                                        Lambdas=c_lambda_grid,
  */
-    __pyx_t_10 = __Pyx_PyInt_As_size_t(__pyx_v_screen_size); if (unlikely((__pyx_t_10 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 523, __pyx_L1_error)
+    __pyx_t_10 = __Pyx_PyInt_As_size_t(__pyx_v_screen_size); if (unlikely((__pyx_t_10 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 530, __pyx_L1_error)
 
-    /* "l0learn/interface.pyx":524
+    /* "l0learn/interface.pyx":531
  *                                        ScaleDownFactor=scale_down_factor,
  *                                        ScreenSize=screen_size,
  *                                        LambdaU=not auto_lambda,             # <<<<<<<<<<<<<<
  *                                        Lambdas=c_lambda_grid,
  *                                        ExcludeFirstK=exclude_first_k,
  */
-    __pyx_t_8 = __Pyx_PyObject_IsTrue(__pyx_v_auto_lambda); if (unlikely(__pyx_t_8 < 0)) __PYX_ERR(0, 524, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_PyObject_IsTrue(__pyx_v_auto_lambda); if (unlikely(__pyx_t_8 < 0)) __PYX_ERR(0, 531, __pyx_L1_error)
 
-    /* "l0learn/interface.pyx":526
+    /* "l0learn/interface.pyx":533
  *                                        LambdaU=not auto_lambda,
  *                                        Lambdas=c_lambda_grid,
  *                                        ExcludeFirstK=exclude_first_k,             # <<<<<<<<<<<<<<
  *                                        Intercept=intercept,
  *                                        withBounds=with_bounds,
  */
-    __pyx_t_9 = __Pyx_PyInt_As_size_t(__pyx_v_exclude_first_k); if (unlikely((__pyx_t_9 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 526, __pyx_L1_error)
+    __pyx_t_9 = __Pyx_PyInt_As_size_t(__pyx_v_exclude_first_k); if (unlikely((__pyx_t_9 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 533, __pyx_L1_error)
 
-    /* "l0learn/interface.pyx":527
+    /* "l0learn/interface.pyx":534
  *                                        Lambdas=c_lambda_grid,
  *                                        ExcludeFirstK=exclude_first_k,
  *                                        Intercept=intercept,             # <<<<<<<<<<<<<<
  *                                        withBounds=with_bounds,
  *                                        Lows=numpy_to_dvec_d(lows),
  */
-    __pyx_t_14 = __Pyx_PyObject_IsTrue(__pyx_v_intercept); if (unlikely((__pyx_t_14 == ((bool)-1)) && PyErr_Occurred())) __PYX_ERR(0, 527, __pyx_L1_error)
+    __pyx_t_14 = __Pyx_PyObject_IsTrue(__pyx_v_intercept); if (unlikely((__pyx_t_14 == ((bool)-1)) && PyErr_Occurred())) __PYX_ERR(0, 534, __pyx_L1_error)
 
-    /* "l0learn/interface.pyx":528
+    /* "l0learn/interface.pyx":535
  *                                        ExcludeFirstK=exclude_first_k,
  *                                        Intercept=intercept,
  *                                        withBounds=with_bounds,             # <<<<<<<<<<<<<<
  *                                        Lows=numpy_to_dvec_d(lows),
  *                                        Highs=numpy_to_dvec_d(highs))
  */
-    __pyx_t_12 = __Pyx_PyObject_IsTrue(__pyx_v_with_bounds); if (unlikely((__pyx_t_12 == ((bool)-1)) && PyErr_Occurred())) __PYX_ERR(0, 528, __pyx_L1_error)
+    __pyx_t_12 = __Pyx_PyObject_IsTrue(__pyx_v_with_bounds); if (unlikely((__pyx_t_12 == ((bool)-1)) && PyErr_Occurred())) __PYX_ERR(0, 535, __pyx_L1_error)
 
-    /* "l0learn/interface.pyx":529
+    /* "l0learn/interface.pyx":536
  *                                        Intercept=intercept,
  *                                        withBounds=with_bounds,
  *                                        Lows=numpy_to_dvec_d(lows),             # <<<<<<<<<<<<<<
  *                                        Highs=numpy_to_dvec_d(highs))
  * 
  */
-    if (!(likely(((__pyx_v_lows) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_lows, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 529, __pyx_L1_error)
+    if (!(likely(((__pyx_v_lows) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_lows, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 536, __pyx_L1_error)
 
-    /* "l0learn/interface.pyx":530
+    /* "l0learn/interface.pyx":537
  *                                        withBounds=with_bounds,
  *                                        Lows=numpy_to_dvec_d(lows),
  *                                        Highs=numpy_to_dvec_d(highs))             # <<<<<<<<<<<<<<
  * 
  *     results = FitModel(settings={'loss': loss, 'intercept': intercept, 'penalty': penalty},
  */
-    if (!(likely(((__pyx_v_highs) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_highs, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 530, __pyx_L1_error)
+    if (!(likely(((__pyx_v_highs) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_highs, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 537, __pyx_L1_error)
 
-    /* "l0learn/interface.pyx":505
+    /* "l0learn/interface.pyx":512
  *                                       Highs=numpy_to_dvec_d(highs))
  *     else: # isinstance(X, csc_matrix)
  *         c_results = _L0LearnFit_sparse(X=numpy_to_sp_dmat_d(X),             # <<<<<<<<<<<<<<
@@ -7633,112 +7643,112 @@ static PyObject *__pyx_pf_7l0learn_9interface_2fit(CYTHON_UNUSED PyObject *__pyx
   }
   __pyx_L3:;
 
-  /* "l0learn/interface.pyx":532
+  /* "l0learn/interface.pyx":539
  *                                        Highs=numpy_to_dvec_d(highs))
  * 
  *     results = FitModel(settings={'loss': loss, 'intercept': intercept, 'penalty': penalty},             # <<<<<<<<<<<<<<
  *                        lambda_0=c_results.Lambda0,
  *                        gamma=c_results.Lambda12,
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_FitModel); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 532, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_FitModel); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 539, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyDict_NewPresized(7); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 532, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyDict_NewPresized(7); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 539, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_1 = __Pyx_PyDict_NewPresized(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 532, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyDict_NewPresized(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 539, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_loss, __pyx_v_loss) < 0) __PYX_ERR(0, 532, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_intercept, __pyx_v_intercept) < 0) __PYX_ERR(0, 532, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_penalty, __pyx_v_penalty) < 0) __PYX_ERR(0, 532, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_settings, __pyx_t_1) < 0) __PYX_ERR(0, 532, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_loss, __pyx_v_loss) < 0) __PYX_ERR(0, 539, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_intercept, __pyx_v_intercept) < 0) __PYX_ERR(0, 539, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_penalty, __pyx_v_penalty) < 0) __PYX_ERR(0, 539, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_settings, __pyx_t_1) < 0) __PYX_ERR(0, 539, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "l0learn/interface.pyx":533
+  /* "l0learn/interface.pyx":540
  * 
  *     results = FitModel(settings={'loss': loss, 'intercept': intercept, 'penalty': penalty},
  *                        lambda_0=c_results.Lambda0,             # <<<<<<<<<<<<<<
  *                        gamma=c_results.Lambda12,
  *                        support_size=c_results.NnzCount,
  */
-  __pyx_t_1 = __pyx_convert_vector_to_py_std_3a__3a_vector_3c_double_3e___(__pyx_v_c_results.Lambda0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 533, __pyx_L1_error)
+  __pyx_t_1 = __pyx_convert_vector_to_py_std_3a__3a_vector_3c_double_3e___(__pyx_v_c_results.Lambda0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 540, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_lambda_0, __pyx_t_1) < 0) __PYX_ERR(0, 532, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_lambda_0, __pyx_t_1) < 0) __PYX_ERR(0, 539, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "l0learn/interface.pyx":534
+  /* "l0learn/interface.pyx":541
  *     results = FitModel(settings={'loss': loss, 'intercept': intercept, 'penalty': penalty},
  *                        lambda_0=c_results.Lambda0,
  *                        gamma=c_results.Lambda12,             # <<<<<<<<<<<<<<
  *                        support_size=c_results.NnzCount,
  *                        coeffs=sp_dmat_field_to_list(c_results.Beta),
  */
-  __pyx_t_1 = __pyx_convert_vector_to_py_double(__pyx_v_c_results.Lambda12); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 534, __pyx_L1_error)
+  __pyx_t_1 = __pyx_convert_vector_to_py_double(__pyx_v_c_results.Lambda12); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 541, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_gamma, __pyx_t_1) < 0) __PYX_ERR(0, 532, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_gamma, __pyx_t_1) < 0) __PYX_ERR(0, 539, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "l0learn/interface.pyx":535
+  /* "l0learn/interface.pyx":542
  *                        lambda_0=c_results.Lambda0,
  *                        gamma=c_results.Lambda12,
  *                        support_size=c_results.NnzCount,             # <<<<<<<<<<<<<<
  *                        coeffs=sp_dmat_field_to_list(c_results.Beta),
  *                        intercepts=c_results.Intercept,
  */
-  __pyx_t_1 = __pyx_convert_vector_to_py_std_3a__3a_vector_3c_size_t_3e___(__pyx_v_c_results.NnzCount); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 535, __pyx_L1_error)
+  __pyx_t_1 = __pyx_convert_vector_to_py_std_3a__3a_vector_3c_size_t_3e___(__pyx_v_c_results.NnzCount); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 542, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_support_size, __pyx_t_1) < 0) __PYX_ERR(0, 532, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_support_size, __pyx_t_1) < 0) __PYX_ERR(0, 539, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "l0learn/interface.pyx":536
+  /* "l0learn/interface.pyx":543
  *                        gamma=c_results.Lambda12,
  *                        support_size=c_results.NnzCount,
  *                        coeffs=sp_dmat_field_to_list(c_results.Beta),             # <<<<<<<<<<<<<<
  *                        intercepts=c_results.Intercept,
  *                        converged=c_results.Converged)
  */
-  __pyx_t_1 = __pyx_f_7l0learn_6cyarma_sp_dmat_field_to_list(__pyx_v_c_results.Beta); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 536, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_7l0learn_6cyarma_sp_dmat_field_to_list(__pyx_v_c_results.Beta); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 543, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_coeffs, __pyx_t_1) < 0) __PYX_ERR(0, 532, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_coeffs, __pyx_t_1) < 0) __PYX_ERR(0, 539, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "l0learn/interface.pyx":537
+  /* "l0learn/interface.pyx":544
  *                        support_size=c_results.NnzCount,
  *                        coeffs=sp_dmat_field_to_list(c_results.Beta),
  *                        intercepts=c_results.Intercept,             # <<<<<<<<<<<<<<
  *                        converged=c_results.Converged)
  *     return results
  */
-  __pyx_t_1 = __pyx_convert_vector_to_py_std_3a__3a_vector_3c_double_3e___(__pyx_v_c_results.Intercept); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 537, __pyx_L1_error)
+  __pyx_t_1 = __pyx_convert_vector_to_py_std_3a__3a_vector_3c_double_3e___(__pyx_v_c_results.Intercept); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 544, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_intercepts, __pyx_t_1) < 0) __PYX_ERR(0, 532, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_intercepts, __pyx_t_1) < 0) __PYX_ERR(0, 539, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "l0learn/interface.pyx":538
+  /* "l0learn/interface.pyx":545
  *                        coeffs=sp_dmat_field_to_list(c_results.Beta),
  *                        intercepts=c_results.Intercept,
  *                        converged=c_results.Converged)             # <<<<<<<<<<<<<<
  *     return results
  * 
  */
-  __pyx_t_1 = __pyx_convert_vector_to_py_std_3a__3a_vector_3c_bool_3e___(__pyx_v_c_results.Converged); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 538, __pyx_L1_error)
+  __pyx_t_1 = __pyx_convert_vector_to_py_std_3a__3a_vector_3c_bool_3e___(__pyx_v_c_results.Converged); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 545, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_converged, __pyx_t_1) < 0) __PYX_ERR(0, 532, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_converged, __pyx_t_1) < 0) __PYX_ERR(0, 539, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "l0learn/interface.pyx":532
+  /* "l0learn/interface.pyx":539
  *                                        Highs=numpy_to_dvec_d(highs))
  * 
  *     results = FitModel(settings={'loss': loss, 'intercept': intercept, 'penalty': penalty},             # <<<<<<<<<<<<<<
  *                        lambda_0=c_results.Lambda0,
  *                        gamma=c_results.Lambda12,
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_empty_tuple, __pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 532, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_empty_tuple, __pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 539, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_v_results = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "l0learn/interface.pyx":539
+  /* "l0learn/interface.pyx":546
  *                        intercepts=c_results.Intercept,
  *                        converged=c_results.Converged)
  *     return results             # <<<<<<<<<<<<<<
@@ -7784,7 +7794,7 @@ static PyObject *__pyx_pf_7l0learn_9interface_2fit(CYTHON_UNUSED PyObject *__pyx
   return __pyx_r;
 }
 
-/* "l0learn/interface.pyx":542
+/* "l0learn/interface.pyx":549
  * 
  * 
  * def cvfit(X: Union[np.ndarray, csc_matrix],             # <<<<<<<<<<<<<<
@@ -7794,7 +7804,7 @@ static PyObject *__pyx_pf_7l0learn_9interface_2fit(CYTHON_UNUSED PyObject *__pyx
 
 /* Python wrapper */
 static PyObject *__pyx_pw_7l0learn_9interface_5cvfit(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_7l0learn_9interface_4cvfit[] = "cvfit(X: Union[np.ndarray, csc_matrix], y: np.ndarray, unicode loss: str = u'SquaredError', unicode penalty: str = u'L0', unicode algorithm: str = u'CD', num_folds: int = 10, seed: int = 1, max_support_size: int = 100, num_lambda: Optional[int] = 100, num_gamma: Optional[int] = 1, double gamma_max: float = 10., double gamma_min: float = .0001, partial_sort: bool = True, max_iter: int = 200, double rtol: float = 1e-6, double atol: float = 1e-9, active_set: bool = True, active_set_num: int = 3, max_swaps: int = 100, double scale_down_factor: float = 0.8, screen_size: int = 1000, lambda_grid: Optional[List[List[float]]] = None, exclude_first_k: int = 0, intercept: bool = True, lows: Union[np.ndarray, float] = -float(u'inf'), highs: Union[np.ndarray, float] = +float(u'inf')) -> l0learn.models.CVFitModel";
+static char __pyx_doc_7l0learn_9interface_4cvfit[] = "cvfit(X: Union[np.ndarray, csc_matrix], y: np.ndarray, unicode loss: str = u'SquaredError', unicode penalty: str = u'L0', unicode algorithm: str = u'CD', num_folds: int = 10, seed: int = 1, max_support_size: int = 100, num_lambda: Optional[int] = 100, num_gamma: Optional[int] = 1, double gamma_max: float = 10., double gamma_min: float = .0001, partial_sort: bool = True, max_iter: int = 200, double rtol: float = 1e-6, double atol: float = 1e-9, active_set: bool = True, active_set_num: int = 3, max_swaps: int = 100, double scale_down_factor: float = 0.8, screen_size: int = 1000, lambda_grid: Optional[List[Sequence[float]]] = None, exclude_first_k: int = 0, intercept: bool = True, lows: Union[np.ndarray, float] = -float(u'inf'), highs: Union[np.ndarray, float] = +float(u'inf')) -> l0learn.models.CVFitModel\n Computes the regularization path for the specified loss function and penalty function and performs K-fold\n    cross-validation.\n\n    Parameters\n    ----------\n    X : np.ndarray or csc_matrix of shape (N, P)\n        Data Matrix where rows of X are observations and columns of X are features\n\n    y : np.ndarray of shape (P)\n        The response vector where y[i] corresponds to X[i, :]\n        For classification, a binary vector (-1, 1) is requried .\n\n    loss : str\n        The loss function. Currently supports the choices:\n            \"SquaredError\" (for regression),\n            \"Logistic\" (for logistic regression), and\n            \"SquaredHinge\" (for smooth SVM).\n\n    penalty : str\n        The type of regularization.\n        This can take either one of the following choices:\n            \"L0\",\n            \"L0L2\", and\n            \"L0L1\"\n\n    algorithm : str\n        The type of algorithm used to minimize the objective function. Currently \"CD\" and \"CDPSI\" are are supported.\n        \"CD\" is a variant of cyclic coordinate descent and runs very fast. \"CDPSI\" performs local combinatorial search\n        on top of CD and typical""ly achieves higher quality solutions (at the expense of increased running time).\n\n    num_folds : int\n        Must be greater than 1 and less than N (number of .\n        The number of folds for cross-validation.\n\n    max_support_size : int\n        Must be greater than 0.\n        The maximum support size at which to terminate the regularization path. We recommend setting this to a small\n        fraction of min(n,p) (e.g. 0.05 * min(n,p)) as L0 regularization typically selects a small portion of non-zeros.\n\n    num_lambda : int, optional\n        The number of lambda values to select in the regularization path.\n        This value must be None if lambda_grid is supplied.When supplied, must be greater than 0.\n        Note: lambda is the regularization parameter corresponding to the L0 norm.\n\n    num_gamma: int, optional\n        The number of gamma values to select in the regularization path.\n        This value must be None if lambda_grid is supplied. When supplied, must be greater than 0.\n        Note:  gamma is the regularization parameter corresponding to L1 or L2, depending on the chosen penalty).\n\n    gamma_max : float\n        The maximum value of gamma when using the L0L2 penalty.\n        This value must be greater than 0.\n\n        Note: For the L0L1 penalty this is automatically selected.\n\n    gamma_min : float\n        The minimum value of Gamma when using the L0L2 penalty.\n        This value must be greater than 0 but less than gamma_max.\n        Note: For the L0L1 penalty, the minimum value of gamma in the grid is set to gammaMin * gammaMax.\n\n    partial_sort : bool\n        If TRUE partial sorting will be used for sorting the coordinates to do greedy cycling (see our paper for\n        for details). Otherwise, full sorting is used. #TODO: Add link for paper\n\n    max_iter : int\n        The maximum number of iterations (full cycles) for CD per grid point. The algorithm may not use the full number\n        of iteration per grid po""int if convergence is found (defined by rtol and atol parameter)\n        Must be greater than 0\n\n    rtol : float\n        The relative tolerance which decides when to terminate optimization as based on the relative change in the\n        objective between iterations.\n        Must be greater than 0 and less than 1.\n\n    atol : float\n        The absolute tolerance which decides when to terminate optimization as based on the absolute L2 norm of the\n        residuals\n        Must be greater than 0\n\n    active_set : bool\n        If TRUE, performs active set updates. (see our paper for for details). #TODO: Add link for paper\n\n    active_set_num : int\n        The number of consecutive times a support should appear before declaring support stabilization.\n        (see our paper for for details). #TODO: Add link for paper\n\n        Must be greater than 0.\n\n    max_swaps : int\n        The maximum number of swaps used by CDPSI for each grid point.\n        Must be greater than 0. Ignored by CD algorithims.\n\n    scale_down_factor : float\n        Roughly amount each lambda value is scaled by between grid points. Larger values lead to closer lambdas and\n        typically to smaller gaps between the support sizes.\n\n        For details, see our paper - Section 5 on Adaptive Selection of Tuning Parameters). #TODO: Add link for paper\n\n        Must be greater than 0 and less than 1 (strictly for both.)\n\n    screen_size : int\n        The number of coordinates to cycle over when performing initial correlation screening. #TODO: Add link for paper\n\n        Must be greater than 0 and less than number of columns of X.\n\n    lambda_grid : list of list of floats\n        A grid of lambda values to use in computing the regularization path. This is by default an empty list\n        and is ignored. When specified, lambda_grid should be a list of list of floats, where the ith element\n         (corresponding to the ith gamma) should be a decreasing sequence of la""mbda values. The length of this sequence\n         is directly the number of lambdas to be tried for that gamma.\n\n        In the the \"L0\" penalty case, lambda_grid should be a list of 1.\n        In the \"L0LX\" penalty cases, lambda_grid can be a list of any length. The length of lambda_grid will be the\n        number of gamma values tried.\n\n        See the example notebook for more details.\n\n        Note: When lambda_grid is supplied, num_gamma and num_lambda must be None.\n\n    exclude_first_k : int\n        The first exclude_first_k features in X will be excluded from variable selection. In other words, the first\n        exclude_first_k variables will not be included in the L0-norm penalty however they will  be included in the\n        L1 or L2 norm penalties, if they are specified.\n\n        Must be a positive integer less than the columns of X.\n\n    intercept : bool\n        If False, no intercept term is included or fit in the regularization path\n        Intercept terms are not regularized by L0 or L1/L2.\n\n    lows : np array or float\n        Lower bounds for coefficients. Either a scalar for all coefficients to have the same bound or a vector of\n        size p (number of columns of X) where lows[i] is the lower bound for coefficient i.\n\n        Lower bounds can not be above 0 (i.e. we can not specify that all coefficients must be larger than a > 0).\n        Lower bounds can be set to 0 iff the corresponding upper bound for that coefficient is also not 0.\n\n    highs : np array or float\n        Upper bounds for coefficients. Either a scalar for all coefficients to have the same bound or a vector of\n        size p (number of columns of X) where highs[i] is the upper bound for coefficient i.\n\n        Upper bounds can not be below 0 (i.e. we can not specify that all coefficients must be smaller than a < 0).\n        Upper bounds can be set to 0 iff the corresponding lower bound for that coefficient is also not 0.\n\n    Returns\n    --""-----\n    fit_model : l0learn.models.FitModel\n        FitModel instance containing all relevant information from the solution path.\n\n    See Also\n    -------\n    l0learn.cvfit\n    l0learn.models.FitModel\n\n    Examples\n    --------\n    >>>fit_model = l0learn.fit(X, y, penalty=\"L0\", max_support_size=20)\n    ";
 static PyMethodDef __pyx_mdef_7l0learn_9interface_5cvfit = {"cvfit", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_7l0learn_9interface_5cvfit, METH_VARARGS|METH_KEYWORDS, __pyx_doc_7l0learn_9interface_4cvfit};
 static PyObject *__pyx_pw_7l0learn_9interface_5cvfit(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_X = 0;
@@ -7841,7 +7851,7 @@ static PyObject *__pyx_pw_7l0learn_9interface_5cvfit(PyObject *__pyx_self, PyObj
     values[8] = ((PyObject *)__pyx_int_100);
     values[9] = ((PyObject *)__pyx_int_1);
 
-    /* "l0learn/interface.pyx":554
+    /* "l0learn/interface.pyx":561
  *           gamma_max: float = 10.,
  *           gamma_min: float = .0001,
  *           partial_sort: bool = True,             # <<<<<<<<<<<<<<
@@ -7851,7 +7861,7 @@ static PyObject *__pyx_pw_7l0learn_9interface_5cvfit(PyObject *__pyx_self, PyObj
     values[12] = ((PyObject *)Py_True);
     values[13] = ((PyObject *)__pyx_int_200);
 
-    /* "l0learn/interface.pyx":558
+    /* "l0learn/interface.pyx":565
  *           rtol: float = 1e-6,
  *           atol: float = 1e-9,
  *           active_set: bool = True,             # <<<<<<<<<<<<<<
@@ -7863,18 +7873,18 @@ static PyObject *__pyx_pw_7l0learn_9interface_5cvfit(PyObject *__pyx_self, PyObj
     values[18] = ((PyObject *)__pyx_int_100);
     values[20] = ((PyObject *)__pyx_int_1000);
 
-    /* "l0learn/interface.pyx":563
+    /* "l0learn/interface.pyx":570
  *           scale_down_factor: float = 0.8,
  *           screen_size: int = 1000,
- *           lambda_grid: Optional[List[List[float]]] = None,             # <<<<<<<<<<<<<<
+ *           lambda_grid: Optional[List[Sequence[float]]] = None,             # <<<<<<<<<<<<<<
  *           exclude_first_k: int = 0,
  *           intercept: bool = True,
  */
     values[21] = ((PyObject *)Py_None);
     values[22] = ((PyObject *)__pyx_int_0);
 
-    /* "l0learn/interface.pyx":565
- *           lambda_grid: Optional[List[List[float]]] = None,
+    /* "l0learn/interface.pyx":572
+ *           lambda_grid: Optional[List[Sequence[float]]] = None,
  *           exclude_first_k: int = 0,
  *           intercept: bool = True,             # <<<<<<<<<<<<<<
  *           lows: Union[np.ndarray, float] = -float('inf'),
@@ -7951,7 +7961,7 @@ static PyObject *__pyx_pw_7l0learn_9interface_5cvfit(PyObject *__pyx_self, PyObj
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_y)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("cvfit", 0, 2, 26, 1); __PYX_ERR(0, 542, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("cvfit", 0, 2, 26, 1); __PYX_ERR(0, 549, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
@@ -8099,7 +8109,7 @@ static PyObject *__pyx_pw_7l0learn_9interface_5cvfit(PyObject *__pyx_self, PyObj
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "cvfit") < 0)) __PYX_ERR(0, 542, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "cvfit") < 0)) __PYX_ERR(0, 549, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -8168,24 +8178,24 @@ static PyObject *__pyx_pw_7l0learn_9interface_5cvfit(PyObject *__pyx_self, PyObj
     __pyx_v_num_lambda = values[8];
     __pyx_v_num_gamma = values[9];
     if (values[10]) {
-      __pyx_v_gamma_max = __pyx_PyFloat_AsDouble(values[10]); if (unlikely((__pyx_v_gamma_max == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 552, __pyx_L3_error)
+      __pyx_v_gamma_max = __pyx_PyFloat_AsDouble(values[10]); if (unlikely((__pyx_v_gamma_max == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 559, __pyx_L3_error)
     } else {
       __pyx_v_gamma_max = ((double)10.);
     }
     if (values[11]) {
-      __pyx_v_gamma_min = __pyx_PyFloat_AsDouble(values[11]); if (unlikely((__pyx_v_gamma_min == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 553, __pyx_L3_error)
+      __pyx_v_gamma_min = __pyx_PyFloat_AsDouble(values[11]); if (unlikely((__pyx_v_gamma_min == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 560, __pyx_L3_error)
     } else {
       __pyx_v_gamma_min = ((double).0001);
     }
     __pyx_v_partial_sort = values[12];
     __pyx_v_max_iter = values[13];
     if (values[14]) {
-      __pyx_v_rtol = __pyx_PyFloat_AsDouble(values[14]); if (unlikely((__pyx_v_rtol == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 556, __pyx_L3_error)
+      __pyx_v_rtol = __pyx_PyFloat_AsDouble(values[14]); if (unlikely((__pyx_v_rtol == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 563, __pyx_L3_error)
     } else {
       __pyx_v_rtol = ((double)1e-6);
     }
     if (values[15]) {
-      __pyx_v_atol = __pyx_PyFloat_AsDouble(values[15]); if (unlikely((__pyx_v_atol == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 557, __pyx_L3_error)
+      __pyx_v_atol = __pyx_PyFloat_AsDouble(values[15]); if (unlikely((__pyx_v_atol == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 564, __pyx_L3_error)
     } else {
       __pyx_v_atol = ((double)1e-9);
     }
@@ -8193,7 +8203,7 @@ static PyObject *__pyx_pw_7l0learn_9interface_5cvfit(PyObject *__pyx_self, PyObj
     __pyx_v_active_set_num = values[17];
     __pyx_v_max_swaps = values[18];
     if (values[19]) {
-      __pyx_v_scale_down_factor = __pyx_PyFloat_AsDouble(values[19]); if (unlikely((__pyx_v_scale_down_factor == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 561, __pyx_L3_error)
+      __pyx_v_scale_down_factor = __pyx_PyFloat_AsDouble(values[19]); if (unlikely((__pyx_v_scale_down_factor == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 568, __pyx_L3_error)
     } else {
       __pyx_v_scale_down_factor = ((double)0.8);
     }
@@ -8206,18 +8216,18 @@ static PyObject *__pyx_pw_7l0learn_9interface_5cvfit(PyObject *__pyx_self, PyObj
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("cvfit", 0, 2, 26, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 542, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("cvfit", 0, 2, 26, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 549, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("l0learn.interface.cvfit", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_loss), (&PyUnicode_Type), 1, "loss", 1))) __PYX_ERR(0, 544, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_penalty), (&PyUnicode_Type), 1, "penalty", 1))) __PYX_ERR(0, 545, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_algorithm), (&PyUnicode_Type), 1, "algorithm", 1))) __PYX_ERR(0, 546, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_loss), (&PyUnicode_Type), 1, "loss", 1))) __PYX_ERR(0, 551, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_penalty), (&PyUnicode_Type), 1, "penalty", 1))) __PYX_ERR(0, 552, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_algorithm), (&PyUnicode_Type), 1, "algorithm", 1))) __PYX_ERR(0, 553, __pyx_L1_error)
   __pyx_r = __pyx_pf_7l0learn_9interface_4cvfit(__pyx_self, __pyx_v_X, __pyx_v_y, __pyx_v_loss, __pyx_v_penalty, __pyx_v_algorithm, __pyx_v_num_folds, __pyx_v_seed, __pyx_v_max_support_size, __pyx_v_num_lambda, __pyx_v_num_gamma, __pyx_v_gamma_max, __pyx_v_gamma_min, __pyx_v_partial_sort, __pyx_v_max_iter, __pyx_v_rtol, __pyx_v_atol, __pyx_v_active_set, __pyx_v_active_set_num, __pyx_v_max_swaps, __pyx_v_scale_down_factor, __pyx_v_screen_size, __pyx_v_lambda_grid, __pyx_v_exclude_first_k, __pyx_v_intercept, __pyx_v_lows, __pyx_v_highs);
 
-  /* "l0learn/interface.pyx":542
+  /* "l0learn/interface.pyx":549
  * 
  * 
  * def cvfit(X: Union[np.ndarray, csc_matrix],             # <<<<<<<<<<<<<<
@@ -8238,8 +8248,8 @@ static PyObject *__pyx_pf_7l0learn_9interface_4cvfit(CYTHON_UNUSED PyObject *__p
   PyObject *__pyx_v_check = NULL;
   PyObject *__pyx_v_auto_lambda = NULL;
   PyObject *__pyx_v_with_bounds = NULL;
-  CYTHON_UNUSED PyObject *__pyx_v__ = NULL;
-  PyObject *__pyx_v_p = NULL;
+  PyObject *__pyx_v_n = NULL;
+  CYTHON_UNUSED PyObject *__pyx_v_p = NULL;
   std::vector<std::vector<double> >  __pyx_v_c_lambda_grid;
   std::string __pyx_v_c_loss;
   std::string __pyx_v_c_penalty;
@@ -8288,422 +8298,422 @@ static PyObject *__pyx_pf_7l0learn_9interface_4cvfit(CYTHON_UNUSED PyObject *__p
   __Pyx_INCREF(__pyx_v_lows);
   __Pyx_INCREF(__pyx_v_highs);
 
-  /* "l0learn/interface.pyx":569
- *           highs: Union[np.ndarray, float] = +float('inf'),) -> l0learn.models.CVFitModel:
+  /* "l0learn/interface.pyx":734
+ *     """
  * 
  *     check = _fit_check(X=X,             # <<<<<<<<<<<<<<
  *                        y=y,
  *                        loss=loss,
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_fit_check); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 569, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_fit_check); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 734, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyDict_NewPresized(24); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 569, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyDict_NewPresized(24); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 734, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_X, __pyx_v_X) < 0) __PYX_ERR(0, 569, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_X, __pyx_v_X) < 0) __PYX_ERR(0, 734, __pyx_L1_error)
 
-  /* "l0learn/interface.pyx":570
+  /* "l0learn/interface.pyx":735
  * 
  *     check = _fit_check(X=X,
  *                        y=y,             # <<<<<<<<<<<<<<
  *                        loss=loss,
  *                        penalty=penalty,
  */
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_y, __pyx_v_y) < 0) __PYX_ERR(0, 569, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_y, __pyx_v_y) < 0) __PYX_ERR(0, 734, __pyx_L1_error)
 
-  /* "l0learn/interface.pyx":571
+  /* "l0learn/interface.pyx":736
  *     check = _fit_check(X=X,
  *                        y=y,
  *                        loss=loss,             # <<<<<<<<<<<<<<
  *                        penalty=penalty,
  *                        algorithm=algorithm,
  */
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_loss, __pyx_v_loss) < 0) __PYX_ERR(0, 569, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_loss, __pyx_v_loss) < 0) __PYX_ERR(0, 734, __pyx_L1_error)
 
-  /* "l0learn/interface.pyx":572
+  /* "l0learn/interface.pyx":737
  *                        y=y,
  *                        loss=loss,
  *                        penalty=penalty,             # <<<<<<<<<<<<<<
  *                        algorithm=algorithm,
  *                        max_support_size=max_support_size,
  */
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_penalty, __pyx_v_penalty) < 0) __PYX_ERR(0, 569, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_penalty, __pyx_v_penalty) < 0) __PYX_ERR(0, 734, __pyx_L1_error)
 
-  /* "l0learn/interface.pyx":573
+  /* "l0learn/interface.pyx":738
  *                        loss=loss,
  *                        penalty=penalty,
  *                        algorithm=algorithm,             # <<<<<<<<<<<<<<
  *                        max_support_size=max_support_size,
  *                        num_lambda=num_lambda,
  */
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_algorithm, __pyx_v_algorithm) < 0) __PYX_ERR(0, 569, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_algorithm, __pyx_v_algorithm) < 0) __PYX_ERR(0, 734, __pyx_L1_error)
 
-  /* "l0learn/interface.pyx":574
+  /* "l0learn/interface.pyx":739
  *                        penalty=penalty,
  *                        algorithm=algorithm,
  *                        max_support_size=max_support_size,             # <<<<<<<<<<<<<<
  *                        num_lambda=num_lambda,
  *                        num_gamma=num_gamma,
  */
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_max_support_size, __pyx_v_max_support_size) < 0) __PYX_ERR(0, 569, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_max_support_size, __pyx_v_max_support_size) < 0) __PYX_ERR(0, 734, __pyx_L1_error)
 
-  /* "l0learn/interface.pyx":575
+  /* "l0learn/interface.pyx":740
  *                        algorithm=algorithm,
  *                        max_support_size=max_support_size,
  *                        num_lambda=num_lambda,             # <<<<<<<<<<<<<<
  *                        num_gamma=num_gamma,
  *                        gamma_max=gamma_max,
  */
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_num_lambda, __pyx_v_num_lambda) < 0) __PYX_ERR(0, 569, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_num_lambda, __pyx_v_num_lambda) < 0) __PYX_ERR(0, 734, __pyx_L1_error)
 
-  /* "l0learn/interface.pyx":576
+  /* "l0learn/interface.pyx":741
  *                        max_support_size=max_support_size,
  *                        num_lambda=num_lambda,
  *                        num_gamma=num_gamma,             # <<<<<<<<<<<<<<
  *                        gamma_max=gamma_max,
  *                        gamma_min=gamma_min,
  */
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_num_gamma, __pyx_v_num_gamma) < 0) __PYX_ERR(0, 569, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_num_gamma, __pyx_v_num_gamma) < 0) __PYX_ERR(0, 734, __pyx_L1_error)
 
-  /* "l0learn/interface.pyx":577
+  /* "l0learn/interface.pyx":742
  *                        num_lambda=num_lambda,
  *                        num_gamma=num_gamma,
  *                        gamma_max=gamma_max,             # <<<<<<<<<<<<<<
  *                        gamma_min=gamma_min,
  *                        partial_sort=partial_sort,
  */
-  __pyx_t_3 = PyFloat_FromDouble(__pyx_v_gamma_max); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 577, __pyx_L1_error)
+  __pyx_t_3 = PyFloat_FromDouble(__pyx_v_gamma_max); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 742, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_gamma_max, __pyx_t_3) < 0) __PYX_ERR(0, 569, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_gamma_max, __pyx_t_3) < 0) __PYX_ERR(0, 734, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "l0learn/interface.pyx":578
+  /* "l0learn/interface.pyx":743
  *                        num_gamma=num_gamma,
  *                        gamma_max=gamma_max,
  *                        gamma_min=gamma_min,             # <<<<<<<<<<<<<<
  *                        partial_sort=partial_sort,
  *                        max_iter=max_iter,
  */
-  __pyx_t_3 = PyFloat_FromDouble(__pyx_v_gamma_min); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 578, __pyx_L1_error)
+  __pyx_t_3 = PyFloat_FromDouble(__pyx_v_gamma_min); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 743, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_gamma_min, __pyx_t_3) < 0) __PYX_ERR(0, 569, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_gamma_min, __pyx_t_3) < 0) __PYX_ERR(0, 734, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "l0learn/interface.pyx":579
+  /* "l0learn/interface.pyx":744
  *                        gamma_max=gamma_max,
  *                        gamma_min=gamma_min,
  *                        partial_sort=partial_sort,             # <<<<<<<<<<<<<<
  *                        max_iter=max_iter,
  *                        rtol=rtol,
  */
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_partial_sort, __pyx_v_partial_sort) < 0) __PYX_ERR(0, 569, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_partial_sort, __pyx_v_partial_sort) < 0) __PYX_ERR(0, 734, __pyx_L1_error)
 
-  /* "l0learn/interface.pyx":580
+  /* "l0learn/interface.pyx":745
  *                        gamma_min=gamma_min,
  *                        partial_sort=partial_sort,
  *                        max_iter=max_iter,             # <<<<<<<<<<<<<<
  *                        rtol=rtol,
  *                        atol=atol,
  */
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_max_iter, __pyx_v_max_iter) < 0) __PYX_ERR(0, 569, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_max_iter, __pyx_v_max_iter) < 0) __PYX_ERR(0, 734, __pyx_L1_error)
 
-  /* "l0learn/interface.pyx":581
+  /* "l0learn/interface.pyx":746
  *                        partial_sort=partial_sort,
  *                        max_iter=max_iter,
  *                        rtol=rtol,             # <<<<<<<<<<<<<<
  *                        atol=atol,
  *                        active_set=active_set,
  */
-  __pyx_t_3 = PyFloat_FromDouble(__pyx_v_rtol); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 581, __pyx_L1_error)
+  __pyx_t_3 = PyFloat_FromDouble(__pyx_v_rtol); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 746, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_rtol, __pyx_t_3) < 0) __PYX_ERR(0, 569, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_rtol, __pyx_t_3) < 0) __PYX_ERR(0, 734, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "l0learn/interface.pyx":582
+  /* "l0learn/interface.pyx":747
  *                        max_iter=max_iter,
  *                        rtol=rtol,
  *                        atol=atol,             # <<<<<<<<<<<<<<
  *                        active_set=active_set,
  *                        active_set_num=active_set_num,
  */
-  __pyx_t_3 = PyFloat_FromDouble(__pyx_v_atol); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 582, __pyx_L1_error)
+  __pyx_t_3 = PyFloat_FromDouble(__pyx_v_atol); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 747, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_atol, __pyx_t_3) < 0) __PYX_ERR(0, 569, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_atol, __pyx_t_3) < 0) __PYX_ERR(0, 734, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "l0learn/interface.pyx":583
+  /* "l0learn/interface.pyx":748
  *                        rtol=rtol,
  *                        atol=atol,
  *                        active_set=active_set,             # <<<<<<<<<<<<<<
  *                        active_set_num=active_set_num,
  *                        max_swaps=max_swaps,
  */
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_active_set, __pyx_v_active_set) < 0) __PYX_ERR(0, 569, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_active_set, __pyx_v_active_set) < 0) __PYX_ERR(0, 734, __pyx_L1_error)
 
-  /* "l0learn/interface.pyx":584
+  /* "l0learn/interface.pyx":749
  *                        atol=atol,
  *                        active_set=active_set,
  *                        active_set_num=active_set_num,             # <<<<<<<<<<<<<<
  *                        max_swaps=max_swaps,
  *                        scale_down_factor=scale_down_factor,
  */
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_active_set_num, __pyx_v_active_set_num) < 0) __PYX_ERR(0, 569, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_active_set_num, __pyx_v_active_set_num) < 0) __PYX_ERR(0, 734, __pyx_L1_error)
 
-  /* "l0learn/interface.pyx":585
+  /* "l0learn/interface.pyx":750
  *                        active_set=active_set,
  *                        active_set_num=active_set_num,
  *                        max_swaps=max_swaps,             # <<<<<<<<<<<<<<
  *                        scale_down_factor=scale_down_factor,
  *                        screen_size=screen_size,
  */
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_max_swaps, __pyx_v_max_swaps) < 0) __PYX_ERR(0, 569, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_max_swaps, __pyx_v_max_swaps) < 0) __PYX_ERR(0, 734, __pyx_L1_error)
 
-  /* "l0learn/interface.pyx":586
+  /* "l0learn/interface.pyx":751
  *                        active_set_num=active_set_num,
  *                        max_swaps=max_swaps,
  *                        scale_down_factor=scale_down_factor,             # <<<<<<<<<<<<<<
  *                        screen_size=screen_size,
  *                        lambda_grid=lambda_grid,
  */
-  __pyx_t_3 = PyFloat_FromDouble(__pyx_v_scale_down_factor); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 586, __pyx_L1_error)
+  __pyx_t_3 = PyFloat_FromDouble(__pyx_v_scale_down_factor); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 751, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_scale_down_factor, __pyx_t_3) < 0) __PYX_ERR(0, 569, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_scale_down_factor, __pyx_t_3) < 0) __PYX_ERR(0, 734, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "l0learn/interface.pyx":587
+  /* "l0learn/interface.pyx":752
  *                        max_swaps=max_swaps,
  *                        scale_down_factor=scale_down_factor,
  *                        screen_size=screen_size,             # <<<<<<<<<<<<<<
  *                        lambda_grid=lambda_grid,
  *                        exclude_first_k=exclude_first_k,
  */
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_screen_size, __pyx_v_screen_size) < 0) __PYX_ERR(0, 569, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_screen_size, __pyx_v_screen_size) < 0) __PYX_ERR(0, 734, __pyx_L1_error)
 
-  /* "l0learn/interface.pyx":588
+  /* "l0learn/interface.pyx":753
  *                        scale_down_factor=scale_down_factor,
  *                        screen_size=screen_size,
  *                        lambda_grid=lambda_grid,             # <<<<<<<<<<<<<<
  *                        exclude_first_k=exclude_first_k,
  *                        intercept=intercept,
  */
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_lambda_grid, __pyx_v_lambda_grid) < 0) __PYX_ERR(0, 569, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_lambda_grid, __pyx_v_lambda_grid) < 0) __PYX_ERR(0, 734, __pyx_L1_error)
 
-  /* "l0learn/interface.pyx":589
+  /* "l0learn/interface.pyx":754
  *                        screen_size=screen_size,
  *                        lambda_grid=lambda_grid,
  *                        exclude_first_k=exclude_first_k,             # <<<<<<<<<<<<<<
  *                        intercept=intercept,
  *                        lows=lows,
  */
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_exclude_first_k, __pyx_v_exclude_first_k) < 0) __PYX_ERR(0, 569, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_exclude_first_k, __pyx_v_exclude_first_k) < 0) __PYX_ERR(0, 734, __pyx_L1_error)
 
-  /* "l0learn/interface.pyx":590
+  /* "l0learn/interface.pyx":755
  *                        lambda_grid=lambda_grid,
  *                        exclude_first_k=exclude_first_k,
  *                        intercept=intercept,             # <<<<<<<<<<<<<<
  *                        lows=lows,
  *                        highs=highs)
  */
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_intercept, __pyx_v_intercept) < 0) __PYX_ERR(0, 569, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_intercept, __pyx_v_intercept) < 0) __PYX_ERR(0, 734, __pyx_L1_error)
 
-  /* "l0learn/interface.pyx":591
+  /* "l0learn/interface.pyx":756
  *                        exclude_first_k=exclude_first_k,
  *                        intercept=intercept,
  *                        lows=lows,             # <<<<<<<<<<<<<<
  *                        highs=highs)
  * 
  */
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_lows, __pyx_v_lows) < 0) __PYX_ERR(0, 569, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_lows, __pyx_v_lows) < 0) __PYX_ERR(0, 734, __pyx_L1_error)
 
-  /* "l0learn/interface.pyx":592
+  /* "l0learn/interface.pyx":757
  *                        intercept=intercept,
  *                        lows=lows,
  *                        highs=highs)             # <<<<<<<<<<<<<<
  * 
  *     max_support_size = check["max_support_size"]
  */
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_highs, __pyx_v_highs) < 0) __PYX_ERR(0, 569, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_highs, __pyx_v_highs) < 0) __PYX_ERR(0, 734, __pyx_L1_error)
 
-  /* "l0learn/interface.pyx":569
- *           highs: Union[np.ndarray, float] = +float('inf'),) -> l0learn.models.CVFitModel:
+  /* "l0learn/interface.pyx":734
+ *     """
  * 
  *     check = _fit_check(X=X,             # <<<<<<<<<<<<<<
  *                        y=y,
  *                        loss=loss,
  */
-  __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_empty_tuple, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 569, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_empty_tuple, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 734, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_check = __pyx_t_3;
   __pyx_t_3 = 0;
 
-  /* "l0learn/interface.pyx":594
+  /* "l0learn/interface.pyx":759
  *                        highs=highs)
  * 
  *     max_support_size = check["max_support_size"]             # <<<<<<<<<<<<<<
  *     screen_size = check["screen_size"]
  *     y = check['y']
  */
-  __pyx_t_3 = __Pyx_PyObject_Dict_GetItem(__pyx_v_check, __pyx_n_u_max_support_size); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 594, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_Dict_GetItem(__pyx_v_check, __pyx_n_u_max_support_size); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 759, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF_SET(__pyx_v_max_support_size, __pyx_t_3);
   __pyx_t_3 = 0;
 
-  /* "l0learn/interface.pyx":595
+  /* "l0learn/interface.pyx":760
  * 
  *     max_support_size = check["max_support_size"]
  *     screen_size = check["screen_size"]             # <<<<<<<<<<<<<<
  *     y = check['y']
  *     penalty = check['penalty']
  */
-  __pyx_t_3 = __Pyx_PyObject_Dict_GetItem(__pyx_v_check, __pyx_n_u_screen_size); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 595, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_Dict_GetItem(__pyx_v_check, __pyx_n_u_screen_size); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 760, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF_SET(__pyx_v_screen_size, __pyx_t_3);
   __pyx_t_3 = 0;
 
-  /* "l0learn/interface.pyx":596
+  /* "l0learn/interface.pyx":761
  *     max_support_size = check["max_support_size"]
  *     screen_size = check["screen_size"]
  *     y = check['y']             # <<<<<<<<<<<<<<
  *     penalty = check['penalty']
  *     gamma_max = check['gamma_max']
  */
-  __pyx_t_3 = __Pyx_PyObject_Dict_GetItem(__pyx_v_check, __pyx_n_u_y); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 596, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_Dict_GetItem(__pyx_v_check, __pyx_n_u_y); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 761, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF_SET(__pyx_v_y, __pyx_t_3);
   __pyx_t_3 = 0;
 
-  /* "l0learn/interface.pyx":597
+  /* "l0learn/interface.pyx":762
  *     screen_size = check["screen_size"]
  *     y = check['y']
  *     penalty = check['penalty']             # <<<<<<<<<<<<<<
  *     gamma_max = check['gamma_max']
  *     gamma_min = check['gamma_min']
  */
-  __pyx_t_3 = __Pyx_PyObject_Dict_GetItem(__pyx_v_check, __pyx_n_u_penalty); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 597, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_Dict_GetItem(__pyx_v_check, __pyx_n_u_penalty); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 762, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (!(likely(PyUnicode_CheckExact(__pyx_t_3))||((__pyx_t_3) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "unicode", Py_TYPE(__pyx_t_3)->tp_name), 0))) __PYX_ERR(0, 597, __pyx_L1_error)
+  if (!(likely(PyUnicode_CheckExact(__pyx_t_3))||((__pyx_t_3) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "unicode", Py_TYPE(__pyx_t_3)->tp_name), 0))) __PYX_ERR(0, 762, __pyx_L1_error)
   __Pyx_DECREF_SET(__pyx_v_penalty, ((PyObject*)__pyx_t_3));
   __pyx_t_3 = 0;
 
-  /* "l0learn/interface.pyx":598
+  /* "l0learn/interface.pyx":763
  *     y = check['y']
  *     penalty = check['penalty']
  *     gamma_max = check['gamma_max']             # <<<<<<<<<<<<<<
  *     gamma_min = check['gamma_min']
  *     lambda_grid = check['lambda_grid']
  */
-  __pyx_t_3 = __Pyx_PyObject_Dict_GetItem(__pyx_v_check, __pyx_n_u_gamma_max); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 598, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_Dict_GetItem(__pyx_v_check, __pyx_n_u_gamma_max); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 763, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __pyx_PyFloat_AsDouble(__pyx_t_3); if (unlikely((__pyx_t_4 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 598, __pyx_L1_error)
+  __pyx_t_4 = __pyx_PyFloat_AsDouble(__pyx_t_3); if (unlikely((__pyx_t_4 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 763, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_v_gamma_max = __pyx_t_4;
 
-  /* "l0learn/interface.pyx":599
+  /* "l0learn/interface.pyx":764
  *     penalty = check['penalty']
  *     gamma_max = check['gamma_max']
  *     gamma_min = check['gamma_min']             # <<<<<<<<<<<<<<
  *     lambda_grid = check['lambda_grid']
  *     num_gamma = check['num_gamma']
  */
-  __pyx_t_3 = __Pyx_PyObject_Dict_GetItem(__pyx_v_check, __pyx_n_u_gamma_min); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 599, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_Dict_GetItem(__pyx_v_check, __pyx_n_u_gamma_min); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 764, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __pyx_PyFloat_AsDouble(__pyx_t_3); if (unlikely((__pyx_t_4 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 599, __pyx_L1_error)
+  __pyx_t_4 = __pyx_PyFloat_AsDouble(__pyx_t_3); if (unlikely((__pyx_t_4 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 764, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_v_gamma_min = __pyx_t_4;
 
-  /* "l0learn/interface.pyx":600
+  /* "l0learn/interface.pyx":765
  *     gamma_max = check['gamma_max']
  *     gamma_min = check['gamma_min']
  *     lambda_grid = check['lambda_grid']             # <<<<<<<<<<<<<<
  *     num_gamma = check['num_gamma']
  *     num_lambda = check['num_lambda']
  */
-  __pyx_t_3 = __Pyx_PyObject_Dict_GetItem(__pyx_v_check, __pyx_n_u_lambda_grid); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 600, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_Dict_GetItem(__pyx_v_check, __pyx_n_u_lambda_grid); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 765, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF_SET(__pyx_v_lambda_grid, __pyx_t_3);
   __pyx_t_3 = 0;
 
-  /* "l0learn/interface.pyx":601
+  /* "l0learn/interface.pyx":766
  *     gamma_min = check['gamma_min']
  *     lambda_grid = check['lambda_grid']
  *     num_gamma = check['num_gamma']             # <<<<<<<<<<<<<<
  *     num_lambda = check['num_lambda']
  *     auto_lambda = check['auto_lambda']
  */
-  __pyx_t_3 = __Pyx_PyObject_Dict_GetItem(__pyx_v_check, __pyx_n_u_num_gamma); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 601, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_Dict_GetItem(__pyx_v_check, __pyx_n_u_num_gamma); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 766, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF_SET(__pyx_v_num_gamma, __pyx_t_3);
   __pyx_t_3 = 0;
 
-  /* "l0learn/interface.pyx":602
+  /* "l0learn/interface.pyx":767
  *     lambda_grid = check['lambda_grid']
  *     num_gamma = check['num_gamma']
  *     num_lambda = check['num_lambda']             # <<<<<<<<<<<<<<
  *     auto_lambda = check['auto_lambda']
  *     with_bounds = check['with_bounds']
  */
-  __pyx_t_3 = __Pyx_PyObject_Dict_GetItem(__pyx_v_check, __pyx_n_u_num_lambda); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 602, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_Dict_GetItem(__pyx_v_check, __pyx_n_u_num_lambda); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 767, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF_SET(__pyx_v_num_lambda, __pyx_t_3);
   __pyx_t_3 = 0;
 
-  /* "l0learn/interface.pyx":603
+  /* "l0learn/interface.pyx":768
  *     num_gamma = check['num_gamma']
  *     num_lambda = check['num_lambda']
  *     auto_lambda = check['auto_lambda']             # <<<<<<<<<<<<<<
  *     with_bounds = check['with_bounds']
  *     lows = check['lows']
  */
-  __pyx_t_3 = __Pyx_PyObject_Dict_GetItem(__pyx_v_check, __pyx_n_u_auto_lambda); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 603, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_Dict_GetItem(__pyx_v_check, __pyx_n_u_auto_lambda); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 768, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_v_auto_lambda = __pyx_t_3;
   __pyx_t_3 = 0;
 
-  /* "l0learn/interface.pyx":604
+  /* "l0learn/interface.pyx":769
  *     num_lambda = check['num_lambda']
  *     auto_lambda = check['auto_lambda']
  *     with_bounds = check['with_bounds']             # <<<<<<<<<<<<<<
  *     lows = check['lows']
  *     highs = check['highs']
  */
-  __pyx_t_3 = __Pyx_PyObject_Dict_GetItem(__pyx_v_check, __pyx_n_u_with_bounds); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 604, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_Dict_GetItem(__pyx_v_check, __pyx_n_u_with_bounds); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 769, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_v_with_bounds = __pyx_t_3;
   __pyx_t_3 = 0;
 
-  /* "l0learn/interface.pyx":605
+  /* "l0learn/interface.pyx":770
  *     auto_lambda = check['auto_lambda']
  *     with_bounds = check['with_bounds']
  *     lows = check['lows']             # <<<<<<<<<<<<<<
  *     highs = check['highs']
  * 
  */
-  __pyx_t_3 = __Pyx_PyObject_Dict_GetItem(__pyx_v_check, __pyx_n_u_lows); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 605, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_Dict_GetItem(__pyx_v_check, __pyx_n_u_lows); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 770, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF_SET(__pyx_v_lows, __pyx_t_3);
   __pyx_t_3 = 0;
 
-  /* "l0learn/interface.pyx":606
+  /* "l0learn/interface.pyx":771
  *     with_bounds = check['with_bounds']
  *     lows = check['lows']
  *     highs = check['highs']             # <<<<<<<<<<<<<<
  * 
- *     _, p = X.shape
+ *     n, p = X.shape
  */
-  __pyx_t_3 = __Pyx_PyObject_Dict_GetItem(__pyx_v_check, __pyx_n_u_highs); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 606, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_Dict_GetItem(__pyx_v_check, __pyx_n_u_highs); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 771, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF_SET(__pyx_v_highs, __pyx_t_3);
   __pyx_t_3 = 0;
 
-  /* "l0learn/interface.pyx":608
+  /* "l0learn/interface.pyx":773
  *     highs = check['highs']
  * 
- *     _, p = X.shape             # <<<<<<<<<<<<<<
+ *     n, p = X.shape             # <<<<<<<<<<<<<<
  * 
- *     if not isinstance(num_folds, int) or num_folds < 2 or num_folds > p:
+ *     if not isinstance(num_folds, int) or num_folds < 2 or num_folds > n:
  */
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_X, __pyx_n_s_shape); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 608, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_X, __pyx_n_s_shape); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 773, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   if ((likely(PyTuple_CheckExact(__pyx_t_3))) || (PyList_CheckExact(__pyx_t_3))) {
     PyObject* sequence = __pyx_t_3;
@@ -8711,7 +8721,7 @@ static PyObject *__pyx_pf_7l0learn_9interface_4cvfit(CYTHON_UNUSED PyObject *__p
     if (unlikely(size != 2)) {
       if (size > 2) __Pyx_RaiseTooManyValuesError(2);
       else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-      __PYX_ERR(0, 608, __pyx_L1_error)
+      __PYX_ERR(0, 773, __pyx_L1_error)
     }
     #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
     if (likely(PyTuple_CheckExact(sequence))) {
@@ -8724,15 +8734,15 @@ static PyObject *__pyx_pf_7l0learn_9interface_4cvfit(CYTHON_UNUSED PyObject *__p
     __Pyx_INCREF(__pyx_t_2);
     __Pyx_INCREF(__pyx_t_1);
     #else
-    __pyx_t_2 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 608, __pyx_L1_error)
+    __pyx_t_2 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 773, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_1 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 608, __pyx_L1_error)
+    __pyx_t_1 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 773, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     #endif
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   } else {
     Py_ssize_t index = -1;
-    __pyx_t_5 = PyObject_GetIter(__pyx_t_3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 608, __pyx_L1_error)
+    __pyx_t_5 = PyObject_GetIter(__pyx_t_3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 773, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __pyx_t_6 = Py_TYPE(__pyx_t_5)->tp_iternext;
@@ -8740,7 +8750,7 @@ static PyObject *__pyx_pf_7l0learn_9interface_4cvfit(CYTHON_UNUSED PyObject *__p
     __Pyx_GOTREF(__pyx_t_2);
     index = 1; __pyx_t_1 = __pyx_t_6(__pyx_t_5); if (unlikely(!__pyx_t_1)) goto __pyx_L3_unpacking_failed;
     __Pyx_GOTREF(__pyx_t_1);
-    if (__Pyx_IternextUnpackEndCheck(__pyx_t_6(__pyx_t_5), 2) < 0) __PYX_ERR(0, 608, __pyx_L1_error)
+    if (__Pyx_IternextUnpackEndCheck(__pyx_t_6(__pyx_t_5), 2) < 0) __PYX_ERR(0, 773, __pyx_L1_error)
     __pyx_t_6 = NULL;
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     goto __pyx_L4_unpacking_done;
@@ -8748,19 +8758,19 @@ static PyObject *__pyx_pf_7l0learn_9interface_4cvfit(CYTHON_UNUSED PyObject *__p
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __pyx_t_6 = NULL;
     if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-    __PYX_ERR(0, 608, __pyx_L1_error)
+    __PYX_ERR(0, 773, __pyx_L1_error)
     __pyx_L4_unpacking_done:;
   }
-  __pyx_v__ = __pyx_t_2;
+  __pyx_v_n = __pyx_t_2;
   __pyx_t_2 = 0;
   __pyx_v_p = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "l0learn/interface.pyx":610
- *     _, p = X.shape
+  /* "l0learn/interface.pyx":775
+ *     n, p = X.shape
  * 
- *     if not isinstance(num_folds, int) or num_folds < 2 or num_folds > p:             # <<<<<<<<<<<<<<
- *         raise ValueError(f"expected num_folds parameter to be a positive integer less than {p}, but got {num_folds}")
+ *     if not isinstance(num_folds, int) or num_folds < 2 or num_folds > n:             # <<<<<<<<<<<<<<
+ *         raise ValueError(f"expected num_folds parameter to be a positive integer less than {n}, but got {num_folds}")
  * 
  */
   __pyx_t_8 = PyInt_Check(__pyx_v_num_folds); 
@@ -8770,29 +8780,29 @@ static PyObject *__pyx_pf_7l0learn_9interface_4cvfit(CYTHON_UNUSED PyObject *__p
     __pyx_t_7 = __pyx_t_9;
     goto __pyx_L6_bool_binop_done;
   }
-  __pyx_t_3 = PyObject_RichCompare(__pyx_v_num_folds, __pyx_int_2, Py_LT); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 610, __pyx_L1_error)
-  __pyx_t_9 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 610, __pyx_L1_error)
+  __pyx_t_3 = PyObject_RichCompare(__pyx_v_num_folds, __pyx_int_2, Py_LT); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 775, __pyx_L1_error)
+  __pyx_t_9 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 775, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   if (!__pyx_t_9) {
   } else {
     __pyx_t_7 = __pyx_t_9;
     goto __pyx_L6_bool_binop_done;
   }
-  __pyx_t_3 = PyObject_RichCompare(__pyx_v_num_folds, __pyx_v_p, Py_GT); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 610, __pyx_L1_error)
-  __pyx_t_9 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 610, __pyx_L1_error)
+  __pyx_t_3 = PyObject_RichCompare(__pyx_v_num_folds, __pyx_v_n, Py_GT); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 775, __pyx_L1_error)
+  __pyx_t_9 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 775, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_t_7 = __pyx_t_9;
   __pyx_L6_bool_binop_done:;
   if (unlikely(__pyx_t_7)) {
 
-    /* "l0learn/interface.pyx":611
+    /* "l0learn/interface.pyx":776
  * 
- *     if not isinstance(num_folds, int) or num_folds < 2 or num_folds > p:
- *         raise ValueError(f"expected num_folds parameter to be a positive integer less than {p}, but got {num_folds}")             # <<<<<<<<<<<<<<
+ *     if not isinstance(num_folds, int) or num_folds < 2 or num_folds > n:
+ *         raise ValueError(f"expected num_folds parameter to be a positive integer less than {n}, but got {num_folds}")             # <<<<<<<<<<<<<<
  * 
  * 
  */
-    __pyx_t_3 = PyTuple_New(4); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 611, __pyx_L1_error)
+    __pyx_t_3 = PyTuple_New(4); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 776, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_t_10 = 0;
     __pyx_t_11 = 127;
@@ -8800,7 +8810,7 @@ static PyObject *__pyx_pf_7l0learn_9interface_4cvfit(CYTHON_UNUSED PyObject *__p
     __pyx_t_10 += 64;
     __Pyx_GIVEREF(__pyx_kp_u_expected_num_folds_parameter_to);
     PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_kp_u_expected_num_folds_parameter_to);
-    __pyx_t_1 = __Pyx_PyObject_FormatSimple(__pyx_v_p, __pyx_empty_unicode); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 611, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_FormatSimple(__pyx_v_n, __pyx_empty_unicode); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 776, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __pyx_t_11 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_1) > __pyx_t_11) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_1) : __pyx_t_11;
     __pyx_t_10 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_1);
@@ -8811,43 +8821,43 @@ static PyObject *__pyx_pf_7l0learn_9interface_4cvfit(CYTHON_UNUSED PyObject *__p
     __pyx_t_10 += 10;
     __Pyx_GIVEREF(__pyx_kp_u_but_got);
     PyTuple_SET_ITEM(__pyx_t_3, 2, __pyx_kp_u_but_got);
-    __pyx_t_1 = __Pyx_PyObject_FormatSimple(__pyx_v_num_folds, __pyx_empty_unicode); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 611, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_FormatSimple(__pyx_v_num_folds, __pyx_empty_unicode); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 776, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __pyx_t_11 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_1) > __pyx_t_11) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_1) : __pyx_t_11;
     __pyx_t_10 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_1);
     __Pyx_GIVEREF(__pyx_t_1);
     PyTuple_SET_ITEM(__pyx_t_3, 3, __pyx_t_1);
     __pyx_t_1 = 0;
-    __pyx_t_1 = __Pyx_PyUnicode_Join(__pyx_t_3, 4, __pyx_t_10, __pyx_t_11); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 611, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyUnicode_Join(__pyx_t_3, 4, __pyx_t_10, __pyx_t_11); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 776, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_builtin_ValueError, __pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 611, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_builtin_ValueError, __pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 776, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __PYX_ERR(0, 611, __pyx_L1_error)
+    __PYX_ERR(0, 776, __pyx_L1_error)
 
-    /* "l0learn/interface.pyx":610
- *     _, p = X.shape
+    /* "l0learn/interface.pyx":775
+ *     n, p = X.shape
  * 
- *     if not isinstance(num_folds, int) or num_folds < 2 or num_folds > p:             # <<<<<<<<<<<<<<
- *         raise ValueError(f"expected num_folds parameter to be a positive integer less than {p}, but got {num_folds}")
+ *     if not isinstance(num_folds, int) or num_folds < 2 or num_folds > n:             # <<<<<<<<<<<<<<
+ *         raise ValueError(f"expected num_folds parameter to be a positive integer less than {n}, but got {num_folds}")
  * 
  */
   }
 
-  /* "l0learn/interface.pyx":614
+  /* "l0learn/interface.pyx":779
  * 
  * 
  *     cdef vector[vector[double]] c_lambda_grid = lambda_grid             # <<<<<<<<<<<<<<
  *     cdef string c_loss = loss.encode('UTF-8')
  *     cdef string c_penalty = penalty.encode('UTF-8')
  */
-  __pyx_t_12 = __pyx_convert_vector_from_py_std_3a__3a_vector_3c_double_3e___(__pyx_v_lambda_grid); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 614, __pyx_L1_error)
+  __pyx_t_12 = __pyx_convert_vector_from_py_std_3a__3a_vector_3c_double_3e___(__pyx_v_lambda_grid); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 779, __pyx_L1_error)
   __pyx_v_c_lambda_grid = __pyx_t_12;
 
-  /* "l0learn/interface.pyx":615
+  /* "l0learn/interface.pyx":780
  * 
  *     cdef vector[vector[double]] c_lambda_grid = lambda_grid
  *     cdef string c_loss = loss.encode('UTF-8')             # <<<<<<<<<<<<<<
@@ -8856,15 +8866,15 @@ static PyObject *__pyx_pf_7l0learn_9interface_4cvfit(CYTHON_UNUSED PyObject *__p
  */
   if (unlikely(__pyx_v_loss == Py_None)) {
     PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "encode");
-    __PYX_ERR(0, 615, __pyx_L1_error)
+    __PYX_ERR(0, 780, __pyx_L1_error)
   }
-  __pyx_t_3 = PyUnicode_AsUTF8String(__pyx_v_loss); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 615, __pyx_L1_error)
+  __pyx_t_3 = PyUnicode_AsUTF8String(__pyx_v_loss); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 780, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_13 = __pyx_convert_string_from_py_std__in_string(__pyx_t_3); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 615, __pyx_L1_error)
+  __pyx_t_13 = __pyx_convert_string_from_py_std__in_string(__pyx_t_3); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 780, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_v_c_loss = __pyx_t_13;
 
-  /* "l0learn/interface.pyx":616
+  /* "l0learn/interface.pyx":781
  *     cdef vector[vector[double]] c_lambda_grid = lambda_grid
  *     cdef string c_loss = loss.encode('UTF-8')
  *     cdef string c_penalty = penalty.encode('UTF-8')             # <<<<<<<<<<<<<<
@@ -8873,15 +8883,15 @@ static PyObject *__pyx_pf_7l0learn_9interface_4cvfit(CYTHON_UNUSED PyObject *__p
  */
   if (unlikely(__pyx_v_penalty == Py_None)) {
     PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "encode");
-    __PYX_ERR(0, 616, __pyx_L1_error)
+    __PYX_ERR(0, 781, __pyx_L1_error)
   }
-  __pyx_t_3 = PyUnicode_AsUTF8String(__pyx_v_penalty); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 616, __pyx_L1_error)
+  __pyx_t_3 = PyUnicode_AsUTF8String(__pyx_v_penalty); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 781, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_13 = __pyx_convert_string_from_py_std__in_string(__pyx_t_3); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 616, __pyx_L1_error)
+  __pyx_t_13 = __pyx_convert_string_from_py_std__in_string(__pyx_t_3); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 781, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_v_c_penalty = __pyx_t_13;
 
-  /* "l0learn/interface.pyx":617
+  /* "l0learn/interface.pyx":782
  *     cdef string c_loss = loss.encode('UTF-8')
  *     cdef string c_penalty = penalty.encode('UTF-8')
  *     cdef string c_algorithim = algorithm.encode('UTF-8')             # <<<<<<<<<<<<<<
@@ -8890,203 +8900,203 @@ static PyObject *__pyx_pf_7l0learn_9interface_4cvfit(CYTHON_UNUSED PyObject *__p
  */
   if (unlikely(__pyx_v_algorithm == Py_None)) {
     PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "encode");
-    __PYX_ERR(0, 617, __pyx_L1_error)
+    __PYX_ERR(0, 782, __pyx_L1_error)
   }
-  __pyx_t_3 = PyUnicode_AsUTF8String(__pyx_v_algorithm); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 617, __pyx_L1_error)
+  __pyx_t_3 = PyUnicode_AsUTF8String(__pyx_v_algorithm); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 782, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_13 = __pyx_convert_string_from_py_std__in_string(__pyx_t_3); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 617, __pyx_L1_error)
+  __pyx_t_13 = __pyx_convert_string_from_py_std__in_string(__pyx_t_3); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 782, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_v_c_algorithim = __pyx_t_13;
 
-  /* "l0learn/interface.pyx":620
+  /* "l0learn/interface.pyx":785
  * 
  *     cdef cvfitmodel c_results
  *     if isinstance(X, np.ndarray):             # <<<<<<<<<<<<<<
  *         c_results = _L0LearnCV_dense(X=numpy_to_dmat_d(X),
  *                                     y=numpy_to_dvec_d(y),
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 620, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 785, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_ndarray); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 620, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_ndarray); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 785, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_7 = PyObject_IsInstance(__pyx_v_X, __pyx_t_1); if (unlikely(__pyx_t_7 == ((int)-1))) __PYX_ERR(0, 620, __pyx_L1_error)
+  __pyx_t_7 = PyObject_IsInstance(__pyx_v_X, __pyx_t_1); if (unlikely(__pyx_t_7 == ((int)-1))) __PYX_ERR(0, 785, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_9 = (__pyx_t_7 != 0);
   if (__pyx_t_9) {
 
-    /* "l0learn/interface.pyx":621
+    /* "l0learn/interface.pyx":786
  *     cdef cvfitmodel c_results
  *     if isinstance(X, np.ndarray):
  *         c_results = _L0LearnCV_dense(X=numpy_to_dmat_d(X),             # <<<<<<<<<<<<<<
  *                                     y=numpy_to_dvec_d(y),
  *                                     Loss=c_loss,
  */
-    if (!(likely(((__pyx_v_X) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_X, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 621, __pyx_L1_error)
+    if (!(likely(((__pyx_v_X) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_X, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 786, __pyx_L1_error)
 
-    /* "l0learn/interface.pyx":622
+    /* "l0learn/interface.pyx":787
  *     if isinstance(X, np.ndarray):
  *         c_results = _L0LearnCV_dense(X=numpy_to_dmat_d(X),
  *                                     y=numpy_to_dvec_d(y),             # <<<<<<<<<<<<<<
  *                                     Loss=c_loss,
  *                                     Penalty=c_penalty,
  */
-    if (!(likely(((__pyx_v_y) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_y, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 622, __pyx_L1_error)
+    if (!(likely(((__pyx_v_y) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_y, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 787, __pyx_L1_error)
 
-    /* "l0learn/interface.pyx":626
+    /* "l0learn/interface.pyx":791
  *                                     Penalty=c_penalty,
  *                                     Algorithm=c_algorithim,
  *                                     NnzStopNum=max_support_size,             # <<<<<<<<<<<<<<
  *                                     G_ncols=num_lambda,
  *                                     G_nrows=num_gamma,
  */
-    __pyx_t_14 = __Pyx_PyInt_As_size_t(__pyx_v_max_support_size); if (unlikely((__pyx_t_14 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 626, __pyx_L1_error)
+    __pyx_t_14 = __Pyx_PyInt_As_size_t(__pyx_v_max_support_size); if (unlikely((__pyx_t_14 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 791, __pyx_L1_error)
 
-    /* "l0learn/interface.pyx":627
+    /* "l0learn/interface.pyx":792
  *                                     Algorithm=c_algorithim,
  *                                     NnzStopNum=max_support_size,
  *                                     G_ncols=num_lambda,             # <<<<<<<<<<<<<<
  *                                     G_nrows=num_gamma,
  *                                     Lambda2Max=gamma_max,
  */
-    __pyx_t_15 = __Pyx_PyInt_As_size_t(__pyx_v_num_lambda); if (unlikely((__pyx_t_15 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 627, __pyx_L1_error)
+    __pyx_t_15 = __Pyx_PyInt_As_size_t(__pyx_v_num_lambda); if (unlikely((__pyx_t_15 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 792, __pyx_L1_error)
 
-    /* "l0learn/interface.pyx":628
+    /* "l0learn/interface.pyx":793
  *                                     NnzStopNum=max_support_size,
  *                                     G_ncols=num_lambda,
  *                                     G_nrows=num_gamma,             # <<<<<<<<<<<<<<
  *                                     Lambda2Max=gamma_max,
  *                                     Lambda2Min=gamma_min,
  */
-    __pyx_t_16 = __Pyx_PyInt_As_size_t(__pyx_v_num_gamma); if (unlikely((__pyx_t_16 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 628, __pyx_L1_error)
+    __pyx_t_16 = __Pyx_PyInt_As_size_t(__pyx_v_num_gamma); if (unlikely((__pyx_t_16 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 793, __pyx_L1_error)
 
-    /* "l0learn/interface.pyx":631
+    /* "l0learn/interface.pyx":796
  *                                     Lambda2Max=gamma_max,
  *                                     Lambda2Min=gamma_min,
  *                                     PartialSort=partial_sort,             # <<<<<<<<<<<<<<
  *                                     MaxIters=max_iter,
  *                                     rtol=rtol,
  */
-    __pyx_t_17 = __Pyx_PyObject_IsTrue(__pyx_v_partial_sort); if (unlikely((__pyx_t_17 == ((bool)-1)) && PyErr_Occurred())) __PYX_ERR(0, 631, __pyx_L1_error)
+    __pyx_t_17 = __Pyx_PyObject_IsTrue(__pyx_v_partial_sort); if (unlikely((__pyx_t_17 == ((bool)-1)) && PyErr_Occurred())) __PYX_ERR(0, 796, __pyx_L1_error)
 
-    /* "l0learn/interface.pyx":632
+    /* "l0learn/interface.pyx":797
  *                                     Lambda2Min=gamma_min,
  *                                     PartialSort=partial_sort,
  *                                     MaxIters=max_iter,             # <<<<<<<<<<<<<<
  *                                     rtol=rtol,
  *                                     atol=atol,
  */
-    __pyx_t_18 = __Pyx_PyInt_As_size_t(__pyx_v_max_iter); if (unlikely((__pyx_t_18 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 632, __pyx_L1_error)
+    __pyx_t_18 = __Pyx_PyInt_As_size_t(__pyx_v_max_iter); if (unlikely((__pyx_t_18 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 797, __pyx_L1_error)
 
-    /* "l0learn/interface.pyx":635
+    /* "l0learn/interface.pyx":800
  *                                     rtol=rtol,
  *                                     atol=atol,
  *                                     ActiveSet=active_set,             # <<<<<<<<<<<<<<
  *                                     ActiveSetNum=active_set_num,
  *                                     MaxNumSwaps=max_swaps,
  */
-    __pyx_t_19 = __Pyx_PyObject_IsTrue(__pyx_v_active_set); if (unlikely((__pyx_t_19 == ((bool)-1)) && PyErr_Occurred())) __PYX_ERR(0, 635, __pyx_L1_error)
+    __pyx_t_19 = __Pyx_PyObject_IsTrue(__pyx_v_active_set); if (unlikely((__pyx_t_19 == ((bool)-1)) && PyErr_Occurred())) __PYX_ERR(0, 800, __pyx_L1_error)
 
-    /* "l0learn/interface.pyx":636
+    /* "l0learn/interface.pyx":801
  *                                     atol=atol,
  *                                     ActiveSet=active_set,
  *                                     ActiveSetNum=active_set_num,             # <<<<<<<<<<<<<<
  *                                     MaxNumSwaps=max_swaps,
  *                                     ScaleDownFactor=scale_down_factor,
  */
-    __pyx_t_20 = __Pyx_PyInt_As_size_t(__pyx_v_active_set_num); if (unlikely((__pyx_t_20 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 636, __pyx_L1_error)
+    __pyx_t_20 = __Pyx_PyInt_As_size_t(__pyx_v_active_set_num); if (unlikely((__pyx_t_20 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 801, __pyx_L1_error)
 
-    /* "l0learn/interface.pyx":637
+    /* "l0learn/interface.pyx":802
  *                                     ActiveSet=active_set,
  *                                     ActiveSetNum=active_set_num,
  *                                     MaxNumSwaps=max_swaps,             # <<<<<<<<<<<<<<
  *                                     ScaleDownFactor=scale_down_factor,
  *                                     ScreenSize=screen_size,
  */
-    __pyx_t_21 = __Pyx_PyInt_As_size_t(__pyx_v_max_swaps); if (unlikely((__pyx_t_21 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 637, __pyx_L1_error)
+    __pyx_t_21 = __Pyx_PyInt_As_size_t(__pyx_v_max_swaps); if (unlikely((__pyx_t_21 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 802, __pyx_L1_error)
 
-    /* "l0learn/interface.pyx":639
+    /* "l0learn/interface.pyx":804
  *                                     MaxNumSwaps=max_swaps,
  *                                     ScaleDownFactor=scale_down_factor,
  *                                     ScreenSize=screen_size,             # <<<<<<<<<<<<<<
  *                                     LambdaU=not auto_lambda,
  *                                     Lambdas=c_lambda_grid,
  */
-    __pyx_t_22 = __Pyx_PyInt_As_size_t(__pyx_v_screen_size); if (unlikely((__pyx_t_22 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 639, __pyx_L1_error)
+    __pyx_t_22 = __Pyx_PyInt_As_size_t(__pyx_v_screen_size); if (unlikely((__pyx_t_22 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 804, __pyx_L1_error)
 
-    /* "l0learn/interface.pyx":640
+    /* "l0learn/interface.pyx":805
  *                                     ScaleDownFactor=scale_down_factor,
  *                                     ScreenSize=screen_size,
  *                                     LambdaU=not auto_lambda,             # <<<<<<<<<<<<<<
  *                                     Lambdas=c_lambda_grid,
  *                                     nfolds=num_folds,
  */
-    __pyx_t_9 = __Pyx_PyObject_IsTrue(__pyx_v_auto_lambda); if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 640, __pyx_L1_error)
+    __pyx_t_9 = __Pyx_PyObject_IsTrue(__pyx_v_auto_lambda); if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 805, __pyx_L1_error)
 
-    /* "l0learn/interface.pyx":642
+    /* "l0learn/interface.pyx":807
  *                                     LambdaU=not auto_lambda,
  *                                     Lambdas=c_lambda_grid,
  *                                     nfolds=num_folds,             # <<<<<<<<<<<<<<
  *                                     seed=seed,
  *                                     ExcludeFirstK=exclude_first_k,
  */
-    __pyx_t_23 = __Pyx_PyInt_As_unsigned_int(__pyx_v_num_folds); if (unlikely((__pyx_t_23 == (unsigned int)-1) && PyErr_Occurred())) __PYX_ERR(0, 642, __pyx_L1_error)
+    __pyx_t_23 = __Pyx_PyInt_As_unsigned_int(__pyx_v_num_folds); if (unlikely((__pyx_t_23 == (unsigned int)-1) && PyErr_Occurred())) __PYX_ERR(0, 807, __pyx_L1_error)
 
-    /* "l0learn/interface.pyx":643
+    /* "l0learn/interface.pyx":808
  *                                     Lambdas=c_lambda_grid,
  *                                     nfolds=num_folds,
  *                                     seed=seed,             # <<<<<<<<<<<<<<
  *                                     ExcludeFirstK=exclude_first_k,
  *                                     Intercept=intercept,
  */
-    __pyx_t_4 = __pyx_PyFloat_AsDouble(__pyx_v_seed); if (unlikely((__pyx_t_4 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 643, __pyx_L1_error)
+    __pyx_t_4 = __pyx_PyFloat_AsDouble(__pyx_v_seed); if (unlikely((__pyx_t_4 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 808, __pyx_L1_error)
 
-    /* "l0learn/interface.pyx":644
+    /* "l0learn/interface.pyx":809
  *                                     nfolds=num_folds,
  *                                     seed=seed,
  *                                     ExcludeFirstK=exclude_first_k,             # <<<<<<<<<<<<<<
  *                                     Intercept=intercept,
  *                                     withBounds=with_bounds,
  */
-    __pyx_t_24 = __Pyx_PyInt_As_size_t(__pyx_v_exclude_first_k); if (unlikely((__pyx_t_24 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 644, __pyx_L1_error)
+    __pyx_t_24 = __Pyx_PyInt_As_size_t(__pyx_v_exclude_first_k); if (unlikely((__pyx_t_24 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 809, __pyx_L1_error)
 
-    /* "l0learn/interface.pyx":645
+    /* "l0learn/interface.pyx":810
  *                                     seed=seed,
  *                                     ExcludeFirstK=exclude_first_k,
  *                                     Intercept=intercept,             # <<<<<<<<<<<<<<
  *                                     withBounds=with_bounds,
  *                                     Lows=numpy_to_dvec_d(lows),
  */
-    __pyx_t_25 = __Pyx_PyObject_IsTrue(__pyx_v_intercept); if (unlikely((__pyx_t_25 == ((bool)-1)) && PyErr_Occurred())) __PYX_ERR(0, 645, __pyx_L1_error)
+    __pyx_t_25 = __Pyx_PyObject_IsTrue(__pyx_v_intercept); if (unlikely((__pyx_t_25 == ((bool)-1)) && PyErr_Occurred())) __PYX_ERR(0, 810, __pyx_L1_error)
 
-    /* "l0learn/interface.pyx":646
+    /* "l0learn/interface.pyx":811
  *                                     ExcludeFirstK=exclude_first_k,
  *                                     Intercept=intercept,
  *                                     withBounds=with_bounds,             # <<<<<<<<<<<<<<
  *                                     Lows=numpy_to_dvec_d(lows),
  *                                     Highs=numpy_to_dvec_d(highs))
  */
-    __pyx_t_26 = __Pyx_PyObject_IsTrue(__pyx_v_with_bounds); if (unlikely((__pyx_t_26 == ((bool)-1)) && PyErr_Occurred())) __PYX_ERR(0, 646, __pyx_L1_error)
+    __pyx_t_26 = __Pyx_PyObject_IsTrue(__pyx_v_with_bounds); if (unlikely((__pyx_t_26 == ((bool)-1)) && PyErr_Occurred())) __PYX_ERR(0, 811, __pyx_L1_error)
 
-    /* "l0learn/interface.pyx":647
+    /* "l0learn/interface.pyx":812
  *                                     Intercept=intercept,
  *                                     withBounds=with_bounds,
  *                                     Lows=numpy_to_dvec_d(lows),             # <<<<<<<<<<<<<<
  *                                     Highs=numpy_to_dvec_d(highs))
  *     else: # isinstance(X, csc_matrix)
  */
-    if (!(likely(((__pyx_v_lows) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_lows, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 647, __pyx_L1_error)
+    if (!(likely(((__pyx_v_lows) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_lows, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 812, __pyx_L1_error)
 
-    /* "l0learn/interface.pyx":648
+    /* "l0learn/interface.pyx":813
  *                                     withBounds=with_bounds,
  *                                     Lows=numpy_to_dvec_d(lows),
  *                                     Highs=numpy_to_dvec_d(highs))             # <<<<<<<<<<<<<<
  *     else: # isinstance(X, csc_matrix)
  *         c_results = _L0LearnCV_sparse(X=numpy_to_sp_dmat_d(X),
  */
-    if (!(likely(((__pyx_v_highs) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_highs, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 648, __pyx_L1_error)
+    if (!(likely(((__pyx_v_highs) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_highs, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 813, __pyx_L1_error)
 
-    /* "l0learn/interface.pyx":621
+    /* "l0learn/interface.pyx":786
  *     cdef cvfitmodel c_results
  *     if isinstance(X, np.ndarray):
  *         c_results = _L0LearnCV_dense(X=numpy_to_dmat_d(X),             # <<<<<<<<<<<<<<
@@ -9095,7 +9105,7 @@ static PyObject *__pyx_pf_7l0learn_9interface_4cvfit(CYTHON_UNUSED PyObject *__p
  */
     __pyx_v_c_results = __pyx_f_7l0learn_9interface__L0LearnCV_dense(__pyx_f_7l0learn_6cyarma_numpy_to_dmat_d(((PyArrayObject *)__pyx_v_X)), __pyx_f_7l0learn_6cyarma_numpy_to_dvec_d(((PyArrayObject *)__pyx_v_y)), __pyx_v_c_loss, __pyx_v_c_penalty, __pyx_v_c_algorithim, __pyx_t_14, __pyx_t_15, __pyx_t_16, __pyx_v_gamma_max, __pyx_v_gamma_min, __pyx_t_17, __pyx_t_18, __pyx_v_rtol, __pyx_v_atol, __pyx_t_19, __pyx_t_20, __pyx_t_21, __pyx_v_scale_down_factor, __pyx_t_22, (!__pyx_t_9), __pyx_v_c_lambda_grid, __pyx_t_23, __pyx_t_4, __pyx_t_24, __pyx_t_25, __pyx_t_26, __pyx_f_7l0learn_6cyarma_numpy_to_dvec_d(((PyArrayObject *)__pyx_v_lows)), __pyx_f_7l0learn_6cyarma_numpy_to_dvec_d(((PyArrayObject *)__pyx_v_highs)));
 
-    /* "l0learn/interface.pyx":620
+    /* "l0learn/interface.pyx":785
  * 
  *     cdef cvfitmodel c_results
  *     if isinstance(X, np.ndarray):             # <<<<<<<<<<<<<<
@@ -9105,7 +9115,7 @@ static PyObject *__pyx_pf_7l0learn_9interface_4cvfit(CYTHON_UNUSED PyObject *__p
     goto __pyx_L9;
   }
 
-  /* "l0learn/interface.pyx":650
+  /* "l0learn/interface.pyx":815
  *                                     Highs=numpy_to_dvec_d(highs))
  *     else: # isinstance(X, csc_matrix)
  *         c_results = _L0LearnCV_sparse(X=numpy_to_sp_dmat_d(X),             # <<<<<<<<<<<<<<
@@ -9114,169 +9124,169 @@ static PyObject *__pyx_pf_7l0learn_9interface_4cvfit(CYTHON_UNUSED PyObject *__p
  */
   /*else*/ {
 
-    /* "l0learn/interface.pyx":651
+    /* "l0learn/interface.pyx":816
  *     else: # isinstance(X, csc_matrix)
  *         c_results = _L0LearnCV_sparse(X=numpy_to_sp_dmat_d(X),
  *                                      y=numpy_to_dvec_d(y),             # <<<<<<<<<<<<<<
  *                                      Loss=c_loss,
  *                                      Penalty=c_penalty,
  */
-    if (!(likely(((__pyx_v_y) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_y, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 651, __pyx_L1_error)
+    if (!(likely(((__pyx_v_y) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_y, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 816, __pyx_L1_error)
 
-    /* "l0learn/interface.pyx":655
+    /* "l0learn/interface.pyx":820
  *                                      Penalty=c_penalty,
  *                                      Algorithm=c_algorithim,
  *                                      NnzStopNum=max_support_size,             # <<<<<<<<<<<<<<
  *                                      G_ncols=num_lambda,
  *                                      G_nrows=num_gamma,
  */
-    __pyx_t_24 = __Pyx_PyInt_As_size_t(__pyx_v_max_support_size); if (unlikely((__pyx_t_24 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 655, __pyx_L1_error)
+    __pyx_t_24 = __Pyx_PyInt_As_size_t(__pyx_v_max_support_size); if (unlikely((__pyx_t_24 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 820, __pyx_L1_error)
 
-    /* "l0learn/interface.pyx":656
+    /* "l0learn/interface.pyx":821
  *                                      Algorithm=c_algorithim,
  *                                      NnzStopNum=max_support_size,
  *                                      G_ncols=num_lambda,             # <<<<<<<<<<<<<<
  *                                      G_nrows=num_gamma,
  *                                      Lambda2Max=gamma_max,
  */
-    __pyx_t_22 = __Pyx_PyInt_As_size_t(__pyx_v_num_lambda); if (unlikely((__pyx_t_22 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 656, __pyx_L1_error)
+    __pyx_t_22 = __Pyx_PyInt_As_size_t(__pyx_v_num_lambda); if (unlikely((__pyx_t_22 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 821, __pyx_L1_error)
 
-    /* "l0learn/interface.pyx":657
+    /* "l0learn/interface.pyx":822
  *                                      NnzStopNum=max_support_size,
  *                                      G_ncols=num_lambda,
  *                                      G_nrows=num_gamma,             # <<<<<<<<<<<<<<
  *                                      Lambda2Max=gamma_max,
  *                                      Lambda2Min=gamma_min,
  */
-    __pyx_t_21 = __Pyx_PyInt_As_size_t(__pyx_v_num_gamma); if (unlikely((__pyx_t_21 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 657, __pyx_L1_error)
+    __pyx_t_21 = __Pyx_PyInt_As_size_t(__pyx_v_num_gamma); if (unlikely((__pyx_t_21 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 822, __pyx_L1_error)
 
-    /* "l0learn/interface.pyx":660
+    /* "l0learn/interface.pyx":825
  *                                      Lambda2Max=gamma_max,
  *                                      Lambda2Min=gamma_min,
  *                                      PartialSort=partial_sort,             # <<<<<<<<<<<<<<
  *                                      MaxIters=max_iter,
  *                                      rtol=rtol,
  */
-    __pyx_t_26 = __Pyx_PyObject_IsTrue(__pyx_v_partial_sort); if (unlikely((__pyx_t_26 == ((bool)-1)) && PyErr_Occurred())) __PYX_ERR(0, 660, __pyx_L1_error)
+    __pyx_t_26 = __Pyx_PyObject_IsTrue(__pyx_v_partial_sort); if (unlikely((__pyx_t_26 == ((bool)-1)) && PyErr_Occurred())) __PYX_ERR(0, 825, __pyx_L1_error)
 
-    /* "l0learn/interface.pyx":661
+    /* "l0learn/interface.pyx":826
  *                                      Lambda2Min=gamma_min,
  *                                      PartialSort=partial_sort,
  *                                      MaxIters=max_iter,             # <<<<<<<<<<<<<<
  *                                      rtol=rtol,
  *                                      atol=atol,
  */
-    __pyx_t_20 = __Pyx_PyInt_As_size_t(__pyx_v_max_iter); if (unlikely((__pyx_t_20 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 661, __pyx_L1_error)
+    __pyx_t_20 = __Pyx_PyInt_As_size_t(__pyx_v_max_iter); if (unlikely((__pyx_t_20 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 826, __pyx_L1_error)
 
-    /* "l0learn/interface.pyx":664
+    /* "l0learn/interface.pyx":829
  *                                      rtol=rtol,
  *                                      atol=atol,
  *                                      ActiveSet=active_set,             # <<<<<<<<<<<<<<
  *                                      ActiveSetNum=active_set_num,
  *                                      MaxNumSwaps=max_swaps,
  */
-    __pyx_t_25 = __Pyx_PyObject_IsTrue(__pyx_v_active_set); if (unlikely((__pyx_t_25 == ((bool)-1)) && PyErr_Occurred())) __PYX_ERR(0, 664, __pyx_L1_error)
+    __pyx_t_25 = __Pyx_PyObject_IsTrue(__pyx_v_active_set); if (unlikely((__pyx_t_25 == ((bool)-1)) && PyErr_Occurred())) __PYX_ERR(0, 829, __pyx_L1_error)
 
-    /* "l0learn/interface.pyx":665
+    /* "l0learn/interface.pyx":830
  *                                      atol=atol,
  *                                      ActiveSet=active_set,
  *                                      ActiveSetNum=active_set_num,             # <<<<<<<<<<<<<<
  *                                      MaxNumSwaps=max_swaps,
  *                                      ScaleDownFactor=scale_down_factor,
  */
-    __pyx_t_18 = __Pyx_PyInt_As_size_t(__pyx_v_active_set_num); if (unlikely((__pyx_t_18 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 665, __pyx_L1_error)
+    __pyx_t_18 = __Pyx_PyInt_As_size_t(__pyx_v_active_set_num); if (unlikely((__pyx_t_18 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 830, __pyx_L1_error)
 
-    /* "l0learn/interface.pyx":666
+    /* "l0learn/interface.pyx":831
  *                                      ActiveSet=active_set,
  *                                      ActiveSetNum=active_set_num,
  *                                      MaxNumSwaps=max_swaps,             # <<<<<<<<<<<<<<
  *                                      ScaleDownFactor=scale_down_factor,
  *                                      ScreenSize=screen_size,
  */
-    __pyx_t_16 = __Pyx_PyInt_As_size_t(__pyx_v_max_swaps); if (unlikely((__pyx_t_16 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 666, __pyx_L1_error)
+    __pyx_t_16 = __Pyx_PyInt_As_size_t(__pyx_v_max_swaps); if (unlikely((__pyx_t_16 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 831, __pyx_L1_error)
 
-    /* "l0learn/interface.pyx":668
+    /* "l0learn/interface.pyx":833
  *                                      MaxNumSwaps=max_swaps,
  *                                      ScaleDownFactor=scale_down_factor,
  *                                      ScreenSize=screen_size,             # <<<<<<<<<<<<<<
  *                                      LambdaU=not auto_lambda,
  *                                      Lambdas=c_lambda_grid,
  */
-    __pyx_t_15 = __Pyx_PyInt_As_size_t(__pyx_v_screen_size); if (unlikely((__pyx_t_15 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 668, __pyx_L1_error)
+    __pyx_t_15 = __Pyx_PyInt_As_size_t(__pyx_v_screen_size); if (unlikely((__pyx_t_15 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 833, __pyx_L1_error)
 
-    /* "l0learn/interface.pyx":669
+    /* "l0learn/interface.pyx":834
  *                                      ScaleDownFactor=scale_down_factor,
  *                                      ScreenSize=screen_size,
  *                                      LambdaU=not auto_lambda,             # <<<<<<<<<<<<<<
  *                                      Lambdas=c_lambda_grid,
  *                                      nfolds=num_folds,
  */
-    __pyx_t_9 = __Pyx_PyObject_IsTrue(__pyx_v_auto_lambda); if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 669, __pyx_L1_error)
+    __pyx_t_9 = __Pyx_PyObject_IsTrue(__pyx_v_auto_lambda); if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 834, __pyx_L1_error)
 
-    /* "l0learn/interface.pyx":671
+    /* "l0learn/interface.pyx":836
  *                                      LambdaU=not auto_lambda,
  *                                      Lambdas=c_lambda_grid,
  *                                      nfolds=num_folds,             # <<<<<<<<<<<<<<
  *                                      seed=seed,
  *                                      ExcludeFirstK=exclude_first_k,
  */
-    __pyx_t_23 = __Pyx_PyInt_As_unsigned_int(__pyx_v_num_folds); if (unlikely((__pyx_t_23 == (unsigned int)-1) && PyErr_Occurred())) __PYX_ERR(0, 671, __pyx_L1_error)
+    __pyx_t_23 = __Pyx_PyInt_As_unsigned_int(__pyx_v_num_folds); if (unlikely((__pyx_t_23 == (unsigned int)-1) && PyErr_Occurred())) __PYX_ERR(0, 836, __pyx_L1_error)
 
-    /* "l0learn/interface.pyx":672
+    /* "l0learn/interface.pyx":837
  *                                      Lambdas=c_lambda_grid,
  *                                      nfolds=num_folds,
  *                                      seed=seed,             # <<<<<<<<<<<<<<
  *                                      ExcludeFirstK=exclude_first_k,
  *                                      Intercept=intercept,
  */
-    __pyx_t_4 = __pyx_PyFloat_AsDouble(__pyx_v_seed); if (unlikely((__pyx_t_4 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 672, __pyx_L1_error)
+    __pyx_t_4 = __pyx_PyFloat_AsDouble(__pyx_v_seed); if (unlikely((__pyx_t_4 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 837, __pyx_L1_error)
 
-    /* "l0learn/interface.pyx":673
+    /* "l0learn/interface.pyx":838
  *                                      nfolds=num_folds,
  *                                      seed=seed,
  *                                      ExcludeFirstK=exclude_first_k,             # <<<<<<<<<<<<<<
  *                                      Intercept=intercept,
  *                                      withBounds=with_bounds,
  */
-    __pyx_t_14 = __Pyx_PyInt_As_size_t(__pyx_v_exclude_first_k); if (unlikely((__pyx_t_14 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 673, __pyx_L1_error)
+    __pyx_t_14 = __Pyx_PyInt_As_size_t(__pyx_v_exclude_first_k); if (unlikely((__pyx_t_14 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 838, __pyx_L1_error)
 
-    /* "l0learn/interface.pyx":674
+    /* "l0learn/interface.pyx":839
  *                                      seed=seed,
  *                                      ExcludeFirstK=exclude_first_k,
  *                                      Intercept=intercept,             # <<<<<<<<<<<<<<
  *                                      withBounds=with_bounds,
  *                                      Lows=numpy_to_dvec_d(lows),
  */
-    __pyx_t_19 = __Pyx_PyObject_IsTrue(__pyx_v_intercept); if (unlikely((__pyx_t_19 == ((bool)-1)) && PyErr_Occurred())) __PYX_ERR(0, 674, __pyx_L1_error)
+    __pyx_t_19 = __Pyx_PyObject_IsTrue(__pyx_v_intercept); if (unlikely((__pyx_t_19 == ((bool)-1)) && PyErr_Occurred())) __PYX_ERR(0, 839, __pyx_L1_error)
 
-    /* "l0learn/interface.pyx":675
+    /* "l0learn/interface.pyx":840
  *                                      ExcludeFirstK=exclude_first_k,
  *                                      Intercept=intercept,
  *                                      withBounds=with_bounds,             # <<<<<<<<<<<<<<
  *                                      Lows=numpy_to_dvec_d(lows),
  *                                      Highs=numpy_to_dvec_d(highs))
  */
-    __pyx_t_17 = __Pyx_PyObject_IsTrue(__pyx_v_with_bounds); if (unlikely((__pyx_t_17 == ((bool)-1)) && PyErr_Occurred())) __PYX_ERR(0, 675, __pyx_L1_error)
+    __pyx_t_17 = __Pyx_PyObject_IsTrue(__pyx_v_with_bounds); if (unlikely((__pyx_t_17 == ((bool)-1)) && PyErr_Occurred())) __PYX_ERR(0, 840, __pyx_L1_error)
 
-    /* "l0learn/interface.pyx":676
+    /* "l0learn/interface.pyx":841
  *                                      Intercept=intercept,
  *                                      withBounds=with_bounds,
  *                                      Lows=numpy_to_dvec_d(lows),             # <<<<<<<<<<<<<<
  *                                      Highs=numpy_to_dvec_d(highs))
  * 
  */
-    if (!(likely(((__pyx_v_lows) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_lows, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 676, __pyx_L1_error)
+    if (!(likely(((__pyx_v_lows) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_lows, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 841, __pyx_L1_error)
 
-    /* "l0learn/interface.pyx":677
+    /* "l0learn/interface.pyx":842
  *                                      withBounds=with_bounds,
  *                                      Lows=numpy_to_dvec_d(lows),
  *                                      Highs=numpy_to_dvec_d(highs))             # <<<<<<<<<<<<<<
  * 
  *     results = CVFitModel(settings={'loss': loss, 'intercept': intercept, 'penalty': penalty},
  */
-    if (!(likely(((__pyx_v_highs) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_highs, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 677, __pyx_L1_error)
+    if (!(likely(((__pyx_v_highs) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_highs, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 842, __pyx_L1_error)
 
-    /* "l0learn/interface.pyx":650
+    /* "l0learn/interface.pyx":815
  *                                     Highs=numpy_to_dvec_d(highs))
  *     else: # isinstance(X, csc_matrix)
  *         c_results = _L0LearnCV_sparse(X=numpy_to_sp_dmat_d(X),             # <<<<<<<<<<<<<<
@@ -9287,136 +9297,136 @@ static PyObject *__pyx_pf_7l0learn_9interface_4cvfit(CYTHON_UNUSED PyObject *__p
   }
   __pyx_L9:;
 
-  /* "l0learn/interface.pyx":679
+  /* "l0learn/interface.pyx":844
  *                                      Highs=numpy_to_dvec_d(highs))
  * 
  *     results = CVFitModel(settings={'loss': loss, 'intercept': intercept, 'penalty': penalty},             # <<<<<<<<<<<<<<
  *                          lambda_0=c_results.Lambda0,
  *                          gamma=c_results.Lambda12,
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_CVFitModel); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 679, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_CVFitModel); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 844, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_3 = __Pyx_PyDict_NewPresized(9); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 679, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyDict_NewPresized(9); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 844, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_2 = __Pyx_PyDict_NewPresized(3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 679, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyDict_NewPresized(3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 844, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_loss, __pyx_v_loss) < 0) __PYX_ERR(0, 679, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_intercept, __pyx_v_intercept) < 0) __PYX_ERR(0, 679, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_penalty, __pyx_v_penalty) < 0) __PYX_ERR(0, 679, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_settings, __pyx_t_2) < 0) __PYX_ERR(0, 679, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_loss, __pyx_v_loss) < 0) __PYX_ERR(0, 844, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_intercept, __pyx_v_intercept) < 0) __PYX_ERR(0, 844, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_penalty, __pyx_v_penalty) < 0) __PYX_ERR(0, 844, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_settings, __pyx_t_2) < 0) __PYX_ERR(0, 844, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "l0learn/interface.pyx":680
+  /* "l0learn/interface.pyx":845
  * 
  *     results = CVFitModel(settings={'loss': loss, 'intercept': intercept, 'penalty': penalty},
  *                          lambda_0=c_results.Lambda0,             # <<<<<<<<<<<<<<
  *                          gamma=c_results.Lambda12,
  *                          support_size=c_results.NnzCount,
  */
-  __pyx_t_2 = __pyx_convert_vector_to_py_std_3a__3a_vector_3c_double_3e___(__pyx_v_c_results.Lambda0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 680, __pyx_L1_error)
+  __pyx_t_2 = __pyx_convert_vector_to_py_std_3a__3a_vector_3c_double_3e___(__pyx_v_c_results.Lambda0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 845, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_lambda_0, __pyx_t_2) < 0) __PYX_ERR(0, 679, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_lambda_0, __pyx_t_2) < 0) __PYX_ERR(0, 844, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "l0learn/interface.pyx":681
+  /* "l0learn/interface.pyx":846
  *     results = CVFitModel(settings={'loss': loss, 'intercept': intercept, 'penalty': penalty},
  *                          lambda_0=c_results.Lambda0,
  *                          gamma=c_results.Lambda12,             # <<<<<<<<<<<<<<
  *                          support_size=c_results.NnzCount,
  *                          coeffs=sp_dmat_field_to_list(c_results.Beta),
  */
-  __pyx_t_2 = __pyx_convert_vector_to_py_double(__pyx_v_c_results.Lambda12); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 681, __pyx_L1_error)
+  __pyx_t_2 = __pyx_convert_vector_to_py_double(__pyx_v_c_results.Lambda12); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 846, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_gamma, __pyx_t_2) < 0) __PYX_ERR(0, 679, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_gamma, __pyx_t_2) < 0) __PYX_ERR(0, 844, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "l0learn/interface.pyx":682
+  /* "l0learn/interface.pyx":847
  *                          lambda_0=c_results.Lambda0,
  *                          gamma=c_results.Lambda12,
  *                          support_size=c_results.NnzCount,             # <<<<<<<<<<<<<<
  *                          coeffs=sp_dmat_field_to_list(c_results.Beta),
  *                          intercepts=c_results.Intercept,
  */
-  __pyx_t_2 = __pyx_convert_vector_to_py_std_3a__3a_vector_3c_size_t_3e___(__pyx_v_c_results.NnzCount); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 682, __pyx_L1_error)
+  __pyx_t_2 = __pyx_convert_vector_to_py_std_3a__3a_vector_3c_size_t_3e___(__pyx_v_c_results.NnzCount); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 847, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_support_size, __pyx_t_2) < 0) __PYX_ERR(0, 679, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_support_size, __pyx_t_2) < 0) __PYX_ERR(0, 844, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "l0learn/interface.pyx":683
+  /* "l0learn/interface.pyx":848
  *                          gamma=c_results.Lambda12,
  *                          support_size=c_results.NnzCount,
  *                          coeffs=sp_dmat_field_to_list(c_results.Beta),             # <<<<<<<<<<<<<<
  *                          intercepts=c_results.Intercept,
  *                          converged=c_results.Converged,
  */
-  __pyx_t_2 = __pyx_f_7l0learn_6cyarma_sp_dmat_field_to_list(__pyx_v_c_results.Beta); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 683, __pyx_L1_error)
+  __pyx_t_2 = __pyx_f_7l0learn_6cyarma_sp_dmat_field_to_list(__pyx_v_c_results.Beta); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 848, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_coeffs, __pyx_t_2) < 0) __PYX_ERR(0, 679, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_coeffs, __pyx_t_2) < 0) __PYX_ERR(0, 844, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "l0learn/interface.pyx":684
+  /* "l0learn/interface.pyx":849
  *                          support_size=c_results.NnzCount,
  *                          coeffs=sp_dmat_field_to_list(c_results.Beta),
  *                          intercepts=c_results.Intercept,             # <<<<<<<<<<<<<<
  *                          converged=c_results.Converged,
  *                          cv_means=dvec_field_to_list(c_results.CVMeans),
  */
-  __pyx_t_2 = __pyx_convert_vector_to_py_std_3a__3a_vector_3c_double_3e___(__pyx_v_c_results.Intercept); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 684, __pyx_L1_error)
+  __pyx_t_2 = __pyx_convert_vector_to_py_std_3a__3a_vector_3c_double_3e___(__pyx_v_c_results.Intercept); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 849, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_intercepts, __pyx_t_2) < 0) __PYX_ERR(0, 679, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_intercepts, __pyx_t_2) < 0) __PYX_ERR(0, 844, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "l0learn/interface.pyx":685
+  /* "l0learn/interface.pyx":850
  *                          coeffs=sp_dmat_field_to_list(c_results.Beta),
  *                          intercepts=c_results.Intercept,
  *                          converged=c_results.Converged,             # <<<<<<<<<<<<<<
  *                          cv_means=dvec_field_to_list(c_results.CVMeans),
  *                          cv_sds=dvec_field_to_list(c_results.CVSDs))
  */
-  __pyx_t_2 = __pyx_convert_vector_to_py_std_3a__3a_vector_3c_bool_3e___(__pyx_v_c_results.Converged); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 685, __pyx_L1_error)
+  __pyx_t_2 = __pyx_convert_vector_to_py_std_3a__3a_vector_3c_bool_3e___(__pyx_v_c_results.Converged); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 850, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_converged, __pyx_t_2) < 0) __PYX_ERR(0, 679, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_converged, __pyx_t_2) < 0) __PYX_ERR(0, 844, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "l0learn/interface.pyx":686
+  /* "l0learn/interface.pyx":851
  *                          intercepts=c_results.Intercept,
  *                          converged=c_results.Converged,
  *                          cv_means=dvec_field_to_list(c_results.CVMeans),             # <<<<<<<<<<<<<<
  *                          cv_sds=dvec_field_to_list(c_results.CVSDs))
  *     return results
  */
-  __pyx_t_2 = __pyx_f_7l0learn_6cyarma_dvec_field_to_list(__pyx_v_c_results.CVMeans); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 686, __pyx_L1_error)
+  __pyx_t_2 = __pyx_f_7l0learn_6cyarma_dvec_field_to_list(__pyx_v_c_results.CVMeans); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 851, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_cv_means, __pyx_t_2) < 0) __PYX_ERR(0, 679, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_cv_means, __pyx_t_2) < 0) __PYX_ERR(0, 844, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "l0learn/interface.pyx":687
+  /* "l0learn/interface.pyx":852
  *                          converged=c_results.Converged,
  *                          cv_means=dvec_field_to_list(c_results.CVMeans),
  *                          cv_sds=dvec_field_to_list(c_results.CVSDs))             # <<<<<<<<<<<<<<
  *     return results
  * 
  */
-  __pyx_t_2 = __pyx_f_7l0learn_6cyarma_dvec_field_to_list(__pyx_v_c_results.CVSDs); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 687, __pyx_L1_error)
+  __pyx_t_2 = __pyx_f_7l0learn_6cyarma_dvec_field_to_list(__pyx_v_c_results.CVSDs); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 852, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_cv_sds, __pyx_t_2) < 0) __PYX_ERR(0, 679, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_cv_sds, __pyx_t_2) < 0) __PYX_ERR(0, 844, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "l0learn/interface.pyx":679
+  /* "l0learn/interface.pyx":844
  *                                      Highs=numpy_to_dvec_d(highs))
  * 
  *     results = CVFitModel(settings={'loss': loss, 'intercept': intercept, 'penalty': penalty},             # <<<<<<<<<<<<<<
  *                          lambda_0=c_results.Lambda0,
  *                          gamma=c_results.Lambda12,
  */
-  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_empty_tuple, __pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 679, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_empty_tuple, __pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 844, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_v_results = __pyx_t_2;
   __pyx_t_2 = 0;
 
-  /* "l0learn/interface.pyx":688
+  /* "l0learn/interface.pyx":853
  *                          cv_means=dvec_field_to_list(c_results.CVMeans),
  *                          cv_sds=dvec_field_to_list(c_results.CVSDs))
  *     return results             # <<<<<<<<<<<<<<
@@ -9428,7 +9438,7 @@ static PyObject *__pyx_pf_7l0learn_9interface_4cvfit(CYTHON_UNUSED PyObject *__p
   __pyx_r = __pyx_v_results;
   goto __pyx_L0;
 
-  /* "l0learn/interface.pyx":542
+  /* "l0learn/interface.pyx":549
  * 
  * 
  * def cvfit(X: Union[np.ndarray, csc_matrix],             # <<<<<<<<<<<<<<
@@ -9448,7 +9458,7 @@ static PyObject *__pyx_pf_7l0learn_9interface_4cvfit(CYTHON_UNUSED PyObject *__p
   __Pyx_XDECREF(__pyx_v_check);
   __Pyx_XDECREF(__pyx_v_auto_lambda);
   __Pyx_XDECREF(__pyx_v_with_bounds);
-  __Pyx_XDECREF(__pyx_v__);
+  __Pyx_XDECREF(__pyx_v_n);
   __Pyx_XDECREF(__pyx_v_p);
   __Pyx_XDECREF(__pyx_v_results);
   __Pyx_XDECREF(__pyx_v_y);
@@ -9465,7 +9475,7 @@ static PyObject *__pyx_pf_7l0learn_9interface_4cvfit(CYTHON_UNUSED PyObject *__p
   return __pyx_r;
 }
 
-/* "l0learn/interface.pyx":691
+/* "l0learn/interface.pyx":856
  * 
  * 
  * cdef fitmodel _L0LearnFit_dense(const dmat& X,             # <<<<<<<<<<<<<<
@@ -9478,7 +9488,7 @@ static fitmodel __pyx_f_7l0learn_9interface__L0LearnFit_dense(arma::dmat const &
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("_L0LearnFit_dense", 0);
 
-  /* "l0learn/interface.pyx":717
+  /* "l0learn/interface.pyx":882
  *                                 const dvec &Lows,
  *                                 const dvec &Highs):
  *     return L0LearnFit[dmat](X, y, Loss, Penalty, Algorithm, NnzStopNum, G_ncols, G_nrows, Lambda2Max, Lambda2Min, PartialSort,             # <<<<<<<<<<<<<<
@@ -9488,7 +9498,7 @@ static fitmodel __pyx_f_7l0learn_9interface__L0LearnFit_dense(arma::dmat const &
   __pyx_r = L0LearnFit<arma::dmat>(__pyx_v_X, __pyx_v_y, __pyx_v_Loss, __pyx_v_Penalty, __pyx_v_Algorithm, __pyx_v_NnzStopNum, __pyx_v_G_ncols, __pyx_v_G_nrows, __pyx_v_Lambda2Max, __pyx_v_Lambda2Min, __pyx_v_PartialSort, __pyx_v_MaxIters, __pyx_v_rtol, __pyx_v_atol, __pyx_v_ActiveSet, __pyx_v_ActiveSetNum, __pyx_v_MaxNumSwaps, __pyx_v_ScaleDownFactor, __pyx_v_ScreenSize, __pyx_v_LambdaU, __pyx_v_Lambdas, __pyx_v_ExcludeFirstK, __pyx_v_Intercept, __pyx_v_withBounds, __pyx_v_Lows, __pyx_v_Highs);
   goto __pyx_L0;
 
-  /* "l0learn/interface.pyx":691
+  /* "l0learn/interface.pyx":856
  * 
  * 
  * cdef fitmodel _L0LearnFit_dense(const dmat& X,             # <<<<<<<<<<<<<<
@@ -9502,7 +9512,7 @@ static fitmodel __pyx_f_7l0learn_9interface__L0LearnFit_dense(arma::dmat const &
   return __pyx_r;
 }
 
-/* "l0learn/interface.pyx":722
+/* "l0learn/interface.pyx":887
  * 
  * 
  * cdef fitmodel _L0LearnFit_sparse(const sp_dmat& X,             # <<<<<<<<<<<<<<
@@ -9515,7 +9525,7 @@ static fitmodel __pyx_f_7l0learn_9interface__L0LearnFit_sparse(arma::sp_dmat con
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("_L0LearnFit_sparse", 0);
 
-  /* "l0learn/interface.pyx":748
+  /* "l0learn/interface.pyx":913
  *                                  const dvec &Lows,
  *                                  const dvec &Highs):
  *     return L0LearnFit[sp_dmat](X, y, Loss, Penalty, Algorithm, NnzStopNum, G_ncols, G_nrows, Lambda2Max, Lambda2Min, PartialSort,             # <<<<<<<<<<<<<<
@@ -9525,7 +9535,7 @@ static fitmodel __pyx_f_7l0learn_9interface__L0LearnFit_sparse(arma::sp_dmat con
   __pyx_r = L0LearnFit<arma::sp_dmat>(__pyx_v_X, __pyx_v_y, __pyx_v_Loss, __pyx_v_Penalty, __pyx_v_Algorithm, __pyx_v_NnzStopNum, __pyx_v_G_ncols, __pyx_v_G_nrows, __pyx_v_Lambda2Max, __pyx_v_Lambda2Min, __pyx_v_PartialSort, __pyx_v_MaxIters, __pyx_v_rtol, __pyx_v_atol, __pyx_v_ActiveSet, __pyx_v_ActiveSetNum, __pyx_v_MaxNumSwaps, __pyx_v_ScaleDownFactor, __pyx_v_ScreenSize, __pyx_v_LambdaU, __pyx_v_Lambdas, __pyx_v_ExcludeFirstK, __pyx_v_Intercept, __pyx_v_withBounds, __pyx_v_Lows, __pyx_v_Highs);
   goto __pyx_L0;
 
-  /* "l0learn/interface.pyx":722
+  /* "l0learn/interface.pyx":887
  * 
  * 
  * cdef fitmodel _L0LearnFit_sparse(const sp_dmat& X,             # <<<<<<<<<<<<<<
@@ -9539,7 +9549,7 @@ static fitmodel __pyx_f_7l0learn_9interface__L0LearnFit_sparse(arma::sp_dmat con
   return __pyx_r;
 }
 
-/* "l0learn/interface.pyx":753
+/* "l0learn/interface.pyx":918
  * 
  * 
  * cdef cvfitmodel _L0LearnCV_dense(const dmat& X,             # <<<<<<<<<<<<<<
@@ -9552,7 +9562,7 @@ static cvfitmodel __pyx_f_7l0learn_9interface__L0LearnCV_dense(arma::dmat const 
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("_L0LearnCV_dense", 0);
 
-  /* "l0learn/interface.pyx":781
+  /* "l0learn/interface.pyx":946
  *                                  const dvec &Lows,
  *                                  const dvec &Highs):
  *     return L0LearnCV[dmat](X, y, Loss, Penalty, Algorithm, NnzStopNum, G_ncols, G_nrows, Lambda2Max, Lambda2Min, PartialSort,             # <<<<<<<<<<<<<<
@@ -9562,7 +9572,7 @@ static cvfitmodel __pyx_f_7l0learn_9interface__L0LearnCV_dense(arma::dmat const 
   __pyx_r = L0LearnCV<arma::dmat>(__pyx_v_X, __pyx_v_y, __pyx_v_Loss, __pyx_v_Penalty, __pyx_v_Algorithm, __pyx_v_NnzStopNum, __pyx_v_G_ncols, __pyx_v_G_nrows, __pyx_v_Lambda2Max, __pyx_v_Lambda2Min, __pyx_v_PartialSort, __pyx_v_MaxIters, __pyx_v_rtol, __pyx_v_atol, __pyx_v_ActiveSet, __pyx_v_ActiveSetNum, __pyx_v_MaxNumSwaps, __pyx_v_ScaleDownFactor, __pyx_v_ScreenSize, __pyx_v_LambdaU, __pyx_v_Lambdas, __pyx_v_nfolds, __pyx_v_seed, __pyx_v_ExcludeFirstK, __pyx_v_Intercept, __pyx_v_withBounds, __pyx_v_Lows, __pyx_v_Highs);
   goto __pyx_L0;
 
-  /* "l0learn/interface.pyx":753
+  /* "l0learn/interface.pyx":918
  * 
  * 
  * cdef cvfitmodel _L0LearnCV_dense(const dmat& X,             # <<<<<<<<<<<<<<
@@ -9576,7 +9586,7 @@ static cvfitmodel __pyx_f_7l0learn_9interface__L0LearnCV_dense(arma::dmat const 
   return __pyx_r;
 }
 
-/* "l0learn/interface.pyx":786
+/* "l0learn/interface.pyx":951
  * 
  * 
  * cdef cvfitmodel _L0LearnCV_sparse(const sp_dmat& X,             # <<<<<<<<<<<<<<
@@ -9589,7 +9599,7 @@ static cvfitmodel __pyx_f_7l0learn_9interface__L0LearnCV_sparse(arma::sp_dmat co
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("_L0LearnCV_sparse", 0);
 
-  /* "l0learn/interface.pyx":814
+  /* "l0learn/interface.pyx":979
  *                                  const dvec &Lows,
  *                                  const dvec &Highs):
  *     return L0LearnCV[sp_dmat](X, y, Loss, Penalty, Algorithm, NnzStopNum, G_ncols, G_nrows, Lambda2Max, Lambda2Min, PartialSort,             # <<<<<<<<<<<<<<
@@ -9599,7 +9609,7 @@ static cvfitmodel __pyx_f_7l0learn_9interface__L0LearnCV_sparse(arma::sp_dmat co
   __pyx_r = L0LearnCV<arma::sp_dmat>(__pyx_v_X, __pyx_v_y, __pyx_v_Loss, __pyx_v_Penalty, __pyx_v_Algorithm, __pyx_v_NnzStopNum, __pyx_v_G_ncols, __pyx_v_G_nrows, __pyx_v_Lambda2Max, __pyx_v_Lambda2Min, __pyx_v_PartialSort, __pyx_v_MaxIters, __pyx_v_rtol, __pyx_v_atol, __pyx_v_ActiveSet, __pyx_v_ActiveSetNum, __pyx_v_MaxNumSwaps, __pyx_v_ScaleDownFactor, __pyx_v_ScreenSize, __pyx_v_LambdaU, __pyx_v_Lambdas, __pyx_v_nfolds, __pyx_v_seed, __pyx_v_ExcludeFirstK, __pyx_v_Intercept, __pyx_v_withBounds, __pyx_v_Lows, __pyx_v_Highs);
   goto __pyx_L0;
 
-  /* "l0learn/interface.pyx":786
+  /* "l0learn/interface.pyx":951
  * 
  * 
  * cdef cvfitmodel _L0LearnCV_sparse(const sp_dmat& X,             # <<<<<<<<<<<<<<
@@ -11333,6 +11343,8 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_u_CDPSI, __pyx_k_CDPSI, sizeof(__pyx_k_CDPSI), 0, 1, 0, 1},
   {&__pyx_n_s_CLASSIFICATION_LOSS, __pyx_k_CLASSIFICATION_LOSS, sizeof(__pyx_k_CLASSIFICATION_LOSS), 0, 0, 1, 1},
   {&__pyx_n_s_CVFitModel, __pyx_k_CVFitModel, sizeof(__pyx_k_CVFitModel), 0, 0, 1, 1},
+  {&__pyx_kp_u_Computes_the_regularization_pat, __pyx_k_Computes_the_regularization_pat, sizeof(__pyx_k_Computes_the_regularization_pat), 0, 1, 0, 0},
+  {&__pyx_kp_u_Computes_the_regularization_pat_2, __pyx_k_Computes_the_regularization_pat_2, sizeof(__pyx_k_Computes_the_regularization_pat_2), 0, 1, 0, 0},
   {&__pyx_n_u_D, __pyx_k_D, sizeof(__pyx_k_D), 0, 1, 0, 1},
   {&__pyx_n_s_Dict, __pyx_k_Dict, sizeof(__pyx_k_Dict), 0, 0, 1, 1},
   {&__pyx_kp_u_Expected_all_values_of_lambda_gr, __pyx_k_Expected_all_values_of_lambda_gr, sizeof(__pyx_k_Expected_all_values_of_lambda_gr), 0, 1, 0, 0},
@@ -11350,6 +11362,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_SUPPORTED_ALGORITHM, __pyx_k_SUPPORTED_ALGORITHM, sizeof(__pyx_k_SUPPORTED_ALGORITHM), 0, 0, 1, 1},
   {&__pyx_n_s_SUPPORTED_LOSS, __pyx_k_SUPPORTED_LOSS, sizeof(__pyx_k_SUPPORTED_LOSS), 0, 0, 1, 1},
   {&__pyx_n_s_SUPPORTED_PENALTY, __pyx_k_SUPPORTED_PENALTY, sizeof(__pyx_k_SUPPORTED_PENALTY), 0, 0, 1, 1},
+  {&__pyx_n_s_Sequence, __pyx_k_Sequence, sizeof(__pyx_k_Sequence), 0, 0, 1, 1},
   {&__pyx_n_u_SquaredError, __pyx_k_SquaredError, sizeof(__pyx_k_SquaredError), 0, 1, 0, 1},
   {&__pyx_n_u_SquaredHinge, __pyx_k_SquaredHinge, sizeof(__pyx_k_SquaredHinge), 0, 1, 0, 1},
   {&__pyx_n_s_Union, __pyx_k_Union, sizeof(__pyx_k_Union), 0, 0, 1, 1},
@@ -11388,6 +11401,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_cv_means, __pyx_k_cv_means, sizeof(__pyx_k_cv_means), 0, 0, 1, 1},
   {&__pyx_n_s_cv_sds, __pyx_k_cv_sds, sizeof(__pyx_k_cv_sds), 0, 0, 1, 1},
   {&__pyx_n_s_cvfit, __pyx_k_cvfit, sizeof(__pyx_k_cvfit), 0, 0, 1, 1},
+  {&__pyx_kp_u_cvfit_line_549, __pyx_k_cvfit_line_549, sizeof(__pyx_k_cvfit_line_549), 0, 1, 0, 0},
   {&__pyx_n_s_diff, __pyx_k_diff, sizeof(__pyx_k_diff), 0, 0, 1, 1},
   {&__pyx_n_s_dtype, __pyx_k_dtype, sizeof(__pyx_k_dtype), 0, 0, 1, 1},
   {&__pyx_n_s_enumerate, __pyx_k_enumerate, sizeof(__pyx_k_enumerate), 0, 0, 1, 1},
@@ -11431,6 +11445,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_first_value, __pyx_k_first_value, sizeof(__pyx_k_first_value), 0, 0, 1, 1},
   {&__pyx_n_s_fit, __pyx_k_fit, sizeof(__pyx_k_fit), 0, 0, 1, 1},
   {&__pyx_n_s_fit_check, __pyx_k_fit_check, sizeof(__pyx_k_fit_check), 0, 0, 1, 1},
+  {&__pyx_kp_u_fit_line_261, __pyx_k_fit_line_261, sizeof(__pyx_k_fit_line_261), 0, 1, 0, 0},
   {&__pyx_n_s_float64, __pyx_k_float64, sizeof(__pyx_k_float64), 0, 0, 1, 1},
   {&__pyx_n_s_gamma, __pyx_k_gamma, sizeof(__pyx_k_gamma), 0, 0, 1, 1},
   {&__pyx_n_s_gamma_max, __pyx_k_gamma_max, sizeof(__pyx_k_gamma_max), 0, 0, 1, 1},
@@ -11608,17 +11623,17 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_GIVEREF(__pyx_tuple__14);
   __pyx_codeobj__15 = (PyObject*)__Pyx_PyCode_New(24, 0, 33, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__14, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_l0learn_interface_pyx, __pyx_n_s_fit, 261, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__15)) __PYX_ERR(0, 261, __pyx_L1_error)
 
-  /* "l0learn/interface.pyx":542
+  /* "l0learn/interface.pyx":549
  * 
  * 
  * def cvfit(X: Union[np.ndarray, csc_matrix],             # <<<<<<<<<<<<<<
  *           y: np.ndarray,
  *           loss: str = "SquaredError",
  */
-  __pyx_tuple__16 = PyTuple_Pack(37, __pyx_n_s_X, __pyx_n_s_y, __pyx_n_s_loss, __pyx_n_s_penalty, __pyx_n_s_algorithm, __pyx_n_s_num_folds, __pyx_n_s_seed, __pyx_n_s_max_support_size, __pyx_n_s_num_lambda, __pyx_n_s_num_gamma, __pyx_n_s_gamma_max, __pyx_n_s_gamma_min, __pyx_n_s_partial_sort, __pyx_n_s_max_iter, __pyx_n_s_rtol, __pyx_n_s_atol, __pyx_n_s_active_set, __pyx_n_s_active_set_num, __pyx_n_s_max_swaps, __pyx_n_s_scale_down_factor, __pyx_n_s_screen_size, __pyx_n_s_lambda_grid, __pyx_n_s_exclude_first_k, __pyx_n_s_intercept, __pyx_n_s_lows, __pyx_n_s_highs, __pyx_n_s_check, __pyx_n_s_auto_lambda, __pyx_n_s_with_bounds, __pyx_n_s__11, __pyx_n_s_p, __pyx_n_s_c_lambda_grid, __pyx_n_s_c_loss, __pyx_n_s_c_penalty, __pyx_n_s_c_algorithim, __pyx_n_s_c_results, __pyx_n_s_results); if (unlikely(!__pyx_tuple__16)) __PYX_ERR(0, 542, __pyx_L1_error)
+  __pyx_tuple__16 = PyTuple_Pack(37, __pyx_n_s_X, __pyx_n_s_y, __pyx_n_s_loss, __pyx_n_s_penalty, __pyx_n_s_algorithm, __pyx_n_s_num_folds, __pyx_n_s_seed, __pyx_n_s_max_support_size, __pyx_n_s_num_lambda, __pyx_n_s_num_gamma, __pyx_n_s_gamma_max, __pyx_n_s_gamma_min, __pyx_n_s_partial_sort, __pyx_n_s_max_iter, __pyx_n_s_rtol, __pyx_n_s_atol, __pyx_n_s_active_set, __pyx_n_s_active_set_num, __pyx_n_s_max_swaps, __pyx_n_s_scale_down_factor, __pyx_n_s_screen_size, __pyx_n_s_lambda_grid, __pyx_n_s_exclude_first_k, __pyx_n_s_intercept, __pyx_n_s_lows, __pyx_n_s_highs, __pyx_n_s_check, __pyx_n_s_auto_lambda, __pyx_n_s_with_bounds, __pyx_n_s_n, __pyx_n_s_p, __pyx_n_s_c_lambda_grid, __pyx_n_s_c_loss, __pyx_n_s_c_penalty, __pyx_n_s_c_algorithim, __pyx_n_s_c_results, __pyx_n_s_results); if (unlikely(!__pyx_tuple__16)) __PYX_ERR(0, 549, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__16);
   __Pyx_GIVEREF(__pyx_tuple__16);
-  __pyx_codeobj__17 = (PyObject*)__Pyx_PyCode_New(26, 0, 37, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__16, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_l0learn_interface_pyx, __pyx_n_s_cvfit, 542, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__17)) __PYX_ERR(0, 542, __pyx_L1_error)
+  __pyx_codeobj__17 = (PyObject*)__Pyx_PyCode_New(26, 0, 37, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__16, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_l0learn_interface_pyx, __pyx_n_s_cvfit, 549, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__17)) __PYX_ERR(0, 549, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -12027,7 +12042,7 @@ if (!__Pyx_RefNanny) {
  * from scipy.sparse import csc_matrix
  * from warnings import warn             # <<<<<<<<<<<<<<
  * 
- * from typing import Union, Optional, List, Dict, Any
+ * from typing import Union, Optional, List, Dict, Any, Sequence
  */
   __pyx_t_2 = PyList_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 6, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
@@ -12046,11 +12061,11 @@ if (!__Pyx_RefNanny) {
   /* "l0learn/interface.pyx":8
  * from warnings import warn
  * 
- * from typing import Union, Optional, List, Dict, Any             # <<<<<<<<<<<<<<
+ * from typing import Union, Optional, List, Dict, Any, Sequence             # <<<<<<<<<<<<<<
  * 
  * from l0learn.cyarma cimport dmat, sp_dmat, numpy_to_sp_dmat_d, numpy_to_dmat_d, dvec, numpy_to_dvec_d, \
  */
-  __pyx_t_1 = PyList_New(5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 8, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 8, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(__pyx_n_s_Union);
   __Pyx_GIVEREF(__pyx_n_s_Union);
@@ -12067,6 +12082,9 @@ if (!__Pyx_RefNanny) {
   __Pyx_INCREF(__pyx_n_s_Any);
   __Pyx_GIVEREF(__pyx_n_s_Any);
   PyList_SET_ITEM(__pyx_t_1, 4, __pyx_n_s_Any);
+  __Pyx_INCREF(__pyx_n_s_Sequence);
+  __Pyx_GIVEREF(__pyx_n_s_Sequence);
+  PyList_SET_ITEM(__pyx_t_1, 5, __pyx_n_s_Sequence);
   __pyx_t_2 = __Pyx_Import(__pyx_n_s_typing, __pyx_t_1, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 8, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -12089,6 +12107,10 @@ if (!__Pyx_RefNanny) {
   __pyx_t_1 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_Any); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 8, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_Any, __pyx_t_1) < 0) __PYX_ERR(0, 8, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_1 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_Sequence); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 8, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_Sequence, __pyx_t_1) < 0) __PYX_ERR(0, 8, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
@@ -12239,44 +12261,44 @@ if (!__Pyx_RefNanny) {
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_fit, __pyx_t_1) < 0) __PYX_ERR(0, 261, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "l0learn/interface.pyx":566
+  /* "l0learn/interface.pyx":573
  *           exclude_first_k: int = 0,
  *           intercept: bool = True,
  *           lows: Union[np.ndarray, float] = -float('inf'),             # <<<<<<<<<<<<<<
  *           highs: Union[np.ndarray, float] = +float('inf'),) -> l0learn.models.CVFitModel:
- * 
+ *     """ Computes the regularization path for the specified loss function and penalty function and performs K-fold
  */
-  __pyx_t_4 = __Pyx_PyObject_AsDouble(__pyx_n_u_inf); if (unlikely(__pyx_t_4 == ((double)((double)-1)) && PyErr_Occurred())) __PYX_ERR(0, 566, __pyx_L1_error)
-  __pyx_t_1 = PyFloat_FromDouble((-__pyx_t_4)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 566, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_AsDouble(__pyx_n_u_inf); if (unlikely(__pyx_t_4 == ((double)((double)-1)) && PyErr_Occurred())) __PYX_ERR(0, 573, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble((-__pyx_t_4)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 573, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_k__4 = __pyx_t_1;
   __Pyx_GIVEREF(__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "l0learn/interface.pyx":567
+  /* "l0learn/interface.pyx":574
  *           intercept: bool = True,
  *           lows: Union[np.ndarray, float] = -float('inf'),
  *           highs: Union[np.ndarray, float] = +float('inf'),) -> l0learn.models.CVFitModel:             # <<<<<<<<<<<<<<
- * 
- *     check = _fit_check(X=X,
+ *     """ Computes the regularization path for the specified loss function and penalty function and performs K-fold
+ *     cross-validation.
  */
-  __pyx_t_4 = __Pyx_PyObject_AsDouble(__pyx_n_u_inf); if (unlikely(__pyx_t_4 == ((double)((double)-1)) && PyErr_Occurred())) __PYX_ERR(0, 567, __pyx_L1_error)
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 567, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_AsDouble(__pyx_n_u_inf); if (unlikely(__pyx_t_4 == ((double)((double)-1)) && PyErr_Occurred())) __PYX_ERR(0, 574, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 574, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_k__5 = __pyx_t_1;
   __Pyx_GIVEREF(__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "l0learn/interface.pyx":542
+  /* "l0learn/interface.pyx":549
  * 
  * 
  * def cvfit(X: Union[np.ndarray, csc_matrix],             # <<<<<<<<<<<<<<
  *           y: np.ndarray,
  *           loss: str = "SquaredError",
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_7l0learn_9interface_5cvfit, NULL, __pyx_n_s_l0learn_interface); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 542, __pyx_L1_error)
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_7l0learn_9interface_5cvfit, NULL, __pyx_n_s_l0learn_interface); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 549, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_cvfit, __pyx_t_1) < 0) __PYX_ERR(0, 542, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_cvfit, __pyx_t_1) < 0) __PYX_ERR(0, 549, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
   /* "l0learn/interface.pyx":1
@@ -12284,8 +12306,10 @@ if (!__Pyx_RefNanny) {
  * from libcpp.string cimport string
  * from libcpp cimport bool as cppbool
  */
-  __pyx_t_1 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
+  if (PyDict_SetItem(__pyx_t_1, __pyx_kp_u_fit_line_261, __pyx_kp_u_Computes_the_regularization_pat) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_kp_u_cvfit_line_549, __pyx_kp_u_Computes_the_regularization_pat_2) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_test, __pyx_t_1) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 

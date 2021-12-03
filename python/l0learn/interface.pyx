@@ -5,7 +5,7 @@ import numpy as np
 from scipy.sparse import csc_matrix
 from warnings import warn
 
-from typing import Union, Optional, List, Dict, Any
+from typing import Union, Optional, List, Dict, Any, Sequence
 
 from l0learn.cyarma cimport dmat, sp_dmat, numpy_to_sp_dmat_d, numpy_to_dmat_d, dvec, numpy_to_dvec_d, \
     sp_dmat_field_to_list, dvec_field_to_list
@@ -68,7 +68,7 @@ def _fit_check(X: Union[np.ndarray, csc_matrix],
                max_swaps: int,
                scale_down_factor: float,
                screen_size: int,
-               lambda_grid: Union[List[List[float]], None],
+               lambda_grid: Union[List[Sequence[float]], None],
                exclude_first_k: int,
                intercept: bool,
                lows: Union[np.ndarray, float],
@@ -277,7 +277,7 @@ def fit(X: Union[np.ndarray, csc_matrix],
         max_swaps: int = 100,
         scale_down_factor: float = 0.8,
         screen_size: int = 1000,
-        lambda_grid: Optional[List[List[float]]] = None,
+        lambda_grid: Optional[List[Sequence[float]]] = None,
         exclude_first_k: int = 0,
         intercept: bool = True,
         lows: Union[np.ndarray, float] = -float('inf'),
@@ -424,10 +424,17 @@ def fit(X: Union[np.ndarray, csc_matrix],
 
     Returns
     -------
+    fit_model : l0learn.models.FitModel
+        FitModel instance containing all relevant information from the solution path.
 
+    See Also
+    -------
+    l0learn.cvfit
+    l0learn.models.FitModel
 
     Examples
     --------
+    >>>fit_model = l0learn.fit(X, y, penalty="L0", max_support_size=20)
     """
     check = _fit_check(X=X,
                        y=y,
@@ -560,11 +567,169 @@ def cvfit(X: Union[np.ndarray, csc_matrix],
           max_swaps: int = 100,
           scale_down_factor: float = 0.8,
           screen_size: int = 1000,
-          lambda_grid: Optional[List[List[float]]] = None,
+          lambda_grid: Optional[List[Sequence[float]]] = None,
           exclude_first_k: int = 0,
           intercept: bool = True,
           lows: Union[np.ndarray, float] = -float('inf'),
           highs: Union[np.ndarray, float] = +float('inf'),) -> l0learn.models.CVFitModel:
+    """ Computes the regularization path for the specified loss function and penalty function and performs K-fold
+    cross-validation.
+
+    Parameters
+    ----------
+    X : np.ndarray or csc_matrix of shape (N, P)
+        Data Matrix where rows of X are observations and columns of X are features
+
+    y : np.ndarray of shape (P)
+        The response vector where y[i] corresponds to X[i, :]
+        For classification, a binary vector (-1, 1) is requried .
+
+    loss : str
+        The loss function. Currently supports the choices:
+            "SquaredError" (for regression),
+            "Logistic" (for logistic regression), and
+            "SquaredHinge" (for smooth SVM).
+
+    penalty : str
+        The type of regularization.
+        This can take either one of the following choices:
+            "L0",
+            "L0L2", and
+            "L0L1"
+
+    algorithm : str
+        The type of algorithm used to minimize the objective function. Currently "CD" and "CDPSI" are are supported.
+        "CD" is a variant of cyclic coordinate descent and runs very fast. "CDPSI" performs local combinatorial search
+        on top of CD and typically achieves higher quality solutions (at the expense of increased running time).
+
+    num_folds : int
+        Must be greater than 1 and less than N (number of .
+        The number of folds for cross-validation.
+
+    max_support_size : int
+        Must be greater than 0.
+        The maximum support size at which to terminate the regularization path. We recommend setting this to a small
+        fraction of min(n,p) (e.g. 0.05 * min(n,p)) as L0 regularization typically selects a small portion of non-zeros.
+
+    num_lambda : int, optional
+        The number of lambda values to select in the regularization path.
+        This value must be None if lambda_grid is supplied.When supplied, must be greater than 0.
+        Note: lambda is the regularization parameter corresponding to the L0 norm.
+
+    num_gamma: int, optional
+        The number of gamma values to select in the regularization path.
+        This value must be None if lambda_grid is supplied. When supplied, must be greater than 0.
+        Note:  gamma is the regularization parameter corresponding to L1 or L2, depending on the chosen penalty).
+
+    gamma_max : float
+        The maximum value of gamma when using the L0L2 penalty.
+        This value must be greater than 0.
+
+        Note: For the L0L1 penalty this is automatically selected.
+
+    gamma_min : float
+        The minimum value of Gamma when using the L0L2 penalty.
+        This value must be greater than 0 but less than gamma_max.
+        Note: For the L0L1 penalty, the minimum value of gamma in the grid is set to gammaMin * gammaMax.
+
+    partial_sort : bool
+        If TRUE partial sorting will be used for sorting the coordinates to do greedy cycling (see our paper for
+        for details). Otherwise, full sorting is used. #TODO: Add link for paper
+
+    max_iter : int
+        The maximum number of iterations (full cycles) for CD per grid point. The algorithm may not use the full number
+        of iteration per grid point if convergence is found (defined by rtol and atol parameter)
+        Must be greater than 0
+
+    rtol : float
+        The relative tolerance which decides when to terminate optimization as based on the relative change in the
+        objective between iterations.
+        Must be greater than 0 and less than 1.
+
+    atol : float
+        The absolute tolerance which decides when to terminate optimization as based on the absolute L2 norm of the
+        residuals
+        Must be greater than 0
+
+    active_set : bool
+        If TRUE, performs active set updates. (see our paper for for details). #TODO: Add link for paper
+
+    active_set_num : int
+        The number of consecutive times a support should appear before declaring support stabilization.
+        (see our paper for for details). #TODO: Add link for paper
+
+        Must be greater than 0.
+
+    max_swaps : int
+        The maximum number of swaps used by CDPSI for each grid point.
+        Must be greater than 0. Ignored by CD algorithims.
+
+    scale_down_factor : float
+        Roughly amount each lambda value is scaled by between grid points. Larger values lead to closer lambdas and
+        typically to smaller gaps between the support sizes.
+
+        For details, see our paper - Section 5 on Adaptive Selection of Tuning Parameters). #TODO: Add link for paper
+
+        Must be greater than 0 and less than 1 (strictly for both.)
+
+    screen_size : int
+        The number of coordinates to cycle over when performing initial correlation screening. #TODO: Add link for paper
+
+        Must be greater than 0 and less than number of columns of X.
+
+    lambda_grid : list of list of floats
+        A grid of lambda values to use in computing the regularization path. This is by default an empty list
+        and is ignored. When specified, lambda_grid should be a list of list of floats, where the ith element
+         (corresponding to the ith gamma) should be a decreasing sequence of lambda values. The length of this sequence
+         is directly the number of lambdas to be tried for that gamma.
+
+        In the the "L0" penalty case, lambda_grid should be a list of 1.
+        In the "L0LX" penalty cases, lambda_grid can be a list of any length. The length of lambda_grid will be the
+        number of gamma values tried.
+
+        See the example notebook for more details.
+
+        Note: When lambda_grid is supplied, num_gamma and num_lambda must be None.
+
+    exclude_first_k : int
+        The first exclude_first_k features in X will be excluded from variable selection. In other words, the first
+        exclude_first_k variables will not be included in the L0-norm penalty however they will  be included in the
+        L1 or L2 norm penalties, if they are specified.
+
+        Must be a positive integer less than the columns of X.
+
+    intercept : bool
+        If False, no intercept term is included or fit in the regularization path
+        Intercept terms are not regularized by L0 or L1/L2.
+
+    lows : np array or float
+        Lower bounds for coefficients. Either a scalar for all coefficients to have the same bound or a vector of
+        size p (number of columns of X) where lows[i] is the lower bound for coefficient i.
+
+        Lower bounds can not be above 0 (i.e. we can not specify that all coefficients must be larger than a > 0).
+        Lower bounds can be set to 0 iff the corresponding upper bound for that coefficient is also not 0.
+
+    highs : np array or float
+        Upper bounds for coefficients. Either a scalar for all coefficients to have the same bound or a vector of
+        size p (number of columns of X) where highs[i] is the upper bound for coefficient i.
+
+        Upper bounds can not be below 0 (i.e. we can not specify that all coefficients must be smaller than a < 0).
+        Upper bounds can be set to 0 iff the corresponding lower bound for that coefficient is also not 0.
+
+    Returns
+    -------
+    fit_model : l0learn.models.FitModel
+        FitModel instance containing all relevant information from the solution path.
+
+    See Also
+    -------
+    l0learn.cvfit
+    l0learn.models.FitModel
+
+    Examples
+    --------
+    >>>fit_model = l0learn.fit(X, y, penalty="L0", max_support_size=20)
+    """
 
     check = _fit_check(X=X,
                        y=y,
@@ -605,10 +770,10 @@ def cvfit(X: Union[np.ndarray, csc_matrix],
     lows = check['lows']
     highs = check['highs']
 
-    _, p = X.shape
+    n, p = X.shape
 
-    if not isinstance(num_folds, int) or num_folds < 2 or num_folds > p:
-        raise ValueError(f"expected num_folds parameter to be a positive integer less than {p}, but got {num_folds}")
+    if not isinstance(num_folds, int) or num_folds < 2 or num_folds > n:
+        raise ValueError(f"expected num_folds parameter to be a positive integer less than {n}, but got {num_folds}")
 
 
     cdef vector[vector[double]] c_lambda_grid = lambda_grid

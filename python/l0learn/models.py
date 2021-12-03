@@ -105,7 +105,7 @@ def squared_error(y_true: np.ndarray,
                   coeffs: Optional[csc_matrix] = None,
                   l0: Union[float, Sequence[float]] = 0,
                   l1: Union[float, Sequence[float]] = 0,
-                  l2: Union[float, Sequence[float]] = 0) -> Tuple[np.ndarray, np.ndarray]:
+                  l2: Union[float, Sequence[float]] = 0) -> np.ndarray:
     """
     Calculates Squared Error loss of solution with optional regularization
 
@@ -120,7 +120,8 @@ def squared_error(y_true: np.ndarray,
 
     Returns
     -------
-    squared_error = (m, k)
+    squared_error : np.ndarray
+        Shape (,) if y_pred is 1D  or = (k,) if y_pred is 2D
 
     """
     reg_loss = 0
@@ -141,7 +142,28 @@ def logistic_loss(y_true: np.ndarray,
                   l0: float = 0,
                   l1: float = 0,
                   l2: float = 0,
-                  eps: float = 1e-15) -> Union[float, np.ndarray]:
+                  eps: float = 1e-15) -> np.ndarray:
+    """
+    Calculates Logistic Loss of solution with optional regularization
+
+    Parameters
+    ----------
+    y_true : np.ndarray of shape (m, )
+    y_pred : np.ndarray of shape (m, ) or (m, k)
+    coeffs : np.ndarray of shape (p, k), optional
+    l0 : float or sequence of floats of shape (l)
+    l1 : float or sequence of floats of shape (l)
+    l2 : float or sequence of floats of shape (l)
+    eps: float, default=1e-15
+        Logistic loss is undefined for p=0 or p=1, so probabilities are clipped to max(eps, min(1 - eps, p)).
+
+
+    Returns
+    -------
+    logistic_loss : np.ndarray
+        Shape (,) if y_pred is 1D  or = (k,) if y_pred is 2D
+
+    """
     # TODO: Check this formula. If there is an error here, there might be an error in the C++ code for Logistic.
 
     reg_loss = 0
@@ -167,7 +189,25 @@ def squared_hinge_loss(y_true: np.ndarray,
                        coeffs: Optional[csc_matrix] = None,
                        l0: float = 0,
                        l1: float = 0,
-                       l2: float = 0, ) -> Union[float, np.ndarray]:
+                       l2: float = 0, ) -> np.ndarray:
+    """
+    Calculates Logistic Loss of solution with optional regularization
+
+    Parameters
+    ----------
+    y_true : np.ndarray of shape (m, )
+    y_pred : np.ndarray of shape (m, ) or (m, k)
+    coeffs : np.ndarray of shape (p, k), optional
+    l0 : float or sequence of floats of shape (l)
+    l1 : float or sequence of floats of shape (l)
+    l2 : float or sequence of floats of shape (l)
+
+    Returns
+    -------
+    squared_hinge_loss : np.ndarray
+        Shape (,) if y_pred is 1D  or = (k,) if y_pred is 2D
+
+    """
     # TODO: Check this formula. If there is an error here, there might be an error in the C++ code for Logistic.
 
     reg_loss = 0
@@ -320,9 +360,8 @@ class FitModel:
     def characteristics(self,
                         lambda_0: Optional[float] = None,
                         gamma: Optional[float] = None) -> pd.DataFrame:
-        """ Formats the characteristics of the solutions that correspond to the specificed `lambda_0` and `gamma` as a
+        """ Formats the characteristics of the solutions that correspond to the specified `lambda_0` and `gamma` as a
         pandas DataFrame where each row is a solution in the regularization path.
-            The DataFrame is in of solutions being found.
 
         Parameters
         ----------
@@ -395,7 +434,7 @@ class FitModel:
 
         return self._characteristics_as_pandas_table(new_data=(gamma, lambda_0, support_size, intercepts, converged))
 
-    def plot(self, gamma: float = 0, show_lines: bool = False, **kwargs):
+    def plot(self, gamma: float = 0, show_lines: bool = False, include_legend: bool = True, **kwargs):
         """ Plots the regularization path for a given gamma.
 
         Parameters
@@ -410,6 +449,12 @@ class FitModel:
         kwargs : dict of str to any
 
             Key Word arguments passed to matplotlib.pyplot
+
+            Defaults for legends:
+                bbox_to_anchor -> (1.05, 1)
+                loc -> 2
+                borderaxespad -> 0.
+                ncol -> Size of largest support divided by 10
 
         Notes
         -----
@@ -429,9 +474,10 @@ class FitModel:
         for col in range(p):
             rows, cols, values = find(gamma_to_plot[:, col])
             support_size = len(rows)
-            if support_size in seen_supports or not support_size:
+            if support_size in seen_supports:
                 warnings.warn(f"Duplicate solution seen at support size {support_size}. Plotting only first solution")
                 continue
+            seen_supports.add(support_size)
             seen_coeffs.update(rows)
 
         # For each coefficient seen in regularization path, record value of each coefficient over
@@ -453,6 +499,9 @@ class FitModel:
 
         plt.ylabel("Coefficient Value")
         plt.xlabel("Support Size")
+
+        if include_legend:
+            plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0., ncol=len(seen_coeffs)//10)
 
         return ax
 
@@ -689,7 +738,7 @@ def gen_synthetic(n: int,
     else:
         sd_e = np.sqrt(np.var(X @ B) / snr)
 
-    e = np.random.normal(n, scale=sd_e)
+    e = np.random.normal(size=n, scale=sd_e)
     y = X @ B + e + b0
     return {"X": X, "y": y, "B": B, "e": e, "b0": b0}
 
@@ -733,7 +782,7 @@ def gen_synthetic_high_corr(n: int,
     seed : int
         The seed used for randomly generating the data
     rho : float
-        The threshold for setting values to 0.  if |X(i, j)| < rho => X(i, j) <- 0
+        The threshold for setting values to 0.  if |X[i, j]| < rho => X[i, j] <- 0
     b0 : float
         intercept value to scale y by.
     snr : float
@@ -776,7 +825,7 @@ def gen_synthetic_high_corr(n: int,
     else:
         sd_e = np.sqrt(np.var(X @ B) / snr)
 
-    e = np.random.normal(n, scale=sd_e)
+    e = np.random.normal(size=n, scale=sd_e)
     y = X @ B + e + b0
 
     return {"X": X, "y": y, "B": B, "e": e, "b0": b0}
@@ -807,28 +856,37 @@ def gen_synthetic_logistic(n: int,
     ----------
     n : int
         Number of samples
+
     p : int
         Number of features
+
     k : int
         Number of non-zeros in true vector of coefficients
+
     seed : int
         The seed used for randomly generating the data
+
     rho : float
-        The threshold for setting values to 0.  if |X(i, j)| > rho => X(i, j) <- 0
+        The threshold for setting values to 0.  if |X[i, j]| > rho => X[i, j] <- 0
+
     b0 : float
         The intercept value to scale the log odds of y by.
         As b0 -> +inf, y will contain more 1s
         As b0 -> -inf, y will contain more 0s
+
     s : float
         Signal-to-noise parameter. As s -> +Inf, the data generated becomes linearly separable.
+
     mu : float, optional
         The mean for drawing from the Multivariate Normal Distribution. A scalar of vector of length p.
         If mu and base_cor are not specified, will be drawn from N(0, 1) using gen_synthetic.
         If mu and base_cor are specified will be drawn from multivariate_normal(mu, sigma) see gen_synthetic_high_corr
-    base_cor
+
+    base_cor : float
         The base correlation, A in [i, j] = A^|i-j|.
         If mu and base_cor are not specified, will be drawn from N(0, 1)
         If mu and base_cor are specified will be drawn from multivariate_normal(mu, sigma) see gen_synthetic_high_corr
+
     Returns
     -------
     data : dict

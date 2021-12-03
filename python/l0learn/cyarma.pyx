@@ -108,7 +108,7 @@ cdef dmat * numpy_to_dmat(np.ndarray[np.double_t, ndim=2] X):
     # TODO: Add flags for new dmat. See: Advanced constructors in http://arma.sourceforge.net/docs.html#Mat
     #  mat(ptr_aux_mem, n_rows, n_cols, copy_aux_mem = true, strict = false)
     # TODO: raise Warning on copy or replication of data
-    if not (X.flags.f_contiguous or X.flags.owndata):
+    if not X.flags.f_contiguous:
         X = X.copy(order="F")
     cdef dmat *aR_p  = new dmat(<double*> X.data, X.shape[0], X.shape[1], False, True)
     return aR_p

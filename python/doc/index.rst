@@ -9,6 +9,7 @@ Welcome to l0learn's documentation!
 .. toctree::
    :maxdepth: 2
 
+   tutorial.ipynb
    code
 
 
