@@ -44,9 +44,9 @@ pip install .
 
 ##  Usage
 ### R Usage
-For an tutorial, please refer to [L0Learn's Vignette](https://cran.r-project.org/web/packages/L0Learn/vignettes/L0Learn-vignette.html). For a detailed description of the API, check the [Reference Manual](https://cran.r-project.org/web/packages/L0Learn/L0Learn.pdf).
+For a tutorial, please refer to [L0Learn's Vignette](https://cran.r-project.org/web/packages/L0Learn/vignettes/L0Learn-vignette.html). For a detailed description of the API, check the [Reference Manual](https://cran.r-project.org/web/packages/L0Learn/L0Learn.pdf).
 ### Python Usage
-[TO ADD]
+For a tutorial and detailed documentation, please refer to [l0learn's documetnation](https://tnonet.github.io/L0Learn/). 
 
 ## FAQ
 #### Which penalty to use?
