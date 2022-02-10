@@ -110,8 +110,13 @@ FitResult<T> CDL012LogisticSwaps<T>::_Fit() {
                     }
                     
                     
-                    Btemp[i] = Binew;
-                    ObjTemp = Objective(ExpyXBnoji, Btemp);
+                    if (ObjTemp >= Fmin) {
+                        ExpyXBnoji %= arma::exp( (Binew - Biold) *  matrix_column_get(*Xy, i));
+                        Btemp[i] = Binew;
+                        ObjTemp = Objective(ExpyXBnoji, Btemp);
+                    } else {
+                        Binew = 0;
+                    }
                     
                     if (ObjTemp < Fmin) {
                         Fmin = ObjTemp;
