@@ -46,7 +46,6 @@ While for many challenging statistical instances L0Learn leads to optimal soluti
 ## Citing L0Learn
 If you find L0Learn useful in your research, please consider citing the following papers.
 
-
 **Paper 1 (Regression):**
 ```
 @article{doi:10.1287/opre.2019.1919,
