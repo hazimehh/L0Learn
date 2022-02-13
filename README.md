@@ -1,5 +1,5 @@
 # L0Learn: Fast Best Subset Selection 
-[![Build Status](https://www.travis-ci.com/hazimehh/L0Learn.svg?branch=master)](https://www.travis-ci.com/hazimehh/L0Learn) [![CRAN](https://www.r-pkg.org/badges/version/L0Learn)](https://cran.r-project.org/package=L0Learn) [![Codacy Badge](https://app.codacy.com/project/badge/Grade/7fd68c533fd1493288e7986df3cc6f6d)](https://www.codacy.com/gh/hazimehh/L0Learn/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=hazimehh/L0Learn&amp;utm_campaign=Badge_Grade) [![codecov](https://codecov.io/gh/hazimehh/L0Learn/branch/master/graph/badge.svg?token=QYDNA400OI)](https://codecov.io/gh/hazimehh/L0Learn)
+[![CRAN](https://www.r-pkg.org/badges/version/L0Learn)](https://cran.r-project.org/package=L0Learn) [![Codacy Badge](https://app.codacy.com/project/badge/Grade/7fd68c533fd1493288e7986df3cc6f6d)](https://www.codacy.com/gh/hazimehh/L0Learn/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=hazimehh/L0Learn&amp;utm_campaign=Badge_Grade) [![codecov](https://codecov.io/gh/hazimehh/L0Learn/branch/master/graph/badge.svg?token=QYDNA400OI)](https://codecov.io/gh/hazimehh/L0Learn)
 
 ### Hussein Hazimeh, Rahul Mazumder, and Tim Nonet
 ### Massachusetts Institute of Technology
@@ -37,16 +37,17 @@ For a tutorial, please refer to [L0Learn's Vignette](https://cran.r-project.org/
 Pure L0 regularization can overfit when the signal strength in the data is relatively low. Adding L2 regularization can alleviate this problem and lead to competitive models (see the experiments in our paper). Thus, in practice, **we strongly  recommend using the L0L2 penalty**. Ideally, the parameter gamma (for L2 regularization) should be tuned over a sufficiently large interval, and this can be performed using L0Learn's built-in [cross-validation method](https://cran.r-project.org/web/packages/L0Learn/vignettes/L0Learn-vignette.html#cross-validation).
 
 #### Which algorithm to use?
-By default, L0Learn uses a coordinate descent-based algorithm, which achieves competitive run times compared to popular sparse learning toolkits. This can work well for many applications. We also offer a local search algorithm which is guarantteed to return higher quality solutions, at the expense of an increase in the run time. We recommend using the local search algorithm if your problem has highly correlated features or the number of samples is much smaller than the number of features---see the [local search section of the Vignette](https://cran.r-project.org/web/packages/L0Learn/vignettes/L0Learn-vignette.html#higher-quality_solutions_using_local_search) for how to use this algorithm.
+By default, L0Learn uses a coordinate descent-based algorithm, which achieves competitive run times compared to popular sparse learning toolkits. This can work well for many applications. We also offer a local search algorithm which is guarantteed to return higher quality solutions, at the expense of an increase in the run time. We recommend using the local search algorithm if the problem has highly correlated features or the number of samples is much smaller than the number of features---see the [local search section of the Vignette](https://cran.r-project.org/web/packages/L0Learn/vignettes/L0Learn-vignette.html#higher-quality_solutions_using_local_search) for how to use this algorithm.
 
 #### How to certify optimality?
 While for many challenging statistical instances L0Learn leads to optimal solutions, it cannot provide certificates of optimality. Such certificates can be provided via Integer Programming. Our toolkit [L0BnB](https://github.com/alisaab/l0bnb) is a scalable integer programming framework for L0-regularized regression, which can provide such certificates and potentially improve upon the solutions of L0Learn (if they are sub-optimal). We recommend using L0Learn first to obtain a candidtate solution (or a pool of solutions) and then checking optimality using L0BnB.
 
 
 ## Citing L0Learn
-If you find L0Learn useful in your research, please consider citing the following two papers.
+If you find L0Learn useful in your research, please consider citing the following papers.
 
-**Paper 1:**
+
+**Paper 1 (Regression):**
 ```
 @article{doi:10.1287/opre.2019.1919,
 author = {Hazimeh, Hussein and Mazumder, Rahul},
@@ -62,7 +63,7 @@ eprint = {https://doi.org/10.1287/opre.2019.1919}
 }
 ```
 
-**Paper 2:**
+**Paper 2 (Classification):**
 ```
 @article{JMLR:v22:19-1049,
   author  = {Antoine Dedieu and Hussein Hazimeh and Rahul Mazumder},
@@ -73,5 +74,17 @@ eprint = {https://doi.org/10.1287/opre.2019.1919}
   number  = {135},
   pages   = {1-47},
   url     = {http://jmlr.org/papers/v22/19-1049.html}
+}
+```
+
+**Paper 3 (Toolkit):**
+```
+@article{hazimeh2022l0learn,
+      title={L0Learn: A Scalable Package for Sparse Learning using L0 Regularization}, 
+      author={Hussein Hazimeh and Rahul Mazumder and Tim Nonet},
+      year={2022},
+      eprint={2202.04820},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG}
 }
 ```
