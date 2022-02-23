@@ -4,6 +4,8 @@ r:
 sudo: false
 cache: packages
 warnings_are_errors: false
+os:
+  - osx
 after_failure:
   - cat /home/travis/build/hazimehh/L0Learn/L0Learn.Rcheck/00check.log
 after_success:
