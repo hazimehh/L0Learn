@@ -5,10 +5,10 @@ name: Python Docs
 # Controls when the workflow will run
 on:
   # Triggers the workflow on push or pull request events but only for the master branch
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+  workflow_run:
+    workflows: ["Python CI"]
+    types:
+      - completed
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -32,8 +32,8 @@ jobs:
       
       - name: Install Dependencies
         run: |
-          pip install nbsphinx sphinx-rtd-theme
-          sudo apt-get install pandoc          
+          sudo apt-get install pandoc
+          pip install nbsphinx sphinx-rtd-theme          
 
       - uses: ammaraskar/sphinx-action@master
         with:
