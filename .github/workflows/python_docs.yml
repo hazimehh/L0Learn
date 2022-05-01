@@ -33,7 +33,7 @@ jobs:
       - name: Install Pandoc
         run: |
           conda install pandoc
-          conda install -c conda-forge nbsphinx
+          pip install nbsphinx
      
       - uses: ammaraskar/sphinx-action@master
         with:
