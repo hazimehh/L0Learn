@@ -31,7 +31,9 @@ jobs:
           python-version: 3.8
           
       - name: Install Pandoc
-        run: conda install pandoc
+        run: |
+          conda install pandoc
+          conda install -c conda-forge nbsphinx
      
       - uses: ammaraskar/sphinx-action@master
         with:
