@@ -13,11 +13,13 @@
 FitModels
 ---------
 .. autoclass:: l0learn.models.FitModel
+   :members:
 
 
 CVFitModels
 -----------
 .. autoclass:: l0learn.models.CVFitModel
+   :members:
 
 
 Generating Functions

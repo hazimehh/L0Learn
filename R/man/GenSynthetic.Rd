@@ -31,9 +31,11 @@ A list containing:
  the intercept term b0.
 }
 \description{
-Generates a synthetic dataset as follows: 1) Sample every element in data matrix X from N(0,1).
-2) Generate a vector B with the first k entries set to 1 and the rest are zeros. 3) Sample every element in the noise
-vector e from N(0,1). 4) Set y = XB + b0 + e.
+Generates a synthetic dataset as follows: 
+1) Sample every element in data matrix X from N(0,1).
+2) Generate a vector B with the first k entries set to 1 and the rest are zeros. 
+3) Sample every element in the noise vector e from N(0,A) where A is selected so y, X, B have snr as specified. 
+4) Set y = XB + b0 + e.
 }
 \examples{
 data <- GenSynthetic(n=500,p=1000,k=10,seed=1)
