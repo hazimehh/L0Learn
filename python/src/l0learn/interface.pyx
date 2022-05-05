@@ -7,10 +7,10 @@ from warnings import warn
 
 from typing import Union, Optional, List, Dict, Any, Sequence
 
+import l0learn
 from l0learn.cyarma cimport dmat, sp_dmat, numpy_to_sp_dmat_d, numpy_to_dmat_d, dvec, numpy_to_dvec_d, \
     sp_dmat_field_to_list, dvec_field_to_list
 
-import l0learn.models
 from l0learn.models import FitModel, CVFitModel
 
 # def np_to_arma_check(arr):

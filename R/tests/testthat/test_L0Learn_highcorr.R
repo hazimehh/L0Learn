@@ -3,7 +3,6 @@ library("testthat")
 library("L0Learn")
 
 test_that("CDPSI recovers true support when the correlation is high.", {
-  skip_on_cran()
   n = 200
   p = 1000
   k = 25
@@ -33,7 +32,6 @@ test_that("CDPSI recovers true support when the correlation is high.", {
 })
 
 test_that("CDPSI Logistic recovers true support when the correlation is high.", {
-  skip_on_cran()
   n = 1000
   p = 500
   k = 10
@@ -68,7 +66,6 @@ test_that("CDPSI Logistic recovers true support when the correlation is high.", 
 })
 
 test_that("CDPSI SquaredHinge recovers true support when the correlation is high.", {
-  skip_on_cran()
   n = 1000
   p = 500
   k = 10

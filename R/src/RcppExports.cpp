@@ -6,6 +6,11 @@
 
 using namespace Rcpp;
 
+#ifdef RCPP_USE_GLOBAL_ROSTREAM
+Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
+Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
+#endif
+
 // cor_matrix
 Rcpp::NumericMatrix cor_matrix(const int p, const double base_cor);
 RcppExport SEXP _L0Learn_cor_matrix(SEXP pSEXP, SEXP base_corSEXP) {

@@ -2,7 +2,7 @@
 
 import os
 
-from setuptools import setup, Extension
+from setuptools import setup, Extension, find_packages
 import numpy as np
 
 
@@ -22,9 +22,7 @@ from Cython.Distutils import build_ext
 
 CYTHONIZE = bool(int(os.getenv("CYTHONIZE", 0))) and cythonize is not None
 CYTHONIZE = True
-print(f"CYTHONIZE = {CYTHONIZE}")
 COVERAGE_MODE = bool(os.getenv("L0LEARN_COVERAGE_MODE", 0)) and CYTHONIZE
-print(f"COVERAGE_MODE = {COVERAGE_MODE}")
 
 # https://cython.readthedocs.io/en/latest/src/userguide/source_files_and_compilation.html#distributing-cython-modules
 def no_cythonize(extensions, **_ignore):
@@ -52,7 +50,7 @@ else:
 
 extensions = [
     Extension(name='l0learn.cyarma',
-              sources=["l0learn/cyarma.pyx"],
+              sources=["src/l0learn/cyarma.pyx"],
               include_dirs=['.', np.get_include()],
               language="c++",
               libraries=["armadillo", "lapack", "blas"],
@@ -61,7 +59,7 @@ extensions = [
               define_macros=macros,
               ),
     Extension(name='l0learn.testing_utils',
-              sources=["l0learn/testing_utils.pyx"],
+              sources=["src/l0learn/testing_utils.pyx"],
               include_dirs=['.', np.get_include()],
               language="c++",
               libraries=["armadillo", "lapack", "blas"],
@@ -70,16 +68,16 @@ extensions = [
               define_macros=macros,
               ),
     Extension(name="l0learn.interface",
-              sources=["l0learn/interface.pyx",
-                       "l0learn/src/CDL012LogisticSwaps.cpp",
-                       "l0learn/src/Grid2D.cpp",
-                       "l0learn/src/CDL012SquaredHingeSwaps.cpp",
-                       "l0learn/src/Normalize.cpp",
-                       "l0learn/src/CDL012Swaps.cpp",
-                       "l0learn/src/Grid.cpp",
-                       "l0learn/src/Grid1D.cpp"
+              sources=["src/l0learn/interface.pyx",
+                       "src/l0learn/src/CDL012LogisticSwaps.cpp",
+                       "src/l0learn/src/Grid2D.cpp",
+                       "src/l0learn/src/CDL012SquaredHingeSwaps.cpp",
+                       "src/l0learn/src/Normalize.cpp",
+                       "src/l0learn/src/CDL012Swaps.cpp",
+                       "src/l0learn/src/Grid.cpp",
+                       "src/l0learn/src/Grid1D.cpp"
                        ],
-              include_dirs=['.', np.get_include(), "l0learn/src/include"],
+              include_dirs=['.', np.get_include(), "src/l0learn/src/include"],
               language="c++",
               libraries=["armadillo", "lapack", "blas"],
               extra_compile_args=["-std=c++11"],
@@ -122,6 +120,9 @@ setup(
         "Operating System :: OS Independent",
     ],
     cmdclass={'build_ext': build_ext},
+    packages=find_packages("src"),
+    package_dir={"": "src"},
+    include_package_data=True,
     ext_modules=extensions,
     install_requires=[
         "numpy>=1.19.0",

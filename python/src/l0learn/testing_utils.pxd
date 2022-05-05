@@ -2,7 +2,7 @@
 
 cimport numpy as np
 
-from l0learn.cyarma cimport dmat, dvec, sp_dmat, uvec
+from l0learn.cyarma cimport dmat
 
 cdef list c_list_csc_to_arma_csc_to_list(list x)
 

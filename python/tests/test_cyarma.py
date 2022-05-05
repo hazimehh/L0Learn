@@ -5,12 +5,12 @@ from hypothesis.extra import numpy as npst
 from hypothesis.strategies import floats, integers, lists
 
 from l0learn.testing_utils import (list_dvec_to_arma_dvec_to_list,
-                                   list_csc_to_arma_csc_to_list,
-                                   dmat_np_to_arma_to_np,
-                                   dvec_np_to_arma_to_np,
-                                   uvec_np_to_arma_to_np,
-                                   sp_dmat_np_to_arma_to_np,
-                                   dmat_dot_dmat)
+                         list_csc_to_arma_csc_to_list,
+                         dmat_np_to_arma_to_np,
+                         dvec_np_to_arma_to_np,
+                         uvec_np_to_arma_to_np,
+                         sp_dmat_np_to_arma_to_np,
+                         dmat_dot_dmat)
 
 
 @given(npst.arrays(np.float64, shape=npst.array_shapes(min_dims=2, max_dims=2, max_side=100)))

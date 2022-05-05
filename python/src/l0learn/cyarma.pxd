@@ -1,5 +1,4 @@
 # distutils: language = c++
-from dataclasses import dataclass
 
 from libcpp cimport bool
 cimport numpy as np
