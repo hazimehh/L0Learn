@@ -35,6 +35,7 @@ jobs:
             conda config --add channels conda-forge
             conda config --set channel_priority strict
             conda install armadillo
+            conda env config vars set CPATH=${CONDA_PREFIX}/include:${CPATH}
 
       - name: Build wheels
         run: |
