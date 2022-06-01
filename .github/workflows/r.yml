@@ -3,8 +3,16 @@ name: R CI
 on:
   push:
     branches: [ master ]
+    paths:
+      - "R/**"
+      - '.github/workflows/r.yml'
+
   pull_request:
     branches: [ master ]
+    paths:
+      - "R/**"
+      - '.github/workflows/r.yml'
+
     
   workflow_dispatch:
 
