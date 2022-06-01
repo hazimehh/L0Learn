@@ -16,11 +16,16 @@ def test_X_sparse_support(f):
     assert max(model_fit.support_size[0]) == N
 
 
-@pytest.mark.parametrize("x", [np.random.random(size=(N, N, N)),  # Wrong Size
-                               "A String",  # Wrong Type
-                               np.random.random(size=(N, N)).astype(complex),  # Wrong dtype
-                               np.random.random(size=(N, N)).astype(int),  # Wrong dtype
-                               np.random.random(size=(0, N))])  # degenerate 2D array
+@pytest.mark.parametrize(
+    "x",
+    [
+        np.random.random(size=(N, N, N)),  # Wrong Size
+        "A String",  # Wrong Type
+        np.random.random(size=(N, N)).astype(complex),  # Wrong dtype
+        np.random.random(size=(N, N)).astype(int),  # Wrong dtype
+        np.random.random(size=(0, N)),
+    ],
+)  # degenerate 2D array
 @pytest.mark.parametrize("f", [l0learn.fit, l0learn.cvfit])
 def test_X_dense_bad_checks(f, x):
     # Check size of matrix X
@@ -28,10 +33,16 @@ def test_X_dense_bad_checks(f, x):
     with pytest.raises(ValueError):
         f(x, y)
 
-@pytest.mark.parametrize("y", [np.random.random(size=(N, N, N)),  # wrong dimensions
-                               "A String",  # wrong type
-                               np.random.random(size=(N,)).astype(complex),  # wrong dtype
-                               np.random.random(size=(N+1))])  # wrong size
+
+@pytest.mark.parametrize(
+    "y",
+    [
+        np.random.random(size=(N, N, N)),  # wrong dimensions
+        "A String",  # wrong type
+        np.random.random(size=(N,)).astype(complex),  # wrong dtype
+        np.random.random(size=(N + 1)),
+    ],
+)  # wrong size
 @pytest.mark.parametrize("f", [l0learn.fit, l0learn.cvfit])
 def test_y_bad_checks(f, y):
     # Check size of matrix X
@@ -105,7 +116,7 @@ def test_max_support_size_bad_checks(f, max_support_size):
         _ = f(x, y, max_support_size=max_support_size)
 
 
-@pytest.mark.parametrize("max_support_size", [N, N-1, N+1])
+@pytest.mark.parametrize("max_support_size", [N, N - 1, N + 1])
 @pytest.mark.parametrize("f", [l0learn.fit, l0learn.cvfit])
 def test_max_support_size_good_checks(f, max_support_size):
     # Check size of matrix X
@@ -131,7 +142,7 @@ def test_gamma_min_bad_checks(f):
     y = np.random.random(size=(N,))
 
     with pytest.raises(ValueError):
-        _ = f(x, y, gamma_min=1, gamma_max=.5)
+        _ = f(x, y, gamma_min=1, gamma_max=0.5)
 
     with pytest.raises(ValueError):
         _ = f(x, y, gamma_min=-1)
@@ -144,7 +155,7 @@ def test_paritial_sort_bad_checks(f):
     y = np.random.random(size=(N,))
 
     with pytest.raises(ValueError):
-        _ = f(x, y, partial_sort='NOT A BOOL')
+        _ = f(x, y, partial_sort="NOT A BOOL")
 
 
 @pytest.mark.parametrize("max_iter", [1.0, 0])
@@ -186,7 +197,7 @@ def test_active_set_sort_bad_checks(f):
     y = np.random.random(size=(N,))
 
     with pytest.raises(ValueError):
-        _ = f(x, y, active_set='NOT A BOOL')
+        _ = f(x, y, active_set="NOT A BOOL")
 
 
 @pytest.mark.parametrize("active_set_num", [1.3, 0])
@@ -233,7 +244,7 @@ def test_screen_size_bad_checks(f, screen_size):
         _ = f(x, y, screen_size=screen_size)
 
 
-@pytest.mark.parametrize("exclude_first_k", [-1, 2.0, N+1])
+@pytest.mark.parametrize("exclude_first_k", [-1, 2.0, N + 1])
 @pytest.mark.parametrize("f", [l0learn.fit, l0learn.cvfit])
 def test_exclude_first_k_bad_checks(f, exclude_first_k):
     # Check size of matrix X
@@ -251,7 +262,7 @@ def test_intercept_bad_checks(f):
     y = np.random.random(size=(N,))
 
     with pytest.raises(ValueError):
-        _ = f(x, y, intercept='NOT A BOOL')
+        _ = f(x, y, intercept="NOT A BOOL")
 
 
 @pytest.mark.parametrize("loss", l0learn.interface.CLASSIFICATION_LOSS)
@@ -276,9 +287,25 @@ def test_classification_loss_bad_lambda_grid_L0_checks(f, loss):
     lambda_grid = [[10], [10]]
 
     with pytest.raises(ValueError):
-        _ = f(x, y, loss=loss, penalty="L0", lambda_grid=lambda_grid, num_gamma=None, num_lambda=None)
+        _ = f(
+            x,
+            y,
+            loss=loss,
+            penalty="L0",
+            lambda_grid=lambda_grid,
+            num_gamma=None,
+            num_lambda=None,
+        )
 
-    _ = f(x, y, loss=loss, penalty="L0", lambda_grid=[[10]], num_gamma=None, num_lambda=None)
+    _ = f(
+        x,
+        y,
+        loss=loss,
+        penalty="L0",
+        lambda_grid=[[10]],
+        num_gamma=None,
+        num_lambda=None,
+    )
 
 
 @pytest.mark.parametrize("f", [l0learn.fit, l0learn.cvfit])
@@ -289,10 +316,11 @@ def test_bad_lambda_grid_L0_checks(f):
     lambda_grid = [[10], [10]]
 
     with pytest.raises(ValueError):
-        _ = f(x, y, penalty="L0", lambda_grid=lambda_grid, num_gamma=None, num_lambda=None)
+        _ = f(
+            x, y, penalty="L0", lambda_grid=lambda_grid, num_gamma=None, num_lambda=None
+        )
 
     _ = f(x, y, penalty="L0", lambda_grid=[[10]], num_gamma=None, num_lambda=None)
-
 
 
 @pytest.mark.parametrize("penalty", ["L0L1", "L0L2"])
@@ -342,16 +370,37 @@ def test_lambda_grid_bad_over_defined_checks(f, penalty):
     y = np.random.random(size=N)
 
     with pytest.raises(ValueError):
-        _ = f(x, y, penalty=penalty, lambda_grid=[[10], [10]], num_lambda=1, num_gamma=None)
+        _ = f(
+            x,
+            y,
+            penalty=penalty,
+            lambda_grid=[[10], [10]],
+            num_lambda=1,
+            num_gamma=None,
+        )
 
     with pytest.raises(ValueError):
-        _ = f(x, y, penalty=penalty, lambda_grid=[[10], [10]], num_lambda=None, num_gamma=2)
+        _ = f(
+            x,
+            y,
+            penalty=penalty,
+            lambda_grid=[[10], [10]],
+            num_lambda=None,
+            num_gamma=2,
+        )
 
-    _ = f(x, y, penalty=penalty, lambda_grid=[[10], [10]], num_lambda=None, num_gamma=None)
+    _ = f(
+        x, y, penalty=penalty, lambda_grid=[[10], [10]], num_lambda=None, num_gamma=None
+    )
 
 
-@pytest.mark.parametrize("penalty_lambda_grid", [("L0L1", [[-1]]),
-                                                 ("L0", [[10, 11]]),])
+@pytest.mark.parametrize(
+    "penalty_lambda_grid",
+    [
+        ("L0L1", [[-1]]),
+        ("L0", [[10, 11]]),
+    ],
+)
 @pytest.mark.parametrize("f", [l0learn.fit, l0learn.cvfit])
 def test_lambda_grid_bad_checks(f, penalty_lambda_grid):
     penalty, lambda_grid = penalty_lambda_grid
@@ -359,21 +408,33 @@ def test_lambda_grid_bad_checks(f, penalty_lambda_grid):
     y = np.random.random(size=N)
 
     with pytest.raises(ValueError):
-        _ = f(x, y, penalty=penalty, lambda_grid=lambda_grid, num_gamma=None, num_lambda=None)
+        _ = f(
+            x,
+            y,
+            penalty=penalty,
+            lambda_grid=lambda_grid,
+            num_gamma=None,
+            num_lambda=None,
+        )
 
 
-@pytest.mark.parametrize("bounds", [("NOT A FLOAT", 1.0),
-                                    (1.0, "NOT A FLOAT"),
-                                    (1.0, 1.0),
-                                    (-np.ones((N, 2)), 1.0),
-                                    (-np.ones(N+1), 1.0),
-                                    (np.ones(N), 1.0),
-                                    (-1.0, -1.0),
-                                    (-1.0, np.ones((N,2))),
-                                    (-1.0, np.ones(N+1)),
-                                    (-1.0, -1.0*np.ones(N)),
-                                    (0.0, 0.0),
-                                    (np.zeros(N), np.zeros(N))])
+@pytest.mark.parametrize(
+    "bounds",
+    [
+        ("NOT A FLOAT", 1.0),
+        (1.0, "NOT A FLOAT"),
+        (1.0, 1.0),
+        (-np.ones((N, 2)), 1.0),
+        (-np.ones(N + 1), 1.0),
+        (np.ones(N), 1.0),
+        (-1.0, -1.0),
+        (-1.0, np.ones((N, 2))),
+        (-1.0, np.ones(N + 1)),
+        (-1.0, -1.0 * np.ones(N)),
+        (0.0, 0.0),
+        (np.zeros(N), np.zeros(N)),
+    ],
+)
 @pytest.mark.parametrize("f", [l0learn.fit, l0learn.cvfit])
 def test_with_bounds_bad_checks(f, bounds):
     lows, highs = bounds
@@ -385,7 +446,7 @@ def test_with_bounds_bad_checks(f, bounds):
         _ = f(x, y, lows=lows, highs=highs)
 
 
-@pytest.mark.parametrize("num_folds", [-1, 0, 1, N+1, 2.0])
+@pytest.mark.parametrize("num_folds", [-1, 0, 1, N + 1, 2.0])
 def test_cvfit_num_folds_bad_check(num_folds):
     x = np.random.random(size=(N, N))
     y = np.random.random(size=N)

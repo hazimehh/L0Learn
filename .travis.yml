@@ -32,5 +32,3 @@ jobs:
       - pytest --cov=happenings
     after_success:
       - coveralls
-    
-    

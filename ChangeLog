@@ -3,6 +3,10 @@ All changes to L0Learn will be documented here, starting from v1.1.0 onwards.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [2.0.5] - 2022-02-13
+### Fixed
+- More accurate objective computation in CDPSI for logistic regression. Thanks to Jiachang Liu for the fix.
+
 ## [2.0.4] - 2021-05-30
 ### Added
 - More detailed description of sparse matrix support in the Vignette.

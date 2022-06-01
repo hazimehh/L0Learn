@@ -1,0 +1,50 @@
+fail_fast: false
+repos:
+  - repo: https://github.com/psf/black
+    rev: 22.1.0
+    hooks:
+    - id: black
+      args: ['python/', '--extend-exclude', 'external/']
+  - repo: local
+    hooks:
+  #   - id: dirs_check
+  #     name: dirs_check
+  #     pass_filenames: false
+  #     entry: python scripts/dirs_check.py r/src/src python/src/l0learn/src --ignore arma_includes.h .DS_Store
+  #     language: python
+    - id: lintr
+      name: run_lintr
+      language: r
+      additional_dependencies: ['lintr']
+      entry: Rscript -e "Sys.setenv(NOT_CRAN = 'true'); lintr::expect_lint_free(path='R/R/', linters = lintr::with_defaults(object_length_linter = NULL, object_name_linter=NULL, object_usage_linter=NULL, cyclocomp_linter=NULL), exclusions = c('R/R/RcppExports.R', list.files('R/tests', recursive=TRUE, full.names=TRUE)))"
+    - id: styler
+      name: run_styler
+      additional_dependencies: ['styler']
+      entry: Rscript -e "styler::style_pkg('R/R/', dry='off')"
+      language: r
+  - repo: https://github.com/pycqa/flake8
+    rev: 4.0.1
+    hooks:
+    - id: flake8
+      args:
+        - '--max-line-length=121'
+        - '--ignore=C901,W503'
+        - '--exclude=pypkg/tests/*.py R/vignettes/profile/*.py'
+        - 'python/src/l0learn/'
+        - 'python/setup.py'
+  - repo: https://github.com/pocc/pre-commit-hooks
+    rev: master
+    hooks:
+    - id: clang-format
+      # Ruh directly with   find . -name \*.h -not -path  "./pypkg/external/*" -print -o -name \*.cpp -not -path  "./pypkg/external/*" -print -exec clang-format -style=file -i {} \;
+      args: ['--style=Google', "-i"]
+      exclude: '^R/src/RcppExports.cpp'
+#    - id: clang-tidy
+#    - id: oclint
+#    - id: uncrustify
+#    - id: cppcheck
+#    - id: cpplint
+#    - id: include-what-you-use
+
+
+

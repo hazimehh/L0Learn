@@ -1,3 +1,4 @@
+# nolint start
 #' @docType package
 #' @name L0Learn-package
 #' @title A package for L0-regularized learning
@@ -24,3 +25,4 @@
 #' @references Hazimeh and Mazumder. Fast Best Subset Selection: Coordinate Descent and Local Combinatorial
 #' Optimization Algorithms. Operations Research (2020). \url{https://pubsonline.informs.org/doi/10.1287/opre.2019.1919}.
 NULL
+# nolint end

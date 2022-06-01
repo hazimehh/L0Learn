@@ -1,0 +1,9 @@
+[submodule "python/external/carma"]
+	path = python/external/carma
+	url = https://github.com/TNonet/carma.git
+[submodule "python/external/pybind11"]
+	path = python/external/pybind11
+	url = https://github.com/pybind/pybind11.git
+[submodule "python/external/armadillo-code"]
+	path = python/external/armadillo-code
+	url = https://gitlab.com/conradsnicta/armadillo-code.git
