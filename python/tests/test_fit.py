@@ -6,7 +6,6 @@ import l0learn
 
 N = 50
 
-
 @pytest.mark.parametrize("f", [l0learn.fit, l0learn.cvfit])
 def test_X_sparse_support(f):
     x = np.random.random(size=(N, N))
@@ -23,9 +22,9 @@ def test_X_sparse_support(f):
         "A String",  # Wrong Type
         np.random.random(size=(N, N)).astype(complex),  # Wrong dtype
         np.random.random(size=(N, N)).astype(int),  # Wrong dtype
-        np.random.random(size=(0, N)),
+        np.random.random(size=(0, N)), # degenerate 2D array
     ],
-)  # degenerate 2D array
+)
 @pytest.mark.parametrize("f", [l0learn.fit, l0learn.cvfit])
 def test_X_dense_bad_checks(f, x):
     # Check size of matrix X

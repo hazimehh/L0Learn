@@ -45,7 +45,7 @@ jobs:
           path: python/l0learn-wheelhouse/
 
   upload-to-pypip:
-    # if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
+  if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
     name: Publish a Python distribution to PyPI
     runs-on: ubuntu-latest
     needs: build_wheels
@@ -65,10 +65,10 @@ jobs:
           name: l0learn-wheelhouse
           path: python/l0learn-wheelhouse/
 
-      # - name: upload-artifact
-      #   uses: pypa/gh-action-pypi-publish@release/v1
-      #   with:
-      #     user: __token__
-      #     password: ${{ secrets.PYPI_TEST_API_TOKEN }}
-      #     packages_dir: python/l0learn-wheelhouse/
-      #     repository_url: https://test.pypi.org/legacy/
+      - name: upload-artifact
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          user: __token__
+          password: ${{ secrets.PYPI_API_TOKEN }}
+          packages_dir: python/l0learn-wheelhouse/
+

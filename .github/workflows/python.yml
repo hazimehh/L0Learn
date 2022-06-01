@@ -19,43 +19,82 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        python-version: [3.7, 3.8, 3.9]
-        os: [macos-latest, ubuntu-latest] #, ubuntu-latest]
+        python-version: [3.7, 3.8, 3.9, 3.10]
+        os: [macos-latest, ubuntu-latest] # windows-2019, ]
         include:
           - os: macos-latest
             INSTALL_DEPS: brew install armadillo
           - os: ubuntu-latest
             INSTALL_DEPS: |
-              sudo apt-get install liblapack-dev
-              sudo apt-get install libblas-dev
-              sudo apt-get install libboost-dev
-              sudo apt-get install libarmadillo-dev
+              sudo apt-get install -y liblapack-dev
+              bash scripts/install_linux_libs.sh
     defaults:
       run:
         working-directory: ./python
 
     steps:
-      - uses: actions/checkout@v2
-      - name: install-dependencies
-        run: ${{ matrix.INSTALL_DEPS }}
+      - name: Checkout l0learn
+        uses: actions/checkout@v2
+        with:
+          submodules: true
+
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Install dependencies
-        env:
-          L0LEARN_COVERAGE_MODE: 1
+
+      - name: install-dependencies
+        run: ${{ matrix.INSTALL_DEPS }}
+
+      - name: Install L0Learn
         run: |
-          python -m pip install --upgrade pip
-          pip install wheel
-          pip install Cython  # this should not be needed, but somehow is... pyproject.toml should have this in [build.system]
           pip install pytest-cov
           pip install coveralls
-          pip install -e ".[test]"
-          python setup.py build_ext --force --inplace  # force to recompile with COVERAGE_MODE
+          pip install .
+      
       - name: Run Tests and Coverage
         run: python -m pytest --cov=l0learn
+      
       - name: Coveralls
         run: coveralls --service=github
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  coverage:
+    needs: build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./python
+
+    steps:
+      - name: Checkout l0learn
+        uses: actions/checkout@v2
+        with:
+          submodules: true
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+
+      - name: install-dependencies
+        run: |
+          sudo apt-get install -y liblapack-dev
+          bash scripts/install_linux_libs.sh
+
+      - name: Install L0Learn
+        run: |
+          pip install .
+      
+      - name: Run Tests and Coverage
+        run: |
+          pip install pytest-cov
+          pip install coveralls
+          python -m pytest --cov=l0learn
+      
+      - name: Coveralls
+        run: coveralls --service=github
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
