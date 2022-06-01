@@ -48,7 +48,7 @@ jobs:
         run: |
           pip install pytest-cov
           pip install coveralls
-          pip install .
+          pip install ".[test]""
       
       - name: Run Tests and Coverage
         run: python -m pytest --cov=l0learn
