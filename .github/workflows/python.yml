@@ -19,11 +19,9 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        python-version: [3.7, 3.8, 3.9, 3.10]
-        os: [macos-latest, ubuntu-latest] # windows-2019, ]
+        python-version: [3.7, 3.8, 3.9, '3.10']
         include:
           - os: macos-latest
-            INSTALL_DEPS: brew install armadillo
           - os: ubuntu-latest
             INSTALL_DEPS: |
               sudo apt-get install -y liblapack-dev
@@ -76,7 +74,7 @@ jobs:
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with:
-          python-version: 3.9
+          python-version: 3.7
 
       - name: install-dependencies
         run: |
