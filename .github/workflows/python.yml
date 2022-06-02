@@ -86,7 +86,7 @@ jobs:
       - name: Run Tests and Coverage
         run: |
           pip install pytest-cov coveralls hypothesis
-          python -m pytest --cov=l0learn
+          pytest tests/ --cov=l0learn
       
       - name: Coveralls
         run: coveralls --service=github
