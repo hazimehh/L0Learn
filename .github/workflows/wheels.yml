@@ -65,10 +65,10 @@ jobs:
           name: l0learn-wheelhouse
           path: python/l0learn-wheelhouse/
 
-      # - name: upload-artifact
-      #   uses: pypa/gh-action-pypi-publish@release/v1
-      #   with:
-      #     user: __token__
-      #     password: ${{ secrets.PYPI_API_TOKEN }}
-      #     packages_dir: python/l0learn-wheelhouse/
+      - name: upload-artifact
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          user: __token__
+          password: ${{ secrets.PYPI_API_TOKEN }}
+          packages_dir: python/l0learn-wheelhouse/
 
