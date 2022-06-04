@@ -1,0 +1,61 @@
+name: R CI
+
+on:
+  push:
+    branches: [ master ]
+    paths:
+      - "R/**"
+      - '.github/workflows/r.yml'
+
+  pull_request:
+    branches: [ master ]
+    paths:
+      - "R/**"
+      - '.github/workflows/r.yml'
+
+    
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        r-version: ['3.6.3', '4.1.1', 'release']
+        
+    defaults:
+      run:
+        working-directory: R
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up R ${{ matrix.r-version }}
+        uses: r-lib/actions/setup-r@v1
+        with:
+          r-version: ${{ matrix.r-version }}
+          use-public-rspm: true
+      - uses: r-lib/actions/setup-pandoc@v1
+        with:
+          pandoc-version: '2.7.3' 
+      - name: Install dependencies
+        run: |
+          install.packages(c("remotes", "rcmdcheck", "devtools"))
+          remotes::install_deps(dependencies = TRUE)
+        shell: Rscript {0}
+      - name: Check
+        run: rcmdcheck::rcmdcheck("R", args = "--no-manual", error_on = "error", check_dir = "check")
+        shell: Rscript {0}
+      - uses: TNonet/actions/setup-r-dependencies@master
+        with:
+          cache-version: 1
+          extra-packages: |
+            covr
+            xml2
+          working-directory: R
+
+      - name: Test coverage
+        run: |
+          covr::package_coverage(
+            type = "none",
+            code = "testthat::test_package('L0Learn', reporter = testthat::JunitReporter$new(file = 'test-results.xml'))")
+        shell: Rscript {0}

@@ -1,0 +1,62 @@
+branches:
+  only:
+    - use-carma
+
+skip_non_tags: true
+
+environment:
+  matrix:
+    - job_name: "python37-x64-macos-mojave-cp37"
+      APPVEYOR_BUILD_WORKER_IMAGE: macos-mojave
+      CIBW_BUILD: "cp37-*"
+    - job_name: "python37-x64-macos-mojave-cp38"
+      APPVEYOR_BUILD_WORKER_IMAGE: macos-mojave
+      CIBW_BUILD: "cp38-*"
+    - job_name: "python37-x64-macos-mojave-cp39"
+      APPVEYOR_BUILD_WORKER_IMAGE: macos-mojave
+      CIBW_BUILD: "cp39-*"
+    - job_name: "python37-x64-macos-cp310"
+      APPVEYOR_BUILD_WORKER_IMAGE: macos
+      CIBW_BUILD: "cp310-*"
+    - job_name: "python37-x64-vs2015-cp37"
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+      CIBW_BUILD: "cp37-*"
+    - job_name: "python37-x64-vs2015-cp38"
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+      CIBW_BUILD: "cp38-*"
+    - job_name: "python37-x64-vs2015-cp39"
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+      CIBW_BUILD: "cp39-*"
+    - job_name: "python37-x64-vs2015-cp310"
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+      CIBW_BUILD: "cp310-*"
+    - job_name: "python37-x64-ubuntu-cp37"
+      APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
+      CIBW_BUILD: "cp37-*"
+    - job_name: "python37-x64-ubuntu-cp38"
+      APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
+      CIBW_BUILD: "cp38-*"
+    - job_name: "python37-x64-ubuntu-cp39"
+      APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
+      CIBW_BUILD: "cp39-*"
+    - job_name: "python37-x64-ubuntu-cp310"
+      APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu
+      CIBW_BUILD: "cp310-*"
+
+  CIBW_BEFORE_ALL: "pip install numpy"
+  CIBW_BEFORE_ALL_LINUX: "yum resolvedep python3-devel \ yum install python3-devel"
+  CIBW_BEFORE_TEST: "pip install pytest numpy hypothesis"
+  CIBW_TEST_COMMAND: "pytest {package}/tests"
+
+stack: python 3.7
+
+init:
+  - cmd: set PATH=C:\Python37;C:\Python37\Scripts;%PATH%
+
+install:
+  - git submodule update --init --recursive
+  - python -m pip install cibuildwheel==2.5.0
+
+build_script: | 
+  cd python
+  python -m cibuildwheel --output-dir wheelhouse

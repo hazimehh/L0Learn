@@ -1,0 +1,24 @@
+[build-system]
+requires = [
+    "setuptools>=42",
+    "wheel",
+    "numpy>=1.19.0",
+    "ninja; platform_system!='Windows'",
+    "scikit-build>=0.14.1",
+    "cmake>=3.18",
+    "pybind11>=2.8.1",
+]
+
+build-backend = "setuptools.build_meta"
+
+
+[tool.cibuildwheel]
+# Normal options, etc.
+manylinux-x86_64-image = "manylinux2014"
+manylinux-i686-image = "manylinux2014"
+manylinux-aarch64-image = "manylinux2014"
+manylinux-ppc64le-image = "manylinux2014"
+manylinux-s390x-image = "manylinux2014"
+manylinux-pypy_x86_64-image = "manylinux2014"
+manylinux-pypy_i686-image = "manylinux2014"
+manylinux-pypy_aarch64-image = "manylinux2014"

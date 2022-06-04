@@ -1,0 +1,16 @@
+CXX_STD = CXX11
+PKG_CXXFLAGS = -Iinclude -Isrc/include @OPENMP_FLAG@ 
+PKG_LIBS= @OPENMP_FLAG@ $(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS)
+
+SOURCES = RcppExports.cpp \
+		  R_L0Learn_Interface.cpp \
+		  Test_Interface.cpp \
+		  src/CDL012LogisticSwaps.cpp \
+		  src/CDL012SquaredHingeSwaps.cpp \
+		  src/CDL012Swaps.cpp \
+		  src/Grid.cpp \
+		  src/Grid1D.cpp \
+		  src/Grid2D.cpp \
+		  src/Normalize.cpp
+		  
+OBJECTS = $(SOURCES:.cpp=.o)
