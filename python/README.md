@@ -17,14 +17,16 @@ The toolkit is implemented in C++11 and can often run faster than popular sparse
 **NEW: Version 2 (03/2021) adds support for sparse matrices and box constraints on the coefficients.**
 
 ## Package Installation
-`l0learn` depends on a system version of Amardillo which can be installed by following in the instructions on [Armadillo's download page](http://arma.sourceforge.net/download.html)
+`l0learn` comes pre-packaged with a version of [Amardillo](http://arma.sourceforge.net/download.html)
+`l0learn` Currently is only supported on Linux and MacOS. Windows support is an active area of development.
 
 The latest version (v2.0.3) can be installed from pip as follows:
 ```bash
 pip install l0learn
 ```
 
-conda-forge installation methods will be released soon.
+## Documentation
+Documentation can be found [here](https://tnonet.github.io/L0Learn/tutorial.html)
 
 # Source Code and Installing from Source
 Alternatively, `l0learn` can be build from source

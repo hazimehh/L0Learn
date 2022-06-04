@@ -30,7 +30,7 @@ install_github("hazimehh/L0Learn")
 L0Learn's changelog can be accessed from [here](https://github.com/hazimehh/L0Learn/blob/master/ChangeLog).
 
 ## Python Package Installation
-The latest version #### can be installed from PIP as follows:
+The latest version (v0.1.0) can be installed from PIP as follows:
 ```{python}
 pip install l0learn
 ```
