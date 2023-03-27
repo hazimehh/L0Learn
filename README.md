@@ -18,7 +18,7 @@ The toolkit is implemented in C++11 and can often run faster than popular sparse
 **NEW: Version 2 (03/2021) adds support for sparse matrices and box constraints on the coefficients.**
 
 ## R Package Installation
-The latest version (v2.0.3) can be installed from CRAN as follows:
+The latest version (v2.1.0) can be installed from CRAN as follows:
 ```{R}
 install.packages("L0Learn", repos = "http://cran.rstudio.com")
 ```
