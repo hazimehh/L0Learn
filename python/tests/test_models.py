@@ -232,7 +232,7 @@ def test_characteristics(sample_FitModel):
 
 @given(
     coeffs=npst.arrays(
-        dtype=np.float,
+        dtype=np.float64,
         elements=floats(
             allow_nan=False, allow_infinity=False, max_value=1e100, min_value=-1e100
         ),
@@ -318,7 +318,7 @@ def test_squared_error_testing(y_y_hat_error):
 )
 @given(
     coeffs=npst.arrays(
-        dtype=np.float,
+        dtype=np.float64,
         elements=floats(
             allow_nan=False, allow_infinity=False, max_value=100, min_value=-100
         ),
@@ -374,7 +374,7 @@ def test_logistic_loss(y_y_hat_error):
 )
 @given(
     coeffs=npst.arrays(
-        dtype=np.float,
+        dtype=np.float64,
         elements=floats(
             allow_nan=False, allow_infinity=False, max_value=100, min_value=-100
         ),
@@ -432,7 +432,7 @@ def test_squared_hinge_loss(y_y_hat_error):
 )
 @given(
     coeffs=npst.arrays(
-        dtype=np.float,
+        dtype=np.float64,
         elements=floats(
             allow_nan=False, allow_infinity=False, max_value=100, min_value=-100
         ),
