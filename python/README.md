@@ -1,6 +1,6 @@
 # l0learn: Fast Best Subset Selection 
 
-![example workflow](https://github.com/TNonet/L0Learn/actions/workflows/python.yml/badge.svg) [![Coverage Status](https://coveralls.io/repos/github/TNonet/L0Learn/badge.svg)](https://coveralls.io/github/TNonet/L0Learn)
+![example workflow](https://github.com/TNonet/L0Learn/actions/workflows/python.yml/badge.svg)
 
 ### Hussein Hazimeh, Rahul Mazumder, and Tim Nonet
 ### Massachusetts Institute of Technology
