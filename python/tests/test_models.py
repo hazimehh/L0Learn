@@ -69,8 +69,8 @@ def test_CVFitModel_plot(sample_CVFitModel):
 
 
 def test_FitModel_plot(sample_FitModel):
-    sample_FitModel.plot(gamma=1)
-    sample_FitModel.plot(gamma=1, show_lines=True)
+    sample_FitModel.plot(gamma=1, include_legend=False)
+    sample_FitModel.plot(gamma=1, show_lines=True, include_legend=False)
 
 
 def test_FitModel_coeff(sample_FitModel):
