@@ -324,17 +324,17 @@ def test_bad_lambda_grid_L0_checks(f):
 
 @pytest.mark.parametrize("penalty", ["L0L1", "L0L2"])
 @pytest.mark.parametrize("f", [l0learn.fit, l0learn.cvfit])
-def test_regression_loss_bad_num_gamma_L0_checks(f, penalty):
+def test_classification_loss_bad_num_gamma_L0_checks(f, penalty):
     x = np.random.random(size=(N, N))
-    y = np.random.random(size=N)
+    y = np.random.randint(2, size=N)
 
     with pytest.warns(None) as wrn:
-        _ = f(x, y, loss="SquaredError", penalty=penalty, num_gamma=1, num_lambda=10)
+        _ = f(x, y, loss="SquaredHinge", penalty=penalty, num_gamma=1, num_lambda=10)
 
     assert len(wrn) == 1
 
     with pytest.warns(None) as wrn:
-        _ = f(x, y, loss="SquaredError", penalty=penalty, num_gamma=2, num_lambda=10)
+        _ = f(x, y, loss="SquaredHinge", penalty=penalty, num_gamma=2, num_lambda=10)
 
     assert len(wrn) == 0
 
@@ -452,3 +452,22 @@ def test_cvfit_num_folds_bad_check(num_folds):
 
     with pytest.raises(ValueError):
         _ = l0learn.cvfit(x, y, num_folds=num_folds)
+
+
+def test_L0_classification_is_actually_L0L2():
+    x = np.random.random(size=(N, N))
+    y = np.random.randint(0, 2, size=N)
+
+    result = l0learn.fit(x, y, loss="Logistic")
+
+    assert len(result.gamma) == 1
+    assert result.gamma[0] == 1e-7
+
+
+def test_L0L2_classification_is_actually_L0L2():
+    x = np.random.random(size=(N, N))
+    y = np.random.randint(0, 2, size=N)
+
+    result = l0learn.fit(x, y, loss="Logistic", penalty="L0L2")
+
+    assert len(result.gamma) >= 1

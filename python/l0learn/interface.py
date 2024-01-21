@@ -50,7 +50,7 @@ def _fit_check(
             )
         if X.ndim != 2:
             raise ValueError(f"expected X to be 2D, but got {X.ndim}D")
-        if not np.product(X.shape):
+        if not np.prod(X.shape):
             raise ValueError(
                 f"expected X to have non-degenerate axis, but got {X.shape}"
             )
@@ -176,13 +176,13 @@ def _fit_check(
                     f"L0 Penalty requires 'lambda_grid' to be a list of length 1, but got {lambda_grid}."
                 )
 
-        penalty = "L0L2"
-        gamma_max = 1e-7
-        gamma_min = 1e-7
-    elif penalty != "L0" and num_gamma == 1:
-        warn(
-            f"num_gamma set to 1 with {penalty} penalty. Only one {penalty[2:]} penalty value will be fit."
-        )
+            penalty = "L0L2"
+            gamma_max = 1e-7
+            gamma_min = 1e-7
+        elif penalty != "L0" and num_gamma == 1:
+            warn(
+                f"num_gamma set to 1 with {penalty} penalty. Only one {penalty[2:]} penalty value will be fit."
+            )
 
     if y.dtype != np.float64:
         raise ValueError(

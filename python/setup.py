@@ -23,8 +23,8 @@ from distutils.sysconfig import get_python_inc, get_config_var
 PACKAGE_NAME = 'l0learn'
 
 MAJOR = 0
-MINOR = 1
-MICRO = 1
+MINOR = 4
+MICRO = 3
 DEVELOPMENT = False
 
 VERSION = f'{MAJOR}.{MINOR}.{MICRO}'
